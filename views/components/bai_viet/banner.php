@@ -19,11 +19,11 @@
                     <iconify-icon icon="ph:book-open-text"></iconify-icon>
                     Góc Tư Vấn
                 </p>
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-serif text-white mb-6 leading-tight">
+                <h1 class="text-4xl font-serif text-white mb-6 leading-tight">
                     Kiến Thức & Cẩm Nang <br class="hidden md:block" /> 
                     <span class="text-yellow-400">Trang Sức Phong Thuỷ</span>
                 </h1>
-                <p class="text-red-100 text-base md:text-lg mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
+                <p class="text-sm text-red-100 mb-8 max-w-lg mx-auto md:mx-0 leading-relaxed">
                     Khám phá những câu chuyện đằng sau mỗi viên đá, cách chọn lựa và bảo quản vòng tay hợp mệnh để thu hút năng lượng bình an, tài lộc.
                 </p>
             </div>

@@ -7,11 +7,11 @@
                     <iconify-icon icon="mdi:star" class="text-base"></iconify-icon>
                     Cá nhân hóa theo năm sinh & bản mệnh
                 </div>
-                <h1 class="text-4xl md:text-5xl lg:text-[56px] font-bold leading-tight mb-6 text-gray-900">
+                <h1 class="text-4xl font-bold leading-tight mb-6 text-gray-900">
                     Vòng Theo Mệnh<br/>
                     <span style="color:#8b0000; font-size: 0.85em;">Tìm chiếc vòng dành riêng cho bạn</span>
                 </h1>
-                <p class="text-lg mb-8 max-w-lg leading-relaxed text-gray-600">
+                <p class="text-sm mb-8 max-w-lg leading-relaxed text-gray-600">
                     Nhập năm sinh hoặc ngày sinh để khám phá mệnh phong thủy, màu sắc phù hợp và những mẫu vòng ngọc giúp bạn gửi gắm bình an, tài lộc và may mắn.
                 </p>
                 <div class="flex flex-wrap gap-4 mb-10">

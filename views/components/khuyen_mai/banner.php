@@ -28,12 +28,12 @@
                     Ưu đãi tháng này
                 </div>
                 
-                <h1 class="text-3xl md:text-4xl lg:text-[2.75rem] text-white leading-tight font-bold animate-km-fade-in" style="animation-delay: 0.1s;">
+                <h1 class="text-4xl text-white leading-tight font-bold animate-km-fade-in" style="animation-delay: 0.1s;">
                     Săn ưu đãi phong thủy <br/>
                     <span class="text-[#D4AF37]">Rinh vòng may mắn</span>
                 </h1>
                 
-                <p class="text-gray-300 text-sm md:text-base max-w-md mx-auto md:mx-0 leading-relaxed animate-km-fade-in" style="animation-delay: 0.2s;">
+                <p class="text-sm text-gray-300 max-w-md mx-auto md:mx-0 leading-relaxed animate-km-fade-in" style="animation-delay: 0.2s;">
                     Khám phá các mẫu vòng ngọc, chuỗi đá phong thủy đang được ưu đãi cùng voucher freeship, giảm giá và quà tặng đặc biệt.
                 </p>
 

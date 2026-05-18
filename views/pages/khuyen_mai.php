@@ -2,9 +2,6 @@
 // views/pages/khuyen_mai.php
 ?>
 <main class="bg-[#FAF9F6] pb-16 overflow-hidden">
-    <!-- Banner Khuyến Mãi -->
-    <?php require_once __DIR__ . '/../components/khuyen_mai/banner.php'; ?>
-
     <!-- Breadcrumb -->
     <div class="container mx-auto px-4 lg:px-8 pt-6 mb-6">
         <nav aria-label="Breadcrumb">
@@ -36,6 +33,9 @@
             </ol>
         </nav>
     </div>
+
+    <!-- Banner Khuyến Mãi -->
+    <?php require_once __DIR__ . '/../components/khuyen_mai/banner.php'; ?>
 
     <div class="container mx-auto px-4 lg:px-8 space-y-20">
         <!-- Voucher Hot -->

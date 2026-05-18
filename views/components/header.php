@@ -8,7 +8,7 @@ $menu_items = [
     ['key' => 'vong_theo_menh', 'label' => 'Vòng Theo Mệnh', 'url' => APP_URL . '/vong-theo-menh'],
     ['key' => 'khuyen_mai', 'label' => 'Khuyến mãi', 'url' => APP_URL . '/khuyen-mai'],
     ['key' => 'bai_viet', 'label' => 'Bài viết', 'url' => APP_URL . '/bai-viet'],
-    ['key' => 'lien_he', 'label' => 'Liên hệ', 'url' => '#'],
+    ['key' => 'lien_he', 'label' => 'Liên hệ', 'url' => APP_URL . '/lien-he'],
 ];
 ?>
 
@@ -119,16 +119,50 @@ $menu_items = [
                 <!-- Divider -->
                 <div class="hidden sm:block w-px h-7 mx-1" style="background: #e5e5e5;"></div>
 
-                <!-- Login Button -->
-                <a href="<?= APP_URL ?>/login" class="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all"
-                   style="color: #333; border: 1px solid #ddd; text-decoration: none;"
-                   onmouseover="this.style.borderColor='#8b0000'; this.style.color='#8b0000'"
-                   onmouseout="this.style.borderColor='#ddd'; this.style.color='#333'">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    Đăng nhập
-                </a>
+                <!-- Account Dropdown -->
+                <div class="relative group hidden sm:block">
+                    <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 p-1.5 pr-3 rounded-full transition-all"
+                       style="border: 1px solid rgba(139,0,0,0.2); background: rgba(139,0,0,0.02); text-decoration: none;">
+                        <div class="w-7 h-7 rounded-full flex items-center justify-center text-white" style="background: #8b0000;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <span class="text-sm font-medium" style="color: #8b0000;">Tài khoản</span>
+                    </a>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right z-50"
+                         style="border: 1px solid #f0f0f0;">
+                        <div class="p-2 space-y-1">
+                            <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Hồ sơ của tôi
+                            </a>
+                            <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                Đơn mua
+                            </a>
+                            <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                </svg>
+                                Kho Voucher
+                            </a>
+                            <div class="h-px bg-gray-100 my-1"></div>
+                            <a href="<?= APP_URL ?>/login" class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors" style="text-decoration: none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Đăng xuất
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Hotline CTA Button -->
                 <a href="tel:0909123456" class="hidden md:flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all"

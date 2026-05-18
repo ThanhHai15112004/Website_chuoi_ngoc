@@ -11,13 +11,13 @@
                     Đá tự nhiên 100% · Cam kết chính hãng
                 </div>
 
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6" style="color: #111;">
+                <h1 class="text-4xl font-bold leading-tight mb-6" style="color: #111;">
                     Chuỗi Ngọc Phong Thủy
                     <br/>
                     <span class="font-bold" style="color: #8b0000;">Bình an · Tài lộc · May mắn</span>
                 </h1>
 
-                <p class="text-lg mb-8 max-w-lg leading-relaxed" style="color: #555;">
+                <p class="text-sm mb-8 max-w-lg leading-relaxed" style="color: #555;">
                     Khám phá bộ sưu tập vòng đá, chuỗi ngọc được chọn lọc kỹ càng theo mệnh, tuổi và phong cách cá nhân của riêng bạn.
                 </p>
                 
