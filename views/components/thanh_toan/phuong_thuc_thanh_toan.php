@@ -16,11 +16,7 @@
                 <span class="text-sm text-gray-500">Thanh toán bằng tiền mặt khi giao hàng</span>
             </div>
             <div class="w-8 h-8 opacity-70">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8B0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 16V12" stroke="#8B0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 8H12.01" stroke="#8B0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <iconify-icon icon="mdi:cash-multiple" class="text-3xl text-[#8B0000]"></iconify-icon>
             </div>
         </label>
 
@@ -33,16 +29,7 @@
                 <span class="text-sm text-gray-500">Quét mã QR qua ứng dụng ngân hàng</span>
             </div>
             <div class="w-8 h-8 opacity-70">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 21H21" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M3 10H21" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M5 6L12 3L19 6" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M4 10V21" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M20 10V21" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8 14V17" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 14V17" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M16 14V17" stroke="#4B5563" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <iconify-icon icon="mdi:bank-outline" class="text-3xl text-gray-600"></iconify-icon>
             </div>
         </label>
     </div>

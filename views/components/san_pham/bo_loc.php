@@ -3,7 +3,7 @@
     <div class="bg-gradient-to-r from-crimson-600 to-crimson-700 px-5 py-4">
         <div class="flex items-center justify-between">
             <h3 class="text-white font-semibold flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+                <iconify-icon icon="heroicons:funnel" class="text-xl"></iconify-icon>
                 Bộ lọc sản phẩm
             </h3>
             <button class="text-crimson-200 hover:text-white text-xs font-medium transition">Đặt lại</button>
@@ -13,8 +13,8 @@
         <!-- Danh mục -->
         <div class="filter-group">
             <button class="filter-toggle w-full flex items-center justify-between text-sm font-semibold text-charcoal-800" onclick="toggleFilter(this)">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 bg-crimson-500 rounded-full"></span>Danh mục</span>
-                <svg class="filter-arrow h-4 w-4 text-gray-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span class="flex items-center gap-2"><iconify-icon icon="mdi:format-list-bulleted" class="text-crimson-500 text-lg"></iconify-icon>Danh mục</span>
+                <iconify-icon icon="heroicons:chevron-down" class="filter-arrow text-base text-gray-400 transition-transform duration-300"></iconify-icon>
             </button>
             <div class="filter-content mt-3 space-y-1">
                 <?php $danh_muc_list = [['Vòng ngọc','48'],['Tràng hạt','32'],['Trầm hương & Nhang','25'],['Bột xông nhà','15']]; ?>
@@ -31,23 +31,23 @@
         <!-- Mệnh -->
         <div class="filter-group">
             <button class="filter-toggle w-full flex items-center justify-between text-sm font-semibold text-charcoal-800" onclick="toggleFilter(this)">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 bg-gold-500 rounded-full"></span>Mệnh phong thủy</span>
-                <svg class="filter-arrow h-4 w-4 text-gray-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span class="flex items-center gap-2"><iconify-icon icon="mdi:yin-yang" class="text-gold-500 text-lg"></iconify-icon>Mệnh phong thủy</span>
+                <iconify-icon icon="heroicons:chevron-down" class="filter-arrow text-base text-gray-400 transition-transform duration-300"></iconify-icon>
             </button>
             <div class="filter-content mt-3 flex flex-wrap gap-2">
-                <button class="px-4 py-2 text-xs font-medium rounded-full border-2 border-green-200 text-green-700 bg-green-50 hover:bg-green-100 transition-all">🌿 Mộc</button>
-                <button class="px-4 py-2 text-xs font-medium rounded-full border-2 border-red-200 text-red-700 bg-red-50 hover:bg-red-100 transition-all">🔥 Hỏa</button>
-                <button class="px-4 py-2 text-xs font-medium rounded-full border-2 border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-all">🏔️ Thổ</button>
-                <button class="px-4 py-2 text-xs font-medium rounded-full border-2 border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-all">⚔️ Kim</button>
-                <button class="px-4 py-2 text-xs font-medium rounded-full border-2 border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-all">💧 Thủy</button>
+                <button class="px-4 py-2 flex items-center gap-1.5 text-xs font-medium rounded-full border-2 border-green-200 text-green-700 bg-green-50 hover:bg-green-100 transition-all"><iconify-icon icon="mdi:leaf" class="text-sm"></iconify-icon> Mộc</button>
+                <button class="px-4 py-2 flex items-center gap-1.5 text-xs font-medium rounded-full border-2 border-red-200 text-red-700 bg-red-50 hover:bg-red-100 transition-all"><iconify-icon icon="mdi:fire" class="text-sm"></iconify-icon> Hỏa</button>
+                <button class="px-4 py-2 flex items-center gap-1.5 text-xs font-medium rounded-full border-2 border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 transition-all"><iconify-icon icon="mdi:terrain" class="text-sm"></iconify-icon> Thổ</button>
+                <button class="px-4 py-2 flex items-center gap-1.5 text-xs font-medium rounded-full border-2 border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-all"><iconify-icon icon="mdi:sword-cross" class="text-sm"></iconify-icon> Kim</button>
+                <button class="px-4 py-2 flex items-center gap-1.5 text-xs font-medium rounded-full border-2 border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-all"><iconify-icon icon="mdi:water-drop" class="text-sm"></iconify-icon> Thủy</button>
             </div>
         </div>
         <hr class="border-gray-100">
         <!-- Loại đá -->
         <div class="filter-group">
             <button class="filter-toggle w-full flex items-center justify-between text-sm font-semibold text-charcoal-800" onclick="toggleFilter(this)">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 bg-emerald-500 rounded-full"></span>Loại đá</span>
-                <svg class="filter-arrow h-4 w-4 text-gray-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span class="flex items-center gap-2"><iconify-icon icon="mdi:diamond-stone" class="text-emerald-500 text-lg"></iconify-icon>Loại đá</span>
+                <iconify-icon icon="heroicons:chevron-down" class="filter-arrow text-base text-gray-400 transition-transform duration-300"></iconify-icon>
             </button>
             <div class="filter-content mt-3 space-y-1">
                 <?php foreach(['Ngọc bích','Thạch anh','Mã não','Trầm hương'] as $da): ?>
@@ -62,8 +62,8 @@
         <!-- Khoảng giá -->
         <div class="filter-group">
             <button class="filter-toggle w-full flex items-center justify-between text-sm font-semibold text-charcoal-800" onclick="toggleFilter(this)">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 bg-violet-500 rounded-full"></span>Khoảng giá</span>
-                <svg class="filter-arrow h-4 w-4 text-gray-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span class="flex items-center gap-2"><iconify-icon icon="mdi:cash-multiple" class="text-violet-500 text-lg"></iconify-icon>Khoảng giá</span>
+                <iconify-icon icon="heroicons:chevron-down" class="filter-arrow text-base text-gray-400 transition-transform duration-300"></iconify-icon>
             </button>
             <div class="filter-content mt-3 space-y-1">
                 <?php foreach(['Dưới 300.000đ','300k – 700k','700k – 1.500k','Trên 1.500.000đ'] as $gia_range): ?>
@@ -78,14 +78,26 @@
         <!-- Nhu cầu -->
         <div class="filter-group">
             <button class="filter-toggle w-full flex items-center justify-between text-sm font-semibold text-charcoal-800" onclick="toggleFilter(this)">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 bg-rose-500 rounded-full"></span>Nhu cầu</span>
-                <svg class="filter-arrow h-4 w-4 text-gray-400 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span class="flex items-center gap-2"><iconify-icon icon="mdi:heart-outline" class="text-rose-500 text-lg"></iconify-icon>Nhu cầu</span>
+                <iconify-icon icon="heroicons:chevron-down" class="filter-arrow text-base text-gray-400 transition-transform duration-300"></iconify-icon>
             </button>
             <div class="filter-content mt-3 space-y-1">
-                <?php foreach(['🎋 Cầu tài lộc','🕊️ Cầu bình an','❤️ Cầu tình duyên','🍀 Cầu may mắn','💼 Hỗ trợ công việc','🎁 Quà tặng'] as $nc): ?>
+                <?php 
+                $nhu_cau_list = [
+                    ['icon' => 'mdi:bamboo', 'text' => 'Cầu tài lộc', 'color' => 'text-green-600'],
+                    ['icon' => 'mdi:dove', 'text' => 'Cầu bình an', 'color' => 'text-blue-400'],
+                    ['icon' => 'mdi:heart', 'text' => 'Cầu tình duyên', 'color' => 'text-rose-500'],
+                    ['icon' => 'mdi:clover', 'text' => 'Cầu may mắn', 'color' => 'text-emerald-500'],
+                    ['icon' => 'mdi:briefcase', 'text' => 'Hỗ trợ công việc', 'color' => 'text-amber-700'],
+                    ['icon' => 'mdi:gift', 'text' => 'Quà tặng', 'color' => 'text-crimson-500']
+                ];
+                foreach($nhu_cau_list as $nc): ?>
                 <label class="flex items-center gap-3 cursor-pointer group px-2 py-1.5 rounded-lg hover:bg-ivory-50 transition">
                     <input type="checkbox" class="w-4 h-4 accent-crimson-600 rounded">
-                    <span class="text-sm text-charcoal-700"><?= $nc ?></span>
+                    <span class="text-sm text-charcoal-700 flex items-center gap-2">
+                        <iconify-icon icon="<?= $nc['icon'] ?>" class="text-lg <?= $nc['color'] ?>"></iconify-icon>
+                        <?= $nc['text'] ?>
+                    </span>
                 </label>
                 <?php endforeach; ?>
             </div>

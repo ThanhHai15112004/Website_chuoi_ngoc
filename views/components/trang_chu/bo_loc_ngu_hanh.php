@@ -12,11 +12,11 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             <?php
             $ngu_hanh = [
-                ['ten' => 'Mệnh Kim', 'bieu_tuong' => '⚪', 'mau_sac' => 'Trắng, Vàng, Nâu', 'loai_da' => 'Thạch anh trắng, Hổ phách', 'mau_nen' => '#f3f4f6', 'vien' => '#e5e7eb'],
-                ['ten' => 'Mệnh Mộc', 'bieu_tuong' => '🌿', 'mau_sac' => 'Xanh lá, Đen, Xanh dương', 'loai_da' => 'Ngọc bích, Thạch anh đen', 'mau_nen' => '#f0fdf4', 'vien' => '#bbf7d0'],
-                ['ten' => 'Mệnh Thủy', 'bieu_tuong' => '💧', 'mau_sac' => 'Đen, Xanh dương, Trắng', 'loai_da' => 'Aquamarine, Đá vỏ chai', 'mau_nen' => '#eff6ff', 'vien' => '#bfdbfe'],
-                ['ten' => 'Mệnh Hỏa', 'bieu_tuong' => '🔥', 'mau_sac' => 'Đỏ, Hồng, Tím, Xanh lá', 'loai_da' => 'Thạch anh hồng, Mã não đỏ', 'mau_nen' => '#fef2f2', 'vien' => '#fecaca'],
-                ['ten' => 'Mệnh Thổ', 'bieu_tuong' => '⛰️', 'mau_sac' => 'Vàng, Nâu, Đỏ, Hồng', 'loai_da' => 'Mắt hổ, Thạch anh vàng', 'mau_nen' => '#fefce8', 'vien' => '#fef08a'],
+                ['ten' => 'Mệnh Kim', 'bieu_tuong' => '<iconify-icon icon="mdi:sword-cross" class="text-gray-500"></iconify-icon>', 'mau_sac' => 'Trắng, Vàng, Nâu', 'loai_da' => 'Thạch anh trắng, Hổ phách', 'mau_nen' => '#f3f4f6', 'vien' => '#e5e7eb'],
+                ['ten' => 'Mệnh Mộc', 'bieu_tuong' => '<iconify-icon icon="mdi:leaf" class="text-green-600"></iconify-icon>', 'mau_sac' => 'Xanh lá, Đen, Xanh dương', 'loai_da' => 'Ngọc bích, Thạch anh đen', 'mau_nen' => '#f0fdf4', 'vien' => '#bbf7d0'],
+                ['ten' => 'Mệnh Thủy', 'bieu_tuong' => '<iconify-icon icon="mdi:water-drop" class="text-blue-500"></iconify-icon>', 'mau_sac' => 'Đen, Xanh dương, Trắng', 'loai_da' => 'Aquamarine, Đá vỏ chai', 'mau_nen' => '#eff6ff', 'vien' => '#bfdbfe'],
+                ['ten' => 'Mệnh Hỏa', 'bieu_tuong' => '<iconify-icon icon="mdi:fire" class="text-red-500"></iconify-icon>', 'mau_sac' => 'Đỏ, Hồng, Tím, Xanh lá', 'loai_da' => 'Thạch anh hồng, Mã não đỏ', 'mau_nen' => '#fef2f2', 'vien' => '#fecaca'],
+                ['ten' => 'Mệnh Thổ', 'bieu_tuong' => '<iconify-icon icon="mdi:terrain" class="text-amber-600"></iconify-icon>', 'mau_sac' => 'Vàng, Nâu, Đỏ, Hồng', 'loai_da' => 'Mắt hổ, Thạch anh vàng', 'mau_nen' => '#fefce8', 'vien' => '#fef08a'],
             ];
             foreach ($ngu_hanh as $index => $nh): ?>
             <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col h-full hover:-translate-y-1 hover:shadow-lg transition-all duration-300" style="border: 1px solid <?= $nh['vien'] ?>;" data-aos="fade-up" data-aos-delay="<?= $index * 80 ?>">

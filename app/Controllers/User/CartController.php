@@ -10,7 +10,7 @@ class CartController extends Controller {
             [
                 'id' => 1,
                 'ten' => 'Vòng Ngọc Bích Tài Lộc',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg',
                 'loai_da' => 'Ngọc bích',
                 'menh' => 'Mộc, Hỏa',
                 'kich_thuoc_hat' => '8mm',
@@ -24,7 +24,7 @@ class CartController extends Controller {
             [
                 'id' => 2,
                 'ten' => 'Chuỗi Thạch Anh Hồng Tình Duyên',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1599643478524-fb66645366f4?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-1.jpg',
                 'loai_da' => 'Thạch anh',
                 'menh' => 'Hỏa, Thổ',
                 'kich_thuoc_hat' => '10mm',
@@ -38,7 +38,7 @@ class CartController extends Controller {
             [
                 'id' => 3,
                 'ten' => 'Vòng Trầm Hương Mắt Bầu',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg',
                 'loai_da' => 'Trầm hương tự nhiên',
                 'menh' => 'Thủy, Mộc',
                 'kich_thuoc_hat' => '12mm',
@@ -72,7 +72,7 @@ class CartController extends Controller {
             [
                 'id' => 101,
                 'ten' => 'Hộp quà cao cấp lót nhung đỏ',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Sâm Panh Thuần/sam-panh-thuan-1.jpg',
                 'gia' => 50000,
                 'gia_cu' => 0,
                 'nhan' => '',
@@ -82,7 +82,7 @@ class CartController extends Controller {
             [
                 'id' => 102,
                 'ten' => 'Túi gấm lụa bảo quản vòng ngọc',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1631541909061-71e34df0fe5c?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-2.jpg',
                 'gia' => 35000,
                 'gia_cu' => 0,
                 'nhan' => 'Mới',
@@ -92,7 +92,7 @@ class CartController extends Controller {
             [
                 'id' => 103,
                 'ten' => 'Dây thay dự phòng xỏ vòng tay',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1596700867807-73d842d0cde0?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-2.jpg',
                 'gia' => 15000,
                 'gia_cu' => 20000,
                 'nhan' => 'Sale',
@@ -102,7 +102,7 @@ class CartController extends Controller {
             [
                 'id' => 104,
                 'ten' => 'Nước thanh tẩy đá tự nhiên (50ml)',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Sâm Panh Thuần/sam-panh-thuan-2.jpg',
                 'gia' => 120000,
                 'gia_cu' => 0,
                 'nhan' => '',

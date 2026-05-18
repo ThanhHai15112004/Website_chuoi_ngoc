@@ -6,8 +6,8 @@ $menu_items = [
     ['key' => 'trang_chu', 'label' => 'Trang chủ', 'url' => APP_URL . '/'],
     ['key' => 'san_pham', 'label' => 'Sản phẩm', 'url' => APP_URL . '/san-pham'],
     ['key' => 'vong_theo_menh', 'label' => 'Vòng Theo Mệnh', 'url' => APP_URL . '/vong-theo-menh'],
-    ['key' => 'khuyen_mai', 'label' => 'Khuyến mãi', 'url' => '#khuyen-mai'],
-    ['key' => 'bai_viet', 'label' => 'Bài viết', 'url' => '#bai-viet'],
+    ['key' => 'khuyen_mai', 'label' => 'Khuyến mãi', 'url' => APP_URL . '/khuyen-mai'],
+    ['key' => 'bai_viet', 'label' => 'Bài viết', 'url' => APP_URL . '/bai-viet'],
     ['key' => 'lien_he', 'label' => 'Liên hệ', 'url' => '#'],
 ];
 ?>

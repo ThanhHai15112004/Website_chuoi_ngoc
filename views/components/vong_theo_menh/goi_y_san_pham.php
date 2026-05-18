@@ -18,7 +18,7 @@
                     <div class="absolute top-3 right-3 z-10">
                         <span class="px-2 py-1 text-xs font-bold bg-white/90 backdrop-blur-sm rounded-md shadow-sm" style="color:#8b0000;">Tương sinh</span>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1599643478514-4a4855963f45?q=80&w=400&auto=format&fit=crop" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
                 <h3 class="font-bold text-gray-900 group-hover:text-[#8b0000] transition-colors line-clamp-2">Chuỗi Ngọc Trầm Hương Mix Lu Thống</h3>
                 <div class="mt-2 flex items-center justify-between">
@@ -32,7 +32,7 @@
                     <div class="absolute top-3 right-3 z-10">
                         <span class="px-2 py-1 text-xs font-bold bg-white/90 backdrop-blur-sm rounded-md shadow-sm text-green-700">Tương hợp</span>
                     </div>
-                    <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=400&auto=format&fit=crop" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-1.jpg" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
                 <h3 class="font-bold text-gray-900 group-hover:text-[#8b0000] transition-colors line-clamp-2">Vòng Tay Đá Mã Não Xanh Rêu</h3>
                 <div class="mt-2 flex items-center justify-between">
@@ -43,7 +43,7 @@
             <!-- Product 3 -->
             <div class="group cursor-pointer">
                 <div class="relative rounded-2xl overflow-hidden mb-4 shadow-sm border border-gray-100 group-hover:shadow-xl transition-all duration-300">
-                    <img src="https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?q=80&w=400&auto=format&fit=crop" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
                 <h3 class="font-bold text-gray-900 group-hover:text-[#8b0000] transition-colors line-clamp-2">Chuỗi Ngọc Bích Nephrite Chạm Khắc</h3>
                 <div class="mt-2 flex items-center justify-between">
@@ -54,7 +54,7 @@
             <!-- Product 4 -->
             <div class="group cursor-pointer">
                 <div class="relative rounded-2xl overflow-hidden mb-4 shadow-sm border border-gray-100 group-hover:shadow-xl transition-all duration-300">
-                    <img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?q=80&w=400&auto=format&fit=crop" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Sâm Panh Thuần/sam-panh-thuan-1.jpg" alt="Vòng Ngọc" class="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500">
                 </div>
                 <h3 class="font-bold text-gray-900 group-hover:text-[#8b0000] transition-colors line-clamp-2">Vòng Trầm Tốc Tự Nhiên 108 Hạt</h3>
                 <div class="mt-2 flex items-center justify-between">

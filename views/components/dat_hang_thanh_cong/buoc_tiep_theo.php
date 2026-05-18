@@ -1,11 +1,3 @@
-<!-- Receipt Bottom Decoration -->
-<div class="h-6 w-full flex mb-8">
-    <?php for($i = 0; $i < 40; $i++): ?>
-    <div class="h-full flex-1 bg-white relative">
-        <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-slate-50 rounded-full"></div>
-    </div>
-    <?php endfor; ?>
-</div>
 
 <!-- Next Steps Info Box -->
 <div class="bg-amber-50 rounded-xl p-6 mb-8 border border-amber-100 flex flex-col sm:flex-row items-start gap-4 shadow-sm">
@@ -40,11 +32,11 @@
 </div>
 
 <!-- Call to Actions -->
-<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-    <a href="<?= APP_URL ?>/" class="w-full sm:w-auto px-8 py-3 bg-white border-2 border-[#8B0000] text-[#8B0000] font-semibold rounded-full hover:bg-[#8B0000] hover:text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 text-center flex items-center justify-center">
+<div class="flex flex-col w-full gap-4">
+    <a href="<?= APP_URL ?>/" class="w-full px-8 py-3 bg-white border-2 border-[#8B0000] text-[#8B0000] font-semibold rounded-full hover:bg-[#8B0000] hover:text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 text-center flex items-center justify-center">
         <iconify-icon icon="mdi:arrow-left" class="mr-2 text-lg"></iconify-icon> Tiếp tục mua sắm
     </a>
-    <a href="#" class="w-full sm:w-auto px-8 py-3 bg-white border-2 border-[#8B0000] text-[#8B0000] font-semibold rounded-full hover:bg-[#8B0000] hover:text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 text-center flex items-center justify-center">
+    <a href="#" class="w-full px-8 py-3 bg-white border-2 border-[#8B0000] text-[#8B0000] font-semibold rounded-full hover:bg-[#8B0000] hover:text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 text-center flex items-center justify-center">
         Xem chi tiết đơn hàng <iconify-icon icon="mdi:arrow-right" class="ml-2 text-lg"></iconify-icon>
     </a>
 </div>

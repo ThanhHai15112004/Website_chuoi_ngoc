@@ -1,4 +1,4 @@
-<div class="text-center mb-10">
+<div class="text-center mb-12 md:mb-16">
     <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-red-50 text-[#8B0000] mb-6 shadow-sm border border-red-100 relative">
         <iconify-icon icon="mdi:check-circle" class="text-5xl"></iconify-icon>
         <div class="absolute -top-1 -right-2 text-[#D4AF37] text-2xl animate-pulse"><iconify-icon icon="mdi:star-four-points"></iconify-icon></div>

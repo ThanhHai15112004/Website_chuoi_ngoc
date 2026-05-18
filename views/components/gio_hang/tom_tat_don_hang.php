@@ -15,7 +15,7 @@
             <?php if(!empty($vouchers)): ?>
                 <div class="mt-3 space-y-2">
                     <?php foreach($vouchers as $vc): ?>
-                        <div class="flex items-center justify-between p-2 border border-dashed border-red-200 bg-red-50 rounded-lg">
+                        <div class="flex items-center justify-between p-2 border-2 border-dashed border-red-400 bg-red-50 rounded-lg">
                             <div>
                                 <p class="text-xs font-bold text-[#8B0000]"><?php echo htmlspecialchars($vc['ma']); ?></p>
                                 <p class="text-[10px] text-gray-500"><?php echo htmlspecialchars($vc['dieu_kien']); ?></p>
@@ -54,22 +54,20 @@
 
         <a href="<?= APP_URL ?>/thanh-toan" class="w-full bg-[#8B0000] hover:bg-red-800 text-white font-medium py-3.5 rounded-xl transition-colors shadow-md shadow-red-900/20 text-lg flex justify-center items-center gap-2 group hidden md:flex">
             Tiến hành thanh toán
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
+            <iconify-icon icon="mdi:arrow-right" class="text-xl group-hover:translate-x-1 transition-transform"></iconify-icon>
         </a>
         
         <div class="mt-4 space-y-2 text-xs text-gray-500">
             <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <iconify-icon icon="mdi:check-circle-outline" class="text-base text-green-500"></iconify-icon>
                 Freeship toàn quốc cho đơn từ 500.000đ
             </div>
             <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <iconify-icon icon="mdi:check-circle-outline" class="text-base text-green-500"></iconify-icon>
                 Kiểm tra hàng trước khi thanh toán
             </div>
             <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <iconify-icon icon="mdi:check-circle-outline" class="text-base text-green-500"></iconify-icon>
                 Đổi trả miễn phí trong 7 ngày
             </div>
         </div>

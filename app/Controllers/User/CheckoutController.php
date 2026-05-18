@@ -10,7 +10,7 @@ class CheckoutController extends Controller {
             [
                 'id' => 1,
                 'ten' => 'Vòng Ngọc Bích Tài Lộc',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg',
                 'loai_da' => 'Ngọc bích',
                 'menh' => 'Mộc, Hỏa',
                 'kich_thuoc_hat' => '8mm',
@@ -21,7 +21,7 @@ class CheckoutController extends Controller {
             [
                 'id' => 2,
                 'ten' => 'Chuỗi Thạch Anh Hồng Tình Duyên',
-                'hinh_anh' => 'https://images.unsplash.com/photo-1599643478524-fb66645366f4?q=80&w=600&auto=format&fit=crop',
+                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-1.jpg',
                 'loai_da' => 'Thạch anh',
                 'menh' => 'Hỏa, Thổ',
                 'kich_thuoc_hat' => '10mm',
