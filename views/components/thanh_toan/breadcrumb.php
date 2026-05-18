@@ -1,9 +1,11 @@
-<div class="mb-6 text-sm text-gray-500">
-    <a href="/" class="hover:text-[#8B0000] transition-colors">Trang chủ</a>
-    <span class="mx-2">/</span>
-    <a href="/gio-hang" class="hover:text-[#8B0000] transition-colors">Giỏ hàng</a>
-    <span class="mx-2">/</span>
-    <span class="text-gray-800 font-medium">Thanh toán</span>
-</div>
-
-<h1 class="text-2xl md:text-3xl font-serif text-[#8B0000] mb-8">Thanh toán đơn hàng</h1>
+<?php
+/**
+ * Component: Breadcrumb trang Thanh toán (dùng component chung)
+ */
+$breadcrumb_items = [
+    ['ten' => 'Trang Chủ', 'url' => APP_URL . '/', 'icon' => 'ph:house-bold'],
+    ['ten' => 'Giỏ Hàng', 'url' => APP_URL . '/gio-hang', 'icon' => 'ph:shopping-cart-bold'],
+    ['ten' => 'Thanh Toán', 'url' => null, 'icon' => 'ph:credit-card-bold'],
+];
+require_once __DIR__ . '/../common/breadcrumb.php';
+?>

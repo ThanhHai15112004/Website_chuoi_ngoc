@@ -4,6 +4,13 @@
 // Hero Banner
 require_once __DIR__ . '/../components/vong_theo_menh/banner.php';
 
+// Breadcrumb (nằm dưới banner)
+$breadcrumb_items = [
+    ['ten' => 'Trang Chủ', 'url' => APP_URL . '/', 'icon' => 'ph:house-bold'],
+    ['ten' => 'Vòng Theo Mệnh', 'url' => null, 'icon' => 'ph:yin-yang-bold'],
+];
+require_once __DIR__ . '/../components/common/breadcrumb.php';
+
 // Ý nghĩa Vòng theo mệnh
 require_once __DIR__ . '/../components/vong_theo_menh/y_nghia.php';
 

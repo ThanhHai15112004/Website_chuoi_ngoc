@@ -1,6 +1,6 @@
 <!-- Section: Hero Banner -->
 <section class="relative overflow-hidden" style="background: linear-gradient(135deg, #FAF7F2 0%, #fff 40%, #fdf2f2 100%);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 md:pt-12 md:pb-24 lg:pt-16 lg:pb-28">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <!-- Left: Text Content -->
             <div class="relative z-10" data-aos="fade-right">

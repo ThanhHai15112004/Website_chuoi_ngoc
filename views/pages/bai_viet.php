@@ -1,28 +1,29 @@
 <main class="bg-[#FAF9F6] pb-16">
-    <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 lg:px-8 pt-6">
-        <div class="mb-6 text-sm text-gray-500">
-            <?php if (isset($breadcrumbs)): ?>
-                <?php foreach ($breadcrumbs as $index => $crumb): ?>
-                    <?php if ($index > 0): ?>
-                        <span class="mx-2">/</span>
-                    <?php endif; ?>
-                    <?php if (isset($crumb['url']) && $index < count($breadcrumbs) - 1): ?>
-                        <a href="<?= $crumb['url'] ?>" class="hover:text-[#8B0000] transition-colors"><?= htmlspecialchars($crumb['ten']) ?></a>
-                    <?php else: ?>
-                        <span class="text-gray-800 font-medium"><?= htmlspecialchars($crumb['ten']) ?></span>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <a href="<?= APP_URL ?>/" class="hover:text-[#8B0000] transition-colors">Trang chủ</a>
-                <span class="mx-2">/</span>
-                <span class="text-gray-800 font-medium">Bài viết</span>
-            <?php endif; ?>
-        </div>
-    </div>
-    
     <!-- Banner Góc Tư Vấn -->
     <?php require_once __DIR__ . '/../components/bai_viet/banner.php'; ?>
+
+    <!-- Breadcrumb (nằm dưới banner) -->
+    <div class="py-4">
+    <?php
+    if (isset($breadcrumbs) && !empty($breadcrumbs)) {
+        // Chuyển đổi breadcrumbs từ controller sang format mới
+        $breadcrumb_items = [];
+        foreach ($breadcrumbs as $crumb) {
+            $breadcrumb_items[] = [
+                'ten' => $crumb['ten'],
+                'url' => $crumb['url'] ?? null,
+                'icon' => $crumb['icon'] ?? 'ph:article-bold',
+            ];
+        }
+    } else {
+        $breadcrumb_items = [
+            ['ten' => 'Trang Chủ', 'url' => APP_URL . '/', 'icon' => 'ph:house-bold'],
+            ['ten' => 'Bài Viết', 'url' => null, 'icon' => 'ph:article-bold'],
+        ];
+    }
+    require_once __DIR__ . '/../components/common/breadcrumb.php';
+    ?>
+    </div>
 
     <!-- Khối tìm kiếm & Danh mục -->
     <div class="container mx-auto px-4 lg:px-8 mt-8 mb-10">

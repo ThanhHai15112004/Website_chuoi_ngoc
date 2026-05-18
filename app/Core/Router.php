@@ -33,8 +33,8 @@ class Router {
                 die("Controller class $controllerClass not found");
             }
         } else {
-            http_response_code(404);
-            die("404 Not Found");
+            $errorController = new \App\Controllers\ErrorController();
+            $errorController->notFound();
         }
     }
 }

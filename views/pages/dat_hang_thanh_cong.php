@@ -3,7 +3,6 @@
 ?>
 <div class="bg-slate-50 py-8 md:py-12">
     <div class="container mx-auto px-4 max-w-3xl">
-        
         <!-- Header -->
         <?php require_once __DIR__ . '/../components/dat_hang_thanh_cong/header_thanh_cong.php'; ?>
         

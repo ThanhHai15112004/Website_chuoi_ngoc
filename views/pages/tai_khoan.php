@@ -4,11 +4,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Breadcrumb -->
-        <nav class="flex items-center gap-2 text-sm text-gray-500 mb-8">
-            <a href="<?= APP_URL ?>/" class="hover:text-[#8b0000] transition-colors" style="text-decoration: none;">Trang chủ</a>
-            <span>/</span>
-            <span class="text-gray-900 font-medium">Tài khoản cá nhân</span>
-        </nav>
+        <?php
+        $breadcrumb_items = [
+            ['ten' => 'Trang Chủ', 'url' => APP_URL . '/', 'icon' => 'ph:house-bold'],
+            ['ten' => 'Tài Khoản', 'url' => null, 'icon' => 'ph:user-bold'],
+        ];
+        require_once __DIR__ . '/../components/common/breadcrumb.php';
+        ?>
 
         <!-- Page Header -->
         <div class="mb-10">
@@ -85,6 +87,7 @@
         if (mobileSelect) {
             mobileSelect.addEventListener('change', function() {
                 switchTab(this.value);
+                history.pushState(null, null, '#' + this.value);
             });
         }
 
@@ -98,6 +101,9 @@
                 if (mobileSelect) {
                     mobileSelect.value = target;
                 }
+                
+                // Update URL hash
+                history.pushState(null, null, '#' + target);
             });
         });
 
@@ -147,6 +153,17 @@
                 const targetEl = document.getElementById(targetId);
                 if(targetEl) {
                     targetEl.scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            }
+        }
+        
+        // Check hash on load
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1); // remove #
+            if (document.getElementById(hash)) {
+                switchTab(hash);
+                if (mobileSelect) {
+                    mobileSelect.value = hash;
                 }
             }
         }

@@ -46,17 +46,18 @@ $menu_items = [
 </div>
 
 <!-- Main Header -->
-<header class="sticky top-0 z-50" style="background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+<header id="main-header" class="sticky top-0 z-50 w-full transition-all duration-300" style="background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-[72px]">
+        <div id="header-container" class="flex items-center justify-between transition-all duration-300" style="height: 72px;">
 
             <!-- Logo + Brand -->
             <div class="flex-shrink-0">
                 <a href="<?= APP_URL ?>/" class="flex items-center gap-3" style="text-decoration: none;">
-                    <img src="<?= APP_URL ?>/images/Logo_.jpg" alt="Chuỗi Ngọc Phong Thủy" 
+                    <img id="header-logo" src="<?= APP_URL ?>/images/Logo_.jpg" alt="Chuỗi Ngọc Phong Thủy" 
+                         class="transition-all duration-300"
                          style="height: 48px; width: 48px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                     <div class="hidden sm:block">
-                        <div class="text-lg font-bold leading-tight" style="color: #8b0000;">Chuỗi Ngọc</div>
+                        <div id="header-brand-name" class="font-bold leading-tight transition-all duration-300" style="color: #8b0000; font-size: 1.125rem;">Chuỗi Ngọc</div>
                         <div class="text-[10px] uppercase font-semibold" style="color: #d4af37; letter-spacing: 0.2em;">Phong Thủy</div>
                     </div>
                 </a>
@@ -141,7 +142,7 @@ $menu_items = [
                                 </svg>
                                 Hồ sơ của tôi
                             </a>
-                            <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-don-hang" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
@@ -281,3 +282,45 @@ $menu_items = [
         </div>
     </div>
 </header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headerContainer = document.getElementById('header-container');
+    const headerLogo = document.getElementById('header-logo');
+    const headerBrandName = document.getElementById('header-brand-name');
+
+    let headerState = 'default'; // 'default' hoặc 'expanded'
+
+    function setExpanded() {
+        headerContainer.style.height = '60px';
+        headerLogo.style.height = '56px';
+        headerLogo.style.width = '56px';
+        headerBrandName.style.fontSize = '1.25rem';
+    }
+
+    function setDefault() {
+        headerContainer.style.height = '60px';
+        headerLogo.style.height = '48px';
+        headerLogo.style.width = '48px';
+        headerBrandName.style.fontSize = '1.125rem';
+    }
+
+    function applyHeaderState() {
+        const y = window.scrollY;
+        if (y > 50 && headerState !== 'expanded') {
+            headerState = 'expanded';
+            setExpanded();
+        } else if (y <= 10 && headerState !== 'default') {
+            headerState = 'default';
+            setDefault();
+        }
+    }
+
+    // Áp dụng ngay khi load
+    if (window.scrollY > 50) {
+        headerState = 'expanded';
+        setExpanded();
+    }
+    window.addEventListener('scroll', applyHeaderState, { passive: true });
+});
+</script>

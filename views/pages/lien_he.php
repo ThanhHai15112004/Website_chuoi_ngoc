@@ -4,8 +4,16 @@
     <!-- Banner -->
     <?php require_once __DIR__ . '/../components/lien_he/banner.php'; ?>
 
+    <!-- Breadcrumb (nằm dưới banner) -->
+    <?php
+    $breadcrumb_items = [
+        ['ten' => 'Trang Chủ', 'url' => APP_URL . '/', 'icon' => 'ph:house-bold'],
+        ['ten' => 'Liên Hệ', 'url' => null, 'icon' => 'ph:envelope-bold'],
+    ];
+    require_once __DIR__ . '/../components/common/breadcrumb.php';
+    ?>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 relative z-10">
         <!-- Quick Contact Cards -->
         <?php require_once __DIR__ . '/../components/lien_he/lien_he_nhanh.php'; ?>
         

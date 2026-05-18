@@ -13,4 +13,12 @@ $router->get('/vong-theo-menh', 'User\VongTheoMenhController@index');
 $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
 $router->get('/bai-viet', 'User\ArticleController@index');
 $router->get('/lien-he', 'User\ContactController@index');
+$router->get('/chi-tiet-don-hang', 'User\OrderController@detail');
+$router->post('/chi-tiet-don-hang/huy', 'User\OrderController@cancel');
 $router->get('/tai-khoan', 'User\AccountController@index');
+
+// Authentication Routes
+$router->get('/dang-nhap', 'User\AuthController@index');
+$router->post('/dang-nhap/xu-ly', 'User\AuthController@loginProcess');
+$router->post('/dang-ky/xu-ly', 'User\AuthController@registerProcess');
+$router->get('/dang-xuat', 'User\AuthController@logout');
