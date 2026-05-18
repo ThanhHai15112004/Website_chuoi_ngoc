@@ -1,29 +1,21 @@
-# Website_chuoi_ngoc (Trang sức phong thủy)
+# Website Chuỗi Ngọc - E-commerce Trang sức phong thủy
 
-Dự án E-commerce chuyên kinh doanh các sản phẩm trang sức phong thủy, vòng chuỗi ngọc, vòng sinh mệnh.
+Đây là dự án Website thương mại điện tử chuyên cung cấp các sản phẩm trang sức phong thủy (vòng tay, dây chuyền, nhẫn...) với thiết kế hiện đại, tinh tế.
 
 ## Công nghệ sử dụng
-- **Backend:** PHP MVC (Thuần/Không sử dụng Framework)
-- **Frontend:** HTML, CSS, JavaScript (Vanilla CSS, thiết kế UI/UX hiện đại)
+- **Backend:** PHP Thuần (Mô hình MVC)
+- **Frontend:** HTML5, CSS3, Tailwind CSS, Vanilla JavaScript
 - **Database:** MySQL
-- **Kiến trúc:** Mô hình MVC (Model - View - Controller)
 
-## Cấu trúc thư mục
-- `app/` - Chứa mã nguồn chính (Controllers, Models, Core)
-- `config/` - Cấu hình hệ thống (Database, App variables)
-- `public/` - Tài nguyên tĩnh (CSS, JS, Images) và điểm truy cập (index.php)
-- `routes/` - Định tuyến ứng dụng
-- `views/` - Giao diện người dùng (Pages, Components, Layouts)
+## Tính năng nổi bật
+- Giao diện thân thiện, chuẩn Responsive trên mọi thiết bị.
+- Tìm kiếm và lọc sản phẩm theo nhu cầu, phong thủy, bản mệnh.
+- Giỏ hàng và quy trình Thanh toán mượt mà.
+- Theo dõi đơn hàng trực quan.
 
-## Tính năng chính
-- Hiển thị danh mục sản phẩm, chi tiết sản phẩm.
-- Chức năng Giỏ hàng.
-- Trang tư vấn "Vòng Sinh Mệnh" phù hợp theo bản mệnh phong thủy.
-- Quản lý định tuyến tập trung, không hardcode.
+## Cài đặt
+1. Clone dự án về môi trường local.
+2. Import file database (nếu có) vào MySQL.
+3. Cấu hình kết nối cơ sở dữ liệu trong file `config`.
+4. Chạy dự án thông qua XAMPP hoặc server PHP.
 
-## Cài đặt và chạy dự án
-1. Clone dự án về máy.
-2. Thiết lập Web Server (XAMPP/MAMP/Laragon) và trỏ thư mục gốc của domain (Virtual Host) vào thư mục `public/`. Hoặc chạy trực tiếp trên thư mục gốc nếu cấu hình `.htaccess` ở thư mục ngoài cùng.
-3. Import cơ sở dữ liệu.
-4. Cấu hình file database trong `config/`.
-5. Truy cập ứng dụng qua trình duyệt.
