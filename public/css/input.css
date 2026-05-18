@@ -1,0 +1,68 @@
+@import "tailwindcss";
+@source "../../**/*.php";
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --color-crimson-50: #fdf2f2;
+  --color-crimson-100: #fbe5e5;
+  --color-crimson-200: #f5c6cb;
+  --color-crimson-400: #c0392b;
+  --color-crimson-500: #9b111e;
+  --color-crimson-600: #8b0000;
+  --color-crimson-700: #7a0c0c;
+  --color-crimson-800: #5c0a0a;
+
+  --color-gold-300: #e6d490;
+  --color-gold-400: #dfc26a;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #b5952f;
+
+  --color-ivory-50: #faf7f2;
+  --color-ivory: #faf7f2;
+
+  --color-charcoal-400: #888888;
+  --color-charcoal-500: #666666;
+  --color-charcoal-600: #555555;
+  --color-charcoal-700: #444444;
+  --color-charcoal-800: #333333;
+  --color-charcoal-900: #111111;
+
+  --color-sand-200: #efe3d0;
+  --color-sand-500: #c8a97e;
+}
+
+/* Mobile filter sidebar slide-in */
+@media (max-width: 1023px) {
+  #filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: none;
+  }
+  #filter-sidebar.mobile-filter-open {
+    transform: translateX(0);
+    box-shadow: 0 0 60px rgba(0,0,0,0.3);
+  }
+}
+
+/* Line clamp utility */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
