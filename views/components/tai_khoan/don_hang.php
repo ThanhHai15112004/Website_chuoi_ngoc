@@ -1,4 +1,4 @@
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:p-8">
+<div class="bg-white rounded-2xl shadow-sm p-6 lg:p-10">
     
     <!-- Tiêu đề trang -->
     <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -15,7 +15,7 @@
     <div class="flex flex-col lg:flex-row gap-4 mb-6">
         <!-- Search -->
         <div class="relative flex-1">
-            <svg class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#8b0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <iconify-icon icon="ph:magnifying-glass" class="text-xl absolute left-3 top-1/2 -translate-y-1/2 text-[#8b0000]"></iconify-icon>
             <input type="text" placeholder="Tìm theo mã đơn hàng, tên sản phẩm..." class="w-full rounded-xl border border-gray-300 pl-10 pr-24 py-3 focus:border-[#8b0000] focus:ring-[#8b0000] focus:ring-1 outline-none transition-shadow text-sm">
             <button class="absolute right-1.5 top-1.5 bottom-1.5 bg-[#8b0000] text-white px-4 rounded-lg text-sm font-medium hover:bg-[#700000] transition-colors">
                 Tìm
@@ -34,7 +34,7 @@
             </button>
             <!-- Nút Lọc Nâng cao -->
             <button class="whitespace-nowrap px-4 py-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 text-sm font-medium transition-colors flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                <iconify-icon icon="ph:faders" class="text-lg"></iconify-icon>
                 Bộ lọc
             </button>
         </div>
@@ -97,7 +97,7 @@
                 <!-- SP 1 -->
                 <div class="flex gap-4 items-start">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/assets/images/placeholder.jpg" alt="Product" class="w-full h-full object-cover opacity-30">
+                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg" alt="Product" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
@@ -117,7 +117,7 @@
                 <!-- SP 2 -->
                 <div class="flex gap-4 items-start">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/assets/images/placeholder.jpg" alt="Product" class="w-full h-full object-cover opacity-30">
+                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Tràng Hạt/Tràng Hạt Ngọc Hòa Điền/trang-hat-ngoc-1.jpg" alt="Product" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
@@ -171,7 +171,7 @@
                 <!-- Badge -->
                 <div class="self-start sm:self-auto">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-100">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        <iconify-icon icon="ph:truck"></iconify-icon>
                         Đang giao hàng
                     </span>
                 </div>
@@ -202,7 +202,7 @@
                 <!-- SP 1 -->
                 <div class="flex gap-4 items-start">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/assets/images/placeholder.jpg" alt="Product" class="w-full h-full object-cover opacity-30">
+                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-2.jpg" alt="Product" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
@@ -245,7 +245,7 @@
                 <!-- Badge -->
                 <div class="self-start sm:self-auto">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <iconify-icon icon="ph:check-circle"></iconify-icon>
                         Thành công
                     </span>
                 </div>
@@ -256,7 +256,7 @@
                 <!-- SP 1 -->
                 <div class="flex gap-4 items-start">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/assets/images/placeholder.jpg" alt="Product" class="w-full h-full object-cover opacity-30">
+                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg" alt="Product" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
@@ -305,7 +305,7 @@
                 <!-- Badge -->
                 <div class="self-start sm:self-auto">
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-[#8b0000] border border-red-200">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <iconify-icon icon="ph:x-circle"></iconify-icon>
                         Đã hủy
                     </span>
                 </div>
@@ -320,7 +320,7 @@
                 <!-- SP 1 -->
                 <div class="flex gap-4 items-start opacity-75 grayscale-[30%]">
                     <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/assets/images/placeholder.jpg" alt="Product" class="w-full h-full object-cover opacity-30">
+                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-3.jpg" alt="Product" class="w-full h-full object-cover opacity-60">
                     </div>
                     <div class="flex-1 min-w-0">
                         <h3 class="font-medium text-gray-900 mb-1 truncate">Vòng ngọc bích 12 con giáp</h3>
@@ -352,7 +352,7 @@
     <!-- Empty State (Trạng thái Chưa có đơn hàng - Ẩn mặc định, thêm class 'hidden' khi có data) -->
     <div class="hidden flex-col items-center justify-center py-16 text-center">
         <div class="w-32 h-32 mb-6 bg-red-50 rounded-full flex items-center justify-center">
-            <svg class="w-16 h-16 text-[#8b0000] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <iconify-icon icon="ph:package" class="text-6xl text-[#8b0000] opacity-50"></iconify-icon>
         </div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">Bạn chưa có đơn hàng nào</h3>
         <p class="text-gray-500 mb-8 max-w-md">Hãy khám phá các mẫu vòng ngọc và chuỗi đá phong thủy cao cấp phù hợp với bản mệnh của bạn.</p>
@@ -370,7 +370,7 @@
     <div class="mt-10 flex justify-center">
         <nav class="flex items-center gap-1.5 sm:gap-2">
             <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <iconify-icon icon="ph:caret-left" class="text-xl"></iconify-icon>
             </button>
             <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#8b0000] text-white font-medium shadow-sm">1</button>
             <button class="w-10 h-10 hidden sm:flex items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-medium">2</button>
@@ -378,7 +378,7 @@
             <span class="px-1 text-gray-400 hidden sm:block">...</span>
             <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-medium">8</button>
             <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                <iconify-icon icon="ph:caret-right" class="text-xl"></iconify-icon>
             </button>
         </nav>
     </div>
@@ -394,7 +394,7 @@
         <div class="flex justify-between items-center mb-5">
             <h3 class="text-xl font-bold text-gray-900">Xác nhận hủy đơn hàng</h3>
             <button onclick="document.getElementById('cancelModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <iconify-icon icon="ph:x" class="text-2xl"></iconify-icon>
             </button>
         </div>
         

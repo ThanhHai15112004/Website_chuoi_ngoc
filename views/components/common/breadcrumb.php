@@ -17,7 +17,7 @@
  * require_once __DIR__ . '/../common/breadcrumb.php';
  */
 ?>
-<div class="container mx-auto px-4 lg:px-8 pt-6">
+<div class="container mx-auto px-4 mb-8 lg:px-8 pt-4">
     <nav aria-label="Breadcrumb">
         <ol class="inline-flex items-center gap-1.5 p-1.5 bg-white rounded-full shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] border border-gray-100">
             <?php foreach ($breadcrumb_items as $index => $item): ?>
@@ -44,7 +44,7 @@
                     <!-- Active (current page) -->
                     <li aria-current="page">
                         <div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8B0000]">
-                            <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 text-white">
+                            <div class="flex items-center justify-center w-7 h-7 rounded-lg text-white">
                                 <iconify-icon icon="<?= $item['icon'] ?>" class="text-lg"></iconify-icon>
                             </div>
                             <span class="text-sm font-bold text-white tracking-wide"><?= htmlspecialchars($item['ten']) ?></span>

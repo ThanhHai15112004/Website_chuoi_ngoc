@@ -22,7 +22,7 @@ class ArticleController extends Controller {
                 'id' => 1,
                 'title' => 'Bí quyết chọn vòng tay phong thủy hợp mệnh Kim giúp thu hút tài lộc năm 2024',
                 'excerpt' => 'Người mệnh Kim nên chọn vòng tay màu gì, chất liệu đá nào để tăng cường may mắn và tài lộc? Khám phá ngay những bí quyết chuyên sâu từ chuyên gia.',
-                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Diễm Sơn/hong-dao-diem-son-1.jpg', 
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg', 
                 'category' => 'Chọn Theo Mệnh',
                 'date' => '15/11/2023',
                 'author' => 'Thanh Hải',
@@ -59,7 +59,7 @@ class ArticleController extends Controller {
                 'id' => 4,
                 'title' => 'Gợi ý quà tặng mẹ ngày 8/3: Chuỗi ngọc trai hay vòng mã não?',
                 'excerpt' => 'Lựa chọn món quà ý nghĩa và tinh tế tặng đấng sinh thành trong những dịp đặc biệt.',
-                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Ngọc Tử Nham Vân Mây/ngoc-tu-nham-vay-may-3.jpg',
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-3.jpg',
                 'category' => 'Quà Tặng',
                 'date' => '01/11/2023'
             ],
@@ -91,7 +91,7 @@ class ArticleController extends Controller {
                 'id' => 8,
                 'title' => 'Người mệnh Thủy nên đeo đá gì để công việc thuận lợi?',
                 'excerpt' => 'Top 5 loại đá phong thủy tương sinh, tương hợp mang lại bình an, thăng tiến cho người mệnh Thủy.',
-                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Shentacui Bánh Đậu Mật Cam/shentacui-2 (1).jpg',
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Shentacui Bánh Đậu Mứt Cam/shentacui-2 (1).jpg',
                 'category' => 'Chọn Theo Mệnh',
                 'date' => '15/10/2023'
             ],
@@ -119,5 +119,76 @@ class ArticleController extends Controller {
         ];
         
         $this->view('bai_viet', $data);
+    }
+
+    public function detail() {
+        // Mock data cho bài viết chi tiết
+        $article = [
+            'id' => 1,
+            'title' => 'Bí quyết chọn vòng tay phong thủy hợp mệnh Kim giúp thu hút tài lộc năm 2024',
+            'excerpt' => 'Người mệnh Kim nên chọn vòng tay màu gì, chất liệu đá nào để tăng cường may mắn và tài lộc? Khám phá ngay những bí quyết chuyên sâu từ chuyên gia.',
+            'content' => 'Nội dung chi tiết sẽ được render ở view...',
+            'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg',
+            'category' => 'Chọn Theo Mệnh',
+            'date' => '15/11/2023',
+            'author' => 'Thanh Hải',
+            'views' => 1250,
+            'reading_time' => '5 phút đọc',
+        ];
+
+        // Mock dữ liệu bài viết liên quan
+        $related_articles = [
+            [
+                'id' => 2,
+                'title' => 'Phân biệt Ngọc Bích thật giả - Những lưu ý quan trọng',
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Mã Não Anh Đào/ma-nao-anh-dao-2.jpg',
+                'date' => '10/11/2023',
+            ],
+            [
+                'id' => 8,
+                'title' => 'Người mệnh Thủy nên đeo đá gì để công việc thuận lợi?',
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Shentacui Bánh Đậu Mứt Cam/shentacui-2 (1).jpg',
+                'date' => '15/10/2023',
+            ],
+            [
+                'id' => 9,
+                'title' => 'Đá Mắt Hổ: Viên đá của sự tự tin và dũng khí',
+                'image' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-4.jpg',
+                'date' => '10/10/2023',
+            ]
+        ];
+
+        // Mock dữ liệu sản phẩm liên quan
+        $related_products = [
+            [
+                'id' => 1,
+                'name' => 'Vòng Thạch Anh Tóc Vàng',
+                'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg',
+                'price' => 850000,
+                'old_price' => 1000000,
+            ],
+            [
+                'id' => 2,
+                'name' => 'Vòng Đá Mắt Hổ Cao Cấp',
+                'image' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-4.jpg',
+                'price' => 650000,
+                'old_price' => null,
+            ]
+        ];
+
+        $data = [
+            'tieu_de' => $article['title'] . ' - Góc Tư Vấn',
+            'trang_hien_tai' => 'bai_viet', // Để menu header active phần Bài viết
+            'breadcrumbs' => [
+                ['ten' => 'Trang chủ', 'url' => APP_URL . '/'],
+                ['ten' => 'Góc tư vấn', 'url' => APP_URL . '/bai-viet'],
+                ['ten' => 'Chi tiết bài viết', 'url' => null]
+            ],
+            'article' => $article,
+            'related_articles' => $related_articles,
+            'related_products' => $related_products
+        ];
+
+        $this->view('chi_tiet_bai_viet', $data);
     }
 }

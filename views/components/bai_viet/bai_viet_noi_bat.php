@@ -20,7 +20,7 @@
         <!-- Bài chính (Cột trái) -->
         <?php if ($main_article): ?>
         <div class="lg:col-span-8 group">
-            <a href="<?= APP_URL ?>/bai-viet/chi-tiet" class="block overflow-hidden rounded-xl relative shadow-md h-[400px] lg:h-[500px]">
+            <a href="<?= APP_URL ?>/chi-tiet-bai-viet?id=<?= $main_article['id'] ?>" class="block overflow-hidden rounded-xl relative shadow-md h-[400px] lg:h-[500px]">
                 <img src="<?= $main_article['image'] ?>" alt="<?= htmlspecialchars($main_article['title']) ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                 
                 <!-- Gradient Overlay -->
@@ -51,7 +51,7 @@
         <?php if (!empty($side_articles)): ?>
         <div class="lg:col-span-4 flex flex-col gap-6">
             <?php foreach (array_slice($side_articles, 0, 2) as $article): ?>
-            <a href="<?= APP_URL ?>/bai-viet/chi-tiet" class="block group flex-1 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md border border-gray-100 transition-all flex flex-col">
+            <a href="<?= APP_URL ?>/chi-tiet-bai-viet?id=<?= $article['id'] ?>" class="block group flex-1 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md border border-gray-100 transition-all flex flex-col">
                 <div class="h-48 overflow-hidden relative">
                     <img src="<?= $article['image'] ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     <span class="absolute top-3 left-3 px-2 py-1 bg-white/90 text-red-800 text-xs font-semibold rounded shadow-sm">

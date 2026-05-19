@@ -39,7 +39,8 @@ $menuItems = [
     [
         'id' => 'hop-thu',
         'title' => 'Thông báo',
-        'icon' => '<svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>'
+        'icon' => '<svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>',
+        'badge' => 3
     ],
     [
         'id' => 'bao-mat',
@@ -74,7 +75,7 @@ $menuItems = [
 <div class="lg:hidden mb-6">
     <select id="mobile-tab-select" class="block w-full rounded-xl border-gray-300 py-3 pl-4 pr-10 text-base focus:border-[#8b0000] focus:outline-none focus:ring-[#8b0000] sm:text-sm shadow-sm bg-white">
         <?php foreach ($menuItems as $item): ?>
-            <option value="tab-<?= $item['id'] ?>"><?= $item['title'] ?></option>
+            <option value="tab-<?= $item['id'] ?>"><?= $item['title'] ?><?= isset($item['badge']) ? " ({$item['badge']})" : "" ?></option>
         <?php endforeach; ?>
     </select>
 </div>
@@ -88,7 +89,10 @@ $menuItems = [
                 <div class="[&>svg]:transition-colors [&>svg]:duration-200 <?= $index === 0 ? '[&>svg]:text-white' : '[&>svg]:text-gray-400 group-hover:[&>svg]:text-[#8b0000]' ?>">
                     <?= $item['icon'] ?>
                 </div>
-                <?= $item['title'] ?>
+                <span class="flex-1"><?= $item['title'] ?></span>
+                <?php if(isset($item['badge'])): ?>
+                    <span class="badge-pill inline-flex items-center justify-center px-2 py-0.5 ml-2 text-xs font-bold rounded-full transition-colors <?= $index === 0 ? 'bg-white text-[#8b0000]' : 'bg-red-100 text-red-600 group-hover:bg-[#8b0000] group-hover:text-white' ?>"><?= $item['badge'] ?></span>
+                <?php endif; ?>
             </a>
         <?php endforeach; ?>
         

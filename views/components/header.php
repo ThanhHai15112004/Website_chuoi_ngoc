@@ -11,6 +11,7 @@ $menu_items = [
     ['key' => 'lien_he', 'label' => 'Liên hệ', 'url' => APP_URL . '/lien-he'],
 ];
 ?>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
 <!-- Top Utility Bar -->
 <div style="background: #111; color: #fff; font-size: 12px; letter-spacing: 0.02em;">
@@ -48,7 +49,7 @@ $menu_items = [
 <!-- Main Header -->
 <header id="main-header" class="sticky top-0 z-50 w-full transition-all duration-300" style="background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div id="header-container" class="flex items-center justify-between transition-all duration-300" style="height: 72px;">
+        <div id="header-container" class="flex items-center justify-between transition-all duration-300" style="height: 60px;">
 
             <!-- Logo + Brand -->
             <div class="flex-shrink-0">
@@ -65,13 +66,13 @@ $menu_items = [
 
             <!-- Desktop Navigation (centered) -->
             <nav class="hidden lg:flex items-center">
-                <ul class="flex items-center gap-1">
+                <ul class="flex items-center gap-0.5">
                     <?php foreach($menu_items as $item):
                         $is_active = $trang_hien_tai === $item['key'];
                     ?>
                     <li>
                         <a href="<?= $item['url'] ?>" 
-                           class="px-4 py-2 rounded-full text-sm font-medium transition-all"
+                           class="px-3 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all"
                            style="color: <?= $is_active ? '#fff' : '#333' ?>; background: <?= $is_active ? '#8b0000' : 'transparent' ?>; text-decoration: none;"
                            onmouseover="<?= !$is_active ? "this.style.background='rgba(139,0,0,0.06)'; this.style.color='#8b0000'" : '' ?>"
                            onmouseout="<?= !$is_active ? "this.style.background='transparent'; this.style.color='#333'" : '' ?>">
@@ -96,14 +97,84 @@ $menu_items = [
                 </button>
 
                 <!-- Wishlist -->
-                <a href="#" class="p-2.5 rounded-full transition-all hidden sm:flex" 
+                <a href="<?= APP_URL ?>/tai-khoan#tab-yeu-thich" class="p-2.5 rounded-full transition-all hidden sm:flex relative group items-center justify-center cursor-pointer" 
                    style="color: #555; background: transparent; text-decoration: none;"
                    onmouseover="this.style.background='#f5f5f5'; this.style.color='#8b0000'"
                    onmouseout="this.style.background='transparent'; this.style.color='#555'">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
+                    <iconify-icon icon="ph:heart-bold" class="text-xl group-hover:scale-110 transition-transform"></iconify-icon>
+                    <span class="absolute top-0 right-0 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm" 
+                          style="background: #8b0000; min-width: 16px; height: 16px; padding: 0 4px; box-shadow: 0 0 0 2px #fff; transform: translate(15%, -15%);">5</span>
                 </a>
+
+                <!-- Notification Dropdown -->
+                <div class="relative group hidden sm:block">
+                    <button class="p-2.5 rounded-full transition-all relative flex items-center justify-center cursor-pointer" 
+                       style="color: #555; background: transparent; border: none; outline: none;"
+                       onmouseover="this.style.background='#f5f5f5'; this.style.color='#8b0000'"
+                       onmouseout="this.style.background='transparent'; this.style.color='#555'">
+                        <iconify-icon icon="ph:bell-bold" class="text-xl group-hover:scale-110 transition-transform"></iconify-icon>
+                        <span class="absolute top-0 right-0 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm" 
+                              style="background: #8b0000; min-width: 16px; height: 16px; padding: 0 4px; box-shadow: 0 0 0 2px #fff; transform: translate(15%, -15%);">3</span>
+                    </button>
+                    
+                    <!-- Notification Dropdown Menu -->
+                    <div class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right z-50 flex flex-col"
+                         style="border: 1px solid rgba(139,0,0,0.1); overflow: hidden;">
+                        
+                        <!-- Dropdown Header -->
+                        <div class="p-3 border-b flex justify-between items-center" style="border-color: #f0f0f0; background: #fafafa;">
+                            <h3 class="text-sm font-bold m-0" style="color: #8b0000;">Thông báo mới nhận</h3>
+                            <span class="text-xs text-gray-500 hover:text-red-700 cursor-pointer transition-colors">Đánh dấu đã đọc</span>
+                        </div>
+                        
+                        <!-- Dropdown Body -->
+                        <div class="max-h-[300px] overflow-y-auto" style="scrollbar-width: thin; scrollbar-color: #e5e5e5 transparent;">
+                            <!-- Item 1 -->
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-hop-thu" class="flex gap-3 p-3 hover:bg-red-50 transition-colors border-b last:border-b-0 bg-red-50/40" style="border-color: #f5f5f5; text-decoration: none;">
+                                <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, #8b0000, #b22222);">
+                                    <iconify-icon icon="ph:package-bold" class="text-lg"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-gray-800 line-clamp-1 m-0">Đơn hàng #DH12345 đã được giao</h4>
+                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">Đơn hàng vòng trầm hương của bạn đã giao thành công. Vui lòng xác nhận!</p>
+                                    <span class="text-[10px] text-gray-400 mt-1.5 block font-medium">2 giờ trước</span>
+                                </div>
+                                <div class="w-2 h-2 rounded-full bg-red-600 mt-1.5 flex-shrink-0"></div>
+                            </a>
+                            <!-- Item 2 -->
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-hop-thu" class="flex gap-3 p-3 hover:bg-red-50 transition-colors border-b last:border-b-0" style="border-color: #f5f5f5; text-decoration: none;">
+                                <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, #d4af37, #f1c40f);">
+                                    <iconify-icon icon="ph:ticket-bold" class="text-lg"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-gray-800 line-clamp-1 m-0">Voucher giảm 20% tháng này!</h4>
+                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">Lưu ngay mã GIAM20 để được giảm giá cho đơn hàng Vòng Mệnh Thuỷ.</p>
+                                    <span class="text-[10px] text-gray-400 mt-1.5 block font-medium">5 giờ trước</span>
+                                </div>
+                            </a>
+                            <!-- Item 3 -->
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-hop-thu" class="flex gap-3 p-3 hover:bg-red-50 transition-colors border-b last:border-b-0" style="border-color: #f5f5f5; text-decoration: none;">
+                                <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center text-white shadow-sm" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                                    <iconify-icon icon="ph:info-bold" class="text-lg"></iconify-icon>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-semibold text-gray-800 line-clamp-1 m-0">Cập nhật chính sách đổi trả</h4>
+                                    <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">Từ ngày 01/06, chính sách đổi trả của Chuỗi Ngọc sẽ có một số thay đổi.</p>
+                                    <span class="text-[10px] text-gray-400 mt-1.5 block font-medium">1 ngày trước</span>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Dropdown Footer -->
+                        <a href="<?= APP_URL ?>/tai-khoan#tab-hop-thu" class="block w-full text-center py-3 text-sm font-semibold transition-colors" 
+                           style="background: #fff; color: #8b0000; border-top: 1px solid #f0f0f0; text-decoration: none;"
+                           onmouseover="this.style.background='#fdf5f5'"
+                           onmouseout="this.style.background='#fff'"
+                           onclick="if(typeof switchTab === 'function') { switchTab('tab-hop-thu'); }">
+                            Xem tất cả thông báo
+                        </a>
+                    </div>
+                </div>
 
                 <!-- Cart Button -->
                 <a href="<?= APP_URL ?>/gio-hang" class="p-2.5 rounded-full transition-all relative group" 
@@ -148,7 +219,11 @@ $menu_items = [
                                 </svg>
                                 Đơn mua
                             </a>
-                            <a href="<?= APP_URL ?>/tai-khoan" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-yeu-thich" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
+                                <iconify-icon icon="ph:heart-bold" class="text-base"></iconify-icon>
+                                Yêu thích
+                            </a>
+                            <a href="<?= APP_URL ?>/tai-khoan#tab-voucher" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-800 rounded-lg transition-colors" style="text-decoration: none;">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                                 </svg>
@@ -289,20 +364,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const headerLogo = document.getElementById('header-logo');
     const headerBrandName = document.getElementById('header-brand-name');
 
-    let headerState = 'default'; // 'default' hoặc 'expanded'
+    let headerState = 'compact'; // 'compact' (ở đầu trang) hoặc 'expanded' (khi cuộn xuống)
 
+    // Khi cuộn xuống: header mở rộng, logo to hơn
     function setExpanded() {
-        headerContainer.style.height = '60px';
-        headerLogo.style.height = '56px';
-        headerLogo.style.width = '56px';
-        headerBrandName.style.fontSize = '1.25rem';
+        headerContainer.style.height = '72px';
+        headerLogo.style.height = '52px';
+        headerLogo.style.width = '52px';
+        headerBrandName.style.fontSize = '1.2rem';
     }
 
-    function setDefault() {
+    // Khi ở đầu trang: header thu gọn, nhỏ gọn
+    function setCompact() {
         headerContainer.style.height = '60px';
-        headerLogo.style.height = '48px';
-        headerLogo.style.width = '48px';
-        headerBrandName.style.fontSize = '1.125rem';
+        headerLogo.style.height = '44px';
+        headerLogo.style.width = '44px';
+        headerBrandName.style.fontSize = '1.05rem';
     }
 
     function applyHeaderState() {
@@ -310,16 +387,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (y > 50 && headerState !== 'expanded') {
             headerState = 'expanded';
             setExpanded();
-        } else if (y <= 10 && headerState !== 'default') {
-            headerState = 'default';
-            setDefault();
+        } else if (y <= 10 && headerState !== 'compact') {
+            headerState = 'compact';
+            setCompact();
         }
     }
 
-    // Áp dụng ngay khi load
+    // Áp dụng trạng thái ban đầu khi load
     if (window.scrollY > 50) {
         headerState = 'expanded';
         setExpanded();
+    } else {
+        headerState = 'compact';
+        setCompact();
     }
     window.addEventListener('scroll', applyHeaderState, { passive: true });
 });

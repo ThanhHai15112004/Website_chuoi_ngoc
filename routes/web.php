@@ -12,6 +12,7 @@ $router->get('/dat-hang-thanh-cong', 'User\CheckoutController@success');
 $router->get('/vong-theo-menh', 'User\VongTheoMenhController@index');
 $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
 $router->get('/bai-viet', 'User\ArticleController@index');
+$router->get('/chi-tiet-bai-viet', 'User\ArticleController@detail');
 $router->get('/lien-he', 'User\ContactController@index');
 $router->get('/chi-tiet-don-hang', 'User\OrderController@detail');
 $router->post('/chi-tiet-don-hang/huy', 'User\OrderController@cancel');

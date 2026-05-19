@@ -12,7 +12,7 @@
             $popular_articles = !empty($recent_articles) ? array_slice($recent_articles, 0, 4) : [];
             foreach ($popular_articles as $index => $article): 
             ?>
-            <a href="<?= APP_URL ?>/bai-viet/chi-tiet" class="flex gap-4 group">
+            <a href="<?= APP_URL ?>/chi-tiet-bai-viet?id=<?= $article['id'] ?>" class="flex gap-4 group">
                 <div class="w-20 h-20 shrink-0 overflow-hidden rounded-lg">
                     <img src="<?= $article['image'] ?>" alt="<?= htmlspecialchars($article['title']) ?>" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                 </div>

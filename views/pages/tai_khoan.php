@@ -167,6 +167,19 @@
                 }
             }
         }
+        
+        // Listen for hash changes (e.g., clicking anchor links from the header while already on the page)
+        window.addEventListener('hashchange', function() {
+            if (window.location.hash) {
+                const hash = window.location.hash.substring(1); // remove #
+                if (document.getElementById(hash)) {
+                    switchTab(hash);
+                    if (mobileSelect) {
+                        mobileSelect.value = hash;
+                    }
+                }
+            }
+        });
     });
 </script>
 
