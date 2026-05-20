@@ -70,7 +70,7 @@
 <body class="flex flex-col min-h-screen">
     
     <!-- Include Header Component -->
-    <?php require_once __DIR__ . '/../components/header.php'; ?>
+    <?php require_once __DIR__ . '/../components/User/header.php'; ?>
 
     <main class="flex-grow">
         <!-- Render Page Content -->
@@ -78,7 +78,7 @@
     </main>
 
     <!-- Include Footer Component -->
-    <?php require_once __DIR__ . '/../components/footer.php'; ?>
+    <?php require_once __DIR__ . '/../components/User/footer.php'; ?>
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -131,3 +131,4 @@
     </script>
 </body>
 </html>
+

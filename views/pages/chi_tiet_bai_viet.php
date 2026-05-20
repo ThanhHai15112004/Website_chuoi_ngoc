@@ -35,15 +35,17 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Main Content Area -->
             <div class="w-full lg:w-2/3 bg-white rounded-2xl shadow-sm p-6 lg:p-8">
-                <?php require __DIR__ . '/../components/chi_tiet_bai_viet/header_bai_viet.php'; ?>
-                <?php require __DIR__ . '/../components/chi_tiet_bai_viet/noi_dung.php'; ?>
-                <?php require __DIR__ . '/../components/chi_tiet_bai_viet/binh_luan.php'; ?>
+                <?php require __DIR__ . '/../components/User/chi_tiet_bai_viet/header_bai_viet.php'; ?>
+                <?php require __DIR__ . '/../components/User/chi_tiet_bai_viet/noi_dung.php'; ?>
+                <?php require __DIR__ . '/../components/User/chi_tiet_bai_viet/binh_luan.php'; ?>
             </div>
 
             <!-- Sidebar -->
             <div class="w-full lg:w-1/3">
-                <?php require __DIR__ . '/../components/chi_tiet_bai_viet/sidebar.php'; ?>
+                <?php require __DIR__ . '/../components/User/chi_tiet_bai_viet/sidebar.php'; ?>
             </div>
         </div>
     </div>
 </div>
+
+

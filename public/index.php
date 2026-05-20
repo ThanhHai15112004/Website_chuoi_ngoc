@@ -5,6 +5,7 @@
 
 // Load basic configuration
 require_once __DIR__ . '/../config/constants.php';
+require_once __DIR__ . '/../app/Core/Helpers.php';
 
 // Simple Autoloader
 spl_autoload_register(function ($class) {

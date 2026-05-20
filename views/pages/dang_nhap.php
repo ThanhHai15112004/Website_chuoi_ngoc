@@ -12,18 +12,19 @@
     <!-- Floating Particles -->
     <div class="auth-particles" id="auth-particles"></div>
 
-    <!-- MAIN AUTH WRAPPER — compact size -->
-    <div class="auth-container relative w-full max-w-[880px] min-h-[520px] bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_25px_80px_rgba(139,0,0,0.12)] overflow-hidden border border-white/60" id="auth-container" data-aos="zoom-in" data-aos-duration="800">
+    <!-- MAIN AUTH WRAPPER â€” compact size -->
+    <div class="auth-container relative w-full max-w-[800px] min-h-[600px] bg-white/80 backdrop-blur-sm rounded-2xl shadow-[0_25px_80px_rgba(139,0,0,0.12)] overflow-hidden border border-white/60" id="auth-container" data-aos="zoom-in" data-aos-duration="800">
         
-        <?php include __DIR__ . '/../components/auth/mobile_tabs.php'; ?>
+        <?php include __DIR__ . '/../components/User/auth/mobile_tabs.php'; ?>
 
-        <?php include __DIR__ . '/../components/auth/register_form.php'; ?>
+        <?php include __DIR__ . '/../components/User/auth/register_form.php'; ?>
 
-        <?php include __DIR__ . '/../components/auth/login_form.php'; ?>
+        <?php include __DIR__ . '/../components/User/auth/login_form.php'; ?>
 
-        <?php include __DIR__ . '/../components/auth/sliding_overlay.php'; ?>
+        <?php include __DIR__ . '/../components/User/auth/sliding_overlay.php'; ?>
 
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/auth/scripts_styles.php'; ?>
+<?php include __DIR__ . '/../components/User/auth/scripts_styles.php'; ?>
+

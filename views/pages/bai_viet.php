@@ -1,6 +1,6 @@
 <main class="bg-[#FAF9F6] pb-16">
     <!-- Banner Góc Tư Vấn -->
-    <?php require_once __DIR__ . '/../components/bai_viet/banner.php'; ?>
+    <?php require_once __DIR__ . '/../components/User/bai_viet/banner.php'; ?>
 
     <!-- Breadcrumb (nằm dưới banner) -->
     <div class="py-4">
@@ -27,8 +27,8 @@
 
     <!-- Khối tìm kiếm & Danh mục -->
     <div class="container mx-auto px-4 lg:px-8 mt-8 mb-10">
-        <?php require_once __DIR__ . '/../components/bai_viet/thanh_tim_kiem.php'; ?>
-        <?php require_once __DIR__ . '/../components/bai_viet/danh_muc.php'; ?>
+        <?php require_once __DIR__ . '/../components/User/bai_viet/thanh_tim_kiem.php'; ?>
+        <?php require_once __DIR__ . '/../components/User/bai_viet/danh_muc.php'; ?>
     </div>
 
     <!-- Main Content -->
@@ -43,7 +43,7 @@
                         <h2 class="text-2xl font-serif text-red-900">Tiêu điểm phong thuỷ</h2>
                         <div class="h-px bg-gray-200 flex-grow ml-4"></div>
                     </div>
-                    <?php require_once __DIR__ . '/../components/bai_viet/bai_viet_noi_bat.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/bai_viet/bai_viet_noi_bat.php'; ?>
                 </section>
 
                 <!-- Danh sách bài viết mới -->
@@ -51,7 +51,7 @@
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-serif text-red-900">Bài viết mới nhất</h2>
                     </div>
-                    <?php require_once __DIR__ . '/../components/bai_viet/danh_sach_bai_viet.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/bai_viet/danh_sach_bai_viet.php'; ?>
                     
                     <!-- Phân trang -->
                     <div class="mt-12 flex justify-center">
@@ -68,11 +68,13 @@
 
             <!-- Cột phải: Sidebar -->
             <div class="w-full lg:w-1/4 mt-10 lg:mt-0">
-                <?php require_once __DIR__ . '/../components/bai_viet/sidebar.php'; ?>
+                <?php require_once __DIR__ . '/../components/User/bai_viet/sidebar.php'; ?>
             </div>
         </div>
     </div>
 
     <!-- Form Đăng ký nhận tin -->
-    <?php require_once __DIR__ . '/../components/bai_viet/dang_ky_nhan_tin.php'; ?>
+    <?php require_once __DIR__ . '/../components/User/bai_viet/dang_ky_nhan_tin.php'; ?>
 </main>
+
+

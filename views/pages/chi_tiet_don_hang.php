@@ -33,10 +33,10 @@
         </div>
 
         <!-- Order Overview Card -->
-        <?php include __DIR__ . '/../components/chi_tiet_don_hang/tong_quan.php'; ?>
+        <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/tong_quan.php'; ?>
 
         <!-- Product List -->
-        <?php include __DIR__ . '/../components/chi_tiet_don_hang/danh_sach_san_pham.php'; ?>
+        <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/danh_sach_san_pham.php'; ?>
 
         <!-- 2-Column Details Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -44,34 +44,36 @@
             <!-- Left Column: Delivery, Payment Status, Payment Details -->
             <div class="space-y-6">
                 <!-- Delivery Info -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/thong_tin_giao_hang.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/thong_tin_giao_hang.php'; ?>
 
                 <!-- Payment Status -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/thong_tin_thanh_toan.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/thong_tin_thanh_toan.php'; ?>
 
                 <!-- Payment Details -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/chi_tiet_thanh_toan.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/chi_tiet_thanh_toan.php'; ?>
             </div>
 
             <!-- Right Column: Notes, History, Support -->
             <div class="space-y-6">
                 <!-- Notes & Extras Container -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/ghi_chu_dich_vu.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/ghi_chu_dich_vu.php'; ?>
 
                 <!-- Update History -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/lich_su_cap_nhat.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/lich_su_cap_nhat.php'; ?>
 
                 <!-- Support Box -->
-                <?php include __DIR__ . '/../components/chi_tiet_don_hang/hop_ho_tro.php'; ?>
+                <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/hop_ho_tro.php'; ?>
             </div>
             
         </div>
 
         <!-- Action Buttons -->
-        <?php include __DIR__ . '/../components/chi_tiet_don_hang/nut_thao_tac.php'; ?>
+        <?php include __DIR__ . '/../components/User/chi_tiet_don_hang/nut_thao_tac.php'; ?>
         
     </div>
 </main>
 
 <!-- Cancel Order Modal -->
-<?php include __DIR__ . '/../components/chi_tiet_don_hang/modal_huy_don.php'; ?>
+<?php include __DIR__ . '/../components/User/chi_tiet_don_hang/modal_huy_don.php'; ?>
+
+

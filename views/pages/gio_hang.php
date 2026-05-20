@@ -3,19 +3,19 @@
 ?>
 <div class="bg-slate-50 py-8 pb-32 md:py-12 md:pb-16">
     <div class="container mx-auto px-4 max-w-6xl">
-        <?php require_once __DIR__ . '/../components/gio_hang/breadcrumb.php'; ?>
+        <?php require_once __DIR__ . '/../components/User/gio_hang/breadcrumb.php'; ?>
         
-        <?php require_once __DIR__ . '/../components/gio_hang/tieu_de.php'; ?>
+        <?php require_once __DIR__ . '/../components/User/gio_hang/tieu_de.php'; ?>
 
         <?php if(empty($gio_hang)): ?>
-            <?php require_once __DIR__ . '/../components/gio_hang/gio_hang_trong.php'; ?>
+            <?php require_once __DIR__ . '/../components/User/gio_hang/gio_hang_trong.php'; ?>
         <?php else: ?>
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Cột trái: Danh sách sản phẩm -->
-                <?php require_once __DIR__ . '/../components/gio_hang/danh_sach_san_pham.php'; ?>
+                <?php require_once __DIR__ . '/../components/User/gio_hang/danh_sach_san_pham.php'; ?>
 
                 <!-- Cột phải: Tóm tắt đơn hàng -->
-                <?php require_once __DIR__ . '/../components/gio_hang/tom_tat_don_hang.php'; ?>
+                <?php require_once __DIR__ . '/../components/User/gio_hang/tom_tat_don_hang.php'; ?>
             </div>
 
             <!-- Sticky Checkout Bar for Mobile -->
@@ -100,3 +100,4 @@
         <?php endif; ?>
     </div>
 </div>
+

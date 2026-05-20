@@ -22,50 +22,50 @@
             
             <!-- Sidebar -->
             <div class="lg:w-1/4 flex-shrink-0">
-                <?php require_once __DIR__ . '/../components/tai_khoan/sidebar.php'; ?>
+                <?php require_once __DIR__ . '/../components/User/tai_khoan/sidebar.php'; ?>
             </div>
 
             <!-- Tab Content Area -->
             <div class="lg:w-3/4">
                 
                 <div id="tab-tong-quan" class="tab-content block">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/tong_quan.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/tong_quan.php'; ?>
                 </div>
 
                 <div id="tab-ho-so" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/ho_so.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/ho_so.php'; ?>
                 </div>
 
                 <div id="tab-hang-thanh-vien" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/hang_thanh_vien.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/hang_thanh_vien.php'; ?>
                 </div>
 
                 <div id="tab-dia-chi" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/dia_chi.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/dia_chi.php'; ?>
                 </div>
 
                 <div id="tab-don-hang" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/don_hang.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/don_hang.php'; ?>
                 </div>
 
                 <div id="tab-voucher" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/voucher.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/voucher.php'; ?>
                 </div>
 
                 <div id="tab-yeu-thich" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/yeu_thich.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/yeu_thich.php'; ?>
                 </div>
 
                 <div id="tab-hop-thu" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/hop_thu.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/hop_thu.php'; ?>
                 </div>
 
                 <div id="tab-danh-gia" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/danh_gia.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/danh_gia.php'; ?>
                 </div>
 
                 <div id="tab-bao-mat" class="tab-content hidden">
-                    <?php require_once __DIR__ . '/../components/tai_khoan/bao_mat.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/bao_mat.php'; ?>
                 </div>
 
             </div>
@@ -192,3 +192,5 @@
         animation: fadeIn 0.4s ease-out forwards;
     }
 </style>
+
+
