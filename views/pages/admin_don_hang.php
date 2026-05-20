@@ -830,8 +830,6 @@
             panel.classList.remove('translate-x-full');
             overlay.classList.remove('opacity-0');
         }, 10);
-        
-        closeActionMenus();
     }
 
     function closeQuickView() {
@@ -849,51 +847,49 @@
 
     // Dropdown Action Menu
     function toggleActionMenu(button) {
-        closeActionMenus(button.nextElementSibling);
+        document.querySelectorAll('.action-menu-dropdown').forEach(m => {
+            if (m !== button.nextElementSibling) m.classList.add('hidden');
+        });
         
         const menu = button.nextElementSibling;
-        const isHidden = menu.classList.contains('hidden');
-        const currentTd = button.closest('td');
         
-        if (isHidden) {
-            // Nâng z-index cho td hiện tại để không bị che bởi các hàng dưới
-            if (currentTd) currentTd.classList.add('!z-[60]');
-
-            const rect = button.getBoundingClientRect();
-            menu.style.top = `${rect.bottom + 5}px`;
-            menu.style.left = `${rect.right - 176}px`; // width 44 = 176px
-            
+        if (menu.classList.contains('hidden')) {
+            menu.classList.add('action-menu-dropdown');
             menu.classList.remove('hidden');
             
-            const menuRect = menu.getBoundingClientRect();
-            if (menuRect.bottom > window.innerHeight) {
-                menu.style.top = `${rect.top - menuRect.height - 5}px`;
+            const rect = button.getBoundingClientRect();
+            const menuHeight = menu.offsetHeight;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            
+            menu.style.position = 'fixed';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.left = 'auto';
+            menu.style.zIndex = '9999';
+            
+            // Nếu không đủ chỗ trống phía dưới, mở menu ngược lên trên
+            if (spaceBelow < menuHeight + 10) {
+                menu.style.top = (rect.top - menuHeight - 5) + 'px';
+                menu.style.bottom = 'auto';
+            } else {
+                menu.style.top = (rect.bottom + 5) + 'px';
+                menu.style.bottom = 'auto';
             }
         } else {
             menu.classList.add('hidden');
-            if (currentTd) currentTd.classList.remove('!z-[60]');
         }
-    }
-
-    function closeActionMenus(exceptMenu = null) {
-        document.querySelectorAll('.action-menu').forEach(menu => {
-            if(menu !== exceptMenu) {
-                menu.classList.add('hidden');
-                const td = menu.closest('td');
-                if (td) td.classList.remove('!z-[60]');
-            }
-        });
     }
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.action-btn') && !e.target.closest('.action-menu')) {
-            closeActionMenus();
+        if (!e.target.closest('.action-menu-dropdown') && !e.target.closest('button[onclick^="toggleActionMenu"]')) {
+            document.querySelectorAll('.action-menu-dropdown').forEach(menu => {
+                menu.classList.add('hidden');
+            });
         }
     });
 
-    document.querySelector('.overflow-x-auto').addEventListener('scroll', () => {
-        closeActionMenus();
-    });
+    window.addEventListener('scroll', function() {
+        document.querySelectorAll('.action-menu-dropdown:not(.hidden)').forEach(m => m.classList.add('hidden'));
+    }, true);
 
     // Checkbox logic for Bulk Actions
     const selectAll = document.getElementById('selectAll');

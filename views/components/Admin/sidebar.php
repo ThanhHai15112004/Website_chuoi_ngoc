@@ -6,7 +6,7 @@ $current_page = $current_page ?? 'dashboard';
 // Define groups
 $ban_hang_pages = ['don_hang', 'chi_tiet_don_hang', 'voucher', 'khuyen_mai'];
 $san_pham_pages = ['san_pham', 'chi_tiet_san_pham', 'them_san_pham', 'danh_muc', 'loai_da', 'menh_phong_thuy', 'binh_luan'];
-$khach_hang_pages = ['khach_hang', 'chi_tiet_khach_hang', 'hop_thu'];
+$khach_hang_pages = ['khach_hang', 'chi_tiet_khach_hang', 'them_khach_hang', 'hop_thu', 'hang_thanh_vien'];
 $noi_dung_pages = ['bai_viet', 'banner'];
 $bao_cao_pages = ['bao_cao_doanh_thu', 'bao_cao_san_pham'];
 $he_thong_pages = ['nhan_vien', 'phan_quyen', 'cau_hinh'];
@@ -53,11 +53,11 @@ function isGroupActive($pages, $current) {
                         <span class="<?= $current_page === 'don_hang' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">12</span>
                     </a>
 
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'voucher' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý voucher
+                    <a href="<?= APP_URL ?>/admin/voucher" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'voucher' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'voucher' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:ticket-percent-outline"></span> Quản lý voucher</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'khuyen_mai' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Khuyến mãi SP
+                    <a href="<?= APP_URL ?>/admin/khuyen-mai" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'khuyen_mai' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'khuyen_mai' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:sale"></span> Khuyến mãi SP</span>
                     </a>
                 </div>
             </div>
@@ -84,14 +84,14 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/danh-muc" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'danh_muc' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
                         Quản lý danh mục
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'loai_da' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý loại đá / ngọc
+                    <a href="<?= APP_URL ?>/admin/loai-da" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'loai_da' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'loai_da' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:diamond-stone"></span> Loại đá / ngọc</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'menh_phong_thuy' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Mệnh phong thủy
+                    <a href="<?= APP_URL ?>/admin/menh-phong-thuy" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'menh_phong_thuy' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'menh_phong_thuy' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:yin-yang"></span> Mệnh phong thủy</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'binh_luan' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Bình luận / đánh giá
+                    <a href="<?= APP_URL ?>/admin/binh-luan" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'binh_luan' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'binh_luan' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:comment-quote-outline"></span> Bình luận / đánh giá</span>
                     </a>
                 </div>
             </div>
@@ -103,21 +103,27 @@ function isGroupActive($pages, $current) {
             <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
                 <div class="flex items-center gap-3">
                     <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:account-group-outline"></span>
-                    Khách hàng
+                    Quản lý khách hàng
                 </div>
                 <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'khach_hang' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý khách hàng
+                    <a href="<?= APP_URL ?>/admin/khach-hang" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'khach_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'khach_hang' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:account-group-outline"></span> Quản lý khách hàng</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chi_tiet_khach_hang' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                    <a href="<?= APP_URL ?>/admin/khach-hang/them" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'them_khach_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'them_khach_hang' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:account-plus-outline"></span> Thêm khách hàng</span>
+                    </a>
+                    <a href="<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'hang_thanh_vien' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'hang_thanh_vien' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:star-circle-outline"></span> Quản lý hạng thành viên</span>
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chi_tiet_khach_hang' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm <?= $current_page !== 'chi_tiet_khach_hang' ? 'hidden' : '' ?>">
                         Chi tiết khách hàng
                     </a>
-                    <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'hop_thu' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        <span>Hộp thư / thông báo</span>
-                        <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
+                    <a href="<?= APP_URL ?>/admin/notification" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'hop_thu' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'hop_thu' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:email-outline"></span> Hộp thư / thông báo</span>
+                        <span class="<?= $current_page === 'hop_thu' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
                     </a>
                 </div>
             </div>
@@ -129,14 +135,14 @@ function isGroupActive($pages, $current) {
             <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
                 <div class="flex items-center gap-3">
                     <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:post-outline"></span>
-                    Nội dung & Giao diện
+                    Quản lý nội dung
                 </div>
                 <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'bai_viet' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý bài viết
+                    <a href="<?= APP_URL ?>/admin/post" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'bai_viet' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'bai_viet' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:text-box-outline"></span> Quản lý bài viết</span>
                     </a>
                     <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'banner' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
                         Quản lý banner

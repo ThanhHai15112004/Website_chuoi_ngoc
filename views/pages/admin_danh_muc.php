@@ -615,25 +615,32 @@
 
     // Dropdown logic
     function toggleActionMenu(button) {
-        document.querySelectorAll('.action-menu').forEach(menu => {
-            if(menu !== button.nextElementSibling) {
-                menu.classList.add('hidden');
-            }
+        document.querySelectorAll('.action-menu-dropdown').forEach(m => {
+            if (m !== button.nextElementSibling) m.classList.add('hidden');
         });
-
-        const menu = button.nextElementSibling;
-        const isHidden = menu.classList.contains('hidden');
         
-        if (isHidden) {
-            const rect = button.getBoundingClientRect();
-            menu.style.top = `${rect.bottom + 5}px`;
-            menu.style.left = `${rect.right - 160}px`; 
-            
+        const menu = button.nextElementSibling;
+        
+        if (menu.classList.contains('hidden')) {
+            menu.classList.add('action-menu-dropdown');
             menu.classList.remove('hidden');
             
-            const menuRect = menu.getBoundingClientRect();
-            if (menuRect.bottom > window.innerHeight) {
-                menu.style.top = `${rect.top - menuRect.height - 5}px`;
+            const rect = button.getBoundingClientRect();
+            const menuHeight = menu.offsetHeight;
+            const spaceBelow = window.innerHeight - rect.bottom;
+            
+            menu.style.position = 'fixed';
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.left = 'auto';
+            menu.style.zIndex = '9999';
+            
+            // Nếu không đủ chỗ trống phía dưới, mở menu ngược lên trên
+            if (spaceBelow < menuHeight + 10) {
+                menu.style.top = (rect.top - menuHeight - 5) + 'px';
+                menu.style.bottom = 'auto';
+            } else {
+                menu.style.top = (rect.bottom + 5) + 'px';
+                menu.style.bottom = 'auto';
             }
         } else {
             menu.classList.add('hidden');
@@ -641,12 +648,16 @@
     }
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.action-btn') && !e.target.closest('.action-menu')) {
-            document.querySelectorAll('.action-menu').forEach(menu => {
+        if (!e.target.closest('.action-menu-dropdown') && !e.target.closest('button[onclick^="toggleActionMenu"]')) {
+            document.querySelectorAll('.action-menu-dropdown').forEach(menu => {
                 menu.classList.add('hidden');
             });
         }
     });
+
+    window.addEventListener('scroll', function() {
+        document.querySelectorAll('.action-menu-dropdown:not(.hidden)').forEach(m => m.classList.add('hidden'));
+    }, true);
 
     document.querySelector('.flex-1.overflow-auto').addEventListener('scroll', () => {
         document.querySelectorAll('.action-menu').forEach(menu => {

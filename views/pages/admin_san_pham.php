@@ -837,34 +837,30 @@
         showToast('Đã xóa sản phẩm', 'success');
     }
 
-    // Dropdown Action Menu Logic
     function toggleActionMenu(button) {
-        // Close all other menus first
-        document.querySelectorAll('.action-menu').forEach(menu => {
-            if(menu !== button.nextElementSibling) {
-                menu.classList.add('hidden');
-            }
+        document.querySelectorAll('.action-menu-dropdown').forEach(m => {
+            if (m !== button.nextElementSibling) m.classList.add('hidden');
         });
         
         const menu = button.nextElementSibling;
         
         if (menu.classList.contains('hidden')) {
-            // Hiển thị menu trước để lấy chiều cao thực tế
+            menu.classList.add('action-menu-dropdown');
             menu.classList.remove('hidden');
             
-            // Lấy tọa độ của nút và kích thước menu
             const rect = button.getBoundingClientRect();
             const menuHeight = menu.offsetHeight;
             const spaceBelow = window.innerHeight - rect.bottom;
             
-            // Đặt fixed position
             menu.style.position = 'fixed';
-            menu.style.left = (rect.right - 192) + 'px'; // 192px = w-48
+            menu.style.right = (window.innerWidth - rect.right) + 'px';
+            menu.style.left = 'auto';
             menu.style.zIndex = '9999';
             
             // Nếu không đủ chỗ trống phía dưới, mở menu ngược lên trên
             if (spaceBelow < menuHeight + 10) {
                 menu.style.top = (rect.top - menuHeight - 5) + 'px';
+                menu.style.bottom = 'auto';
             } else {
                 menu.style.top = (rect.bottom + 5) + 'px';
             }
