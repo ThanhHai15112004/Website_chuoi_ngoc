@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $tieu_de ?? 'Đăng nhập Quản Trị Cao Cấp - Chuỗi Ngọc Phong Thủy' ?></title>
+    <meta name="view-transition" content="same-origin">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
@@ -20,9 +21,14 @@
             --color-gold-light: #E4D5C3;
             --color-gold-dark: #9A7B56;
         }
+        @keyframes fadeInPage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #FAF8F5;
+            animation: fadeInPage 0.3s ease-out forwards;
         }
         .font-luxury {
             font-family: 'Poppins', sans-serif;
