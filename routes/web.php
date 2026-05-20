@@ -23,3 +23,4 @@ $router->get('/dang-nhap', 'User\AuthController@index');
 $router->post('/dang-nhap/xu-ly', 'User\AuthController@loginProcess');
 $router->post('/dang-ky/xu-ly', 'User\AuthController@registerProcess');
 $router->get('/dang-xuat', 'User\AuthController@logout');
+
