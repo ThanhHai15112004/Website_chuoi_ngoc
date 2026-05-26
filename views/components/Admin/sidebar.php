@@ -163,8 +163,8 @@ function isGroupActive($pages, $current) {
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'bao_cao_doanh_thu' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Báo cáo doanh thu
+                    <a href="<?= APP_URL ?>/admin/bao-cao-doanh-thu" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'bao_cao_doanh_thu' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'bao_cao_doanh_thu' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:finance"></span> Báo cáo doanh thu</span>
                     </a>
                     <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'bao_cao_san_pham' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
                         Báo cáo sản phẩm

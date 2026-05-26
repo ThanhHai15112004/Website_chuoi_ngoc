@@ -40,4 +40,6 @@ $router->get('/admin/banner', 'Admin\BannerController@index');
 $router->get('/admin/banner/them', 'Admin\BannerController@create');
 $router->get('/admin/banner/sua', 'Admin\BannerController@edit');
 
+$router->get('/admin/bao-cao-doanh-thu', 'Admin\BaoCaoDoanhThuController@index');
+
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)
