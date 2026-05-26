@@ -42,5 +42,9 @@ $router->get('/admin/banner/sua', 'Admin\BannerController@edit');
 
 $router->get('/admin/bao-cao-doanh-thu', 'Admin\BaoCaoDoanhThuController@index');
 $router->get('/admin/bao-cao-san-pham', 'Admin\BaoCaoSanPhamController@index');
+$router->get('/admin/ton-kho', 'Admin\TonKhoController@index');
+$router->get('/admin/nhap-kho', 'Admin\NhapKhoController@index');
+$router->get('/admin/nhap-kho/them', 'Admin\NhapKhoController@create');
+$router->get('/admin/nhap-kho/chi-tiet/(\w+)', 'Admin\NhapKhoController@show');
 
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)

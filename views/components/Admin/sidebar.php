@@ -6,10 +6,11 @@ $current_page = $current_page ?? 'dashboard';
 // Define groups
 $ban_hang_pages = ['don_hang', 'chi_tiet_don_hang', 'voucher', 'khuyen_mai'];
 $san_pham_pages = ['san_pham', 'chi_tiet_san_pham', 'them_san_pham', 'danh_muc', 'loai_da', 'menh_phong_thuy', 'binh_luan'];
+$kho_hang_pages = ['ton_kho', 'nhap_kho', 'xuat_kho'];
 $khach_hang_pages = ['khach_hang', 'chi_tiet_khach_hang', 'them_khach_hang', 'hop_thu', 'hang_thanh_vien'];
 $noi_dung_pages = ['bai_viet', 'banner'];
 $bao_cao_pages = ['bao_cao_doanh_thu', 'bao_cao_san_pham'];
-$he_thong_pages = ['nhan_vien', 'phan_quyen', 'cau_hinh'];
+$he_thong_pages = ['thong_tin_cua_hang', 'chinh_sach', 'nhan_su_phan_quyen', 'lich_su_hoat_dong'];
 
 function isGroupActive($pages, $current) {
     return in_array($current, $pages);
@@ -75,14 +76,14 @@ function isGroupActive($pages, $current) {
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="<?= APP_URL ?>/admin/san-pham" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'san_pham' || $current_page === 'chi_tiet_san_pham' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Danh sách sản phẩm
+                    <a href="<?= APP_URL ?>/admin/san-pham" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'san_pham' || $current_page === 'chi_tiet_san_pham' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'san_pham' || $current_page === 'chi_tiet_san_pham' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:format-list-bulleted"></span> Danh sách sản phẩm</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/san-pham/them" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'them_san_pham' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Thêm sản phẩm
+                    <a href="<?= APP_URL ?>/admin/san-pham/them" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'them_san_pham' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'them_san_pham' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:package-variant-plus"></span> Thêm sản phẩm</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/danh-muc" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'danh_muc' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý danh mục
+                    <a href="<?= APP_URL ?>/admin/danh-muc" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'danh_muc' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'danh_muc' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:shape-outline"></span> Quản lý danh mục</span>
                     </a>
                     <a href="<?= APP_URL ?>/admin/loai-da" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'loai_da' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'loai_da' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:diamond-stone"></span> Loại đá / ngọc</span>
@@ -92,6 +93,31 @@ function isGroupActive($pages, $current) {
                     </a>
                     <a href="<?= APP_URL ?>/admin/binh-luan" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'binh_luan' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'binh_luan' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:comment-quote-outline"></span> Bình luận / đánh giá</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quản lý kho hàng -->
+        <?php $isActive = isGroupActive($kho_hang_pages, $current_page); ?>
+        <div class="sidebar-group">
+            <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
+                <div class="flex items-center gap-3">
+                    <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:warehouse"></span>
+                    Quản lý kho hàng
+                </div>
+                <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
+            </button>
+            <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
+                <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
+                    <a href="<?= APP_URL ?>/admin/ton-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'ton_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
+                        Tồn kho hiện tại
+                    </a>
+                    <a href="<?= APP_URL ?>/admin/nhap-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhap_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
+                        Phiếu nhập kho
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'xuat_kho' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                        Phiếu xuất kho
                     </a>
                 </div>
             </div>
@@ -151,6 +177,34 @@ function isGroupActive($pages, $current) {
             </div>
         </div>
 
+        <!-- Quản lý cửa hàng -->
+        <?php $isActive = isGroupActive($he_thong_pages, $current_page); ?>
+        <div class="sidebar-group">
+            <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
+                <div class="flex items-center gap-3">
+                    <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:store-cog-outline"></span>
+                    Quản lý cửa hàng
+                </div>
+                <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
+            </button>
+            <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
+                <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'thong_tin_cua_hang' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                        Thông tin cửa hàng
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chinh_sach' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                        Chính sách & Quy định
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhan_su_phan_quyen' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                        Nhân sự & Phân quyền
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'lich_su_hoat_dong' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                        Lịch sử hoạt động (Logs)
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Báo cáo & Thống kê -->
         <?php $isActive = isGroupActive($bao_cao_pages, $current_page); ?>
         <div class="sidebar-group">
@@ -168,31 +222,6 @@ function isGroupActive($pages, $current) {
                     </a>
                     <a href="<?= APP_URL ?>/admin/bao-cao-san-pham" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'bao_cao_san_pham' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'bao_cao_san_pham' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:package-variant-closed"></span> Báo cáo sản phẩm</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Hệ thống & Cấu hình -->
-        <?php $isActive = isGroupActive($he_thong_pages, $current_page); ?>
-        <div class="sidebar-group">
-            <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
-                <div class="flex items-center gap-3">
-                    <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:cog-outline"></span>
-                    Hệ thống & Cấu hình
-                </div>
-                <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
-            </button>
-            <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
-                <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhan_vien' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý nhân viên
-                    </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'phan_quyen' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Trang phân quyền
-                    </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'cau_hinh' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Cấu hình cửa hàng
                     </a>
                 </div>
             </div>
