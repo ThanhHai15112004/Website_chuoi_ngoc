@@ -59,4 +59,9 @@ $router->get('/admin/nha-cung-cap', 'Admin\NhaCungCapController@index');
 $router->get('/admin/nha-cung-cap/them', 'Admin\NhaCungCapController@create');
 $router->get('/admin/nha-cung-cap/sua/([a-zA-Z0-9_-]+)', 'Admin\NhaCungCapController@edit');
 $router->get('/admin/nha-cung-cap/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\NhaCungCapController@show');
+
+$router->get('/admin/cau-hinh-kho', 'Admin\CauHinhKhoController@index');
+$router->get('/admin/cau-hinh-kho/them', 'Admin\CauHinhKhoController@create');
+$router->get('/admin/cau-hinh-kho/sua/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@edit');
+
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)

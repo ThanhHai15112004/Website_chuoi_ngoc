@@ -6,7 +6,7 @@ $current_page = $current_page ?? 'dashboard';
 // Define groups
 $ban_hang_pages = ['don_hang', 'chi_tiet_don_hang', 'voucher', 'khuyen_mai'];
 $san_pham_pages = ['san_pham', 'chi_tiet_san_pham', 'them_san_pham', 'danh_muc', 'loai_da', 'menh_phong_thuy', 'binh_luan'];
-$kho_hang_pages = ['ton_kho', 'nhap_kho', 'xuat_kho', 'thuyen_chuyen_kho', 'kiem_ke', 'nha_cung_cap', 'kho_bai'];
+$kho_hang_pages = ['ton_kho', 'nhap_kho', 'xuat_kho', 'thuyen_chuyen_kho', 'kiem_ke', 'nha_cung_cap', 'cau_hinh_kho'];
 $khach_hang_pages = ['khach_hang', 'chi_tiet_khach_hang', 'them_khach_hang', 'hop_thu', 'hang_thanh_vien'];
 $noi_dung_pages = ['bai_viet', 'banner'];
 $bao_cao_pages = ['bao_cao_doanh_thu', 'bao_cao_san_pham'];
@@ -128,8 +128,8 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/nha-cung-cap" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nha_cung_cap' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'nha_cung_cap' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:truck-outline"></span> Nhà cung cấp</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/kho-bai" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'kho_bai' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
-                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'kho_bai' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:map-marker-radius-outline"></span> Cấu hình kho bãi</span>
+                    <a href="<?= APP_URL ?>/admin/cau-hinh-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'cau_hinh_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'cau_hinh_kho' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:map-marker-radius-outline"></span> Cấu hình kho bãi</span>
                     </a>
                 </div>
             </div>
