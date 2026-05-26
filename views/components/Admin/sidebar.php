@@ -144,8 +144,8 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/post" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'bai_viet' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'bai_viet' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:text-box-outline"></span> Quản lý bài viết</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'banner' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
-                        Quản lý banner
+                    <a href="<?= APP_URL ?>/admin/banner" class="flex items-center justify-between px-3 py-2 rounded-lg <?= in_array($current_page, ['banner', 'them_banner', 'sua_banner']) ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= in_array($current_page, ['banner', 'them_banner', 'sua_banner']) ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:view-carousel-outline"></span> Quản lý banner</span>
                     </a>
                 </div>
             </div>

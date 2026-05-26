@@ -36,4 +36,8 @@ $router->get('/admin/post', 'Admin\PostController@index');
 $router->get('/admin/post/them', 'Admin\PostController@create');
 $router->get('/admin/post/sua', 'Admin\PostController@edit');
 
+$router->get('/admin/banner', 'Admin\BannerController@index');
+$router->get('/admin/banner/them', 'Admin\BannerController@create');
+$router->get('/admin/banner/sua', 'Admin\BannerController@edit');
+
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)
