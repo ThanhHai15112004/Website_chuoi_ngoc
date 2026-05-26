@@ -23,13 +23,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- Cột Form (Bên trái) -->
         <div class="lg:col-span-8 space-y-6">
-<?php include __DIR__ . '/../components/Admin/notification/form_content.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/form_content.php'; ?>
         </div>
 
-<?php include __DIR__ . '/../components/Admin/notification/form_preview.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/form_preview.php'; ?>
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/Admin/notification/form_modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/form_modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/notification/form_scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/form_scripts.php'; ?>

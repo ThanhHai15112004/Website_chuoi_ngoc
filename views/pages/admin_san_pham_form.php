@@ -37,14 +37,14 @@ $sp = $san_pham ?? [];
         <!-- Cột Trái (2/3) -->
         <div class="lg:col-span-2 space-y-6">
             
-<?php include __DIR__ . '/../components/Admin/product/form_basic.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/form_basic.php'; ?>
 
         </div>
 
         <!-- Cột Phải (1/3) -->
         <div class="lg:col-span-1 space-y-6">
             
-<?php include __DIR__ . '/../components/Admin/product/form_sidebar.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/form_sidebar.php'; ?>
 
         </div>
     </form>

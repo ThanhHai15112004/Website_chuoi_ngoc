@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class StoneController extends Controller {
+class LoaiDaController extends Controller {
     public function index() {
         $thong_ke = [
             'tong_loai' => 32,
@@ -80,7 +80,7 @@ class StoneController extends Controller {
             'danh_sach' => $danh_sach
         ];
 
-        $this->view('admin_stone', $data, 'admin');
+        $this->view('admin_loai_da', $data, 'admin');
     }
 
     public function create() {
@@ -89,7 +89,7 @@ class StoneController extends Controller {
             'current_page' => 'loai_da',
             'is_edit' => false
         ];
-        $this->view('admin_stone_form', $data, 'admin');
+        $this->view('admin_loai_da_form', $data, 'admin');
     }
 
     public function edit() {
@@ -113,6 +113,6 @@ class StoneController extends Controller {
                 'so_san_pham' => 48
             ]
         ];
-        $this->view('admin_stone_form', $data, 'admin');
+        $this->view('admin_loai_da_form', $data, 'admin');
     }
 }

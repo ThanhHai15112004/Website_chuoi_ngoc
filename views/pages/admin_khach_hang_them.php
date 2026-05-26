@@ -30,4 +30,4 @@
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/customer/create_form.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khach_hang/create_form.php'; ?>

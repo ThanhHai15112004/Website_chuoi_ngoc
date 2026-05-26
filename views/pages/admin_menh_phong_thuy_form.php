@@ -40,6 +40,6 @@ $is_edit = true; // Trang này chủ yếu là sửa 5 mệnh có sẵn
 
     <div class="space-y-6">
         
-    <?php include __DIR__ . '/../components/Admin/destiny/form_basic.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/form_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/form_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/form_basic.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/form_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/form_scripts.php'; ?>

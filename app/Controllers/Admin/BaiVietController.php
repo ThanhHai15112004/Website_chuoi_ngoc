@@ -3,13 +3,13 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class PostController extends Controller {
+class BaiVietController extends Controller {
     public function index() {
         $data = [
             'tieu_de' => 'Quản lý bài viết - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'bai_viet', // To match sidebar later
         ];
-        $this->view('admin_post', $data, 'admin');
+        $this->view('admin_bai_viet', $data, 'admin');
     }
 
     public function create() {
@@ -18,7 +18,7 @@ class PostController extends Controller {
             'current_page' => 'bai_viet',
             'is_edit' => false,
         ];
-        $this->view('admin_post_form', $data, 'admin');
+        $this->view('admin_bai_viet_form', $data, 'admin');
     }
 
     public function edit() {
@@ -27,6 +27,6 @@ class PostController extends Controller {
             'current_page' => 'bai_viet',
             'is_edit' => true,
         ];
-        $this->view('admin_post_form', $data, 'admin');
+        $this->view('admin_bai_viet_form', $data, 'admin');
     }
 }

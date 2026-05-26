@@ -15,7 +15,7 @@
                     </button>
                 </div>
 
-            <?php include __DIR__ . '/../components/Admin/category/stats_cards.php'; ?>
-<?php include __DIR__ . '/../components/Admin/category/table_section.php'; ?>
-<?php include __DIR__ . '/../components/Admin/category/modals.php'; ?>
-<?php include __DIR__ . '/../components/Admin/category/scripts.php'; ?>
+            <?php include __DIR__ . '/../components/Admin/danh_muc/stats_cards.php'; ?>
+<?php include __DIR__ . '/../components/Admin/danh_muc/table_section.php'; ?>
+<?php include __DIR__ . '/../components/Admin/danh_muc/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/danh_muc/scripts.php'; ?>

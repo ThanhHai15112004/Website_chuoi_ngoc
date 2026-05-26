@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 use App\Core\Controller;
 
-class CategoryController extends Controller {
+class DanhMucController extends Controller {
     public function index() {
         // Layout variables
         $current_page = 'danh_muc';

@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/post/list_stats_cards.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/post/list_main_content.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/post/list_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/post/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/list_stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/list_main_content.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/list_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/list_scripts.php'; ?>

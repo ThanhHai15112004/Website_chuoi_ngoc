@@ -20,9 +20,9 @@
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/notification/stats_cards.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/stats_cards.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/notification/search_filter.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/search_filter.php'; ?>
 
     <!-- Action Bar & Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -54,7 +54,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-<?php include __DIR__ . '/../components/Admin/notification/table_row.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/table_row.php'; ?>
                 </tbody>
             </table>
         </div>
@@ -83,6 +83,6 @@
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/Admin/notification/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/notification/scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/thong_bao/scripts.php'; ?>

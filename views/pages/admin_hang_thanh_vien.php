@@ -35,7 +35,7 @@ $history = $history ?? [];
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/customer_ranks/overview.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer_ranks/tabs_content.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer_ranks/modals.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer_ranks/scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/hang_thanh_vien/overview.php'; ?>
+<?php include __DIR__ . '/../components/Admin/hang_thanh_vien/tabs_content.php'; ?>
+<?php include __DIR__ . '/../components/Admin/hang_thanh_vien/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/hang_thanh_vien/scripts.php'; ?>

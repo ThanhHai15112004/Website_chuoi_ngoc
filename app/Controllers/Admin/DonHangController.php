@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class OrderController extends Controller
+class DonHangController extends Controller
 {
     public function index()
     {

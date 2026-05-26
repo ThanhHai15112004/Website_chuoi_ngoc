@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/stone/list_stats_cards.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/stone/list_search_table.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/stone/list_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/stone/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/list_stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/list_search_table.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/list_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/list_scripts.php'; ?>

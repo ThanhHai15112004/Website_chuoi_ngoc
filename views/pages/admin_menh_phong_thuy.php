@@ -19,8 +19,8 @@ $destinies = $destinies ?? [];
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/destiny/list_stats_cards.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/list_overview.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/list_search_table.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/list_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/destiny/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/list_stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/list_overview.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/list_search_table.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/list_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/menh_phong_thuy/list_scripts.php'; ?>

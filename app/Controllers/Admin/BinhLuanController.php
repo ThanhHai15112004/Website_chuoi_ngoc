@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class ReviewController extends Controller
+class BinhLuanController extends Controller
 {
     public function index()
     {
@@ -97,6 +97,6 @@ class ReviewController extends Controller
             'tieu_de' => 'Bình luận / Đánh giá - Admin'
         ];
 
-        $this->view('admin_review', $data, 'admin');
+        $this->view('admin_binh_luan', $data, 'admin');
     }
 }

@@ -39,6 +39,6 @@ $mock = $mock_data ?? [];
 
     <div class="space-y-6">
         
-    <?php include __DIR__ . '/../components/Admin/stone/form_basic.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/stone/form_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/stone/form_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/form_basic.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/form_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/loai_da/form_scripts.php'; ?>

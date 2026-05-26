@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class ProductController extends Controller {
+class SanPhamController extends Controller {
     public function index() {
         // Mock data for Admin Product Management
         $data = [

@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class CustomerController extends Controller
+class KhachHangController extends Controller
 {
     public function index()
     {
@@ -107,7 +107,7 @@ class CustomerController extends Controller
             'tieu_de' => 'Quản lý khách hàng - Admin'
         ];
 
-        $this->view('admin_customer', $data, 'admin');
+        $this->view('admin_khach_hang', $data, 'admin');
     }
 
     public function show($id)
@@ -173,7 +173,7 @@ class CustomerController extends Controller
             'id' => $id,
             'kh' => $khach_hang
         ];
-        $this->view('admin_customer_detail', $data, 'admin');
+        $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
     }
 
     public function create()
@@ -182,7 +182,7 @@ class CustomerController extends Controller
             'current_page' => 'them_khach_hang',
             'tieu_de' => 'Thêm khách hàng mới - Admin'
         ];
-        $this->view('admin_customer_create', $data, 'admin');
+        $this->view('admin_khach_hang_them', $data, 'admin');
     }
 
     public function ranks()
@@ -237,6 +237,6 @@ class CustomerController extends Controller
             'ranks' => $ranks,
             'history' => $history
         ];
-        $this->view('admin_customer_ranks', $data, 'admin');
+        $this->view('admin_hang_thanh_vien', $data, 'admin');
     }
 }

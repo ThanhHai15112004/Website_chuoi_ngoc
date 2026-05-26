@@ -20,8 +20,8 @@
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/promotion/list_stats_cards.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/list_search_filter.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/list_table_section.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/list_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/list_stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/list_search_filter.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/list_table_section.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/list_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/list_scripts.php'; ?>

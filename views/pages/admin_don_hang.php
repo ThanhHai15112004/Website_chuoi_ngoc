@@ -20,14 +20,14 @@
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/order/stats_cards.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/stats_cards.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/order/status_tabs.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/status_tabs.php'; ?>
 
     <!-- Main Table Container -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm mb-10">
         
-<?php include __DIR__ . '/../components/Admin/order/search_filter.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/search_filter.php'; ?>
 
         <!-- Bulk Actions Bar (Hidden by default) -->
         <div id="bulkActions" class="bg-red-50/50 px-4 py-3 border-b border-red-100 hidden items-center justify-between">
@@ -68,7 +68,7 @@
                 </thead>
                 <tbody class="text-sm divide-y divide-gray-100">
                     <?php foreach($don_hang_list as $dh): ?>
-                        <?php include __DIR__ . '/../components/Admin/order/table_row.php'; ?>
+                        <?php include __DIR__ . '/../components/Admin/don_hang/table_row.php'; ?>
                     <?php endforeach; ?>
                 </tbody>
             </table>
@@ -101,8 +101,8 @@
 
 <!-- ================= MODALS & PANELS ================= -->
 
-<?php include __DIR__ . '/../components/Admin/order/quick_view_panel.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/quick_view_panel.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/order/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/order/scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/scripts.php'; ?>

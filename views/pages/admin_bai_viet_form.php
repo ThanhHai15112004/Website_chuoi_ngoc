@@ -32,6 +32,6 @@
     </div>
 
     <div class="flex flex-col lg:flex-row gap-6">
-    <?php include __DIR__ . '/../components/Admin/post/form_content.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/post/form_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/post/form_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/form_content.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/form_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/bai_viet/form_scripts.php'; ?>

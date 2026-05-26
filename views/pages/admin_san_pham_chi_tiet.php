@@ -39,8 +39,8 @@
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/product/detail_info.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/detail_info.php'; ?>
 
 </div>
 
-<?php include __DIR__ . '/../components/Admin/product/detail_scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/detail_scripts.php'; ?>

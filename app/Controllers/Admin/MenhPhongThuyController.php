@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class DestinyController extends Controller
+class MenhPhongThuyController extends Controller
 {
     public function index()
     {
@@ -100,7 +100,7 @@ class DestinyController extends Controller
             'current_page' => 'menh_phong_thuy',
             'tieu_de' => 'Mệnh Phong Thủy - Admin'
         ];
-        $this->view('admin_destiny', $data, 'admin');
+        $this->view('admin_menh_phong_thuy', $data, 'admin');
     }
 
     public function edit()
@@ -140,6 +140,6 @@ class DestinyController extends Controller
             'current_page' => 'menh_phong_thuy',
             'tieu_de' => 'Chỉnh sửa Mệnh Mộc - Admin'
         ];
-        $this->view('admin_destiny_form', $data, 'admin');
+        $this->view('admin_menh_phong_thuy_form', $data, 'admin');
     }
 }

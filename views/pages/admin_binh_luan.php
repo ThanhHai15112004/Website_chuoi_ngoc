@@ -20,9 +20,9 @@ $reviews = $reviews ?? [];
         </div>
     </div>
 
-    <?php include __DIR__ . '/../components/Admin/review/list_stats_cards.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/review/list_tabs.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/review/list_search_filter.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/review/list_review_list.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/review/list_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/review/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_tabs.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_search_filter.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_review_list.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/binh_luan/list_scripts.php'; ?>

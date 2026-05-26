@@ -37,8 +37,8 @@ function getRankBadge($rank) {
         </a>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/customer/detail_profile.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer/detail_stats.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer/detail_orders.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer/detail_modals.php'; ?>
-<?php include __DIR__ . '/../components/Admin/customer/detail_scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/detail_profile.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/detail_stats.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/detail_orders.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/detail_modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/detail_scripts.php'; ?>

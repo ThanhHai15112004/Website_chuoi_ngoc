@@ -37,7 +37,7 @@ $mock = $mock_data ?? [];
     <!-- Two Columns Layout -->
     <div class="flex flex-col lg:flex-row gap-6">
         
-    <?php include __DIR__ . '/../components/Admin/promotion/form_config.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/form_preview.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/form_modals.php'; ?>
-    <?php include __DIR__ . '/../components/Admin/promotion/form_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_config.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_preview.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_modals.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_scripts.php'; ?>

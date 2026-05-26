@@ -3,7 +3,7 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
-class PromotionController extends Controller {
+class KhuyenMaiController extends Controller {
     public function index() {
         $thong_ke = [
             'tong_chuong_trinh' => 24,
@@ -107,7 +107,7 @@ class PromotionController extends Controller {
             'danh_sach' => $danh_sach
         ];
 
-        $this->view('admin_promotion', $data, 'admin');
+        $this->view('admin_khuyen_mai', $data, 'admin');
     }
 
     public function create() {
@@ -116,7 +116,7 @@ class PromotionController extends Controller {
             'current_page' => 'khuyen_mai',
             'is_edit' => false
         ];
-        $this->view('admin_promotion_form', $data, 'admin');
+        $this->view('admin_khuyen_mai_form', $data, 'admin');
     }
 
     public function edit() {
@@ -134,6 +134,6 @@ class PromotionController extends Controller {
                 'sp_ap_dung' => 'NB-TL-001'
             ]
         ];
-        $this->view('admin_promotion_form', $data, 'admin');
+        $this->view('admin_khuyen_mai_form', $data, 'admin');
     }
 }

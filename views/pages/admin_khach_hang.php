@@ -24,7 +24,7 @@ $customers = $customers ?? [];
     </div>
 
     <!-- Stats Cards -->
-    <?php include __DIR__ . '/../components/Admin/customer/stats_cards.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khach_hang/stats_cards.php'; ?>
 
     <!-- Tabs Phân Loại -->
     <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide mb-4">
@@ -37,7 +37,7 @@ $customers = $customers ?? [];
     </div>
 
     <!-- Search & Filter Bar -->
-    <?php include __DIR__ . '/../components/Admin/customer/search_filter.php'; ?>
+    <?php include __DIR__ . '/../components/Admin/khach_hang/search_filter.php'; ?>
 
     <!-- Thanh thao tác hàng loạt (ẩn mặc định) -->
     <div id="bulkActionBar" class="hidden bg-white border border-[#6B0D18]/20 rounded-xl shadow-sm mb-4 px-4 py-3 flex items-center justify-between animate-[fadeInPage_0.2s_ease-out]">
@@ -76,7 +76,7 @@ $customers = $customers ?? [];
                 <tbody class="divide-y divide-gray-100">
                     <?php foreach ($customers as $kh): ?>
                     <tr class="hover:bg-gray-50/50 transition-colors group">
-                        <?php include __DIR__ . '/../components/Admin/customer/table_row.php'; ?>
+                        <?php include __DIR__ . '/../components/Admin/khach_hang/table_row.php'; ?>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -179,6 +179,6 @@ $customers = $customers ?? [];
 
 
 <!-- Modal Nâng/Hạ Hạng -->
-<?php include __DIR__ . '/../components/Admin/customer/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/customer/scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/khach_hang/scripts.php'; ?>

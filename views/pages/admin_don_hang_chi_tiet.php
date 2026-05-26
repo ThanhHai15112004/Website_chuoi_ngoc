@@ -85,7 +85,7 @@
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/order/detail_timeline.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/detail_timeline.php'; ?>
 
     <!-- Quick Actions Bar -->
     <div class="flex items-center gap-3">
@@ -105,19 +105,19 @@
         <!-- Cột Trái (Main Content) -->
         <div class="lg:w-2/3 space-y-6">
             
-<?php include __DIR__ . '/../components/Admin/order/detail_products.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/detail_products.php'; ?>
 
         </div>
 
         <!-- Cột Phải (Sidebar) -->
         <div class="lg:w-1/3 space-y-6">
             
-<?php include __DIR__ . '/../components/Admin/order/detail_customer_info.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/detail_customer_info.php'; ?>
 
         </div>
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/Admin/order/detail_modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/detail_modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/order/detail_scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/don_hang/detail_scripts.php'; ?>

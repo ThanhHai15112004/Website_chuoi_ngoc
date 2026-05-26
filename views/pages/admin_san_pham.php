@@ -20,9 +20,9 @@
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/product/stats_cards.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/stats_cards.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/product/search_filter.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/search_filter.php'; ?>
 
     <!-- Bulk Actions (Hidden by default, shown when items are selected) -->
     <div id="bulkActions" class="bg-white px-4 py-3 rounded-xl shadow-sm border border-[#6B0D18]/20 flex items-center justify-between hidden transition-all">
@@ -77,7 +77,7 @@
                         </tr>
                     <?php else: ?>
                         <?php foreach($san_pham_list as $sp): ?>
-<?php include __DIR__ . '/../components/Admin/product/table_row.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/table_row.php'; ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
@@ -113,6 +113,6 @@
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/Admin/product/modals.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/modals.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/product/scripts.php'; ?>
+<?php include __DIR__ . '/../components/Admin/san_pham/scripts.php'; ?>
