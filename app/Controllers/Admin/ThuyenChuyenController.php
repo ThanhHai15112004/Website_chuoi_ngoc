@@ -7,110 +7,144 @@ use App\Core\Controller;
 
 class ThuyenChuyenController extends Controller
 {
-    private function getMockDanhSachKho()
-    {
-        return [
-            ['id' => 'KHO001', 'ten' => 'Kho Tổng - Hà Nội', 'dia_chi' => '123 Cầu Giấy, Hà Nội'],
-            ['id' => 'KHO002', 'ten' => 'Kho Cửa Hàng - Cầu Giấy', 'dia_chi' => '456 Xuân Thủy, Hà Nội'],
-            ['id' => 'KHO003', 'ten' => 'Kho Cửa Hàng - Q1 HCM', 'dia_chi' => '789 Nguyễn Trãi, Q1, HCM'],
-        ];
-    }
-
-    private function getMockThuyenChuyenList()
+    private function getMockDanhSach()
     {
         return [
             [
-                'id' => 'TC2310-001',
-                'kho_xuat' => 'Kho Tổng - Hà Nội',
-                'kho_nhap' => 'Kho Cửa Hàng - Cầu Giấy',
-                'so_luong_sp' => 150,
-                'nguoi_tao' => 'Admin',
-                'ngay_tao' => '24/10/2023 09:30',
-                'trang_thai' => 'Đã nhập kho'
+                'id' => 'CK202600123',
+                'kho_gui' => 'Kho tổng',
+                'kho_nhan' => 'Kho online',
+                'san_pham' => [
+                    ['ten' => 'Vòng Ngọc Bích Tài Lộc', 'sku' => 'NB-TL-001', 'size' => '16cm', 'hinh_anh' => 'https://via.placeholder.com/60', 'so_luong' => 20]
+                ],
+                'tong_sl' => 20,
+                'nguoi_tao' => 'Hải Admin',
+                'vai_tro_tao' => 'Nhân viên kho',
+                'ngay_tao' => '18/05/2026 09:30',
+                'nguoi_duyet' => 'Quản lý kho',
+                'ngay_chuyen' => '18/05/2026 10:00',
+                'ngay_nhan' => '18/05/2026 16:30',
+                'trang_thai' => 'Đã hoàn tất',
+                'ghi_chu' => 'Chuyển gấp để xử lý đơn hàng cuối tuần.',
+                'gap' => false
             ],
             [
-                'id' => 'TC2310-002',
-                'kho_xuat' => 'Kho Cửa Hàng - Cầu Giấy',
-                'kho_nhap' => 'Kho Cửa Hàng - Q1 HCM',
-                'so_luong_sp' => 50,
-                'nguoi_tao' => 'Tran Van A',
-                'ngay_tao' => '25/10/2023 14:15',
-                'trang_thai' => 'Đang vận chuyển'
+                'id' => 'CK202600124',
+                'kho_gui' => 'Kho tổng',
+                'kho_nhan' => 'Kho cửa hàng',
+                'san_pham' => [
+                    ['ten' => 'Vòng Tay Thạch Anh Tóc Vàng', 'sku' => 'TA-TV-001', 'size' => '10ly', 'hinh_anh' => 'https://via.placeholder.com/60', 'so_luong' => 5],
+                    ['ten' => 'Nhẫn Tỳ Hưu Ruby', 'sku' => 'NH-TH-002', 'size' => 'Freesize', 'hinh_anh' => 'https://via.placeholder.com/60', 'so_luong' => 2]
+                ],
+                'tong_sl' => 7,
+                'nguoi_tao' => 'Linh NV',
+                'vai_tro_tao' => 'Nhân viên cửa hàng',
+                'ngay_tao' => '19/05/2026 08:15',
+                'nguoi_duyet' => 'Chưa duyệt',
+                'ngay_chuyen' => 'Chưa chuyển',
+                'ngay_nhan' => 'Chưa nhận hàng',
+                'trang_thai' => 'Chờ xác nhận',
+                'ghi_chu' => 'Bổ sung hàng trưng bày',
+                'gap' => true
             ],
             [
-                'id' => 'TC2310-003',
-                'kho_xuat' => 'Kho Tổng - Hà Nội',
-                'kho_nhap' => 'Kho Cửa Hàng - Cầu Giấy',
-                'so_luong_sp' => 300,
-                'nguoi_tao' => 'Admin',
-                'ngay_tao' => '26/10/2023 10:00',
-                'trang_thai' => 'Chờ duyệt'
+                'id' => 'CK202600125',
+                'kho_gui' => 'Kho chờ kiểm',
+                'kho_nhan' => 'Kho sẵn bán',
+                'san_pham' => [
+                    ['ten' => 'Mặt Dây Chuyền Hồ Ly', 'sku' => 'MD-HL-001', 'size' => 'Tiêu chuẩn', 'hinh_anh' => 'https://via.placeholder.com/60', 'so_luong' => 15]
+                ],
+                'tong_sl' => 15,
+                'nguoi_tao' => 'Khoa NV',
+                'vai_tro_tao' => 'KCS',
+                'ngay_tao' => '19/05/2026 11:00',
+                'nguoi_duyet' => 'Hải Admin',
+                'ngay_chuyen' => '19/05/2026 13:30',
+                'ngay_nhan' => 'Chưa nhận hàng',
+                'trang_thai' => 'Đang chuyển',
+                'ghi_chu' => 'Đã kiểm tra chất lượng đá OK',
+                'gap' => false
             ],
+            [
+                'id' => 'CK202600126',
+                'kho_gui' => 'Kho cửa hàng',
+                'kho_nhan' => 'Kho lỗi / bảo hành',
+                'san_pham' => [
+                    ['ten' => 'Vòng Mã Não Đỏ', 'sku' => 'MN-D-001', 'size' => '8ly', 'hinh_anh' => 'https://via.placeholder.com/60', 'so_luong' => 2]
+                ],
+                'tong_sl' => 2,
+                'nguoi_tao' => 'Hương NV',
+                'vai_tro_tao' => 'Thu ngân',
+                'ngay_tao' => '19/05/2026 14:20',
+                'nguoi_duyet' => 'Hải Admin',
+                'ngay_chuyen' => '19/05/2026 15:00',
+                'ngay_nhan' => '19/05/2026 15:30',
+                'trang_thai' => 'Có lỗi / thiếu hàng',
+                'ghi_chu' => 'KH trả lại do xước, chỉ nhận được 1',
+                'thiếu' => 1,
+                'gap' => false
+            ]
         ];
     }
 
     public function index()
     {
-        $phieuThuyenChuyenList = $this->getMockThuyenChuyenList();
+        $danhSach = $this->getMockDanhSach();
         
         $stats = [
-            'tat_ca' => count($phieuThuyenChuyenList),
-            'cho_duyet' => 1,
-            'dang_van_chuyen' => 1,
-            'hoan_thanh' => 1
+            'tong' => 128,
+            'cho_xac_nhan' => 8,
+            'dang_chuyen' => 5,
+            'hoan_tat' => 102,
+            'da_huy' => 7,
+            'sp_chuyen' => 1240,
+            'co_loi' => 3
         ];
 
         $this->view('admin_thuyen_chuyen', [
             'current_page' => 'thuyen_chuyen_kho',
-            'phieuThuyenChuyenList' => $phieuThuyenChuyenList,
+            'danhSach' => $danhSach,
             'stats' => $stats
         ], 'admin');
     }
 
     public function create()
     {
-        $danhSachKho = $this->getMockDanhSachKho();
-        
-        // Giả lập danh sách sản phẩm để chọn
-        $sanPhamList = [
-            ['id' => 'SP001', 'ten' => 'Chuỗi Tỳ Hưu Thạch Anh Tóc Vàng', 'ton_kho' => 150],
-            ['id' => 'SP002', 'ten' => 'Vòng Ngọc Bích Tự Nhiên', 'ton_kho' => 85],
-            ['id' => 'SP003', 'ten' => 'Mặt Dây Chuyền Hồ Ly Cửu Vĩ', 'ton_kho' => 30],
-        ];
+        // Mock data kho hàng
+        $dsKho = ['Kho tổng', 'Kho online', 'Kho cửa hàng', 'Kho chờ kiểm', 'Kho sẵn bán', 'Kho lỗi / bảo hành'];
 
         $this->view('admin_thuyen_chuyen_them', [
             'current_page' => 'thuyen_chuyen_kho',
-            'danhSachKho' => $danhSachKho,
-            'sanPhamList' => $sanPhamList
+            'dsKho' => $dsKho
         ], 'admin');
     }
 
     public function show($id)
     {
-        // Mock data chi tiết phiếu thuyên chuyển
-        $phieu = [
-            'id' => $id,
-            'kho_xuat' => 'Kho Tổng - Hà Nội',
-            'kho_nhap' => 'Kho Cửa Hàng - Cầu Giấy',
-            'nguoi_tao' => 'Admin',
-            'ngay_tao' => '24/10/2023 09:30',
-            'ngay_duyet' => '24/10/2023 10:00',
-            'ngay_xuat' => '24/10/2023 10:30',
-            'ngay_nhap' => '24/10/2023 15:00',
-            'trang_thai' => 'Đã nhập kho', // 'Chờ duyệt', 'Đang xuất kho', 'Đang vận chuyển', 'Đã nhập kho'
-            'ghi_chu' => 'Chuyển hàng bù kho bán lẻ',
-            'tong_so_luong' => 150
-        ];
+        $ds = $this->getMockDanhSach();
+        $phieu = null;
+        foreach($ds as $item) {
+            if ($item['id'] === $id) {
+                $phieu = $item;
+                break;
+            }
+        }
+        if (!$phieu) {
+            $phieu = $ds[0]; // Fallback
+        }
 
-        $chiTiet = [
-            ['ma_sp' => 'SP001', 'ten_sp' => 'Chuỗi Tỳ Hưu Thạch Anh Tóc Vàng', 'so_luong' => 100],
-            ['ma_sp' => 'SP002', 'ten_sp' => 'Vòng Ngọc Bích Tự Nhiên', 'so_luong' => 50],
+        // Mock Timeline process
+        $timeline = [
+            ['step' => 1, 'title' => 'Tạo phiếu', 'time' => $phieu['ngay_tao'], 'actor' => $phieu['nguoi_tao'], 'status' => 'completed'],
+            ['step' => 2, 'title' => 'Duyệt phiếu', 'time' => $phieu['trang_thai'] != 'Chờ xác nhận' ? $phieu['ngay_tao'] : '', 'actor' => $phieu['nguoi_duyet'], 'status' => $phieu['trang_thai'] == 'Chờ xác nhận' ? 'pending' : 'completed'],
+            ['step' => 3, 'title' => 'Bắt đầu chuyển', 'time' => $phieu['ngay_chuyen'], 'actor' => 'Nhân viên kho', 'status' => in_array($phieu['trang_thai'], ['Đang chuyển', 'Đã hoàn tất', 'Có lỗi / thiếu hàng']) ? 'completed' : 'pending'],
+            ['step' => 4, 'title' => 'Nhận hàng', 'time' => $phieu['ngay_nhan'], 'actor' => 'Kho nhận', 'status' => in_array($phieu['trang_thai'], ['Đã hoàn tất', 'Có lỗi / thiếu hàng']) ? 'completed' : 'pending'],
         ];
 
         $this->view('admin_thuyen_chuyen_chitiet', [
             'current_page' => 'thuyen_chuyen_kho',
             'phieu' => $phieu,
-            'chiTiet' => $chiTiet
+            'timeline' => $timeline
         ], 'admin');
     }
 }
