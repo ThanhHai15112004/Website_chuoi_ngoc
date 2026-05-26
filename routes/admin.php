@@ -46,6 +46,8 @@ $router->get('/admin/ton-kho', 'Admin\TonKhoController@index');
 $router->get('/admin/nhap-kho', 'Admin\NhapKhoController@index');
 $router->get('/admin/nhap-kho/them', 'Admin\NhapKhoController@create');
 $router->get('/admin/nhap-kho/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\NhapKhoController@show');
+$router->get('/admin/nhap-kho/sua/([a-zA-Z0-9_-]+)', 'Admin\NhapKhoController@edit');
+$router->get('/admin/nhap-kho/kiem-hang/([a-zA-Z0-9_-]+)', 'Admin\NhapKhoController@check');
 $router->get('/admin/xuat-kho', 'Admin\XuatKhoController@index');
 $router->get('/admin/xuat-kho/them', 'Admin\XuatKhoController@create');
 $router->get('/admin/xuat-kho/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\XuatKhoController@show');
