@@ -55,4 +55,8 @@ $router->get('/admin/thuyen-chuyen-kho/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\Thuyen
 $router->get('/admin/kiem-ke', 'Admin\KiemKeController@index');
 $router->get('/admin/kiem-ke/them', 'Admin\KiemKeController@create');
 $router->get('/admin/kiem-ke/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\KiemKeController@show');
+$router->get('/admin/nha-cung-cap', 'Admin\NhaCungCapController@index');
+$router->get('/admin/nha-cung-cap/them', 'Admin\NhaCungCapController@create');
+$router->get('/admin/nha-cung-cap/sua/([a-zA-Z0-9_-]+)', 'Admin\NhaCungCapController@edit');
+$router->get('/admin/nha-cung-cap/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\NhaCungCapController@show');
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)
