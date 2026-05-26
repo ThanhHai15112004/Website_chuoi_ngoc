@@ -116,7 +116,7 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/nhap-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhap_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
                         Phiếu nhập kho
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'xuat_kho' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm">
+                    <a href="<?= APP_URL ?>/admin/xuat-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'xuat_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
                         Phiếu xuất kho
                     </a>
                 </div>
