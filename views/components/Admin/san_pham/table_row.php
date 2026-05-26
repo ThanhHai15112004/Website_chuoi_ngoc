@@ -60,10 +60,9 @@
                                 </td>
                                 <td class="p-4 text-right">
                                     <div class="flex flex-col items-end gap-1">
-                                        <button onclick="openStockModal('<?= $sp['ten_sp'] ?>', <?= $sp['ton_kho'] ?>, this)" class="font-bold hover:text-[#6B0D18] transition-colors text-base flex items-center gap-1 group-hover:bg-white group-hover:px-2 group-hover:-mr-2 group-hover:rounded-md group-hover:shadow-sm">
+                                        <span class="font-bold text-base flex items-center gap-1">
                                             <?= $sp['ton_kho'] ?>
-                                            <span class="iconify text-sm opacity-0 group-hover:opacity-100 text-gray-400" data-icon="mdi:pencil-outline"></span>
-                                        </button>
+                                        </span>
                                         <?php 
                                             $tkStatus = $sp['trang_thai_ton_kho'];
                                             $tkClass = 'bg-gray-100 text-gray-600';

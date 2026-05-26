@@ -110,14 +110,14 @@ function isGroupActive($pages, $current) {
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="<?= APP_URL ?>/admin/ton-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'ton_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
-                        Tồn kho hiện tại
+                    <a href="<?= APP_URL ?>/admin/ton-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'ton_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'ton_kho' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:database-outline"></span> Tồn kho hiện tại</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/nhap-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhap_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
-                        Phiếu nhập kho
+                    <a href="<?= APP_URL ?>/admin/nhap-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhap_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'nhap_kho' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:tray-arrow-down"></span> Phiếu nhập kho</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/xuat-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'xuat_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm">
-                        Phiếu xuất kho
+                    <a href="<?= APP_URL ?>/admin/xuat-kho" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'xuat_kho' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'xuat_kho' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:tray-arrow-up"></span> Phiếu xuất kho</span>
                     </a>
                 </div>
             </div>

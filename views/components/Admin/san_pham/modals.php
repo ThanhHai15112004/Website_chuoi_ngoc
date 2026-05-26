@@ -60,28 +60,6 @@
     </div>
 </div>
 
-<!-- Stock Update Modal -->
-<div id="stockModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-[24px] shadow-xl w-full max-w-sm hidden opacity-0 scale-95 transition-all duration-300">
-    <div class="px-6 py-5">
-        <h3 class="font-bold text-lg text-gray-900 mb-1">Cập nhật tồn kho</h3>
-        <p class="text-sm text-gray-500" id="stockModalTitle">Vòng Ngọc Bích Tài Lộc</p>
-        
-        <div class="mt-5 space-y-4">
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">Số lượng thực tế trong kho</label>
-                <input type="number" id="stockInput" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:bg-white text-lg font-bold transition-colors" min="0">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wider">Ghi chú (Tùy chọn)</label>
-                <input type="text" placeholder="VD: Nhập thêm lô hàng mới" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:bg-white text-sm transition-colors">
-            </div>
-        </div>
-    </div>
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-2 bg-gray-50/50 rounded-b-[24px]">
-        <button onclick="closeModal('stockModal')" class="px-4 py-2 text-gray-600 hover:bg-gray-200 bg-gray-100 rounded-lg font-medium text-sm transition-colors">Hủy</button>
-        <button onclick="submitStockModal()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">Lưu cập nhật</button>
-    </div>
-</div>
 
 <!-- Promo Modal -->
 <div id="promoModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-[24px] shadow-xl w-full max-w-sm hidden opacity-0 scale-95 transition-all duration-300">

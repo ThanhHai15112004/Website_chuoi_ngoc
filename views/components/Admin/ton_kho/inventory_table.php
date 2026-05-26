@@ -59,9 +59,9 @@
                         <?php endif; ?>
                     </td>
                     <td class="py-3 px-4 text-center">
-                        <button onclick="openModal('updateStockModal')" class="inline-block px-3 py-1.5 bg-gray-50 border border-gray-200 hover:border-red-900 hover:text-red-900 rounded-lg text-lg font-bold <?= $p['stock_current'] <= 0 ? 'text-red-600' : 'text-gray-900' ?> transition-colors" title="Nhấp để cập nhật nhanh">
+                        <span class="inline-block px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-lg font-bold <?= $p['stock_current'] <= 0 ? 'text-red-600' : 'text-gray-900' ?>">
                             <?= $p['stock_current'] ?>
-                        </button>
+                        </span>
                     </td>
                     <td class="py-3 px-4 text-center">
                         <div class="text-xs text-gray-500">Ngưỡng: <?= $p['stock_threshold'] ?></div>

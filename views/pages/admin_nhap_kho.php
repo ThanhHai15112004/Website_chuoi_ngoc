@@ -17,6 +17,43 @@
         </div>
     </div>
 
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <span class="iconify text-3xl" data-icon="mdi:check-circle-outline"></span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Nhập kho thành công (Tháng này)</p>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-bold text-gray-900">125</h3>
+                    <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">+12% so với tháng trước</span>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <span class="iconify text-3xl" data-icon="mdi:clock-outline"></span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Đang chờ xử lý / Đang nhập</p>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-bold text-gray-900">5</h3>
+                    <span class="text-sm text-gray-500 font-medium">phiếu</span>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <span class="iconify text-3xl" data-icon="mdi:currency-usd"></span>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Tổng giá trị nhập (Tháng này)</p>
+                <h3 class="text-xl font-bold text-[#6B0D18]">452.500.000 đ</h3>
+            </div>
+        </div>
+    </div>
+
     <!-- Tabs trạng thái -->
     <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-2 sidebar-scroll">
         <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-full text-sm font-medium whitespace-nowrap shadow-sm">
