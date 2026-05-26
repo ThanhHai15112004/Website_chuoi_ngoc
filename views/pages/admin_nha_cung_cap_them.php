@@ -1,116 +1,60 @@
-<!-- Trang Thêm/Sửa Nhà Cung Cấp -->
-<?php 
-$isEdit = $mode === 'edit'; 
-$title = $isEdit ? 'Cập nhật nhà cung cấp' : 'Thêm nhà cung cấp mới';
-// Dữ liệu mặc định nếu là thêm mới
-$n = $isEdit ? $ncc : [
-    'id' => '', 'ten' => '', 'nhom' => '', 'sdt' => '', 'email' => '', 
-    'dia_chi' => '', 'mst' => '', 'stk' => '', 'ghi_chu' => ''
-];
-?>
-<div class="px-6 py-6 pb-20 max-w-[1000px] mx-auto min-h-screen bg-gray-50">
-    
-    <!-- Tiêu đề & Trở về -->
-    <div class="flex items-center gap-4 mb-6">
-        <a href="<?= APP_URL ?>/admin/nha-cung-cap" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
-            <span class="iconify text-xl" data-icon="mdi:arrow-left"></span>
+<div class="p-6 space-y-6 bg-gray-50/50 min-h-screen relative pb-24">
+    <!-- Header -->
+    <div class="flex items-center gap-4">
+        <a href="<?= APP_URL ?>/admin/nha-cung-cap" class="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors focus:outline-none">
+            <span class="iconify text-2xl" data-icon="mdi:arrow-left"></span>
         </a>
         <div>
-            <h2 class="text-2xl font-bold text-gray-900 leading-tight"><?= $title ?></h2>
-            <p class="text-sm text-gray-500 mt-1"><?= $isEdit ? 'Cập nhật thông tin đối tác cung ứng.' : 'Khởi tạo hồ sơ đối tác cung ứng mới trên hệ thống.' ?></p>
+            <h1 class="text-2xl font-bold text-gray-900"><?= $isEdit ? 'Chỉnh sửa nhà cung cấp' : 'Thêm nhà cung cấp mới' ?></h1>
+            <p class="text-sm text-gray-500 mt-1"><?= $isEdit ? 'Cập nhật thông tin đối tác NCC001' : 'Điền thông tin để khởi tạo hồ sơ đối tác cung cấp mới.' ?></p>
         </div>
     </div>
 
-    <form onsubmit="event.preventDefault(); alert('Lưu thông tin thành công!'); window.location.href='<?= APP_URL ?>/admin/nha-cung-cap';" class="space-y-6">
+    <!-- Layout 2 cột: Trái (Nội dung chính) - Phải (Cấu hình) -->
+    <form id="supplierForm" class="grid grid-cols-1 lg:grid-cols-3 gap-6" onsubmit="event.preventDefault(); alert('Đã lưu thành công!'); window.location.href='<?= APP_URL ?>/admin/nha-cung-cap';">
         
-        <!-- Khối thông tin cơ bản -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <span class="iconify text-[#6B0D18]" data-icon="mdi:domain"></span> Thông tin cơ bản
-                </h3>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tên NCC -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tên nhà cung cấp <span class="text-red-500">*</span></label>
-                    <input type="text" required value="<?= $n['ten'] ?>" placeholder="VD: Xưởng gia công đá quý Hải Ngọc..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
+        <!-- Cột trái (Rộng hơn) -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Thông tin cơ bản -->
+            <?php require_once __DIR__ . '/../components/Admin/nha_cung_cap/form/form_basic.php'; ?>
 
-                <!-- Mã NCC -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Mã nhà cung cấp</label>
-                    <input type="text" value="<?= $n['id'] ?>" placeholder="Hệ thống tự sinh nếu để trống" <?= $isEdit ? 'readonly' : '' ?> class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm <?= $isEdit ? 'bg-gray-100 cursor-not-allowed' : '' ?>">
-                </div>
+            <!-- Thông tin liên hệ -->
+            <?php require_once __DIR__ . '/../components/Admin/nha_cung_cap/form/form_contact.php'; ?>
 
-                <!-- Nhóm NCC -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Nhóm đối tác <span class="text-red-500">*</span></label>
-                    <select required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                        <option value="">-- Chọn nhóm --</option>
-                        <option value="xuong_gia_cong" <?= $n['nhom'] === 'Xưởng gia công' ? 'selected' : '' ?>>Xưởng gia công</option>
-                        <option value="cho_da_quy" <?= $n['nhom'] === 'Chợ đá quý' ? 'selected' : '' ?>>Chợ đá quý nguyên liệu</option>
-                        <option value="doi_tac_vang_bac" <?= $n['nhom'] === 'Đối tác Vàng Bạc' ? 'selected' : '' ?>>Đối tác Vàng Bạc</option>
-                        <option value="khac">Khác</option>
-                    </select>
-                </div>
-            </div>
+            <!-- Nhóm hàng cung cấp -->
+            <?php require_once __DIR__ . '/../components/Admin/nha_cung_cap/form/form_categories.php'; ?>
         </div>
 
-        <!-- Khối liên hệ & Tài chính -->
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
-                <h3 class="font-bold text-gray-900 flex items-center gap-2">
-                    <span class="iconify text-[#6B0D18]" data-icon="mdi:card-account-details-outline"></span> Liên hệ & Tài khoản
-                </h3>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- SĐT -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Số điện thoại <span class="text-red-500">*</span></label>
-                    <input type="text" required value="<?= $n['sdt'] ?>" placeholder="SĐT liên hệ" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
+        <!-- Cột phải (Hẹp hơn) -->
+        <div class="lg:col-span-1 space-y-6">
+            <!-- Trạng thái & Ghi chú -->
+            <?php require_once __DIR__ . '/../components/Admin/nha_cung_cap/form/form_status.php'; ?>
 
-                <!-- Email -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" value="<?= $n['email'] ?>" placeholder="Email đối tác" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
-
-                <!-- Địa chỉ -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Địa chỉ</label>
-                    <input type="text" value="<?= $n['dia_chi'] ?>" placeholder="Địa chỉ chi tiết" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
-
-                <!-- MST -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Mã số thuế</label>
-                    <input type="text" value="<?= $n['mst'] ?>" placeholder="Nếu là công ty/tổ chức" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
-
-                <!-- STK Ngân hàng -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Số tài khoản thanh toán</label>
-                    <input type="text" value="<?= $n['stk'] ?>" placeholder="VD: 1903... - Techcombank - Nguyen Van A" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm">
-                </div>
-
-                <!-- Ghi chú -->
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Ghi chú thêm</label>
-                    <textarea rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 text-sm" placeholder="Các lưu ý khi làm việc với đối tác này..."><?= $n['ghi_chu'] ?></textarea>
-                </div>
-            </div>
+            <!-- Thông tin thanh toán -->
+            <?php require_once __DIR__ . '/../components/Admin/nha_cung_cap/form/form_payment.php'; ?>
         </div>
-
-        <!-- Nút lưu -->
-        <div class="flex items-center justify-end gap-3 pt-2">
-            <a href="<?= APP_URL ?>/admin/nha-cung-cap" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
-                Hủy bỏ
-            </a>
-            <button type="submit" class="px-6 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 transition-colors text-sm font-medium shadow-sm shadow-red-900/20 flex items-center gap-2">
-                <span class="iconify" data-icon="mdi:content-save-outline"></span> LƯU NHÀ CUNG CẤP
-            </button>
+        
+        <!-- Sticky Bottom Actions -->
+        <div class="fixed bottom-0 left-0 right-0 lg:left-64 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40">
+            <div class="max-w-[1600px] mx-auto flex items-center justify-between">
+                <div>
+                    <span class="text-sm text-gray-500"><span class="text-red-500">*</span> Các trường bắt buộc nhập</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="<?= APP_URL ?>/admin/nha-cung-cap" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors">
+                        Hủy bỏ
+                    </a>
+                    <?php if(!$isEdit): ?>
+                        <button type="button" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors">
+                            Lưu nháp
+                        </button>
+                    <?php endif; ?>
+                    <button type="submit" class="px-6 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium transition-colors shadow-sm flex items-center gap-2">
+                        <span class="iconify" data-icon="mdi:content-save"></span>
+                        <?= $isEdit ? 'Lưu cập nhật' : 'Lưu nhà cung cấp' ?>
+                    </button>
+                </div>
+            </div>
         </div>
     </form>
 </div>

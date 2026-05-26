@@ -1,61 +1,136 @@
 <?php
-// app/Controllers/Admin/NhaCungCapController.php
-
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 
 class NhaCungCapController extends Controller
 {
-    private function getMockDanhSach()
+    public function index()
     {
-        return [
+        // Mock data cho thống kê
+        $stats = [
+            'tong' => 36,
+            'dang_hop_tac' => 28,
+            'tam_ngung' => 5,
+            'ngung_hop_tac' => 3,
+            'tong_gia_tri' => 420000000,
+            'co_cong_no' => 4,
+            'danh_gia_tot' => 18
+        ];
+
+        // Mock data danh sách
+        $danhSachNCC = [
             [
                 'id' => 'NCC001',
-                'ten' => 'Xưởng Chế Tác Đá Quý Phú Nhuận',
-                'nhom' => 'Xưởng gia công',
-                'sdt' => '0988123456',
-                'dia_chi' => 'Phường 5, Quận Phú Nhuận, TP.HCM',
-                'tong_mua' => 1500000000,
-                'cong_no' => 200000000,
-                'trang_thai' => 'Đang giao dịch'
+                'ten' => 'Công ty Ngọc An Phát',
+                'loai' => 'Đá / ngọc thô',
+                'khu_vuc' => 'TP.HCM',
+                'nguoi_lien_he' => 'Anh Minh',
+                'chuc_vu' => 'Kinh doanh',
+                'sdt' => '0901234567',
+                'email' => 'minh@ngocanphat.com',
+                'nhom_hang' => ['Ngọc bích', 'Thạch anh', 'Ruby'],
+                'lan_nhap_gan_nhat' => '18/05/2026',
+                'phieu_nhap_gan_nhat' => 'NK202600123',
+                'tong_phieu' => 24,
+                'tong_gia_tri' => 85000000,
+                'cong_no' => 12500000,
+                'han_no' => '30/05/2026',
+                'danh_gia' => 4.8,
+                'trang_thai' => 'Đang hợp tác',
+                'ngay_cap_nhat' => '18/05/2026',
+                'nguoi_cap_nhat' => 'Hải Admin'
             ],
             [
                 'id' => 'NCC002',
-                'ten' => 'Đại Lý Vàng Bạc Đá Quý Doji',
-                'nhom' => 'Đối tác Vàng Bạc',
-                'sdt' => '0909123456',
-                'dia_chi' => 'Lê Ngọc Hân, Hai Bà Trưng, Hà Nội',
-                'tong_mua' => 850000000,
+                'ten' => 'Xưởng Vòng Phong Thủy Minh Châu',
+                'loai' => 'Sản phẩm hoàn thiện',
+                'khu_vuc' => 'Hà Nội',
+                'nguoi_lien_he' => 'Chị Lan',
+                'chuc_vu' => 'Quản lý đơn hàng',
+                'sdt' => '0987654321',
+                'email' => 'lan@minhchau.vn',
+                'nhom_hang' => ['Vòng tay', 'Chuỗi hạt', 'Charm'],
+                'lan_nhap_gan_nhat' => '15/05/2026',
+                'phieu_nhap_gan_nhat' => 'NK202600110',
+                'tong_phieu' => 42,
+                'tong_gia_tri' => 150000000,
                 'cong_no' => 0,
-                'trang_thai' => 'Đang giao dịch'
+                'han_no' => null,
+                'danh_gia' => 4.9,
+                'trang_thai' => 'Đang hợp tác',
+                'ngay_cap_nhat' => '15/05/2026',
+                'nguoi_cap_nhat' => 'Hải Admin'
             ],
             [
                 'id' => 'NCC003',
-                'ten' => 'Kho Đá Thạch Anh Lục Yên',
-                'nhom' => 'Chợ đá quý',
-                'sdt' => '0912345678',
-                'dia_chi' => 'Chợ Đá Quý Lục Yên, Yên Bái',
-                'tong_mua' => 420000000,
-                'cong_no' => -50000000, // Đã trả trước
-                'trang_thai' => 'Ngừng giao dịch'
+                'ten' => 'Xưởng Mộc Trầm Hương',
+                'loai' => 'Sản phẩm hoàn thiện',
+                'khu_vuc' => 'Đà Nẵng',
+                'nguoi_lien_he' => 'Anh Quốc',
+                'chuc_vu' => 'Chủ xưởng',
+                'sdt' => '0933112233',
+                'email' => 'quoc.tramhuong@gmail.com',
+                'nhom_hang' => ['Vòng trầm', 'Nhang trầm'],
+                'lan_nhap_gan_nhat' => '02/04/2026',
+                'phieu_nhap_gan_nhat' => 'NK202600085',
+                'tong_phieu' => 15,
+                'tong_gia_tri' => 45000000,
+                'cong_no' => 5000000,
+                'han_no' => '20/05/2026',
+                'danh_gia' => 3.5,
+                'trang_thai' => 'Tạm ngừng',
+                'ngay_cap_nhat' => '10/05/2026',
+                'nguoi_cap_nhat' => 'Quản lý Kho'
             ],
-        ];
-    }
-
-    public function index()
-    {
-        $danhSach = $this->getMockDanhSach();
-        
-        $stats = [
-            'tong_ncc' => count($danhSach),
-            'tong_no' => 150000000 // 150tr (200tr nợ - 50tr trả trước)
+            [
+                'id' => 'NCC004',
+                'ten' => 'Công ty Bao Bì Tinh Tế',
+                'loai' => 'Vật tư đóng gói',
+                'khu_vuc' => 'TP.HCM',
+                'nguoi_lien_he' => 'Chị Phương',
+                'chuc_vu' => 'Sale',
+                'sdt' => '0911223344',
+                'email' => 'phuong@baobitnhte.vn',
+                'nhom_hang' => ['Hộp quà', 'Túi nhung', 'Ruy băng'],
+                'lan_nhap_gan_nhat' => null,
+                'phieu_nhap_gan_nhat' => null,
+                'tong_phieu' => 0,
+                'tong_gia_tri' => 0,
+                'cong_no' => 0,
+                'han_no' => null,
+                'danh_gia' => 0,
+                'trang_thai' => 'Chờ xác minh',
+                'ngay_cap_nhat' => '25/05/2026',
+                'nguoi_cap_nhat' => 'Hải Admin'
+            ],
+            [
+                'id' => 'NCC005',
+                'ten' => 'Kho Đá Quý SJC',
+                'loai' => 'Đá quý',
+                'khu_vuc' => 'Hà Nội',
+                'nguoi_lien_he' => '',
+                'chuc_vu' => '',
+                'sdt' => '',
+                'email' => '',
+                'nhom_hang' => [],
+                'lan_nhap_gan_nhat' => '10/12/2025',
+                'phieu_nhap_gan_nhat' => 'NK202500999',
+                'tong_phieu' => 5,
+                'tong_gia_tri' => 120000000,
+                'cong_no' => 0,
+                'han_no' => null,
+                'danh_gia' => 2.5,
+                'trang_thai' => 'Ngừng hợp tác',
+                'ngay_cap_nhat' => '15/01/2026',
+                'nguoi_cap_nhat' => 'Hải Admin'
+            ]
         ];
 
         $this->view('admin_nha_cung_cap', [
             'current_page' => 'nha_cung_cap',
-            'danhSach' => $danhSach,
-            'stats' => $stats
+            'stats' => $stats,
+            'danhSachNCC' => $danhSachNCC
         ], 'admin');
     }
 
@@ -63,62 +138,46 @@ class NhaCungCapController extends Controller
     {
         $this->view('admin_nha_cung_cap_them', [
             'current_page' => 'nha_cung_cap',
-            'mode' => 'create'
+            'isEdit' => false
         ], 'admin');
     }
 
     public function edit($id)
     {
-        // Mock data
-        $ncc = [
-            'id' => $id,
-            'ten' => 'Xưởng Chế Tác Đá Quý Phú Nhuận',
-            'nhom' => 'Xưởng gia công',
-            'sdt' => '0988123456',
-            'email' => 'xuongpn@gmail.com',
-            'dia_chi' => 'Phường 5, Quận Phú Nhuận, TP.HCM',
-            'mst' => '0312345678',
-            'stk' => '123456789 - VCB - Nguyen Van A',
-            'ghi_chu' => 'Giao hàng đúng hẹn, thợ giỏi'
-        ];
-
         $this->view('admin_nha_cung_cap_them', [
             'current_page' => 'nha_cung_cap',
-            'mode' => 'edit',
-            'ncc' => $ncc
+            'isEdit' => true,
+            'nccId' => $id
         ], 'admin');
     }
 
+    // API endpoints cho Drawer
     public function show($id)
     {
-        $ncc = [
+        // Mock data chi tiết
+        $data = [
             'id' => $id,
-            'ten' => 'Xưởng Chế Tác Đá Quý Phú Nhuận',
-            'nhom' => 'Xưởng gia công',
-            'sdt' => '0988123456',
-            'email' => 'xuongpn@gmail.com',
-            'dia_chi' => 'Phường 5, Quận Phú Nhuận, TP.HCM',
-            'stk' => '123456789 - VCB - Nguyen Van A',
-            'tong_mua' => 1500000000,
-            'da_tra' => 1300000000,
-            'cong_no' => 200000000
+            'ten' => 'Công ty Ngọc An Phát',
+            'loai' => 'Đá / ngọc thô',
+            'khu_vuc' => 'TP.HCM',
+            'nguoi_lien_he' => 'Anh Minh',
+            'chuc_vu' => 'Kinh doanh',
+            'sdt' => '0901234567',
+            'email' => 'minh@ngocanphat.com',
+            'zalo' => '0901234567',
+            'website' => 'https://ngocanphat.com',
+            'dia_chi' => '123 Đường 3/2, Quận 10, TP.HCM',
+            'gio_lam_viec' => '8:00 - 17:00 (T2-T7)',
+            'nhom_hang' => ['Ngọc bích', 'Thạch anh', 'Ruby', 'Sapphire'],
+            'tong_phieu' => 24,
+            'tong_gia_tri' => 85000000,
+            'cong_no' => 12500000,
+            'han_no' => '30/05/2026',
+            'danh_gia' => 4.8,
+            'trang_thai' => 'Đang hợp tác'
         ];
-
-        $lichSuNhap = [
-            ['id' => 'PN2310-001', 'ngay' => '15/10/2023', 'tong_tien' => 500000000, 'da_tra' => 400000000, 'con_no' => 100000000, 'trang_thai' => 'Nợ 1 phần'],
-            ['id' => 'PN2309-005', 'ngay' => '20/09/2023', 'tong_tien' => 1000000000, 'da_tra' => 900000000, 'con_no' => 100000000, 'trang_thai' => 'Nợ 1 phần']
-        ];
-
-        $lichSuCongNo = [
-            ['ngay' => '15/10/2023', 'loai' => 'Nhập nợ', 'chung_tu' => 'PN2310-001', 'so_tien' => 500000000, 'du_no_cuoi' => 300000000],
-            ['ngay' => '16/10/2023', 'loai' => 'Thanh toán', 'chung_tu' => 'PC2310-002', 'so_tien' => -100000000, 'du_no_cuoi' => 200000000]
-        ];
-
-        $this->view('admin_nha_cung_cap_chitiet', [
-            'current_page' => 'nha_cung_cap',
-            'ncc' => $ncc,
-            'lichSuNhap' => $lichSuNhap,
-            'lichSuCongNo' => $lichSuCongNo
-        ], 'admin');
+        
+        echo json_encode(['status' => 'success', 'data' => $data]);
     }
 }
+
