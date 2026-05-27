@@ -28,14 +28,14 @@
             <p class="text-sm text-gray-500 mt-1 font-mono">Mã SP: <?= $san_pham['ma_sp'] ?> &bull; Cập nhật lần cuối: <?= $san_pham['ngay_cap_nhat'] ?></p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
+            <a href="<?= APP_URL ?>/admin/san-pham/sua/<?= $san_pham['id'] ?>" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors text-sm font-medium shadow-sm">
                 <span class="iconify text-lg text-gray-500" data-icon="mdi:ticket-percent-outline"></span>
                 Tạo khuyến mãi
-            </button>
-            <button class="flex items-center gap-2 px-4 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] transition-colors text-sm font-medium shadow-sm">
+            </a>
+            <a href="<?= APP_URL ?>/admin/san-pham/sua/<?= $san_pham['id'] ?>" class="flex items-center gap-2 px-4 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] transition-colors text-sm font-medium shadow-sm">
                 <span class="iconify text-lg" data-icon="mdi:pencil-outline"></span>
                 Chỉnh sửa
-            </button>
+            </a>
         </div>
     </div>
 

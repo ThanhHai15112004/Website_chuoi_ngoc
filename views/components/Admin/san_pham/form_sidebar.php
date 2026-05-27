@@ -27,17 +27,21 @@
                                 </div>
                             </div>
                         <?php else: ?>
-                            <div class="border-2 border-dashed border-gray-300 rounded-[18px] p-6 text-center hover:bg-gray-50 hover:border-[#6B0D18] transition-colors cursor-pointer group mb-2 aspect-square flex flex-col items-center justify-center">
-                                <span class="iconify text-4xl text-gray-400 group-hover:text-[#6B0D18] mb-2" data-icon="mdi:image-plus-outline"></span>
-                                <p class="text-sm font-medium text-gray-600 group-hover:text-[#6B0D18]">Tải ảnh lên</p>
-                                <p class="text-[11px] text-gray-400 mt-1">PNG, JPG, WEBP tới 5MB</p>
+                            <div id="imagePreviewContainer" class="relative border-2 border-dashed border-gray-300 rounded-[18px] p-6 text-center hover:bg-gray-50 hover:border-[#6B0D18] transition-colors cursor-pointer group mb-2 aspect-square flex flex-col items-center justify-center overflow-hidden">
+                                <input type="file" name="anh_chinh" id="anh_chinh_input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                <div id="imagePlaceholder">
+                                    <span class="iconify text-4xl text-gray-400 group-hover:text-[#6B0D18] mb-2" data-icon="mdi:image-plus-outline"></span>
+                                    <p class="text-sm font-medium text-gray-600 group-hover:text-[#6B0D18]">Tải ảnh lên</p>
+                                    <p class="text-[11px] text-gray-400 mt-1">PNG, JPG, WEBP tới 5MB</p>
+                                </div>
+                                <img id="imagePreview" src="#" alt="Preview" class="hidden absolute inset-0 w-full h-full object-cover">
                             </div>
                         <?php endif; ?>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Ảnh phụ (Tối đa 5 ảnh)</label>
-                        <div class="grid grid-cols-4 gap-2">
+                        <div class="grid grid-cols-4 gap-2" id="anhPhuPreviewContainer">
                             <?php if($is_edit && isset($sp['anh_phu'])): ?>
                                 <?php foreach($sp['anh_phu'] as $anh): ?>
                                     <div class="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
@@ -50,7 +54,8 @@
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
-                            <div class="border border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 hover:border-[#6B0D18] hover:text-[#6B0D18] transition-colors cursor-pointer aspect-square text-gray-400">
+                            <div class="relative border border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50 hover:border-[#6B0D18] hover:text-[#6B0D18] transition-colors cursor-pointer aspect-square text-gray-400">
+                                <input type="file" name="anh_phu[]" id="anh_phu_input" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                 <span class="iconify text-xl" data-icon="mdi:plus"></span>
                             </div>
                         </div>
@@ -66,16 +71,6 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Giá bán (VNĐ) <span class="text-red-500">*</span></label>
                         <input type="number" name="gia_ban" value="<?= $sp['gia_ban'] ?? '' ?>" placeholder="0" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm font-bold text-gray-900">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Giá khuyến mãi (VNĐ)</label>
-                        <input type="number" name="gia_khuyen_mai" value="<?= $sp['gia_khuyen_mai'] ?? '' ?>" placeholder="0" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm font-bold text-[#6B0D18]">
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Số lượng trong kho <span class="text-red-500">*</span></label>
-                        <input type="number" name="ton_kho" value="<?= $sp['ton_kho'] ?? '' ?>" placeholder="0" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
                     </div>
                 </div>
             </div>
@@ -99,3 +94,61 @@
                     <?php endforeach; ?>
                 </div>
             </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const input = document.getElementById('anh_chinh_input');
+                    const preview = document.getElementById('imagePreview');
+                    const placeholder = document.getElementById('imagePlaceholder');
+                    const container = document.getElementById('imagePreviewContainer');
+
+                    if(input) {
+                        input.addEventListener('change', function() {
+                            const file = this.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    preview.src = e.target.result;
+                                    preview.classList.remove('hidden');
+                                    placeholder.classList.add('hidden');
+                                    container.classList.remove('p-6', 'border-dashed');
+                                }
+                                reader.readAsDataURL(file);
+                            } else {
+                                preview.src = '#';
+                                preview.classList.add('hidden');
+                                placeholder.classList.remove('hidden');
+                                container.classList.add('p-6', 'border-dashed');
+                            }
+                        });
+                    }
+
+                    const anhPhuInput = document.getElementById('anh_phu_input');
+                    const anhPhuContainer = document.getElementById('anhPhuPreviewContainer');
+
+                    if(anhPhuInput) {
+                        anhPhuInput.addEventListener('change', function() {
+                            const existingPreviews = anhPhuContainer.querySelectorAll('.new-preview');
+                            existingPreviews.forEach(el => el.remove());
+
+                            Array.from(this.files).slice(0, 5).forEach(file => {
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    const div = document.createElement('div');
+                                    div.className = 'new-preview relative aspect-square rounded-lg overflow-hidden border border-gray-200 group';
+                                    div.innerHTML = `
+                                        <img src="${e.target.result}" class="w-full h-full object-cover">
+                                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button type="button" class="w-6 h-6 bg-white rounded-full flex items-center justify-center text-red-600 hover:scale-110 transition-transform">
+                                                <span class="iconify text-xs" data-icon="mdi:trash-can-outline"></span>
+                                            </button>
+                                        </div>
+                                    `;
+                                    anhPhuContainer.insertBefore(div, anhPhuInput.parentElement);
+                                }
+                                reader.readAsDataURL(file);
+                            });
+                        });
+                    }
+                });
+            </script>

@@ -10,14 +10,14 @@ class Database {
     private $connection;
 
     private function __construct() {
-        // Load from env or config in a real app
-        $host = '127.0.0.1';
-        $db   = 'web_ban_hang_chuoi_ngoc';
-        $user = 'root';
-        $pass = '';
-        $charset = 'utf8mb4';
+        $host = $_ENV['DB_HOST'];
+        $port = $_ENV['DB_PORT'];
+        $db   = $_ENV['DB_DATABASE'];
+        $user = $_ENV['DB_USERNAME'];
+        $pass = $_ENV['DB_PASSWORD'];
+        $charset = $_ENV['DB_CHARSET'];
 
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

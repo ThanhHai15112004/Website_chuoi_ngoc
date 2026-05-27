@@ -278,15 +278,13 @@
 
     function submitHideModal() {
         if(currentRow) {
-            // Đổi trạng thái hiển thị
-            const statusBadge = currentRow.querySelector('td:nth-child(8) span');
-            if(statusBadge) {
-                statusBadge.className = 'text-[11px] font-medium px-2 py-1 rounded-full border bg-gray-100 text-gray-600 border-gray-200 inline-block whitespace-nowrap';
-                statusBadge.textContent = 'Đang ẩn';
-            }
+            const id = currentRow.dataset.id;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= APP_URL ?>/admin/san-pham/an-hien/' + id;
+            document.body.appendChild(form);
+            form.submit();
         }
-        closeModal('hideModal');
-        showToast('Đã ẩn sản phẩm', 'success');
     }
 
     function openDeleteModal(title, soldCount, btn) {
@@ -309,13 +307,13 @@
 
     function submitDeleteModal() {
         if(currentRow) {
-            currentRow.style.opacity = '0';
-            setTimeout(() => {
-                currentRow.remove();
-            }, 300);
+            const id = currentRow.dataset.id;
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '<?= APP_URL ?>/admin/san-pham/xoa/' + id;
+            document.body.appendChild(form);
+            form.submit();
         }
-        closeModal('deleteModal');
-        showToast('Đã xóa sản phẩm', 'success');
     }
 
     function toggleActionMenu(button) {

@@ -18,10 +18,3 @@ define('APP_URL', rtrim($giao_thuc . "://" . $may_chu . $duong_dan_goc, '/'));
 define('QUYEN_QUAN_TRI', 1);
 define('QUYEN_NGUOI_DUNG', 2);
 
-class DonHang {
-    public const TRANG_THAI_CHO_XU_LY = 0;
-    public const TRANG_THAI_DANG_XU_LY = 1;
-    public const TRANG_THAI_DA_GIAO_CHO_DON_VI_VAN_CHUYEN = 2;
-    public const TRANG_THAI_DA_GIAO_HANG = 3;
-    public const TRANG_THAI_DA_HUY = 4;
-}

@@ -7,9 +7,15 @@ $router->get('/admin', 'Admin\DashboardController@index');
 $router->get('/admin/dashboard', 'Admin\DashboardController@index');
 $router->get('/admin/dang-nhap', 'Admin\AuthController@login');
 $router->get('/admin/san-pham', 'Admin\SanPhamController@index');
-$router->get('/admin/san-pham/chi-tiet', 'Admin\SanPhamController@show');
+$router->get('/admin/san-pham/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@show');
 $router->get('/admin/san-pham/them', 'Admin\SanPhamController@create');
-$router->get('/admin/san-pham/sua', 'Admin\SanPhamController@edit');
+$router->post('/admin/san-pham/them', 'Admin\SanPhamController@store');
+$router->get('/admin/san-pham/sua/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@edit');
+$router->post('/admin/san-pham/sua/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@update');
+$router->post('/admin/san-pham/an-hien/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@toggleStatus');
+$router->post('/admin/san-pham/xoa/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@delete');
+$router->post('/admin/san-pham/nhan-ban/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@duplicate');
+
 $router->get('/admin/danh-muc', 'Admin\DanhMucController@index');
 $router->get('/admin/don-hang', 'Admin\DonHangController@index');
 $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@show');

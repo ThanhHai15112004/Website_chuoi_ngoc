@@ -1,4 +1,4 @@
-                            <tr class="hover:bg-gray-50/50 transition-colors group">
+                            <tr class="hover:bg-gray-50/50 transition-colors group" data-id="<?= $sp['id'] ?>">
                                 <td class="p-4 text-center">
                                     <input type="checkbox" class="row-checkbox w-4 h-4 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18] cursor-pointer">
                                 </td>
@@ -88,10 +88,10 @@
                                 </td>
                                 <td class="p-4">
                                     <div class="flex items-center justify-center gap-1">
-                                        <a href="<?= APP_URL ?>/admin/san-pham/chi-tiet" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 transition-colors" title="Xem chi tiết">
+                                        <a href="<?= APP_URL ?>/admin/san-pham/chi-tiet/<?= $sp['id'] ?>" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 transition-colors" title="Xem chi tiết">
                                             <span class="iconify text-lg" data-icon="mdi:eye-outline"></span>
                                         </a>
-                                        <a href="<?= APP_URL ?>/admin/san-pham/sua" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 transition-colors" title="Chỉnh sửa">
+                                        <a href="<?= APP_URL ?>/admin/san-pham/sua/<?= $sp['id'] ?>" class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 transition-colors" title="Chỉnh sửa">
                                             <span class="iconify text-lg" data-icon="mdi:pencil-outline"></span>
                                         </a>
                                         
@@ -103,12 +103,11 @@
                                             
                                             <!-- Dropdown Menu -->
                                             <div class="w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-[9999] hidden action-menu py-1">
-                                                <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
-                                                    <span class="iconify text-gray-400" data-icon="mdi:content-copy"></span> Nhân bản SP
-                                                </a>
-                                                <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
-                                                    <span class="iconify text-gray-400" data-icon="mdi:ticket-percent-outline"></span> Tạo khuyến mãi
-                                                </a>
+                                                <form method="POST" action="<?= APP_URL ?>/admin/san-pham/nhan-ban/<?= $sp['id'] ?>" class="w-full">
+                                                    <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
+                                                        <span class="iconify text-gray-400" data-icon="mdi:content-copy"></span> Nhân bản SP
+                                                    </button>
+                                                </form>
                                                 <?php if($tt === 'Đang hiển thị'): ?>
                                                 <button onclick="openHideModal('<?= $sp['ten_sp'] ?>', this)" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                                     <span class="iconify text-gray-400" data-icon="mdi:eye-off-outline"></span> Ẩn sản phẩm

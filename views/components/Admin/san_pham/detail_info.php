@@ -9,7 +9,7 @@
                 <!-- Hình ảnh -->
                 <div class="w-full md:w-5/12 flex flex-col gap-3">
                     <div class="aspect-square rounded-[18px] bg-gray-50 border border-gray-100 overflow-hidden relative group">
-                        <img src="<?= $san_pham['anh_chinh'] ?>" alt="<?= $san_pham['ten_sp'] ?>" class="w-full h-full object-cover">
+                        <img id="mainImage" src="<?= $san_pham['anh_chinh'] ?>" alt="<?= $san_pham['ten_sp'] ?>" class="w-full h-full object-cover transition-all duration-300">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-900 shadow-lg hover:scale-110 transition-transform">
                                 <span class="iconify" data-icon="mdi:magnify-plus-outline"></span>
@@ -17,17 +17,17 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3 overflow-x-auto pb-1 custom-scrollbar">
-                        <div class="w-16 h-16 rounded-xl border-2 border-[#6B0D18] flex-shrink-0 cursor-pointer overflow-hidden p-0.5">
+                        <div class="w-16 h-16 rounded-xl border-2 border-[#6B0D18] flex-shrink-0 cursor-pointer overflow-hidden p-0.5 gallery-thumb" onclick="swapMainImage(this)">
                             <img src="<?= $san_pham['anh_chinh'] ?>" class="w-full h-full object-cover rounded-lg">
                         </div>
                         <?php foreach($san_pham['anh_phu'] as $anh): ?>
-                        <div class="w-16 h-16 rounded-xl border border-gray-200 flex-shrink-0 cursor-pointer overflow-hidden opacity-70 hover:opacity-100 transition-opacity">
+                        <div class="w-16 h-16 rounded-xl border border-gray-200 flex-shrink-0 cursor-pointer overflow-hidden opacity-70 hover:opacity-100 transition-opacity gallery-thumb" onclick="swapMainImage(this)">
                             <img src="<?= $anh ?>" class="w-full h-full object-cover">
                         </div>
                         <?php endforeach; ?>
-                        <div class="w-16 h-16 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-[#6B0D18] hover:border-[#6B0D18] hover:bg-red-50 flex-shrink-0 cursor-pointer transition-colors">
+                        <a href="<?= APP_URL ?>/admin/san-pham/sua/<?= $san_pham['id'] ?>" class="w-16 h-16 rounded-xl border border-dashed border-gray-300 flex items-center justify-center text-gray-400 hover:text-[#6B0D18] hover:border-[#6B0D18] hover:bg-red-50 flex-shrink-0 cursor-pointer transition-colors">
                             <span class="iconify text-2xl" data-icon="mdi:plus"></span>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
@@ -75,9 +75,9 @@
             <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100">
                 <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
                     <h3 class="text-lg font-bold text-gray-900">Mô tả chi tiết (Bài viết)</h3>
-                    <button class="text-sm font-medium text-[#6B0D18] hover:underline flex items-center gap-1">
+                    <a href="<?= APP_URL ?>/admin/san-pham/sua/<?= $san_pham['id'] ?>" class="text-sm font-medium text-[#6B0D18] hover:underline flex items-center gap-1">
                         Sửa bài viết <span class="iconify" data-icon="mdi:pencil-outline"></span>
-                    </button>
+                    </a>
                 </div>
                 <div class="prose prose-sm max-w-none text-gray-700 prose-p:leading-relaxed">
                     <?= $san_pham['mo_ta_chi_tiet'] ?>
@@ -238,3 +238,19 @@
             </div>
         </div>
     </div>
+
+<script>
+    function swapMainImage(element) {
+        const newSrc = element.querySelector('img').src;
+        document.getElementById('mainImage').src = newSrc;
+        
+        const thumbs = document.querySelectorAll('.gallery-thumb');
+        thumbs.forEach(thumb => {
+            thumb.className = "w-16 h-16 rounded-xl border border-gray-200 flex-shrink-0 cursor-pointer overflow-hidden opacity-70 hover:opacity-100 transition-opacity gallery-thumb";
+            thumb.querySelector('img').classList.remove('rounded-lg');
+        });
+        
+        element.className = "w-16 h-16 rounded-xl border-2 border-[#6B0D18] flex-shrink-0 cursor-pointer overflow-hidden p-0.5 gallery-thumb";
+        element.querySelector('img').classList.add('rounded-lg');
+    }
+</script>

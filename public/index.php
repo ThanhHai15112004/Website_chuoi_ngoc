@@ -7,6 +7,9 @@
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../app/Core/Helpers.php';
 
+// Load Environment variables
+loadEnv(__DIR__ . '/../.env');
+
 // Simple Autoloader
 spl_autoload_register(function ($class) {
     // Convert namespace 'App\Core\Router' to 'app/Core/Router.php'
