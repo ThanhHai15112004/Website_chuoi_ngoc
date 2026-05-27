@@ -81,4 +81,6 @@ $router->get('/admin/vai-tro', 'Admin\NhanSuController@roles');
 
 $router->get('/admin/nhat-ky-hoat-dong', 'Admin\NhatKyHoatDongController@index');
 
+$router->get('/admin/tai-khoan', 'Admin\TaiKhoanController@index');
+
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)

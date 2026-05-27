@@ -1,88 +1,116 @@
-<?php
-// views/pages/admin_notification.php
-?>
-<div class="space-y-6 animate-[fadeInPage_0.3s_ease-out]">
+<div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 font-luxury">Hộp thư / Thông báo</h2>
-            <p class="text-sm text-gray-500 mt-1">Quản lý thông báo hệ thống, tin nhắn gửi khách hàng và các cảnh báo cần xử lý.</p>
+            <h1 class="text-2xl font-bold text-gray-900">Hộp thư & Thông báo</h1>
+            <p class="text-sm text-gray-500 mt-1">Quản lý toàn bộ tin nhắn và thông báo từ hệ thống</p>
         </div>
-        <div class="flex items-center gap-3">
-            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm flex items-center gap-2">
-                <span class="iconify" data-icon="mdi:email-fast-outline"></span>
-                Gửi hàng loạt
+        <div class="flex gap-2">
+            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-red-900 transition-colors flex items-center gap-2 shadow-sm">
+                <span class="iconify text-lg" data-icon="mdi:check-all"></span>
+                Đánh dấu tất cả đã đọc
             </button>
-            <a href="<?= APP_URL ?>/admin/notification/them" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md shadow-[#6B0D18]/20 flex items-center gap-2">
-                <span class="iconify" data-icon="mdi:plus"></span>
-                Tạo thông báo
+            <a href="<?= APP_URL ?>/admin/notification/them" class="px-4 py-2 bg-[#8B0000] text-white rounded-lg text-sm font-medium hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
+                <span class="iconify text-lg" data-icon="mdi:plus"></span>
+                Gửi thông báo mới
             </a>
         </div>
     </div>
 
-<?php include __DIR__ . '/../components/Admin/thong_bao/stats_cards.php'; ?>
+    <!-- Main Content -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row min-h-[600px]">
+        <!-- Sidebar / Filter Tabs (Desktop vertical, Mobile horizontal) -->
+        <?php require_once __DIR__ . '/../components/Admin/thong_bao/tabs_filter.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/thong_bao/search_filter.php'; ?>
-
-    <!-- Action Bar & Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <!-- Bulk Actions -->
-        <div class="p-3 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-            <span class="text-sm text-gray-500 px-2 border-r border-gray-300">Đã chọn: <strong class="text-gray-800" id="selected-count">0</strong></span>
-            <button class="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50 flex items-center gap-1" disabled><span class="iconify text-base" data-icon="mdi:email-open-outline"></span> Đánh dấu đã đọc</button>
-            <button class="px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50 flex items-center gap-1" disabled><span class="iconify text-base" data-icon="mdi:archive-arrow-down-outline"></span> Lưu trữ</button>
-            <button class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 rounded-md hover:bg-red-50 hover:border-red-200 transition-colors text-sm font-medium disabled:opacity-50 flex items-center gap-1" disabled><span class="iconify text-base" data-icon="mdi:trash-can-outline"></span> Xóa</button>
-        </div>
-
-        <!-- Table Responsive Container -->
-        <div class="overflow-x-auto min-h-[400px]">
-            <table class="w-full text-left text-sm text-gray-600 whitespace-nowrap">
-                <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-semibold sticky top-0 z-10">
-                    <tr>
-                        <th class="px-4 py-3 w-10">
-                            <input type="checkbox" class="w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18]">
-                        </th>
-                        <th class="px-4 py-3">Loại</th>
-                        <th class="px-4 py-3 w-[250px]">Tiêu đề</th>
-                        <th class="px-4 py-3">Người nhận</th>
-                        <th class="px-4 py-3 min-w-[200px]">Nội dung ngắn</th>
-                        <th class="px-4 py-3">Trạng thái gửi</th>
-                        <th class="px-4 py-3">Đã đọc</th>
-                        <th class="px-4 py-3">Người tạo</th>
-                        <th class="px-4 py-3">Thời gian</th>
-                        <th class="px-4 py-3 text-right">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-<?php include __DIR__ . '/../components/Admin/thong_bao/table_row.php'; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-white">
-            <div class="text-sm text-gray-500 flex items-center gap-2">
-                <span>Hiển thị</span>
-                <select class="border border-gray-200 rounded p-1 text-sm bg-white focus:outline-none">
-                    <option>10</option>
-                    <option>20</option>
-                    <option>50</option>
-                </select>
-                <span>trong 1.248 thông báo</span>
+        <!-- Messages List -->
+        <div class="flex-1 flex flex-col border-l border-gray-200 bg-gray-50/30 relative overflow-hidden">
+            <!-- Toolbar -->
+            <div class="px-4 py-3 border-b border-gray-200 bg-white flex items-center justify-between sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2 cursor-pointer group">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" id="selectAll" class="peer sr-only">
+                            <div class="w-5 h-5 border-2 border-gray-300 rounded transition-all peer-checked:bg-red-600 peer-checked:border-red-600 group-hover:border-red-400"></div>
+                            <span class="iconify absolute text-white opacity-0 peer-checked:opacity-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" data-icon="mdi:check"></span>
+                        </div>
+                    </label>
+                    <div class="h-6 w-px bg-gray-300 mx-1 hidden sm:block"></div>
+                    <button class="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors tooltip" title="Tải lại">
+                        <span class="iconify text-xl" data-icon="mdi:refresh"></span>
+                    </button>
+                    <div class="flex gap-1 hidden" id="bulkActions">
+                        <button class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors tooltip" title="Đánh dấu đã đọc">
+                            <span class="iconify text-xl" data-icon="mdi:email-open-outline"></span>
+                        </button>
+                        <button class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors tooltip" title="Xóa">
+                            <span class="iconify text-xl" data-icon="mdi:delete-outline"></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <span class="hidden sm:inline">1-5 của 24</span>
+                    <div class="flex items-center gap-1">
+                        <button class="p-1 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors disabled:opacity-50" disabled>
+                            <span class="iconify text-xl" data-icon="mdi:chevron-left"></span>
+                        </button>
+                        <button class="p-1 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors">
+                            <span class="iconify text-xl" data-icon="mdi:chevron-right"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center gap-1">
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded-md text-sm font-medium shadow-sm">1</button>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">2</button>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">3</button>
-                <span class="px-2 text-gray-400">...</span>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">125</button>
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+
+            <!-- List -->
+            <div class="flex-1 overflow-y-auto">
+                <?php require_once __DIR__ . '/../components/Admin/thong_bao/table_list.php'; ?>
             </div>
         </div>
     </div>
 </div>
 
-<?php include __DIR__ . '/../components/Admin/thong_bao/modals.php'; ?>
+<!-- Drawer View Message -->
+<?php require_once __DIR__ . '/../components/Admin/thong_bao/drawer_detail.php'; ?>
 
-<?php include __DIR__ . '/../components/Admin/thong_bao/scripts.php'; ?>
+<!-- Script for Checkbox logic -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectAll = document.getElementById('selectAll');
+        const itemCheckboxes = document.querySelectorAll('.msg-checkbox');
+        const bulkActions = document.getElementById('bulkActions');
+
+        function updateBulkActions() {
+            const checkedCount = document.querySelectorAll('.msg-checkbox:checked').length;
+            if (checkedCount > 0) {
+                bulkActions.classList.remove('hidden');
+                selectAll.checked = checkedCount === itemCheckboxes.length;
+            } else {
+                bulkActions.classList.add('hidden');
+                selectAll.checked = false;
+            }
+        }
+
+        if(selectAll) {
+            selectAll.addEventListener('change', (e) => {
+                itemCheckboxes.forEach(cb => {
+                    cb.checked = e.target.checked;
+                });
+                updateBulkActions();
+            });
+        }
+
+        itemCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkActions);
+        });
+
+        // Tự động mở thông báo nếu có tham số open_id trên URL
+        <?php if(isset($_GET['open_id'])): ?>
+            const openId = <?= json_encode($_GET['open_id']) ?>;
+            setTimeout(() => {
+                if(typeof openNotificationDetail === 'function') {
+                    openNotificationDetail(openId);
+                }
+            }, 300); // Đợi DOM & Drawer transition sẵn sàng
+        <?php endif; ?>
+    });
+</script>
