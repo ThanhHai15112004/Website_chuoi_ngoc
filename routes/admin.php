@@ -51,6 +51,7 @@ $router->get('/admin/nhap-kho/kiem-hang/([a-zA-Z0-9_-]+)', 'Admin\NhapKhoControl
 $router->get('/admin/xuat-kho', 'Admin\XuatKhoController@index');
 $router->get('/admin/xuat-kho/them', 'Admin\XuatKhoController@create');
 $router->get('/admin/xuat-kho/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\XuatKhoController@show');
+$router->get('/admin/xuat-kho/chuan-bi/([a-zA-Z0-9_-]+)', 'Admin\XuatKhoController@prepare');
 $router->get('/admin/thuyen-chuyen-kho', 'Admin\ThuyenChuyenController@index');
 $router->get('/admin/thuyen-chuyen-kho/them', 'Admin\ThuyenChuyenController@create');
 $router->get('/admin/thuyen-chuyen-kho/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\ThuyenChuyenController@show');

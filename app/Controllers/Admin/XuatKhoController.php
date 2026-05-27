@@ -117,4 +117,16 @@ class XuatKhoController extends Controller
             'danhSachSP' => $danhSachSP
         ], 'admin');
     }
+
+    /**
+     * Màn hình chuẩn bị hàng / xuất kho
+     */
+    public function prepare($id)
+    {
+        $this->view('admin_xuat_kho_chuan_bi', [
+            'title' => 'Chuẩn bị hàng xuất kho: ' . $id,
+            'current_page' => 'xuat_kho',
+            'id' => $id
+        ], 'admin');
+    }
 }

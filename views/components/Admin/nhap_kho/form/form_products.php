@@ -16,7 +16,7 @@
                 </div>
                 <input type="text" class="block w-full pl-10 pr-3 py-1.5 border border-gray-300 rounded-lg shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm" placeholder="Tìm sản phẩm (Tên, SKU)...">
             </div>
-            <button class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 shadow-sm whitespace-nowrap">
+            <button type="button" onclick="openAddProductModal()" class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 shadow-sm whitespace-nowrap transition-colors">
                 <span class="iconify text-[#6B0D18]" data-icon="mdi:plus-box-outline"></span> Sản phẩm mới
             </button>
         </div>
@@ -63,26 +63,26 @@
                         </select>
                     </td>
                     <td class="py-3 px-4">
-                        <input type="number" min="1" value="50" class="block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
+                        <input type="number" min="1" value="50" oninput="updateNhapKhoRowTotal(this)" class="row-qty block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
                     </td>
                     <td class="py-3 px-4">
                         <div class="relative">
-                            <input type="text" value="350,000" class="block w-full pr-6 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
+                            <input type="text" value="350000" oninput="updateNhapKhoRowTotal(this)" class="row-price block w-full pr-6 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
                             <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-gray-500 text-xs">đ</div>
                         </div>
                         <div class="text-[10px] text-gray-400 mt-1 text-right">Lần trước: 330,000đ</div>
                     </td>
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-1">
-                            <input type="text" value="0" class="block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm">
-                            <select class="py-1.5 pl-1 pr-4 text-xs border-gray-300 rounded-md">
-                                <option>đ</option>
-                                <option>%</option>
+                            <input type="number" value="0" oninput="updateNhapKhoRowTotal(this)" class="row-discount block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm">
+                            <select onchange="updateNhapKhoRowTotal(this)" class="row-discount-type py-1.5 pl-1 pr-4 text-xs border-gray-300 rounded-md">
+                                <option value="vnd">đ</option>
+                                <option value="percent">%</option>
                             </select>
                         </div>
                     </td>
                     <td class="py-3 px-4 text-right">
-                        <span class="font-bold text-[#6B0D18] text-base">17.500.000đ</span>
+                        <span class="row-total font-bold text-[#6B0D18] text-base">17.500.000đ</span>
                     </td>
                     <td class="py-3 px-4 text-center">
                         <button class="p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors tooltip" title="Xóa dòng">
@@ -107,15 +107,73 @@
     <div class="px-5 py-3 border-t border-gray-200 bg-gray-50 flex justify-end gap-10">
         <div class="text-sm">
             <span class="text-gray-500">Tổng sản phẩm:</span>
-            <span class="font-bold text-gray-900 ml-2">1</span>
+            <span id="nk-total-products" class="font-bold text-gray-900 ml-2">1</span>
         </div>
         <div class="text-sm">
             <span class="text-gray-500">Tổng số lượng đặt:</span>
-            <span class="font-bold text-gray-900 ml-2">50 món</span>
+            <span id="nk-total-qty" class="font-bold text-gray-900 ml-2">50 món</span>
         </div>
         <div class="text-sm">
             <span class="text-gray-500">Tổng tiền hàng:</span>
-            <span class="font-bold text-[#6B0D18] ml-2 text-base">17.500.000đ</span>
+            <span id="nk-grand-total" class="font-bold text-[#6B0D18] ml-2 text-base">17.500.000đ</span>
         </div>
     </div>
 </div>
+
+<script>
+    function updateNhapKhoRowTotal(element) {
+        const tr = element.closest('tr');
+        if (!tr) return;
+        
+        const qty = parseFloat(tr.querySelector('.row-qty').value) || 0;
+        const price = parseFloat(tr.querySelector('.row-price').value.replace(/,/g, '')) || 0;
+        const discount = parseFloat(tr.querySelector('.row-discount').value) || 0;
+        const discountType = tr.querySelector('.row-discount-type').value;
+        
+        let discountValue = 0;
+        if (discountType === 'percent') {
+            discountValue = (qty * price) * (discount / 100);
+        } else {
+            discountValue = discount;
+        }
+        
+        let total = (qty * price) - discountValue;
+        if (total < 0) total = 0;
+        
+        tr.querySelector('.row-total').innerText = total.toLocaleString('vi-VN') + 'đ';
+        tr.setAttribute('data-total', total);
+        
+        updateNhapKhoGrandTotal();
+    }
+
+    function updateNhapKhoGrandTotal() {
+        const tbody = document.querySelector('#nhapKhoTableBody') || document.querySelector('.divide-y');
+        if (!tbody) return;
+        
+        const rows = tbody.querySelectorAll('tr:not(.bg-gray-50\\/50)'); // Exclude 'Thêm dòng mới'
+        let grandTotal = 0;
+        let totalQty = 0;
+        
+        rows.forEach(tr => {
+            const qty = parseFloat(tr.querySelector('.row-qty')?.value) || 0;
+            const total = parseFloat(tr.getAttribute('data-total')) || 0;
+            
+            totalQty += qty;
+            grandTotal += total;
+        });
+        
+        document.getElementById('nk-total-products').innerText = rows.length;
+        document.getElementById('nk-total-qty').innerText = totalQty + ' món';
+        document.getElementById('nk-grand-total').innerText = grandTotal.toLocaleString('vi-VN') + 'đ';
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('.divide-y tr:not(.bg-gray-50\\/50)');
+        rows.forEach(tr => {
+            const el = tr.querySelector('.row-qty');
+            if (el) updateNhapKhoRowTotal(el);
+        });
+    });
+</script>
+

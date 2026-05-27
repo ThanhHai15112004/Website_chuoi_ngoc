@@ -51,6 +51,9 @@ $title = $isEdit ? 'Sửa phiếu nhập kho' : 'Tạo phiếu nhập kho';
 
 </div>
 
+<!-- Modal Thêm Sản Phẩm -->
+<?php require_once __DIR__ . '/../components/Admin/shared/modal_add_product.php'; ?>
+
 <script>
     function saveAndSend() {
         // Giả lập lưu thành công
