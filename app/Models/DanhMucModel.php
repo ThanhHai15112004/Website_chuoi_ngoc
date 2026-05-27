@@ -26,13 +26,40 @@ class DanhMucModel
             }
         }
 
-        $stmt = $this->db->query("
+        $sql = "
             SELECT dm.*, 
                 (SELECT COUNT(*) FROM san_pham sp WHERE sp.id_danh_muc = dm.id AND sp.da_xoa = 0) as so_san_pham
             FROM danh_muc dm
             WHERE dm.da_xoa = 0 
-            ORDER BY $sortBy
-        ");
+        ";
+        $params = [];
+
+        if (!empty($filters['keyword'])) {
+            $sql .= " AND (dm.ten_danh_muc LIKE :keyword OR dm.ma_danh_muc LIKE :keyword)";
+            $params['keyword'] = '%' . $filters['keyword'] . '%';
+        }
+
+        if (isset($filters['trang_thai']) && $filters['trang_thai'] !== '') {
+            $sql .= " AND dm.trang_thai = :trang_thai";
+            $params['trang_thai'] = $filters['trang_thai'];
+        }
+
+        if (!empty($filters['san_pham'])) {
+            if ($filters['san_pham'] === 'co') {
+                $sql .= " AND (SELECT COUNT(*) FROM san_pham sp WHERE sp.id_danh_muc = dm.id AND sp.da_xoa = 0) > 0";
+            } elseif ($filters['san_pham'] === 'trong') {
+                $sql .= " AND (SELECT COUNT(*) FROM san_pham sp WHERE sp.id_danh_muc = dm.id AND sp.da_xoa = 0) = 0";
+            }
+        }
+
+        $sql .= " ORDER BY $sortBy";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $stmt->execute();
+        
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

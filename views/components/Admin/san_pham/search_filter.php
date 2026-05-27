@@ -54,11 +54,52 @@ $tk_sel = $filters['ton_kho'] ?? '';
             
             <div class="flex-1"></div>
             
-            <a href="?" class="px-4 py-2 text-[#6B0D18] hover:bg-red-50 rounded-lg transition-colors text-sm font-medium">
-                Xóa bộ lọc
-            </a>
             <button type="submit" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#4C0519] transition-colors text-sm font-medium shadow-sm">
                 Lọc
             </button>
         </div>
+        
+        <!-- Active Filter Chips -->
+        <?php
+        $activeFilters = [];
+        if (!empty($kw)) {
+            $activeFilters['keyword'] = 'Từ khóa: ' . $kw;
+        }
+        if (!empty($dm_sel)) {
+            $activeFilters['danh_muc'] = 'Danh mục: ' . $dm_sel;
+        }
+        if (!empty($da_sel)) {
+            $activeFilters['loai_da'] = 'Loại đá: ' . $da_sel;
+        }
+        if (!empty($menh_sel)) {
+            $activeFilters['menh'] = 'Mệnh: ' . $menh_sel;
+        }
+        if ($tt_sel !== '') {
+            $activeFilters['trang_thai'] = $tt_sel === '1' ? 'Trạng thái: Đang hiển thị' : 'Trạng thái: Đang ẩn';
+        }
+        if (!empty($tk_sel)) {
+            $tk_labels = ['con_hang' => 'Tồn kho: Còn hàng', 'sap_het' => 'Tồn kho: Sắp hết', 'het_hang' => 'Tồn kho: Hết hàng'];
+            $activeFilters['ton_kho'] = $tk_labels[$tk_sel] ?? 'Tồn kho: ' . $tk_sel;
+        }
+        
+        if (!empty($activeFilters)):
+        ?>
+        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+            <?php foreach ($activeFilters as $key => $label): 
+                $queryParams = $_GET;
+                unset($queryParams[$key]);
+                if (isset($queryParams['page'])) unset($queryParams['page']);
+                $removeUrl = '?' . http_build_query($queryParams);
+            ?>
+            <a href="<?= $removeUrl ?>" class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-[#6B0D18] rounded-md text-[11px] font-medium hover:bg-red-100 transition-colors group/chip">
+                <?= htmlspecialchars($label) ?> 
+                <span class="iconify text-sm opacity-60 group-hover/chip:opacity-100" data-icon="mdi:close"></span>
+            </a>
+            <?php endforeach; ?>
+            
+            <a href="?" class="inline-flex items-center px-3 py-1 text-gray-500 hover:text-[#6B0D18] rounded-md text-[11px] font-medium transition-colors underline decoration-transparent hover:decoration-[#6B0D18] underline-offset-4">
+                Xóa bộ lọc
+            </a>
+        </div>
+        <?php endif; ?>
     </form>

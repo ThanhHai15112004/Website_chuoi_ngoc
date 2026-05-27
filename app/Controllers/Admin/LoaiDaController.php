@@ -5,114 +5,129 @@ use App\Core\Controller;
 
 class LoaiDaController extends Controller {
     public function index() {
-        $thong_ke = [
-            'tong_loai' => 32,
-            'dang_hien_thi' => 26,
-            'dang_an' => 6,
-            'co_san_pham' => 21,
-            'chua_co_sp' => 11,
-            'dung_nhieu_nhat' => 'Ngọc bích'
-        ];
-
-        $danh_sach = [
-            [
-                'ma_da' => 'STONE-JADE',
-                'ten_da' => 'Ngọc bích',
-                'ten_tieng_anh' => 'Jade',
-                'mo_ta' => 'Sắc xanh nhẹ, thường được gợi ý cho bình an và tài lộc.',
-                'nhom' => 'Ngọc',
-                'mau_sac' => ['ten' => 'Xanh ngọc', 'hex' => '#10B981'],
-                'menh' => ['Mộc', 'Hỏa'],
-                'nhu_cau' => ['Bình an', 'Tài lộc', 'Sức khỏe tinh thần'],
-                'so_san_pham' => 48,
-                'trang_thai' => 'Đang hiển thị',
-                'ngay_cap_nhat' => '18/05/2026 09:30',
-                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg' // Dùng tạm ảnh mock
-            ],
-            [
-                'ma_da' => 'GEM-QUARTZ-PINK',
-                'ten_da' => 'Thạch anh hồng',
-                'ten_tieng_anh' => 'Rose Quartz',
-                'mo_ta' => 'Viên đá của tình yêu, đem lại năng lượng tích cực.',
-                'nhom' => 'Đá tự nhiên',
-                'mau_sac' => ['ten' => 'Hồng nhạt', 'hex' => '#F472B6'],
-                'menh' => ['Hỏa', 'Thổ'],
-                'nhu_cau' => ['Tình duyên', 'Bình an'],
-                'so_san_pham' => 25,
-                'trang_thai' => 'Đang hiển thị',
-                'ngay_cap_nhat' => '15/05/2026 14:20',
-                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-2.jpg'
-            ],
-            [
-                'ma_da' => 'STONE-OBSIDIAN',
-                'ten_da' => 'Obsidian',
-                'ten_tieng_anh' => 'Black Obsidian',
-                'mo_ta' => 'Đá núi lửa đen bóng, bảo vệ chủ nhân khỏi năng lượng xấu.',
-                'nhom' => 'Đá tự nhiên',
-                'mau_sac' => ['ten' => 'Đen', 'hex' => '#1F2937'],
-                'menh' => ['Thủy', 'Mộc'],
-                'nhu_cau' => ['Bình an', 'Công việc'],
-                'so_san_pham' => 0,
-                'trang_thai' => 'Đang ẩn',
-                'ngay_cap_nhat' => '10/05/2026 10:15',
-                'hinh_anh' => '' // Giả lập chưa có ảnh
-            ],
-            [
-                'ma_da' => 'GEM-RUBY',
-                'ten_da' => 'Ruby',
-                'ten_tieng_anh' => 'Ruby',
-                'mo_ta' => 'Hồng ngọc quý hiếm, mang lại quyền lực và may mắn.',
-                'nhom' => 'Đá cao cấp',
-                'mau_sac' => ['ten' => 'Đỏ', 'hex' => '#DC2626'],
-                'menh' => ['Hỏa', 'Thổ'],
-                'nhu_cau' => ['May mắn', 'Tài lộc', 'Quà tặng'],
-                'so_san_pham' => 12,
-                'trang_thai' => 'Đang hiển thị',
-                'ngay_cap_nhat' => '05/05/2026 16:45',
-                'hinh_anh' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-3.jpg'
-            ]
-        ];
+        $service = new \App\Services\Admin\LoaiDaService();
+        
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        
+        $limit = 10;
+        $filters = $_GET;
+        
+        $dataResponse = $service->getAdminStoneData($filters, $page, $limit);
+        $thong_ke = $service->getStats();
 
         $data = [
-            'tieu_de' => 'Quản lý Loại Đá / Ngọc - Chuỗi Ngọc Phong Thủy',
+            'tieu_de' => 'Quản lý Loại Đá / Ngọc',
             'current_page' => 'loai_da',
-            'thong_ke' => $thong_ke,
-            'danh_sach' => $danh_sach
+            'danh_sach' => $dataResponse['list'],
+            'pagination' => $dataResponse['pagination'],
+            'thong_ke' => $thong_ke
         ];
 
         $this->view('admin_loai_da', $data, 'admin');
     }
 
+    public function store()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $service = new \App\Services\Admin\LoaiDaService();
+            $file = isset($_FILES['hinh_anh']) ? $_FILES['hinh_anh'] : null;
+            
+            // Xử lý nhu cầu (array)
+            if (isset($_POST['nhu_cau']) && is_string($_POST['nhu_cau'])) {
+                $_POST['nhu_cau'] = array_map('trim', explode(',', $_POST['nhu_cau']));
+            }
+            
+            // Xử lý mệnh (array)
+            if (isset($_POST['menh_ids']) && !is_array($_POST['menh_ids'])) {
+                // If it's sent as a comma separated string
+                $_POST['menh_ids'] = array_filter(array_map('trim', explode(',', $_POST['menh_ids'])));
+            }
+
+            $service->saveStone($_POST, $file);
+            header("Location: " . APP_URL . "/admin/loai-da");
+            exit;
+        }
+    }
+
+    public function delete($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $service = new \App\Services\Admin\LoaiDaService();
+            $service->deleteStone($id);
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/loai-da');
+            header("Location: $referer");
+            exit;
+        }
+    }
+
+    public function toggleStatus($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $service = new \App\Services\Admin\LoaiDaService();
+            $service->toggleStatus($id);
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/loai-da');
+            header("Location: $referer");
+            exit;
+        }
+    }
+
     public function create() {
+        $service = new \App\Services\Admin\LoaiDaService();
+        $deps = $service->getFormDependencies();
+
         $data = [
             'tieu_de' => 'Thêm Loại Đá / Ngọc - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'loai_da',
-            'is_edit' => false
+            'is_edit' => false,
+            'menh_list' => $deps['menh_list'],
+            'mock_data' => null // Bỏ mock data
         ];
         $this->view('admin_loai_da_form', $data, 'admin');
     }
 
-    public function edit() {
+    public function edit($id)
+    {
+        $service = new \App\Services\Admin\LoaiDaService();
+        $stone = $service->getStoneById($id);
+        
+        if (!$stone) {
+            header("Location: " . APP_URL . "/admin/loai-da");
+            exit;
+        }
+
+        $deps = $service->getFormDependencies();
+
         $data = [
-            'tieu_de' => 'Sửa Loại Đá / Ngọc - Chuỗi Ngọc Phong Thủy',
+            'tieu_de' => 'Sửa Loại Đá / Ngọc',
             'current_page' => 'loai_da',
             'is_edit' => true,
-            'mock_data' => [
-                'ten' => 'Ngọc bích',
-                'ma' => 'STONE-JADE',
-                'tieng_anh' => 'Jade',
-                'nhom' => 'ngoc',
-                'mo_ta' => 'Sắc xanh nhẹ, thường được gợi ý cho bình an và tài lộc.',
-                'mau_sac' => 'Xanh ngọc',
-                'mau_hex' => '#10B981',
-                'menh' => ['Mộc', 'Hỏa'],
-                'nhu_cau' => ['Bình an', 'Tài lộc', 'Sức khỏe tinh thần'],
-                'y_nghia' => 'Ngọc bích thường được xem là biểu tượng của sự bình an, hài hòa và tài lộc. Sắc xanh nhẹ nhàng của ngọc thường được gợi ý cho người mệnh Mộc và Hỏa.',
-                'luu_y' => 'Tránh va đập mạnh, hạn chế tiếp xúc hóa chất, nên lau bằng khăn mềm.',
-                'slug' => 'ngoc-bich',
-                'so_san_pham' => 48
-            ]
+            'stone' => $stone,
+            'menh_list' => $deps['menh_list']
         ];
         $this->view('admin_loai_da_form', $data, 'admin');
+    }
+
+    public function apiDetail($id)
+    {
+        $service = new \App\Services\Admin\LoaiDaService();
+        $stone = $service->getStoneById($id);
+        
+        header('Content-Type: application/json');
+        if ($stone) {
+            $deps = $service->getFormDependencies();
+            $stone['menh_list'] = $deps['menh_list']; // Extract menh_list array
+            
+            // Format hinh_anh_url properly
+            if (!empty($stone['hinh_anh'])) {
+                $stone['hinh_anh_url'] = APP_URL . '/public/uploads/loai_da/' . $stone['hinh_anh'];
+            }
+            
+            echo json_encode(['success' => true, 'data' => $stone]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Không tìm thấy loại đá']);
+        }
+        exit;
     }
 }

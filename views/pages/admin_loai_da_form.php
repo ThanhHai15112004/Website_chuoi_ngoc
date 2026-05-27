@@ -1,44 +1,50 @@
 <?php
 // views/pages/admin_stone_form.php
 $is_edit = $is_edit ?? false;
-$mock = $mock_data ?? [];
+$stone = $stone ?? [];
 ?>
 <div class="animate-[fadeInPage_0.3s_ease-out] max-w-5xl mx-auto pb-12">
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div>
-            <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
-                <a href="<?= APP_URL ?>/admin/loai-da" class="hover:text-[#6B0D18]">Loại đá / ngọc</a>
-                <span class="iconify text-xs" data-icon="mdi:chevron-right"></span>
-                <span class="text-gray-800 font-medium"><?= $is_edit ? 'Chỉnh sửa' : 'Thêm mới' ?></span>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800 font-luxury"><?= $is_edit ? 'Chỉnh sửa loại đá / ngọc' : 'Thêm loại đá / ngọc mới' ?></h2>
-        </div>
-        <div class="flex items-center gap-3">
-            <a href="<?= APP_URL ?>/admin/loai-da" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Hủy</a>
-            <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Lưu nháp</button>
-            <button class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md" onclick="showStoneFormToast()">
-                Lưu loại đá / ngọc
-            </button>
-        </div>
-    </div>
-
-    <!-- Alert nếu sửa loại đá đang dùng nhiều SP -->
-    <?php if ($is_edit && isset($mock['so_san_pham']) && $mock['so_san_pham'] > 0): ?>
-    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3 justify-between">
-        <div class="flex items-start gap-3">
-            <span class="iconify text-amber-500 text-xl mt-0.5" data-icon="mdi:alert-circle-outline"></span>
-            <div>
-                <h4 class="font-bold text-amber-800 text-sm">Đang được sử dụng</h4>
-                <p class="text-sm text-amber-700 mt-0.5">Loại đá này hiện đang được sử dụng trong <strong><?= $mock['so_san_pham'] ?></strong> sản phẩm. Việc thay đổi tên hoặc trạng thái có thể ảnh hưởng đến bộ lọc và thông tin sản phẩm ngoài trang người dùng.</p>
-            </div>
-        </div>
-        <button class="px-3 py-1.5 bg-amber-100 text-amber-800 rounded-md hover:bg-amber-200 transition-colors text-xs font-bold whitespace-nowrap shrink-0">Xem sản phẩm</button>
-    </div>
-    <?php endif; ?>
-
-    <div class="space-y-6">
+    <form method="POST" action="<?= APP_URL ?>/admin/loai-da/luu" enctype="multipart/form-data">
+        <?php if ($is_edit): ?>
+            <input type="hidden" name="id" value="<?= $stone['id'] ?>">
+        <?php endif; ?>
         
-    <?php include __DIR__ . '/../components/Admin/loai_da/form_basic.php'; ?>
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+                    <a href="<?= APP_URL ?>/admin/loai-da" class="hover:text-[#6B0D18]">Loại đá / ngọc</a>
+                    <span class="iconify text-xs" data-icon="mdi:chevron-right"></span>
+                    <span class="text-gray-800 font-medium"><?= $is_edit ? 'Chỉnh sửa' : 'Thêm mới' ?></span>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 font-luxury"><?= $is_edit ? 'Chỉnh sửa loại đá / ngọc' : 'Thêm loại đá / ngọc mới' ?></h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="<?= APP_URL ?>/admin/loai-da" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Hủy</a>
+                <button type="submit" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md">
+                    Lưu loại đá / ngọc
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert nếu sửa loại đá đang dùng nhiều SP -->
+        <?php if ($is_edit && isset($stone['so_san_pham']) && $stone['so_san_pham'] > 0): ?>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3 justify-between">
+            <div class="flex items-start gap-3">
+                <span class="iconify text-amber-500 text-xl mt-0.5" data-icon="mdi:alert-circle-outline"></span>
+                <div>
+                    <h4 class="font-bold text-amber-800 text-sm">Đang được sử dụng</h4>
+                    <p class="text-sm text-amber-700 mt-0.5">Loại đá này hiện đang được sử dụng trong <strong><?= $stone['so_san_pham'] ?></strong> sản phẩm. Việc thay đổi tên hoặc trạng thái có thể ảnh hưởng đến bộ lọc và thông tin sản phẩm ngoài trang người dùng.</p>
+                </div>
+            </div>
+            <a href="<?= APP_URL ?>/admin/san-pham?loai_da=<?= urlencode($stone['ten_loai_da']) ?>" class="px-3 py-1.5 bg-amber-100 text-amber-800 rounded-md hover:bg-amber-200 transition-colors text-xs font-bold whitespace-nowrap shrink-0">Xem sản phẩm</a>
+        </div>
+        <?php endif; ?>
+
+        <div class="space-y-6">
+            <?php include __DIR__ . '/../components/Admin/loai_da/form_basic.php'; ?>
+        </div>
+    </form>
     <?php include __DIR__ . '/../components/Admin/loai_da/form_modals.php'; ?>
     <?php include __DIR__ . '/../components/Admin/loai_da/form_scripts.php'; ?>
+</div>

@@ -2,27 +2,61 @@
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
                     
                     <!-- Search & Filter Bar -->
-                    <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-white">
+                    <form method="GET" action="" class="p-4 border-b border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between bg-white">
                         <div class="relative w-full md:w-80 group">
                             <span class="iconify absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#6B0D18] transition-colors" data-icon="mdi:magnify"></span>
-                            <input type="text" placeholder="Tìm theo tên, mã danh mục..." class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
+                            <input type="text" name="keyword" value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>" placeholder="Tìm theo tên, mã danh mục..." class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
                         </div>
                         <div class="flex items-center gap-3 w-full md:w-auto">
-                            <select class="w-full md:w-auto px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-sm text-gray-600 cursor-pointer">
+                            <select name="trang_thai" onchange="this.form.submit()" class="w-full md:w-auto px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-sm text-gray-600 cursor-pointer">
                                 <option value="">Trạng thái: Tất cả</option>
-                                <option value="hien">Đang hiển thị</option>
-                                <option value="an">Đang ẩn</option>
+                                <option value="1" <?= (isset($_GET['trang_thai']) && $_GET['trang_thai'] === '1') ? 'selected' : '' ?>>Đang hiển thị</option>
+                                <option value="0" <?= (isset($_GET['trang_thai']) && $_GET['trang_thai'] === '0') ? 'selected' : '' ?>>Đang ẩn</option>
                             </select>
-                            <select class="w-full md:w-auto px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-sm text-gray-600 cursor-pointer">
+                            <select name="san_pham" onchange="this.form.submit()" class="w-full md:w-auto px-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-sm text-gray-600 cursor-pointer">
                                 <option value="">Sản phẩm: Tất cả</option>
-                                <option value="co">Đã có sản phẩm</option>
-                                <option value="trong">Danh mục trống</option>
+                                <option value="co" <?= (isset($_GET['san_pham']) && $_GET['san_pham'] === 'co') ? 'selected' : '' ?>>Đã có sản phẩm</option>
+                                <option value="trong" <?= (isset($_GET['san_pham']) && $_GET['san_pham'] === 'trong') ? 'selected' : '' ?>>Danh mục trống</option>
                             </select>
-                            <button class="px-4 py-2 text-gray-500 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 text-sm font-medium transition-colors whitespace-nowrap shrink-0 flex items-center gap-1">
+                            <button type="submit" class="px-4 py-2 text-white bg-[#6B0D18] border border-[#6B0D18] rounded-xl hover:bg-[#4C0519] text-sm font-medium transition-colors whitespace-nowrap shrink-0 flex items-center gap-1">
                                 Lọc
                             </button>
                         </div>
+                    </form>
+
+                    <!-- Active Filter Chips -->
+                    <?php
+                    $activeFilters = [];
+                    if (!empty($_GET['keyword'])) {
+                        $activeFilters['keyword'] = 'Từ khóa: ' . $_GET['keyword'];
+                    }
+                    if (isset($_GET['trang_thai']) && $_GET['trang_thai'] !== '') {
+                        $activeFilters['trang_thai'] = $_GET['trang_thai'] === '1' ? 'Trạng thái: Đang hiển thị' : 'Trạng thái: Đang ẩn';
+                    }
+                    if (!empty($_GET['san_pham'])) {
+                        $activeFilters['san_pham'] = $_GET['san_pham'] === 'co' ? 'Sản phẩm: Đã có' : 'Sản phẩm: Trống';
+                    }
+                    
+                    if (!empty($activeFilters)):
+                    ?>
+                    <div class="px-4 py-3 bg-white border-b border-gray-100 flex flex-wrap gap-2">
+                        <?php foreach ($activeFilters as $key => $label): 
+                            $queryParams = $_GET;
+                            unset($queryParams[$key]);
+                            if (isset($queryParams['page'])) unset($queryParams['page']);
+                            $removeUrl = '?' . http_build_query($queryParams);
+                        ?>
+                        <a href="<?= $removeUrl ?>" class="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-[#6B0D18] rounded-md text-[11px] font-medium hover:bg-red-100 transition-colors group/chip">
+                            <?= htmlspecialchars($label) ?> 
+                            <span class="iconify text-sm opacity-60 group-hover/chip:opacity-100" data-icon="mdi:close"></span>
+                        </a>
+                        <?php endforeach; ?>
+                        
+                        <a href="?" class="inline-flex items-center px-3 py-1 text-gray-500 hover:text-[#6B0D18] rounded-md text-[11px] font-medium transition-colors underline decoration-transparent hover:decoration-[#6B0D18] underline-offset-4">
+                            Xóa bộ lọc
+                        </a>
                     </div>
+                    <?php endif; ?>
 
                     <!-- Bulk Actions Bar (Hidden by default) -->
                     <div id="bulkActions" class="bg-[#FAF8F5] px-4 py-3 border-b border-[#E4D5C3] hidden items-center justify-between">

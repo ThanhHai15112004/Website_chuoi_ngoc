@@ -38,28 +38,28 @@
         
         <div class="p-6 overflow-y-auto flex-1 space-y-6">
             <div class="flex items-center gap-4">
-                <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg" class="w-20 h-20 rounded-xl object-cover border border-gray-200 shadow-sm shrink-0">
+                <img id="det-img" src="" class="w-20 h-20 rounded-xl object-cover border border-gray-200 shadow-sm shrink-0">
                 <div>
-                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="det-name">Ngọc bích</h4>
+                    <h4 class="text-2xl font-bold text-gray-800 mb-1" id="det-name"></h4>
                     <div class="flex items-center gap-2 mb-2">
-                        <span class="text-sm text-gray-500 font-medium">Jade</span>
+                        <span class="text-sm text-gray-500 font-medium" id="det-eng"></span>
                         <span class="text-gray-300">|</span>
-                        <span class="text-sm font-mono text-gray-400" id="det-code">STONE-JADE</span>
+                        <span class="text-sm font-mono text-gray-400" id="det-code"></span>
                     </div>
-                    <span class="inline-flex px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider" id="det-status">Đang hiển thị</span>
+                    <span id="det-status"></span>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col">
                     <span class="text-[11px] text-gray-500 uppercase tracking-wider mb-1">Nhóm chất liệu</span>
-                    <span class="font-bold text-gray-800">Ngọc</span>
+                    <span class="font-bold text-gray-800" id="det-nhom"></span>
                 </div>
                 <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col">
                     <span class="text-[11px] text-gray-500 uppercase tracking-wider mb-1">Màu sắc</span>
                     <div class="flex items-center gap-2 mt-1">
-                        <span class="w-3.5 h-3.5 rounded-full border border-gray-300 shadow-sm" style="background-color: #10B981"></span>
-                        <span class="font-bold text-gray-800 text-sm">Xanh ngọc</span>
+                        <span class="w-3.5 h-3.5 rounded-full border border-gray-300 shadow-sm" id="det-mau-dot"></span>
+                        <span class="font-bold text-gray-800 text-sm" id="det-mau-text"></span>
                     </div>
                 </div>
             </div>
@@ -69,26 +69,21 @@
                 <div class="space-y-4">
                     <div>
                         <span class="text-xs text-gray-500 block mb-2">Mệnh phù hợp:</span>
-                        <div class="flex gap-2">
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-[#6B0D18] border border-red-100">Mộc</span>
-                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-[#6B0D18] border border-red-100">Hỏa</span>
+                        <div class="flex flex-wrap gap-2" id="det-menh-container">
                         </div>
                     </div>
                     <div>
                         <span class="text-xs text-gray-500 block mb-2">Nhu cầu / Công dụng:</span>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="inline-flex px-2 py-1 rounded text-xs bg-amber-50 text-amber-700 border border-amber-100">Bình an</span>
-                            <span class="inline-flex px-2 py-1 rounded text-xs bg-amber-50 text-amber-700 border border-amber-100">Tài lộc</span>
-                            <span class="inline-flex px-2 py-1 rounded text-xs bg-amber-50 text-amber-700 border border-amber-100">Sức khỏe tinh thần</span>
+                        <div class="flex flex-wrap gap-2" id="det-nhucau-container">
                         </div>
                     </div>
                     <div>
                         <span class="text-xs text-gray-500 block mb-1">Ý nghĩa chi tiết:</span>
-                        <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">Ngọc bích thường được xem là biểu tượng của sự bình an, hài hòa và tài lộc. Sắc xanh nhẹ nhàng của ngọc thường được gợi ý cho người mệnh Mộc và Hỏa.</p>
+                        <p class="text-sm text-gray-700 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 whitespace-pre-wrap" id="det-ynghia"></p>
                     </div>
                     <div>
                         <span class="text-xs text-gray-500 block mb-1">Lưu ý sử dụng:</span>
-                        <p class="text-sm text-gray-700 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100">Tránh va đập mạnh, hạn chế tiếp xúc hóa chất, nên lau bằng khăn mềm.</p>
+                        <p class="text-sm text-gray-700 leading-relaxed bg-amber-50 p-3 rounded-lg border border-amber-100 whitespace-pre-wrap" id="det-luuy"></p>
                     </div>
                 </div>
             </div>
@@ -96,20 +91,19 @@
             <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center justify-between">
                 <div>
                     <span class="text-xs text-blue-600 block mb-0.5">Sản phẩm đang dùng loại đá này</span>
-                    <div class="font-bold text-blue-800 text-lg">48 sản phẩm</div>
+                    <div class="font-bold text-blue-800 text-lg"><span id="det-count">0</span> sản phẩm</div>
                 </div>
-                <button class="p-2 bg-white text-blue-600 rounded-lg shadow-sm hover:bg-blue-600 hover:text-white transition-colors">
+                <a href="#" id="det-count-link" class="p-2 bg-white text-blue-600 rounded-lg shadow-sm hover:bg-blue-600 hover:text-white transition-colors">
                     <span class="iconify text-xl" data-icon="mdi:arrow-right"></span>
-                </button>
+                </a>
             </div>
             
-            <div class="text-xs text-gray-400 mt-4 text-center">
-                Được tạo bởi: Admin - Cập nhật cuối: 18/05/2026 09:30
+            <div class="text-xs text-gray-400 mt-4 text-center" id="det-date">
             </div>
         </div>
         
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3">
-            <a href="<?= APP_URL ?>/admin/loai-da/sua" class="flex-1 text-center px-4 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md">Chỉnh sửa</a>
+            <a href="#" id="det-edit-link" class="flex-1 text-center px-4 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md">Chỉnh sửa</a>
         </div>
     </div>
 </div>
