@@ -1,7 +1,7 @@
 <!-- Category Modal (Add/Edit) -->
 <div id="categoryModal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeModal('categoryModal')"></div>
-    <form id="categoryForm" method="POST" action="<?= APP_URL ?>/admin/danh-muc/luu" class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 relative z-10 scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+    <form id="categoryForm" method="POST" action="<?= APP_URL ?>/admin/danh-muc/luu" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 relative z-10 scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
             <h3 class="font-bold text-xl text-gray-900" id="categoryModalTitle">Thêm danh mục mới</h3>
             <button type="button" onclick="closeModal('categoryModal')" class="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-lg hover:bg-gray-100">
@@ -39,9 +39,27 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Mô tả ngắn</label>
-                    <textarea name="mo_ta" id="catDesc" rows="2" placeholder="Nhập mô tả ngắn cho danh mục..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm resize-none"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Hình ảnh danh mục</label>
+                        <div class="relative group rounded-xl border border-gray-200 overflow-hidden aspect-video bg-gray-50" id="catImageContainer">
+                            <img src="" id="catImagePreview" class="absolute inset-0 w-full h-full object-cover hidden">
+                            <div class="flex flex-col items-center justify-center w-full h-full pointer-events-none" id="catImagePlaceholder">
+                                <span class="iconify text-3xl text-gray-400 mb-2" data-icon="mdi:image-plus"></span>
+                                <span class="text-sm font-medium text-gray-500">Tải ảnh lên</span>
+                            </div>
+                            <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center gap-2 transition-all">
+                                <label class="w-8 h-8 bg-white text-gray-700 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer">
+                                    <span class="iconify" data-icon="mdi:upload"></span>
+                                    <input type="file" name="hinh_anh" accept="image/*" class="hidden" onchange="previewCatImage(this)">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">Mô tả ngắn</label>
+                        <textarea name="mo_ta" id="catDesc" rows="4" placeholder="Nhập mô tả ngắn cho danh mục..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm resize-none"></textarea>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">

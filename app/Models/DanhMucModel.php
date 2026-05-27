@@ -72,14 +72,15 @@ class DanhMucModel
 
     public function insert($data)
     {
-        $sql = "INSERT INTO danh_muc (id, ten_danh_muc, ma_danh_muc, slug, mo_ta, vi_tri, thu_tu, trang_thai) 
-                VALUES (:id, :ten_danh_muc, :ma_danh_muc, :slug, :mo_ta, :vi_tri, :thu_tu, :trang_thai)";
+        $sql = "INSERT INTO danh_muc (id, ten_danh_muc, ma_danh_muc, slug, hinh_anh, mo_ta, vi_tri, thu_tu, trang_thai) 
+                VALUES (:id, :ten_danh_muc, :ma_danh_muc, :slug, :hinh_anh, :mo_ta, :vi_tri, :thu_tu, :trang_thai)";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             'id' => $data['id'],
             'ten_danh_muc' => $data['ten_danh_muc'],
             'ma_danh_muc' => $data['ma_danh_muc'] ?? null,
             'slug' => $data['slug'],
+            'hinh_anh' => $data['hinh_anh'] ?? null,
             'mo_ta' => $data['mo_ta'] ?? null,
             'vi_tri' => $data['vi_tri'] ?? 'Menu chính',
             'thu_tu' => $data['thu_tu'] ?? 1,
@@ -89,15 +90,12 @@ class DanhMucModel
 
     public function update($id, $data)
     {
-        $sql = "UPDATE danh_muc SET 
-                    ten_danh_muc = :ten_danh_muc,
-                    ma_danh_muc = :ma_danh_muc,
-                    slug = :slug,
-                    mo_ta = :mo_ta,
-                    vi_tri = :vi_tri,
-                    thu_tu = :thu_tu,
-                    trang_thai = :trang_thai
-                WHERE id = :id";
+        $fields = [];
+        foreach ($data as $key => $value) {
+            $fields[] = "$key = :$key";
+        }
+        $fieldsStr = implode(', ', $fields);
+        $sql = "UPDATE danh_muc SET $fieldsStr WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $data['id'] = $id;
         return $stmt->execute($data);

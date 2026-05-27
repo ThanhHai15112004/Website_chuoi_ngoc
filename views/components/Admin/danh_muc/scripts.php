@@ -47,6 +47,18 @@
     }
 
     // Modal logic
+    function previewCatImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('catImagePreview').src = e.target.result;
+                document.getElementById('catImagePreview').classList.remove('hidden');
+                document.getElementById('catImagePlaceholder').classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     function openModal(id, mode = 'add', title = '') {
         const modal = document.getElementById(id);
         modal.classList.remove('hidden');
@@ -65,6 +77,11 @@
                 document.getElementById('categoryForm').reset();
                 document.getElementById('catId').value = '';
                 document.getElementById('categoryProductWarning').classList.add('hidden');
+                
+                // Reset image
+                document.getElementById('catImagePreview').src = '';
+                document.getElementById('catImagePreview').classList.add('hidden');
+                document.getElementById('catImagePlaceholder').classList.remove('hidden');
             }
         }
     }
@@ -86,6 +103,17 @@
         document.getElementById('catStatus').checked = dm.trang_thai == 1;
         document.getElementById('catOrder').value = dm.thu_tu;
         
+        // Handle image
+        if (dm.hinh_anh) {
+            document.getElementById('catImagePreview').src = `<?= APP_URL ?>/public/uploads/danh_muc/${dm.hinh_anh}`;
+            document.getElementById('catImagePreview').classList.remove('hidden');
+            document.getElementById('catImagePlaceholder').classList.add('hidden');
+        } else {
+            document.getElementById('catImagePreview').src = '';
+            document.getElementById('catImagePreview').classList.add('hidden');
+            document.getElementById('catImagePlaceholder').classList.remove('hidden');
+        }
+
         const warning = document.getElementById('categoryProductWarning');
         if(dm.so_san_pham > 0) {
             warning.classList.remove('hidden');

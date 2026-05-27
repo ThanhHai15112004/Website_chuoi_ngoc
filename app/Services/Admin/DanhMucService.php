@@ -43,7 +43,7 @@ class DanhMucService
         return $categories;
     }
 
-    public function saveCategory($data)
+    public function saveCategory($data, $file = null)
     {
         $id = $data['id'] ?? null;
         
@@ -69,6 +69,21 @@ class DanhMucService
         if (!empty($data['vi_tri_home'])) $vi_tri[] = 'Trang chủ';
         if (!empty($data['vi_tri_filter'])) $vi_tri[] = 'Bộ lọc SP';
         $catData['vi_tri'] = implode(',', $vi_tri);
+
+        // Handle File Upload
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/danh_muc/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $fileName = uniqid() . '_' . $this->createSlug(pathinfo($file['name'], PATHINFO_FILENAME)) . '.' . $fileExtension;
+            
+            if (move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+                $catData['hinh_anh'] = $fileName;
+            }
+        }
 
         if ($id) {
             // Update

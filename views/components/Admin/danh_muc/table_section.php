@@ -149,9 +149,15 @@
                                             <input type="checkbox" class="row-checkbox rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] cursor-pointer opacity-50 group-hover:opacity-100 transition-opacity">
                                         </td>
                                         <td class="p-4">
-                                            <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg <?= $dm['mau_sac_icon'] ?> shadow-sm">
-                                                <?= $dm['chu_cai'] ?>
-                                            </div>
+                                            <?php if (!empty($dm['hinh_anh'])): ?>
+                                                <div class="w-12 h-12 rounded-xl overflow-hidden shadow-sm">
+                                                    <img src="<?= APP_URL ?>/public/uploads/danh_muc/<?= $dm['hinh_anh'] ?>" alt="<?= htmlspecialchars($dm['ten_danh_muc']) ?>" class="w-full h-full object-cover">
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg <?= $dm['mau_sac_icon'] ?> shadow-sm">
+                                                    <?= $dm['chu_cai'] ?>
+                                                </div>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="p-4">
                                             <div class="flex flex-col gap-0.5">

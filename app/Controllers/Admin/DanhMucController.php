@@ -30,7 +30,8 @@ class DanhMucController extends Controller {
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\DanhMucService();
-            $service->saveCategory($_POST);
+            $file = isset($_FILES['hinh_anh']) && $_FILES['hinh_anh']['error'] !== UPLOAD_ERR_NO_FILE ? $_FILES['hinh_anh'] : null;
+            $service->saveCategory($_POST, $file);
             $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/danh-muc');
             header("Location: $referer");
             exit;
