@@ -6,7 +6,7 @@
         <thead>
             <tr class="bg-gray-50 border-y border-gray-200 text-[11px] uppercase text-gray-500 tracking-wider">
                 <th class="py-3 px-4 font-semibold w-12 text-center">
-                    <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                    <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                 </th>
                 <th class="py-3 px-4 font-semibold w-36">Mã phiếu</th>
                 <th class="py-3 px-4 font-semibold w-56">Nhà cung cấp</th>
@@ -21,10 +21,11 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100 bg-white">
-            <?php foreach ($danhSachPhieuNhap as $phieu): ?>
-                <tr class="hover:bg-gray-50/80 transition-colors group">
-                    <td class="py-3 px-4 text-center">
-                        <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+            <?php if (!empty($danhSachPhieuNhap)): ?>
+                <?php foreach ($danhSachPhieuNhap as $phieu): ?>
+                    <tr class="hover:bg-gray-50/80 transition-colors group" data-status="<?= $phieu['trang_thai'] ?>">
+                        <td class="py-3 px-4 text-center">
+                        <input type="checkbox" class="row-checkbox rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]" value="<?= $phieu['id'] ?>">
                     </td>
                     
                     <!-- Mã phiếu -->
@@ -148,44 +149,41 @@
                     <!-- Thao tác -->
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <!-- Nút action chính tuỳ trạng thái -->
-                            <?php if($phieu['trang_thai'] === 'Chờ kiểm hàng' || $phieu['trang_thai'] === 'Đang kiểm hàng'): ?>
-                                <a href="<?= APP_URL ?>/admin/nhap-kho/kiem-hang/<?= $phieu['id'] ?>" class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-md font-medium text-xs hover:bg-blue-100 transition-colors tooltip" title="Kiểm hàng">
-                                    Kiểm hàng
-                                </a>
-                            <?php elseif($phieu['trang_thai'] === 'Chờ duyệt' || $phieu['trang_thai'] === 'Có lỗi / thiếu hàng'): ?>
-                                <button onclick="openModal('modalDuyetPhieu')" class="px-3 py-1.5 bg-orange-50 text-orange-700 rounded-md font-medium text-xs hover:bg-orange-100 transition-colors tooltip" title="Duyệt phiếu">
-                                    Duyệt
-                                </button>
-                            <?php elseif($phieu['trang_thai'] === 'Đã nhập kho'): ?>
-                                <button onclick="openDrawer('<?= $phieu['id'] ?>')" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md font-medium text-xs hover:bg-gray-200 transition-colors tooltip" title="Xem chi tiết">
-                                    Xem
-                                </button>
-                            <?php elseif($phieu['trang_thai'] === 'Nháp'): ?>
-                                <a href="<?= APP_URL ?>/admin/nhap-kho/sua/<?= $phieu['id'] ?>" class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md font-medium text-xs hover:bg-gray-200 transition-colors tooltip" title="Tiếp tục sửa">
-                                    Sửa
-                                </a>
-                            <?php endif; ?>
-
-                            <!-- Dropdown Menu -->
+                            <!-- Dropdown Menu chứa tất cả thao tác -->
                             <div class="relative inline-block text-left dropdown-container">
-                                <button type="button" class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors focus:outline-none" onclick="toggleDropdown(this)">
+                                <button type="button" class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors focus:outline-none" onclick="toggleDropdown(this)">
                                     <span class="iconify text-lg" data-icon="mdi:dots-vertical"></span>
                                 </button>
                                 <div class="dropdown-menu hidden absolute right-0 z-20 mt-1 w-48 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none border border-gray-100 overflow-hidden">
                                     <div class="py-1">
+                                        <!-- Xem chi tiết luôn có -->
                                         <a href="javascript:void(0)" onclick="openDrawer('<?= $phieu['id'] ?>')" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            <span class="iconify text-lg text-blue-500" data-icon="mdi:eye-outline"></span> Xem chi tiết
+                                            <span class="iconify text-lg text-gray-400" data-icon="mdi:eye-outline"></span> Xem chi tiết
                                         </a>
-                                        <?php if($phieu['trang_thai'] !== 'Đã hủy' && $phieu['trang_thai'] !== 'Đã nhập kho'): ?>
-                                        <a href="<?= APP_URL ?>/admin/nhap-kho/sua/<?= $phieu['id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                                            <span class="iconify text-lg text-gray-400" data-icon="mdi:pencil-outline"></span> Sửa thông tin
-                                        </a>
+
+                                        <?php if($phieu['trang_thai'] === 'Chờ kiểm hàng' || $phieu['trang_thai'] === 'Đang kiểm hàng'): ?>
+                                            <a href="<?= APP_URL ?>/admin/nhap-kho/kiem-hang/<?= $phieu['id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 transition-colors font-medium">
+                                                <span class="iconify text-lg text-blue-500" data-icon="mdi:clipboard-check-outline"></span> Kiểm hàng
+                                            </a>
+                                            <a href="<?= APP_URL ?>/admin/nhap-kho/sua/<?= $phieu['id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                                <span class="iconify text-lg text-gray-400" data-icon="mdi:pencil-outline"></span> Sửa thông tin
+                                            </a>
+                                        <?php elseif($phieu['trang_thai'] === 'Chờ duyệt' || $phieu['trang_thai'] === 'Có lỗi / thiếu hàng'): ?>
+                                            <a href="javascript:void(0)" onclick="openModal('modalDuyetPhieu')" class="flex items-center gap-2 px-4 py-2 text-sm text-orange-700 hover:bg-orange-50 transition-colors font-medium">
+                                                <span class="iconify text-lg text-orange-500" data-icon="mdi:check-decagram-outline"></span> Duyệt phiếu
+                                            </a>
+                                        <?php elseif($phieu['trang_thai'] === 'Nháp'): ?>
+                                            <a href="<?= APP_URL ?>/admin/nhap-kho/sua/<?= $phieu['id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+                                                <span class="iconify text-lg text-gray-400" data-icon="mdi:pencil-outline"></span> Tiếp tục sửa
+                                            </a>
                                         <?php endif; ?>
+
+                                        <!-- In phiếu -->
                                         <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                             <span class="iconify text-lg text-gray-400" data-icon="mdi:printer-outline"></span> In phiếu
                                         </a>
                                         
+                                        <!-- Ghi nhận thanh toán (nếu có nợ) -->
                                         <?php if($phieu['tien_no'] > 0 && $phieu['trang_thai'] !== 'Đã hủy'): ?>
                                         <div class="border-t border-gray-100 my-1"></div>
                                         <a href="#" onclick="openModal('modalThanhToan')" class="flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50 transition-colors font-medium">
@@ -193,6 +191,7 @@
                                         </a>
                                         <?php endif; ?>
 
+                                        <!-- Hủy phiếu (ẩn nếu đã nhập kho hoặc đã hủy) -->
                                         <?php if($phieu['trang_thai'] !== 'Đã nhập kho' && $phieu['trang_thai'] !== 'Đã hủy'): ?>
                                         <div class="border-t border-gray-100 my-1"></div>
                                         <a href="#" onclick="openModal('modalHuyPhieu')" class="flex items-center gap-2 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
@@ -205,7 +204,25 @@
                         </div>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="11" class="py-16 text-center">
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="w-24 h-24 mb-4 rounded-full bg-gray-50 flex items-center justify-center border border-dashed border-gray-200">
+                                <span class="iconify text-4xl text-gray-300" data-icon="mdi:package-variant-closed"></span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">Chưa có phiếu nhập kho nào</h3>
+                            <p class="text-sm text-gray-500 mb-6 max-w-sm mx-auto">Hãy tạo phiếu nhập đầu tiên để ghi nhận hàng từ nhà cung cấp và cập nhật tồn kho.</p>
+                            <div class="flex items-center gap-3">
+                                <a href="<?= APP_URL ?>/admin/nhap-kho/them" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+                                    <span class="iconify" data-icon="mdi:plus"></span> Tạo phiếu nhập
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>

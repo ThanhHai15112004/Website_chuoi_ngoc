@@ -9,10 +9,10 @@
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <span class="iconify text-[#6B0D18] text-xl" data-icon="mdi:barcode-scan"></span>
             </div>
-            <input type="text" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-medium" placeholder="Quét hoặc nhập SKU / Barcode...">
+            <input type="text" id="barcodeScanner" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-medium" placeholder="Quét hoặc nhập SKU / Barcode...">
         </div>
         <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]" checked>
+            <input type="checkbox" id="autoIncrement" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]" checked>
             <span class="text-sm text-gray-700">Tự động tăng số lượng khi quét</span>
         </label>
     </div>
@@ -35,7 +35,7 @@
             <tbody class="divide-y divide-gray-100">
                 
                 <?php foreach ($danhSachKiem as $sp): ?>
-                <tr class="hover:bg-gray-50 transition-colors <?= $sp['ket_qua'] === 'Có hàng lỗi' || $sp['ket_qua'] === 'Thiếu hàng' ? 'bg-rose-50/20' : '' ?>">
+                <tr class="sku-row hover:bg-gray-50 transition-colors <?= $sp['ket_qua'] === 'Có hàng lỗi' || $sp['ket_qua'] === 'Thiếu hàng' ? 'bg-rose-50/20' : '' ?>" data-sku="<?= $sp['sku'] ?>">
                     <!-- Trạng thái -->
                     <td class="py-3 px-4 text-center">
                         <?php if($sp['ket_qua'] === 'Đạt'): ?>
@@ -68,7 +68,7 @@
                     <td class="py-3 px-4">
                         <div class="flex items-center justify-center gap-1">
                             <button class="w-7 h-7 rounded border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100"><span class="iconify" data-icon="mdi:minus"></span></button>
-                            <input type="number" min="0" value="<?= $sp['so_luong_nhan'] ?>" class="w-14 px-2 py-1 text-center border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold <?= $sp['so_luong_nhan'] > 0 ? 'text-[#6B0D18]' : 'text-gray-900' ?>">
+                            <input type="number" min="0" value="<?= $sp['so_luong_nhan'] ?>" class="qty-received w-14 px-2 py-1 text-center border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold <?= $sp['so_luong_nhan'] > 0 ? 'text-[#6B0D18]' : 'text-gray-900' ?>">
                             <button class="w-7 h-7 rounded border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100"><span class="iconify" data-icon="mdi:plus"></span></button>
                         </div>
                     </td>
@@ -109,8 +109,8 @@
 
                     <!-- Thao tác -->
                     <td class="py-3 px-4 text-center">
-                        <button class="p-1.5 text-blue-600 hover:bg-blue-50 rounded transition-colors tooltip" title="Đính kèm ảnh lỗi">
-                            <span class="iconify text-lg" data-icon="mdi:camera-plus-outline"></span>
+                        <button onclick="openModal('modalGhiNhanLoi')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded transition-colors tooltip border border-rose-200 bg-white shadow-sm" title="Ghi nhận lỗi chi tiết">
+                            <span class="iconify text-lg" data-icon="mdi:alert-box-outline"></span>
                         </button>
                     </td>
                 </tr>
@@ -120,3 +120,51 @@
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const barcodeScanner = document.getElementById('barcodeScanner');
+    const autoIncrement = document.getElementById('autoIncrement');
+    
+    if(barcodeScanner) {
+        barcodeScanner.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const sku = this.value.trim();
+                if (!sku) return;
+                
+                const row = document.querySelector(`.sku-row[data-sku="${sku}"]`);
+                if (row) {
+                    if (autoIncrement.checked) {
+                        const qtyInput = row.querySelector('.qty-received');
+                        if (qtyInput) {
+                            qtyInput.value = parseInt(qtyInput.value) + 1;
+                            qtyInput.classList.add('text-[#6B0D18]');
+                        }
+                    }
+                    
+                    // Hiệu ứng highlight dòng
+                    row.classList.add('bg-yellow-50');
+                    setTimeout(() => row.classList.remove('bg-yellow-50'), 1500);
+                    
+                    if (typeof showToast === 'function') {
+                        showToast(`Đã ghi nhận SKU: ${sku}`);
+                    } else {
+                        alert(`Đã ghi nhận SKU: ${sku}`);
+                    }
+                    
+                    this.value = ''; // Reset input
+                } else {
+                    if (typeof showToast === 'function') {
+                        // showToast is configured in admin_nhap_kho, but this is admin_nhap_kho_kiem.
+                        // I will assume there's a global showToast or just use alert for mockup if missing.
+                        alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
+                    } else {
+                        alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
+                    }
+                }
+            }
+        });
+    }
+});
+</script>

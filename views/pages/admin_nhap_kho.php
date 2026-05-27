@@ -11,7 +11,7 @@ $current_page = 'nhap_kho';
             <p class="text-sm text-gray-500 mt-1">Quản lý các phiếu nhập hàng từ nhà cung cấp, kiểm hàng và cập nhật tồn kho.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+            <button onclick="openModal('modalNhapExcel')" class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
                 <span class="iconify text-[#6B0D18]" data-icon="mdi:microsoft-excel"></span> Nhập từ Excel
             </button>
             <a href="<?= APP_URL ?>/admin/nhap-kho/them" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
@@ -30,14 +30,14 @@ $current_page = 'nhap_kho';
         <?php require_once __DIR__ . '/../components/Admin/nhap_kho/tabs_filter.php'; ?>
 
         <!-- Action Bar (Khi chọn checkbox) - Ban đầu ẩn -->
-        <div class="px-4 py-3 bg-red-50 border-b border-red-100 flex items-center justify-between hidden">
+        <div id="bulkActionBar" class="px-4 py-3 bg-red-50 border-b border-red-100 items-center justify-between hidden">
             <div class="flex items-center gap-2">
-                <span class="text-sm font-medium text-[#6B0D18]">Đã chọn 2 phiếu nhập</span>
+                <span id="selectedCountText" class="text-sm font-medium text-[#6B0D18]">Đã chọn 0 phiếu nhập</span>
             </div>
             <div class="flex items-center gap-2">
-                <button class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50">Duyệt phiếu</button>
-                <button class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50">In phiếu</button>
-                <button class="px-3 py-1.5 bg-white border border-rose-200 rounded-lg text-xs font-medium text-rose-600 hover:bg-rose-50">Hủy phiếu</button>
+                <button onclick="bulkDuyet()" class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50">Duyệt phiếu</button>
+                <button onclick="bulkIn()" class="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50">In phiếu</button>
+                <button onclick="bulkHuy()" class="px-3 py-1.5 bg-white border border-rose-200 rounded-lg text-xs font-medium text-rose-600 hover:bg-rose-50">Hủy phiếu</button>
             </div>
         </div>
 
@@ -61,9 +61,21 @@ $current_page = 'nhap_kho';
 </div>
 
 <script>
-    function showToast(message) {
+    function showToast(message, isError = false) {
         const toast = document.getElementById('toastNotification');
+        const icon = toast.querySelector('.iconify');
         document.getElementById('toastMessage').innerText = message;
+        
+        if (isError) {
+            toast.classList.replace('bg-gray-900', 'bg-rose-600');
+            icon.setAttribute('data-icon', 'mdi:alert-circle');
+            icon.classList.replace('text-emerald-400', 'text-white');
+        } else {
+            toast.classList.replace('bg-rose-600', 'bg-gray-900');
+            icon.setAttribute('data-icon', 'mdi:check-circle');
+            icon.classList.replace('text-white', 'text-emerald-400');
+        }
+        
         toast.classList.remove('translate-y-20', 'opacity-0');
         setTimeout(hideToast, 3000);
     }
@@ -71,5 +83,68 @@ $current_page = 'nhap_kho';
     function hideToast() {
         const toast = document.getElementById('toastNotification');
         toast.classList.add('translate-y-20', 'opacity-0');
+    }
+
+    // JS cho Checkbox Bulk Actions
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+        const bulkActionBar = document.getElementById('bulkActionBar');
+        const selectedCountText = document.getElementById('selectedCountText');
+
+        function updateBulkActionBar() {
+            const selectedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            if (selectedCount > 0) {
+                bulkActionBar.classList.remove('hidden');
+                bulkActionBar.classList.add('flex');
+                selectedCountText.innerText = `Đã chọn ${selectedCount} phiếu nhập`;
+            } else {
+                bulkActionBar.classList.add('hidden');
+                bulkActionBar.classList.remove('flex');
+            }
+            if(selectAllCheckbox) {
+                selectAllCheckbox.checked = selectedCount === rowCheckboxes.length && rowCheckboxes.length > 0;
+            }
+        }
+
+        if(selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function() {
+                rowCheckboxes.forEach(cb => cb.checked = this.checked);
+                updateBulkActionBar();
+            });
+        }
+
+        rowCheckboxes.forEach(cb => {
+            cb.addEventListener('change', updateBulkActionBar);
+        });
+    });
+
+    function bulkDuyet() {
+        showToast('Đang xử lý duyệt hàng loạt...');
+        // Thêm logic ajax duyệt ở đây
+    }
+    
+    function bulkIn() {
+        showToast('Đang chuẩn bị in...');
+    }
+    
+    function bulkHuy() {
+        // Kiểm tra xem có phiếu Đã nhập kho không
+        let hasImported = false;
+        document.querySelectorAll('.row-checkbox:checked').forEach(cb => {
+            const row = cb.closest('tr');
+            if(row && row.getAttribute('data-status') === 'Đã nhập kho') {
+                hasImported = true;
+            }
+        });
+        
+        if (hasImported) {
+            showToast('Không thể hủy! Có phiếu đã được nhập vào kho.', true);
+            return;
+        }
+
+        if(confirm('Bạn có chắc chắn muốn hủy các phiếu đã chọn?')) {
+            showToast('Đã hủy các phiếu thành công!');
+        }
     }
 </script>
