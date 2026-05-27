@@ -98,6 +98,8 @@ function isGroupActive($pages, $current) {
             </div>
         </div>
         
+
+        
         <!-- Quản lý kho hàng -->
         <?php $isActive = isGroupActive($kho_hang_pages, $current_page); ?>
         <div class="sidebar-group">
@@ -189,19 +191,19 @@ function isGroupActive($pages, $current) {
             </div>
         </div>
 
-        <!-- Cài đặt hệ thống -->
+        <!-- Quản lý cửa hàng -->
         <?php $isActive = isGroupActive($cai_dat_pages, $current_page); ?>
         <div class="sidebar-group">
             <button onclick="toggleSidebarGroup(this)" class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg <?= $isActive ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors group">
                 <div class="flex items-center gap-3">
-                    <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:cog-outline"></span>
-                    Cài đặt hệ thống
+                    <span class="iconify text-xl <?= $isActive ? 'text-red-900' : 'text-gray-400 group-hover:text-red-900' ?>" data-icon="mdi:store-cog-outline"></span>
+                    Quản lý cửa hàng
                 </div>
                 <span class="iconify text-lg transition-transform duration-300 <?= $isActive ? 'rotate-180 text-red-900' : 'text-gray-400' ?>" data-icon="mdi:chevron-down"></span>
             </button>
             <div class="overflow-hidden transition-all duration-300 <?= $isActive ? 'max-h-[500px]' : 'max-h-0' ?>">
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
-                    <a href="<?= APP_URL ?>/admin/cai-dat/thong-tin" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'thong_tin_cua_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                    <a href="<?= APP_URL ?>/admin/quan-ly-cua-hang" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'thong_tin_cua_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'thong_tin_cua_hang' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:store-outline"></span> Thông tin cửa hàng</span>
                     </a>
                     <a href="<?= APP_URL ?>/admin/cai-dat/thanh-toan" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'thanh_toan_van_chuyen' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
