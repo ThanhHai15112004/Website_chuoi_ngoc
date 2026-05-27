@@ -2,7 +2,7 @@
 // views/components/Admin/cau_hinh_kho/modals.php
 ?>
 <!-- Modal Tạm ngừng kho -->
-<div id="modalPause" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalPause" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalPauseContent">
         <div class="p-6">
             <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-4 mx-auto">
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Modal Ngừng dùng kho (Xóa kho) -->
-<div id="modalDelete" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalDelete" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalDeleteContent">
         <div class="p-6">
             <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 mb-4 mx-auto">
@@ -59,7 +59,7 @@
 </div>
 
 <!-- Modal Thêm Vị Trí Khu Vực -->
-<div id="modalThemViTri" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalThemViTri" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalThemViTriContent">
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
@@ -134,6 +134,7 @@
         const modal = document.getElementById(modalId);
         const content = document.getElementById(modalId + 'Content');
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
         
         setTimeout(() => {
             content.classList.remove('scale-95', 'opacity-0');
@@ -150,6 +151,7 @@
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }, 300);
     }
 </script>

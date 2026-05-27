@@ -38,7 +38,7 @@ $current_page = 'nhap_kho';
 </div>
 
 <!-- Modal Xác nhận Gửi duyệt -->
-<div id="modalGuiDuyet" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalGuiDuyet" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -88,10 +88,14 @@ $current_page = 'nhap_kho';
 
 <script>
     function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
+        const el = document.getElementById(id);
+        el.classList.remove('hidden');
+        el.classList.add('flex');
     }
     
     function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
+        const el = document.getElementById(id);
+        el.classList.add('hidden');
+        el.classList.remove('flex');
     }
 </script>

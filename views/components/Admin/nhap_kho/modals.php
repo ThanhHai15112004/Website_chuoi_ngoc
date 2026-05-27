@@ -2,7 +2,7 @@
 // views/components/Admin/nhap_kho/modals.php
 ?>
 <!-- Modal Duyệt Phiếu Nhập -->
-<div id="modalDuyetPhieu" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalDuyetPhieu" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
@@ -93,7 +93,7 @@
 </div>
 
 <!-- Modal Hủy Phiếu -->
-<div id="modalHuyPhieu" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalHuyPhieu" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -133,7 +133,7 @@
 </div>
 
 <!-- Modal Ghi nhận thanh toán -->
-<div id="modalThanhToan" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalThanhToan" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -202,7 +202,7 @@
 </div>
 
 <!-- Modal Yêu Cầu Kiểm Lại -->
-<div id="modalYeuCauKiemLai" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalYeuCauKiemLai" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -245,7 +245,7 @@
 </div>
 
 <!-- Modal Ghi Nhận Lỗi -->
-<div id="modalGhiNhanLoi" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalGhiNhanLoi" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -309,7 +309,7 @@
 </div>
 
 <!-- Modal Nhập từ Excel -->
-<div id="modalNhapExcel" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalNhapExcel" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -401,11 +401,15 @@
 
 <script>
     function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
+        const el = document.getElementById(id);
+        el.classList.remove('hidden');
+        el.classList.add('flex');
     }
     
     function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
+        const el = document.getElementById(id);
+        el.classList.add('hidden');
+        el.classList.remove('flex');
     }
 
     // Logic giả lập chuyển bước Modal Excel

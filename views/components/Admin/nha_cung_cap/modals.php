@@ -2,7 +2,7 @@
 // views/components/Admin/nha_cung_cap/modals.php
 ?>
 <!-- Modal Confirm Delete -->
-<div id="modalDelete" class="fixed inset-0 bg-gray-900/50 z-[60] hidden flex items-center justify-center backdrop-blur-sm">
+<div id="modalDelete" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalDeleteContent">
         <div class="p-6">
             <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 mb-4 mx-auto">
@@ -27,6 +27,7 @@
         const modal = document.getElementById(modalId);
         const content = document.getElementById(modalId + 'Content');
         modal.classList.remove('hidden');
+        modal.classList.add('flex');
         
         // Trigger animation
         setTimeout(() => {
@@ -44,6 +45,7 @@
         
         setTimeout(() => {
             modal.classList.add('hidden');
+            modal.classList.remove('flex');
         }, 300);
     }
 </script>

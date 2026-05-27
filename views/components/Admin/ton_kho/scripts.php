@@ -77,18 +77,30 @@
     // --- Dropdowns ---
     function toggleDropdown(btn) {
         const menu = btn.nextElementSibling;
+        const isHidden = menu.classList.contains('hidden');
         
-        // Close other dropdowns
         document.querySelectorAll('.dropdown-menu').forEach(el => {
-            if (el !== menu) {
-                el.classList.add('hidden');
-            }
+            el.classList.add('hidden');
+            el.style.position = '';
+            el.style.top = '';
+            el.style.left = '';
+            el.style.right = '';
         });
 
-        if (menu.classList.contains('hidden')) {
+        if (isHidden) {
+            const rect = btn.getBoundingClientRect();
             menu.classList.remove('hidden');
-        } else {
-            menu.classList.add('hidden');
+            menu.style.position = 'fixed';
+            menu.style.zIndex = '9999';
+            const menuWidth = menu.offsetWidth || 192;
+            const menuHeight = menu.offsetHeight || 200;
+            let top = rect.bottom + 4;
+            let left = rect.right - menuWidth;
+            if (top + menuHeight > window.innerHeight) top = rect.top - menuHeight - 4;
+            if (left < 8) left = 8;
+            menu.style.top = top + 'px';
+            menu.style.left = left + 'px';
+            menu.style.right = 'auto';
         }
     }
 
@@ -97,7 +109,21 @@
         if (!e.target.closest('.action-dropdown')) {
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
                 menu.classList.add('hidden');
+                menu.style.position = '';
+                menu.style.top = '';
+                menu.style.left = '';
+                menu.style.right = '';
             });
         }
     });
+
+    document.addEventListener('scroll', function() {
+        document.querySelectorAll('.dropdown-menu:not(.hidden)').forEach(el => {
+            el.classList.add('hidden');
+            el.style.position = '';
+            el.style.top = '';
+            el.style.left = '';
+            el.style.right = '';
+        });
+    }, true);
 </script>
