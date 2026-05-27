@@ -61,7 +61,7 @@
             </button>
             <button onclick="switchDrawerTab('debt')" id="tab-btn-debt" class="drawer-tab relative py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors whitespace-nowrap flex items-center gap-1">
                 Công nợ
-                <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full text-[10px] font-bold">12.5M</span>
+                <span class="bg-rose-100 text-rose-600 px-1.5 py-0.5 rounded-full text-[10px] font-bold">12.5TR</span>
                 <span class="absolute bottom-0 left-0 w-full h-0.5 bg-transparent rounded-t-full tab-indicator hidden"></span>
             </button>
             <button onclick="switchDrawerTab('rating')" id="tab-btn-rating" class="drawer-tab relative py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors whitespace-nowrap">
@@ -85,11 +85,11 @@
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                     <p class="text-xs text-gray-500 mb-1">Tổng giá trị</p>
-                    <p class="text-xl font-bold text-[#6B0D18]" id="drawer-tong-gia-tri">85.0M</p>
+                    <p class="text-xl font-bold text-[#6B0D18]" id="drawer-tong-gia-tri">85TR</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-rose-100 shadow-sm bg-rose-50/30">
                     <p class="text-xs text-rose-600 mb-1">Công nợ</p>
-                    <p class="text-xl font-bold text-rose-600" id="drawer-cong-no">12.5M</p>
+                    <p class="text-xl font-bold text-rose-600" id="drawer-cong-no">12.5TR</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
                     <p class="text-xs text-gray-500 mb-1">Lần nhập cuối</p>
@@ -217,8 +217,8 @@
                     document.getElementById('drawer-ncc-id').textContent = data.id;
                     document.getElementById('drawer-ncc-khu-vuc').textContent = data.khu_vuc;
                     document.getElementById('drawer-tong-phieu').textContent = data.tong_phieu;
-                    document.getElementById('drawer-tong-gia-tri').textContent = (data.tong_gia_tri / 1000000).toFixed(1) + 'M';
-                    document.getElementById('drawer-cong-no').textContent = (data.cong_no / 1000000).toFixed(1) + 'M';
+                    document.getElementById('drawer-tong-gia-tri').textContent = (data.tong_gia_tri / 1000000).toFixed(1).replace(/\.0$/, '') + 'TR';
+                    document.getElementById('drawer-cong-no').textContent = (data.cong_no / 1000000).toFixed(1).replace(/\.0$/, '') + 'TR';
                     document.getElementById('drawer-ngay-nhap').textContent = data.lan_nhap_gan_nhat || '-';
                     document.getElementById('drawer-nguoi-lh').textContent = `${data.nguoi_lien_he} (${data.chuc_vu})`;
                     document.getElementById('drawer-sdt').textContent = data.sdt;

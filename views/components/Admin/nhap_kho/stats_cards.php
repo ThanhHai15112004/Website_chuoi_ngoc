@@ -85,7 +85,7 @@
             <p class="text-[11px] font-medium text-[#6B0D18]/70 uppercase tracking-wide">Tổng giá trị nhập</p>
         </div>
         <div>
-            <h3 class="text-xl font-bold text-[#6B0D18]">420.000.000đ</h3>
+            <h3 class="text-xl font-bold text-[#6B0D18]">420TR</h3>
             <p class="text-xs text-gray-500 mt-1">Tháng này</p>
         </div>
     </div>
@@ -99,7 +99,7 @@
             <p class="text-[11px] font-medium text-orange-700 uppercase tracking-wide">Công nợ nhập hàng</p>
         </div>
         <div>
-            <h3 class="text-xl font-bold text-orange-600">58.000.000đ</h3>
+            <h3 class="text-xl font-bold text-orange-600">58TR</h3>
             <p class="text-xs text-gray-500 mt-1">Cần thanh toán</p>
         </div>
     </div>

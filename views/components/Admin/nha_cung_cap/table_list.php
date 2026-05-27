@@ -91,9 +91,9 @@
                         <!-- 5. Tổng giá trị -->
                         <td class="py-3 px-4 text-right">
                             <?php if($ncc['tong_gia_tri'] > 0): ?>
-                                <span class="font-bold text-[#6B0D18] text-sm"><?= number_format($ncc['tong_gia_tri'], 0, ',', '.') ?>đ</span>
+                                <span class="font-bold text-[#6B0D18] text-sm"><?= number_format($ncc['tong_gia_tri'] / 1000000, 1, ',', '.') ?>TR</span>
                             <?php else: ?>
-                                <span class="text-sm text-gray-400">0đ</span>
+                                <span class="text-sm text-gray-400">0TR</span>
                             <?php endif; ?>
                         </td>
 
@@ -101,7 +101,7 @@
                         <td class="py-3 px-4 text-right">
                             <?php if($ncc['cong_no'] > 0): ?>
                                 <?php $isOverdue = strpos($ncc['han_no'], '20/05') !== false; // Mock data check quá hạn ?>
-                                <div class="font-bold <?= $isOverdue ? 'text-rose-600' : 'text-amber-600' ?> text-sm"><?= number_format($ncc['cong_no'], 0, ',', '.') ?>đ</div>
+                                <div class="font-bold <?= $isOverdue ? 'text-rose-600' : 'text-amber-600' ?> text-sm"><?= number_format($ncc['cong_no'] / 1000000, 1, ',', '.') ?>TR</div>
                                 <div class="text-[11px] <?= $isOverdue ? 'text-rose-500 font-medium' : 'text-gray-500' ?> mt-0.5">Hạn: <?= $ncc['han_no'] ?> <?= $isOverdue ? '(Quá hạn)' : '' ?></div>
                             <?php else: ?>
                                 <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 text-[11px] px-2 py-0.5 rounded font-medium border border-emerald-100">Không nợ</span>

@@ -63,10 +63,10 @@
         <!-- Card Mua hàng -->
         <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Tổng tiền nhập hàng</h3>
-            <div class="text-2xl font-bold text-gray-900 mt-2"><?= number_format($ncc['tong_mua'], 0, ',', '.') ?>đ</div>
+            <div class="text-2xl font-bold text-gray-900 mt-2"><?= number_format($ncc['tong_mua'] / 1000000, 1, ',', '.') ?>TR</div>
             <div class="text-sm text-gray-500 mt-2 pt-2 border-t border-gray-100 flex justify-between">
                 <span>Đã thanh toán:</span>
-                <span class="font-medium text-gray-700"><?= number_format($ncc['da_tra'], 0, ',', '.') ?>đ</span>
+                <span class="font-medium text-gray-700"><?= number_format($ncc['da_tra'] / 1000000, 1, ',', '.') ?>TR</span>
             </div>
         </div>
 
@@ -75,15 +75,15 @@
             <h3 class="text-xs font-bold <?= $ncc['cong_no'] > 0 ? 'text-red-500' : 'text-gray-400' ?> uppercase tracking-wider mb-1">Công nợ hiện tại</h3>
             
             <?php if ($ncc['cong_no'] > 0): ?>
-                <div class="text-3xl font-bold text-red-600 mt-2"><?= number_format($ncc['cong_no'], 0, ',', '.') ?>đ</div>
+                <div class="text-3xl font-bold text-red-600 mt-2"><?= number_format($ncc['cong_no'] / 1000000, 1, ',', '.') ?>TR</div>
                 <button onclick="alert('Mở popup lập Phiếu Chi trả nợ')" class="mt-3 w-full py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
                     Thanh toán nợ
                 </button>
             <?php elseif ($ncc['cong_no'] < 0): ?>
-                <div class="text-3xl font-bold text-emerald-600 mt-2">-<?= number_format(abs($ncc['cong_no']), 0, ',', '.') ?>đ</div>
+                <div class="text-3xl font-bold text-emerald-600 mt-2">-<?= number_format(abs($ncc['cong_no']) / 1000000, 1, ',', '.') ?>TR</div>
                 <p class="text-xs text-emerald-600 mt-2 font-medium">Nhà cung cấp đang nợ (Bạn đã trả trước)</p>
             <?php else: ?>
-                <div class="text-3xl font-bold text-gray-400 mt-2">0đ</div>
+                <div class="text-3xl font-bold text-gray-400 mt-2">0TR</div>
                 <p class="text-xs text-gray-500 mt-2">Không có dư nợ.</p>
             <?php endif; ?>
         </div>
@@ -123,9 +123,9 @@
                                 <a href="#" class="font-bold text-[#6B0D18] hover:underline"><?= $pn['id'] ?></a>
                             </td>
                             <td class="py-4 px-6 text-sm text-gray-600"><?= $pn['ngay'] ?></td>
-                            <td class="py-4 px-6 text-right font-bold text-gray-900"><?= number_format($pn['tong_tien'], 0, ',', '.') ?>đ</td>
-                            <td class="py-4 px-6 text-right text-gray-600"><?= number_format($pn['da_tra'], 0, ',', '.') ?>đ</td>
-                            <td class="py-4 px-6 text-right text-red-600 font-medium"><?= number_format($pn['con_no'], 0, ',', '.') ?>đ</td>
+                            <td class="py-4 px-6 text-right font-bold text-gray-900"><?= number_format($pn['tong_tien'] / 1000000, 1, ',', '.') ?>TR</td>
+                            <td class="py-4 px-6 text-right text-gray-600"><?= number_format($pn['da_tra'] / 1000000, 1, ',', '.') ?>TR</td>
+                            <td class="py-4 px-6 text-right text-red-600 font-medium"><?= number_format($pn['con_no'] / 1000000, 1, ',', '.') ?>TR</td>
                             <td class="py-4 px-6">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-50 text-amber-600 border border-amber-200">
                                     <?= $pn['trang_thai'] ?>
@@ -174,13 +174,13 @@
                                 <a href="#" class="font-bold text-blue-600 hover:underline text-sm"><?= $cn['chung_tu'] ?></a>
                             </td>
                             <td class="py-4 px-6 text-right font-medium text-gray-900">
-                                <?= $cn['so_tien'] > 0 ? number_format($cn['so_tien'], 0, ',', '.') . 'đ' : '-' ?>
+                                <?= $cn['so_tien'] > 0 ? number_format($cn['so_tien'] / 1000000, 1, ',', '.') . 'TR' : '-' ?>
                             </td>
                             <td class="py-4 px-6 text-right font-medium text-gray-900">
-                                <?= $cn['so_tien'] < 0 ? number_format(abs($cn['so_tien']), 0, ',', '.') . 'đ' : '-' ?>
+                                <?= $cn['so_tien'] < 0 ? number_format(abs($cn['so_tien']) / 1000000, 1, ',', '.') . 'TR' : '-' ?>
                             </td>
                             <td class="py-4 px-6 text-right font-bold text-[#6B0D18]">
-                                <?= number_format($cn['du_no_cuoi'], 0, ',', '.') ?>đ
+                                <?= number_format($cn['du_no_cuoi'] / 1000000, 1, ',', '.') ?>TR
                             </td>
                         </tr>
                         <?php endforeach; ?>

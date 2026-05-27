@@ -126,7 +126,7 @@
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide line-clamp-1">Giá trị xuất</h3>
             </div>
             <div class="mt-auto">
-                <span class="text-xl font-bold text-[#6B0D18] whitespace-nowrap"><?= number_format($stats['gia_tri']/1000000, 1, ',', '.') ?>M</span>
+                <span class="text-xl font-bold text-[#6B0D18] whitespace-nowrap"><?= number_format($stats['gia_tri']/1000000, 0, ',', '.') ?>TR</span>
             </div>
         </div>
     </div>

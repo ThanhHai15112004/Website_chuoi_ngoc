@@ -9,7 +9,7 @@
         <div class="flex justify-between items-start relative z-10">
             <div>
                 <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Doanh thu hôm nay</p>
-                <h3 class="text-2xl font-bold text-gray-800 font-luxury"><?= number_format($thong_ke_nhanh['doanh_thu_hom_nay'], 0, ',', '.') ?>đ</h3>
+                <h3 class="text-2xl font-bold text-gray-800 font-luxury"><?= number_format($thong_ke_nhanh['doanh_thu_hom_nay'] / 1000000, 1, ',', '.') ?>TR</h3>
             </div>
             <div class="w-10 h-10 rounded-lg bg-red-100 text-red-900 flex items-center justify-center">
                 <span class="iconify text-xl" data-icon="mdi:currency-vnd"></span>
