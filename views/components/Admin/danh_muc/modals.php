@@ -1,14 +1,15 @@
 <!-- Category Modal (Add/Edit) -->
 <div id="categoryModal" class="fixed inset-0 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
     <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onclick="closeModal('categoryModal')"></div>
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 relative z-10 scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+    <form id="categoryForm" method="POST" action="<?= APP_URL ?>/admin/danh-muc/luu" class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 relative z-10 scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between shrink-0">
             <h3 class="font-bold text-xl text-gray-900" id="categoryModalTitle">Thêm danh mục mới</h3>
-            <button onclick="closeModal('categoryModal')" class="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-lg hover:bg-gray-100">
+            <button type="button" onclick="closeModal('categoryModal')" class="text-gray-400 hover:text-gray-700 transition-colors p-1 rounded-lg hover:bg-gray-100">
                 <span class="iconify text-2xl" data-icon="mdi:close"></span>
             </button>
         </div>
         <div class="px-6 py-6 overflow-y-auto">
+            <input type="hidden" name="id" id="catId">
             <div id="categoryProductWarning" class="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 items-start mb-6 hidden">
                 <span class="iconify text-blue-500 text-xl shrink-0 mt-0.5" data-icon="mdi:information-outline"></span>
                 <div>
@@ -21,12 +22,12 @@
                 <div class="grid grid-cols-2 gap-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Tên danh mục <span class="text-red-500">*</span></label>
-                        <input type="text" id="catName" placeholder="Ví dụ: Vòng tay phong thủy" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
+                        <input type="text" name="ten_danh_muc" id="catName" placeholder="Ví dụ: Vòng tay phong thủy" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm" required>
                         <p class="text-red-500 text-xs mt-1 hidden" id="catNameError">Vui lòng nhập tên danh mục</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Mã danh mục</label>
-                        <input type="text" id="catCode" placeholder="Tự động sinh hoặc nhập (VD: DM001)" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
+                        <input type="text" name="ma_danh_muc" id="catCode" placeholder="Tự động sinh hoặc nhập (VD: DM001)" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
                     </div>
                 </div>
 
@@ -34,13 +35,13 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Đường dẫn (Slug)</label>
                     <div class="flex items-center gap-2">
                         <span class="text-gray-400 text-sm bg-gray-50 border border-gray-200 px-3 py-2.5 rounded-xl border-r-0 rounded-r-none">/</span>
-                        <input type="text" id="catSlug" placeholder="vong-tay-phong-thuy" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl rounded-l-none -ml-2 focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
+                        <input type="text" name="slug" id="catSlug" placeholder="vong-tay-phong-thuy" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl rounded-l-none -ml-2 focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Mô tả ngắn</label>
-                    <textarea rows="2" placeholder="Nhập mô tả ngắn cho danh mục..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm resize-none"></textarea>
+                    <textarea name="mo_ta" id="catDesc" rows="2" placeholder="Nhập mô tả ngắn cho danh mục..." class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm resize-none"></textarea>
                 </div>
 
                 <div class="grid grid-cols-2 gap-5">
@@ -48,15 +49,15 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Vị trí hiển thị</label>
                         <div class="space-y-2 mt-2">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                                <input type="checkbox" name="vi_tri_menu" id="catPosMenu" value="1" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Hiển thị ở Menu chính</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                                <input type="checkbox" name="vi_tri_home" id="catPosHome" value="1" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Hiển thị ở Trang chủ</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                                <input type="checkbox" name="vi_tri_filter" id="catPosFilter" value="1" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Hiển thị trong Bộ lọc SP</span>
                             </label>
                         </div>
@@ -67,7 +68,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-700">Trạng thái</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" value="" class="sr-only peer" checked>
+                                    <input type="checkbox" name="trang_thai" id="catStatus" value="1" class="sr-only peer" checked>
                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                                     <span class="ml-2 text-xs font-medium text-emerald-600 peer-checked:text-emerald-600 peer-checked:block hidden">Hiển thị</span>
                                     <span class="ml-2 text-xs font-medium text-gray-500 peer-checked:hidden">Đang ẩn</span>
@@ -75,7 +76,7 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-sm text-gray-700">Thứ tự ưu tiên</span>
-                                <input type="number" value="1" min="1" class="w-20 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-center text-sm focus:outline-none focus:border-[#6B0D18]">
+                                <input type="number" name="thu_tu" id="catOrder" value="1" min="1" class="w-20 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-center text-sm focus:outline-none focus:border-[#6B0D18]">
                             </div>
                         </div>
                     </div>
@@ -83,10 +84,10 @@
             </div>
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-end gap-3 shrink-0 bg-gray-50/50 rounded-b-2xl">
-            <button onclick="closeModal('categoryModal')" class="px-5 py-2.5 text-gray-600 hover:bg-gray-200 bg-white border border-gray-200 rounded-xl font-medium text-sm transition-colors">Hủy</button>
-            <button onclick="submitCategory()" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm" id="btnSubmitCategory">Lưu danh mục</button>
+            <button type="button" onclick="closeModal('categoryModal')" class="px-5 py-2.5 text-gray-600 hover:bg-gray-200 bg-white border border-gray-200 rounded-xl font-medium text-sm transition-colors">Hủy</button>
+            <button type="submit" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm" id="btnSubmitCategory">Lưu danh mục</button>
         </div>
-    </div>
+    </form>
 </div>
 
 <!-- Sort Modal -->

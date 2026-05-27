@@ -46,17 +46,52 @@
     <div class="bg-white border border-gray-200 rounded-[18px] shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="productTable">
+                <?php
+                $qParams = $_GET;
+                function getSortUrl($column, $currentParams) {
+                    $dir = 'ASC';
+                    if (($currentParams['sort_by'] ?? '') === $column) {
+                        $dir = (strtoupper($currentParams['sort_dir'] ?? '') === 'ASC') ? 'DESC' : 'ASC';
+                    }
+                    $params = $currentParams;
+                    $params['sort_by'] = $column;
+                    $params['sort_dir'] = $dir;
+                    return '?' . http_build_query($params);
+                }
+                function getSortIcon($column, $currentParams) {
+                    if (($currentParams['sort_by'] ?? '') === $column) {
+                        $dir = strtoupper($currentParams['sort_dir'] ?? 'ASC');
+                        return $dir === 'ASC' ? 'mdi:arrow-up' : 'mdi:arrow-down';
+                    }
+                    return 'mdi:swap-vertical';
+                }
+                function getSortClass($column, $currentParams) {
+                    return (($currentParams['sort_by'] ?? '') === $column) ? 'text-[#6B0D18] opacity-100' : 'opacity-0 group-hover:opacity-100';
+                }
+                ?>
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-bold">
                         <th class="p-4 w-12 text-center">
                             <input type="checkbox" id="selectAll" class="w-4 h-4 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18] cursor-pointer">
                         </th>
                         <th class="p-4 w-20">Ảnh</th>
-                        <th class="p-4 min-w-[250px] cursor-pointer hover:text-[#6B0D18] group">Sản phẩm <span class="iconify inline-block opacity-0 group-hover:opacity-100 transition-opacity" data-icon="mdi:arrow-down"></span></th>
+                        <th class="p-4 min-w-[250px]">
+                            <a href="<?= getSortUrl('ten_sp', $qParams) ?>" class="flex items-center gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                Sản phẩm <span class="iconify inline-block transition-opacity <?= getSortClass('ten_sp', $qParams) ?>" data-icon="<?= getSortIcon('ten_sp', $qParams) ?>"></span>
+                            </a>
+                        </th>
                         <th class="p-4">Phân loại</th>
                         <th class="p-4">Mệnh</th>
-                        <th class="p-4 text-right cursor-pointer hover:text-[#6B0D18] group">Giá <span class="iconify inline-block opacity-0 group-hover:opacity-100 transition-opacity" data-icon="mdi:arrow-down"></span></th>
-                        <th class="p-4 text-right cursor-pointer hover:text-[#6B0D18] group">Tồn kho <span class="iconify inline-block opacity-0 group-hover:opacity-100 transition-opacity" data-icon="mdi:arrow-down"></span></th>
+                        <th class="p-4 text-right">
+                            <a href="<?= getSortUrl('gia_ban', $qParams) ?>" class="flex items-center justify-end gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                Giá <span class="iconify inline-block transition-opacity <?= getSortClass('gia_ban', $qParams) ?>" data-icon="<?= getSortIcon('gia_ban', $qParams) ?>"></span>
+                            </a>
+                        </th>
+                        <th class="p-4 text-right">
+                            <a href="<?= getSortUrl('ton_kho', $qParams) ?>" class="flex items-center justify-end gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                Tồn kho <span class="iconify inline-block transition-opacity <?= getSortClass('ton_kho', $qParams) ?>" data-icon="<?= getSortIcon('ton_kho', $qParams) ?>"></span>
+                            </a>
+                        </th>
                         <th class="p-4 text-center">Trạng thái</th>
                         <th class="p-4 text-center w-24">Thao tác</th>
                     </tr>
@@ -119,9 +154,18 @@
                 <?php endif; ?>
 
                 <?php 
-                $startPage = max(1, $currentPage - 2);
-                $endPage = min($totalPages, $currentPage + 2);
-                if ($startPage > 1) { echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>'; }
+                $startPage = max(1, $currentPage - 1);
+                $endPage = min($totalPages, $currentPage + 1);
+                
+                // Hiển thị trang 1
+                if ($startPage > 1) {
+                    echo '<a href="' . $baseUrl . 'page=1" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#6B0D18] hover:border-gray-300 transition-colors font-medium text-sm">1</a>';
+                    if ($startPage > 2) {
+                        echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>';
+                    }
+                }
+
+                // Hiển thị các trang ở giữa
                 for ($i = $startPage; $i <= $endPage; $i++): 
                     if ($i == $currentPage):
                 ?>
@@ -131,7 +175,14 @@
                 <?php 
                     endif;
                 endfor; 
-                if ($endPage < $totalPages) { echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>'; }
+
+                // Hiển thị trang cuối
+                if ($endPage < $totalPages) {
+                    if ($endPage < $totalPages - 1) {
+                        echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>';
+                    }
+                    echo '<a href="' . $baseUrl . 'page=' . $totalPages . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#6B0D18] hover:border-gray-300 transition-colors font-medium text-sm">' . $totalPages . '</a>';
+                }
                 ?>
 
                 <!-- Next Button -->

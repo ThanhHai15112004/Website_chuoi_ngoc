@@ -60,17 +60,38 @@
             nameInput.classList.remove('border-red-500');
             document.getElementById('catNameError').classList.add('hidden');
 
-            if(mode === 'edit') {
-                document.getElementById('categoryModalTitle').textContent = 'Chỉnh sửa danh mục';
-                nameInput.value = title;
-                // Mock product count for edit mode
-                document.getElementById('categoryProductWarning').classList.remove('hidden');
-                document.getElementById('categoryProductCount').textContent = Math.floor(Math.random() * 50) + 1;
-            } else {
+            if(mode === 'add') {
                 document.getElementById('categoryModalTitle').textContent = 'Thêm danh mục mới';
-                nameInput.value = '';
+                document.getElementById('categoryForm').reset();
+                document.getElementById('catId').value = '';
                 document.getElementById('categoryProductWarning').classList.add('hidden');
             }
+        }
+    }
+
+    function openEditModal(dm) {
+        openModal('categoryModal', 'edit');
+        document.getElementById('categoryModalTitle').textContent = 'Chỉnh sửa danh mục';
+        
+        document.getElementById('catId').value = dm.id;
+        document.getElementById('catName').value = dm.ten_danh_muc;
+        document.getElementById('catCode').value = dm.ma_danh_muc || '';
+        document.getElementById('catSlug').value = dm.slug || '';
+        document.getElementById('catDesc').value = dm.mo_ta || '';
+        
+        document.getElementById('catPosMenu').checked = dm.vi_tri.includes('Menu chính');
+        document.getElementById('catPosHome').checked = dm.vi_tri.includes('Trang chủ');
+        document.getElementById('catPosFilter').checked = dm.vi_tri.includes('Bộ lọc SP');
+        
+        document.getElementById('catStatus').checked = dm.trang_thai == 1;
+        document.getElementById('catOrder').value = dm.thu_tu;
+        
+        const warning = document.getElementById('categoryProductWarning');
+        if(dm.so_san_pham > 0) {
+            warning.classList.remove('hidden');
+            document.getElementById('categoryProductCount').textContent = dm.so_san_pham;
+        } else {
+            warning.classList.add('hidden');
         }
     }
 
@@ -83,27 +104,8 @@
         }, 300);
     }
 
-    function submitCategory() {
-        const nameInput = document.getElementById('catName');
-        const errorText = document.getElementById('catNameError');
-        const btn = document.getElementById('btnSubmitCategory');
-        
-        if(!nameInput.value.trim()) {
-            nameInput.classList.add('border-red-500');
-            errorText.classList.remove('hidden');
-            return;
-        }
-
-        btn.textContent = 'Đang lưu...';
-        btn.classList.add('opacity-75', 'cursor-not-allowed');
-
-        setTimeout(() => {
-            btn.textContent = 'Lưu danh mục';
-            btn.classList.remove('opacity-75', 'cursor-not-allowed');
-            closeModal('categoryModal');
-            showToast('Đã lưu danh mục thành công', 'success');
-        }, 600);
-    }
+    // Category Form Submit is handled by standard HTML <form> submit now.
+    // We just keep this here if we wanted to prevent default, but native HTML required handles it.
 
     // Sort modal
     function submitSort() {
@@ -112,52 +114,27 @@
     }
 
     // Hide/Delete Modals
-    let currentCategory = '';
-    let currentCategoryEl = null;
+    let currentCategoryId = '';
 
-    function openHideModal(title, count, btn) {
-        currentCategory = title;
-        currentCategoryEl = btn.closest('tr');
-        document.getElementById('hideModalTitle').textContent = title;
-        
-        const warning = document.getElementById('hideModalWarning');
-        if(count > 0) {
-            warning.classList.remove('hidden');
-            document.getElementById('hideModalCount').textContent = count;
-        } else {
-            warning.classList.add('hidden');
-        }
-        
-        // Hide action menu first
-        document.querySelectorAll('.action-menu').forEach(m => m.classList.add('hidden'));
-        
-        openModal('hideModal');
+    function submitToggleStatus(id) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '<?= APP_URL ?>/admin/danh-muc/an-hien/' + id;
+        document.body.appendChild(form);
+        form.submit();
     }
 
-    function submitHide() {
-        if(currentCategoryEl) {
-            const badge = currentCategoryEl.querySelector('td:nth-child(8) span');
-            if(badge) {
-                badge.className = 'text-[11px] font-medium px-2 py-1 rounded-full border bg-gray-100 text-gray-600 border-gray-200 inline-block whitespace-nowrap';
-                badge.textContent = 'Đang ẩn';
-            }
-        }
-        closeModal('hideModal');
-        showToast(`Đã ẩn danh mục "${currentCategory}"`, 'success');
-    }
-
-    function openDeleteModal(title, count, btn) {
-        currentCategory = title;
-        currentCategoryEl = btn.closest('tr');
-        document.getElementById('deleteModalTitle').textContent = title;
+    function openDeleteModal(dm, btn) {
+        currentCategoryId = dm.id;
+        document.getElementById('deleteModalTitle').textContent = dm.ten_danh_muc;
         
         const warning = document.getElementById('deleteModalWarning');
         const btnDelete = document.getElementById('btnConfirmDelete');
         const btnSwitch = document.getElementById('btnSwitchToHide');
 
-        if(count > 0) {
+        if(dm.so_san_pham > 0) {
             warning.classList.remove('hidden');
-            document.getElementById('deleteModalCount').textContent = count;
+            document.getElementById('deleteModalCount').textContent = dm.so_san_pham;
             btnDelete.classList.add('opacity-50', 'cursor-not-allowed');
             btnSwitch.classList.remove('hidden');
         } else {
@@ -177,18 +154,17 @@
             return;
         }
         
-        if(currentCategoryEl) {
-            currentCategoryEl.style.opacity = '0';
-            setTimeout(() => currentCategoryEl.remove(), 300);
-        }
-        closeModal('deleteModal');
-        showToast(`Đã xóa danh mục "${currentCategory}"`, 'success');
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '<?= APP_URL ?>/admin/danh-muc/xoa/' + currentCategoryId;
+        document.body.appendChild(form);
+        form.submit();
     }
 
     function switchToHide() {
         closeModal('deleteModal');
         setTimeout(() => {
-            openHideModal(currentCategory, parseInt(document.getElementById('deleteModalCount').textContent), null);
+            submitToggleStatus(currentCategoryId);
         }, 300);
     }
 

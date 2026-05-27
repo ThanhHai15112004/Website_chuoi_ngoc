@@ -115,7 +115,8 @@ class SanPhamController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->saveProduct($_POST, $_FILES);
-            header('Location: ' . APP_URL . '/admin/san-pham');
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
+            header("Location: $referer");
             exit;
         }
     }
@@ -124,7 +125,8 @@ class SanPhamController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->saveProduct($_POST, $_FILES, $id);
-            header('Location: ' . APP_URL . '/admin/san-pham');
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
+            header("Location: $referer");
             exit;
         }
     }
@@ -133,7 +135,8 @@ class SanPhamController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->toggleProductStatus($id);
-            header('Location: ' . APP_URL . '/admin/san-pham');
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
+            header("Location: $referer");
             exit;
         }
     }
@@ -142,7 +145,8 @@ class SanPhamController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->deleteProduct($id);
-            header('Location: ' . APP_URL . '/admin/san-pham');
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
+            header("Location: $referer");
             exit;
         }
     }
@@ -151,10 +155,10 @@ class SanPhamController extends Controller {
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
-            $success = $service->duplicateProduct($id);
-            // Có thể thêm flash message ở đây nếu project hỗ trợ
+            $service->duplicateProduct($id);
+            $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
+            header("Location: $referer");
+            exit;
         }
-        header('Location: ' . APP_URL . '/admin/san-pham');
-        exit;
     }
 }

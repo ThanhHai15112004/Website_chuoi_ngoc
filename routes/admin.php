@@ -17,6 +17,10 @@ $router->post('/admin/san-pham/xoa/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@d
 $router->post('/admin/san-pham/nhan-ban/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@duplicate');
 
 $router->get('/admin/danh-muc', 'Admin\DanhMucController@index');
+$router->post('/admin/danh-muc/luu', 'Admin\DanhMucController@store');
+$router->post('/admin/danh-muc/xoa/([a-zA-Z0-9_-]+)', 'Admin\DanhMucController@delete');
+$router->post('/admin/danh-muc/an-hien/([a-zA-Z0-9_-]+)', 'Admin\DanhMucController@toggleStatus');
+
 $router->get('/admin/don-hang', 'Admin\DonHangController@index');
 $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@show');
 $router->get('/admin/voucher', 'Admin\VoucherController@index');

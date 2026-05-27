@@ -51,10 +51,10 @@ class SanPhamModel
 
         $params = [];
 
-        // Lọc theo keyword (tên hoặc mã)
         if (!empty($filters['keyword'])) {
-            $sql .= " AND (sp.ten_sp LIKE :keyword OR sp.ma_sp LIKE :keyword)";
-            $params['keyword'] = '%' . $filters['keyword'] . '%';
+            $sql .= " AND (sp.ten_sp LIKE :keyword1 OR sp.ma_sp LIKE :keyword2)";
+            $params['keyword1'] = '%' . $filters['keyword'] . '%';
+            $params['keyword2'] = '%' . $filters['keyword'] . '%';
         }
 
         // Lọc theo danh mục
@@ -100,7 +100,21 @@ class SanPhamModel
             }
         }
 
-        $sql .= " ORDER BY sp.ngay_tao DESC LIMIT :limit OFFSET :offset";
+        $sortBy = 'sp.ngay_tao';
+        $sortDir = 'DESC';
+
+        if (!empty($filters['sort_by'])) {
+            $allowedSorts = ['ten_sp' => 'sp.ten_sp', 'gia_ban' => 'sp.gia_ban', 'ton_kho' => 'sp.tong_ton_kho', 'ngay_tao' => 'sp.ngay_tao'];
+            if (array_key_exists($filters['sort_by'], $allowedSorts)) {
+                $sortBy = $allowedSorts[$filters['sort_by']];
+            }
+        }
+        
+        if (!empty($filters['sort_dir'])) {
+            $sortDir = strtoupper($filters['sort_dir']) === 'ASC' ? 'ASC' : 'DESC';
+        }
+
+        $sql .= " ORDER BY $sortBy $sortDir LIMIT :limit OFFSET :offset";
         
         $stmt = $this->db->prepare($sql);
         
@@ -126,8 +140,9 @@ class SanPhamModel
         $params = [];
 
         if (!empty($filters['keyword'])) {
-            $sql .= " AND (sp.ten_sp LIKE :keyword OR sp.ma_sp LIKE :keyword)";
-            $params['keyword'] = '%' . $filters['keyword'] . '%';
+            $sql .= " AND (sp.ten_sp LIKE :keyword1 OR sp.ma_sp LIKE :keyword2)";
+            $params['keyword1'] = '%' . $filters['keyword'] . '%';
+            $params['keyword2'] = '%' . $filters['keyword'] . '%';
         }
 
         if (!empty($filters['danh_muc'])) {

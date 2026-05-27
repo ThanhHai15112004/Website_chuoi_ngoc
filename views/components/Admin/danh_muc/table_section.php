@@ -52,17 +52,58 @@
                     <!-- Table -->
                     <div class="overflow-x-auto min-h-[400px]">
                         <table class="w-full text-left border-collapse">
+                            <?php
+                            $qParams = $_GET;
+                            if (!function_exists('getSortUrl')) {
+                                function getSortUrl($column, $currentParams) {
+                                    $dir = 'ASC';
+                                    if (($currentParams['sort_by'] ?? '') === $column) {
+                                        $dir = (strtoupper($currentParams['sort_dir'] ?? '') === 'ASC') ? 'DESC' : 'ASC';
+                                    }
+                                    $params = $currentParams;
+                                    $params['sort_by'] = $column;
+                                    $params['sort_dir'] = $dir;
+                                    return '?' . http_build_query($params);
+                                }
+                            }
+                            if (!function_exists('getSortIcon')) {
+                                function getSortIcon($column, $currentParams) {
+                                    if (($currentParams['sort_by'] ?? '') === $column) {
+                                        $dir = strtoupper($currentParams['sort_dir'] ?? 'ASC');
+                                        return $dir === 'ASC' ? 'mdi:arrow-up' : 'mdi:arrow-down';
+                                    }
+                                    return 'mdi:swap-vertical';
+                                }
+                            }
+                            if (!function_exists('getSortClass')) {
+                                function getSortClass($column, $currentParams) {
+                                    return (($currentParams['sort_by'] ?? '') === $column) ? 'text-[#6B0D18] opacity-100' : 'opacity-0 group-hover:opacity-100';
+                                }
+                            }
+                            ?>
                             <thead>
                                 <tr class="bg-gray-50/50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider font-semibold">
                                     <th class="p-4 w-12 text-center">
                                         <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] cursor-pointer">
                                     </th>
                                     <th class="p-4 w-16">Icon</th>
-                                    <th class="p-4">Danh mục</th>
+                                    <th class="p-4">
+                                        <a href="<?= getSortUrl('ten_danh_muc', $qParams) ?>" class="flex items-center gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                            Danh mục <span class="iconify inline-block transition-opacity <?= getSortClass('ten_danh_muc', $qParams) ?>" data-icon="<?= getSortIcon('ten_danh_muc', $qParams) ?>"></span>
+                                        </a>
+                                    </th>
                                     <th class="p-4">Đường dẫn (Slug)</th>
-                                    <th class="p-4 text-center">Sản phẩm</th>
+                                    <th class="p-4 text-center">
+                                        <a href="<?= getSortUrl('so_san_pham', $qParams) ?>" class="flex items-center justify-center gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                            Sản phẩm <span class="iconify inline-block transition-opacity <?= getSortClass('so_san_pham', $qParams) ?>" data-icon="<?= getSortIcon('so_san_pham', $qParams) ?>"></span>
+                                        </a>
+                                    </th>
                                     <th class="p-4 text-center">Vị trí</th>
-                                    <th class="p-4 text-center">Thứ tự</th>
+                                    <th class="p-4 text-center">
+                                        <a href="<?= getSortUrl('thu_tu', $qParams) ?>" class="flex items-center justify-center gap-1 hover:text-[#6B0D18] group cursor-pointer transition-colors">
+                                            Thứ tự <span class="iconify inline-block transition-opacity <?= getSortClass('thu_tu', $qParams) ?>" data-icon="<?= getSortIcon('thu_tu', $qParams) ?>"></span>
+                                        </a>
+                                    </th>
                                     <th class="p-4 text-center">Trạng thái</th>
                                     <th class="p-4 text-right w-20">Thao tác</th>
                                 </tr>
@@ -81,9 +122,9 @@
                                         <td class="p-4">
                                             <div class="flex flex-col gap-0.5">
                                                 <div class="flex items-center gap-1.5 flex-wrap">
-                                                    <span class="text-[10px] text-gray-500 font-medium font-mono whitespace-nowrap shrink-0"><?= $dm['ma_dm'] ?></span>
+                                                    <span class="text-[10px] text-gray-500 font-medium font-mono whitespace-nowrap shrink-0"><?= $dm['ma_danh_muc'] ?? 'N/A' ?></span>
                                                 </div>
-                                                <a href="#" class="font-bold text-gray-900 hover:text-[#6B0D18] transition-colors leading-tight text-base"><?= $dm['ten_dm'] ?></a>
+                                                <a href="#" class="font-bold text-gray-900 hover:text-[#6B0D18] transition-colors leading-tight text-base"><?= $dm['ten_danh_muc'] ?></a>
                                                 <span class="text-xs text-gray-500 mt-0.5 max-w-xs truncate" title="<?= $dm['mo_ta'] ?>"><?= $dm['mo_ta'] ?></span>
                                             </div>
                                         </td>
@@ -97,7 +138,7 @@
                                         </td>
                                         <td class="p-4 text-center">
                                             <?php if($dm['so_san_pham'] > 0): ?>
-                                                <a href="<?= APP_URL ?>/admin/san-pham" class="font-bold text-gray-900 hover:text-[#6B0D18] hover:underline"><?= $dm['so_san_pham'] ?></a>
+                                                <a href="<?= APP_URL ?>/admin/san-pham?danh_muc=<?= urlencode($dm['ten_danh_muc']) ?>" class="font-bold text-gray-900 hover:text-[#6B0D18] hover:underline"><?= $dm['so_san_pham'] ?></a>
                                             <?php else: ?>
                                                 <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-yellow-50 text-yellow-700 border border-yellow-200 uppercase tracking-wide">Trống</span>
                                             <?php endif; ?>
@@ -118,7 +159,7 @@
                                             </div>
                                         </td>
                                         <td class="p-4 text-center">
-                                            <?php if($dm['trang_thai'] === 'Đang hiển thị'): ?>
+                                            <?php if($dm['trang_thai'] == 1): ?>
                                                 <span class="text-[11px] font-medium px-2 py-1 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-200 inline-block whitespace-nowrap">Đang hiển thị</span>
                                             <?php else: ?>
                                                 <span class="text-[11px] font-medium px-2 py-1 rounded-full border bg-gray-100 text-gray-600 border-gray-200 inline-block whitespace-nowrap">Đang ẩn</span>
@@ -126,7 +167,7 @@
                                         </td>
                                         <td class="p-4 text-right">
                                             <div class="flex items-center justify-end gap-1 relative">
-                                                <button onclick="openModal('categoryModal', 'edit', '<?= $dm['ten_dm'] ?>')" class="p-1.5 text-gray-400 hover:text-[#6B0D18] hover:bg-red-50 rounded-lg transition-colors" title="Sửa">
+                                                <button onclick='openEditModal(<?= json_encode($dm, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="p-1.5 text-gray-400 hover:text-[#6B0D18] hover:bg-red-50 rounded-lg transition-colors" title="Sửa">
                                                     <span class="iconify text-lg" data-icon="mdi:pencil-outline"></span>
                                                 </button>
                                                 <button class="action-btn p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" onclick="toggleActionMenu(this)">
@@ -134,26 +175,20 @@
                                                 </button>
                                                 <!-- Dropdown Menu -->
                                                 <div class="w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-[9999] hidden action-menu py-1 fixed">
-                                                    <button onclick="showToast('Mở popup chọn sản phẩm thêm vào danh mục này...', 'success')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
-                                                        <span class="iconify text-gray-400" data-icon="mdi:plus-box-outline"></span> Thêm sản phẩm
-                                                    </button>
-                                                    <a href="<?= APP_URL ?>/admin/san-pham" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
+                                                    <a href="<?= APP_URL ?>/admin/san-pham?danh_muc=<?= urlencode($dm['ten_danh_muc']) ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                                         <span class="iconify text-gray-400" data-icon="mdi:format-list-bulleted"></span> Xem DS sản phẩm
                                                     </a>
-                                                    <?php if($dm['trang_thai'] === 'Đang hiển thị'): ?>
-                                                        <button onclick="openHideModal('<?= $dm['ten_dm'] ?>', <?= $dm['so_san_pham'] ?>, this)" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
+                                                    <?php if($dm['trang_thai'] == 1): ?>
+                                                        <button onclick="submitToggleStatus('<?= $dm['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                                             <span class="iconify text-gray-400" data-icon="mdi:eye-off-outline"></span> Ẩn danh mục
                                                         </button>
                                                     <?php else: ?>
-                                                        <button onclick="showToast('Đã hiển thị danh mục', 'success')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
+                                                        <button onclick="submitToggleStatus('<?= $dm['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                                             <span class="iconify text-gray-400" data-icon="mdi:eye-outline"></span> Hiện danh mục
                                                         </button>
                                                     <?php endif; ?>
-                                                    <button onclick="showToast('Đã dừng hoạt động danh mục', 'success'); this.closest('tr').querySelector('td:nth-child(8) span').className='text-[11px] font-medium px-2 py-1 rounded-full border bg-red-50 text-red-700 border-red-200 inline-block whitespace-nowrap'; this.closest('tr').querySelector('td:nth-child(8) span').textContent='Dừng hoạt động';" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
-                                                        <span class="iconify text-gray-400" data-icon="mdi:power"></span> Dừng hoạt động
-                                                    </button>
                                                     <div class="h-px bg-gray-100 my-1 w-full"></div>
-                                                    <button onclick="openDeleteModal('<?= $dm['ten_dm'] ?>', <?= $dm['so_san_pham'] ?>, this)" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                                    <button onclick='openDeleteModal(<?= json_encode($dm, JSON_HEX_APOS | JSON_HEX_QUOT) ?>, this)' class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                                                         <span class="iconify" data-icon="mdi:trash-can-outline"></span> Xóa danh mục
                                                     </button>
                                                 </div>

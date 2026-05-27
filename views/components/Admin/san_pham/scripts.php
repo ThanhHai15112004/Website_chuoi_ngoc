@@ -305,6 +305,14 @@
         openModal('deleteModal');
     }
 
+    function submitToggleStatus(id) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '<?= APP_URL ?>/admin/san-pham/an-hien/' + id;
+        document.body.appendChild(form);
+        form.submit();
+    }
+
     function submitDeleteModal() {
         if(currentRow) {
             const id = currentRow.dataset.id;

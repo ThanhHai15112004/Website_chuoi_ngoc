@@ -109,11 +109,11 @@
                                                     </button>
                                                 </form>
                                                 <?php if($tt === 'Đang hiển thị'): ?>
-                                                <button onclick="openHideModal('<?= $sp['ten_sp'] ?>', this)" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
+                                                <button onclick="submitToggleStatus('<?= $sp['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                                     <span class="iconify text-gray-400" data-icon="mdi:eye-off-outline"></span> Ẩn sản phẩm
                                                 </button>
                                                 <?php else: ?>
-                                                <button class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors">
+                                                <button onclick="submitToggleStatus('<?= $sp['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-colors">
                                                     <span class="iconify text-gray-400" data-icon="mdi:eye-outline"></span> Hiện sản phẩm
                                                 </button>
                                                 <?php endif; ?>
