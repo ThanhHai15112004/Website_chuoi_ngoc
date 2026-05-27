@@ -10,7 +10,7 @@ $kho_hang_pages = ['ton_kho', 'nhap_kho', 'xuat_kho', 'thuyen_chuyen_kho', 'kiem
 $khach_hang_pages = ['khach_hang', 'chi_tiet_khach_hang', 'them_khach_hang', 'hop_thu', 'hang_thanh_vien'];
 $noi_dung_pages = ['bai_viet', 'banner'];
 $bao_cao_pages = ['bao_cao_doanh_thu', 'bao_cao_san_pham'];
-$cai_dat_pages = ['thong_tin_cua_hang', 'thanh_toan_van_chuyen', 'chinh_sach', 'nhan_su', 'lich_su_hoat_dong'];
+$cai_dat_pages = ['thong_tin_cua_hang', 'thanh_toan_van_chuyen', 'chinh_sach', 'nhan_su', 'lich_su_hoat_dong', 'nhat_ky'];
 
 function isGroupActive($pages, $current) {
     return in_array($current, $pages);
@@ -212,11 +212,12 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/chinh-sach" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chinh_sach' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'chinh_sach' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:shield-check-outline"></span> Chính sách cửa hàng</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/cai-dat/nhan-su" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhan_su' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                    <a href="<?= APP_URL ?>/admin/nhan-su" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhan_su' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'nhan_su' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:account-tie-outline"></span> Quản lý nhân sự</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/cai-dat/nhat-ky" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'lich_su_hoat_dong' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
-                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'lich_su_hoat_dong' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:history"></span> Nhật ký hoạt động</span>
+                    <a href="<?= APP_URL ?>/admin/nhat-ky-hoat-dong" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'nhat_ky' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                        <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'nhat_ky' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:history"></span> Nhật ký hoạt động</span>
+                        <span class="<?= $current_page === 'nhat_ky' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
                     </a>
                 </div>
             </div>

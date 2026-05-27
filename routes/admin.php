@@ -73,4 +73,12 @@ $router->get('/admin/chinh-sach', 'Admin\ChinhSachController@index');
 $router->get('/admin/chinh-sach/them', 'Admin\ChinhSachController@create');
 $router->get('/admin/chinh-sach/sua/(\d+)', 'Admin\ChinhSachController@edit');
 
+$router->get('/admin/nhan-su', 'Admin\NhanSuController@index');
+$router->get('/admin/nhan-su/them', 'Admin\NhanSuController@create');
+$router->get('/admin/nhan-su/xem/(\d+)', 'Admin\NhanSuController@show');
+$router->get('/admin/nhan-su/sua/(\d+)', 'Admin\NhanSuController@edit');
+$router->get('/admin/vai-tro', 'Admin\NhanSuController@roles');
+
+$router->get('/admin/nhat-ky-hoat-dong', 'Admin\NhatKyHoatDongController@index');
+
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)
