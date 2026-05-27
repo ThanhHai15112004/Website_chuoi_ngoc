@@ -129,6 +129,11 @@ class SanPhamService
         $product = $this->sanPhamModel->findById($id);
         if ($product) {
             $product['anh_phu'] = $this->sanPhamModel->getProductImages($id);
+            if (!empty($product['id_menh_phong_thuy'])) {
+                $product['menh'] = explode(',', $product['id_menh_phong_thuy']);
+            } else {
+                $product['menh'] = [];
+            }
         }
         return $product;
     }
@@ -140,7 +145,7 @@ class SanPhamService
             'ma_sp' => $data['ma_sp'] ?: ('SP' . time()),
             'id_danh_muc' => $data['danh_muc'],
             'id_loai_da' => $data['loai_da'],
-            'id_menh_phong_thuy' => $data['menh'][0] ?? null, 
+            'id_menh_phong_thuy' => !empty($data['menh']) && is_array($data['menh']) ? implode(',', $data['menh']) : null, 
             'gia_ban' => (float)$data['gia_ban'],
             'mo_ta_ngan' => $data['mo_ta_ngan'] ?? '',
             'mo_ta_chi_tiet' => $data['mo_ta_chi_tiet'] ?? '',

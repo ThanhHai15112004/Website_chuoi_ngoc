@@ -85,7 +85,7 @@
                     ?>
                     <?php foreach($all_tags as $tag): ?>
                         <?php $isChecked = in_array($tag, $selected_tags); ?>
-                        <label class="cursor-pointer">
+                        <label class="cursor-pointer relative">
                             <input type="checkbox" name="nhan[]" value="<?= $tag ?>" class="peer sr-only" <?= $isChecked ? 'checked' : '' ?>>
                             <div class="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 peer-checked:bg-teal-50 peer-checked:text-teal-700 peer-checked:border-teal-200 peer-checked:font-medium hover:bg-gray-50 transition-colors">
                                 <?= $tag ?>

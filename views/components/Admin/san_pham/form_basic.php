@@ -30,7 +30,7 @@
                             <select name="loai_da" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-gray-600 appearance-none pr-10 bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_1rem_center] bg-[length:1em_1em] text-sm">
                                 <option value="">Chọn loại đá</option>
                                 <?php foreach($loai_da_list as $da): ?>
-                                    <option value="<?= $da['id'] ?>" <?= ($sp['loai_da'] ?? '') === $da['id'] ? 'selected' : '' ?>><?= htmlspecialchars($da['ten_loai_da']) ?></option>
+                                    <option value="<?= $da['id'] ?>" <?= ($sp['loai_da'] ?? '') === $da['id'] ? 'selected' : '' ?>><?= htmlspecialchars($da['ten'] ?? $da['ten_loai_da'] ?? 'Chưa xác định') ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -39,7 +39,7 @@
                             <div class="flex flex-wrap gap-2 mt-2">
                                 <?php foreach($menh_list as $m): ?>
                                     <?php $isChecked = isset($sp['menh']) && in_array($m['id'], $sp['menh']); ?>
-                                    <label class="cursor-pointer">
+                                    <label class="cursor-pointer relative">
                                         <input type="checkbox" name="menh[]" value="<?= $m['id'] ?>" class="peer sr-only" <?= $isChecked ? 'checked' : '' ?>>
                                         <div class="px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 peer-checked:bg-[#FAF8F5] peer-checked:text-[#6B0D18] peer-checked:border-[#E4D5C3] peer-checked:font-medium hover:bg-gray-50 transition-colors">
                                             <?= htmlspecialchars($m['ten_menh']) ?>
