@@ -7,9 +7,9 @@
     <nav class="flex items-center text-sm text-gray-500 mb-4">
         <a href="<?= APP_URL ?>/admin/dashboard" class="hover:text-[#6B0D18] transition-colors">Admin</a>
         <span class="mx-2 iconify" data-icon="mdi:chevron-right"></span>
-        <span class="hover:text-[#6B0D18] cursor-pointer">Cấu hình cửa hàng</span>
+        <a href="<?= APP_URL ?>/admin/quan-ly-cua-hang" class="hover:text-[#6B0D18] transition-colors">Cấu hình cửa hàng</a>
         <span class="mx-2 iconify" data-icon="mdi:chevron-right"></span>
-        <span class="text-gray-900 font-medium">Thanh toán & vận chuyển</span>
+        <span class="text-gray-900 font-medium">Thanh toán & Vận chuyển</span>
     </nav>
 
     <!-- Tiêu đề trang & Actions -->

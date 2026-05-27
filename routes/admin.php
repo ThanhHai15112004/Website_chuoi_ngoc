@@ -69,5 +69,8 @@ $router->get('/admin/cau-hinh-kho/sua/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoContro
 
 $router->get('/admin/quan-ly-cua-hang', 'Admin\QuanLyCuaHangController@index');
 $router->get('/admin/cai-dat/thanh-toan', 'Admin\ThanhToanVanChuyenController@index');
+$router->get('/admin/chinh-sach', 'Admin\ChinhSachController@index');
+$router->get('/admin/chinh-sach/them', 'Admin\ChinhSachController@create');
+$router->get('/admin/chinh-sach/sua/(\d+)', 'Admin\ChinhSachController@edit');
 
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)

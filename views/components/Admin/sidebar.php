@@ -209,7 +209,7 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/cai-dat/thanh-toan" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'thanh_toan_van_chuyen' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'thanh_toan_van_chuyen' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:credit-card-outline"></span> Thanh toán & Vận chuyển</span>
                     </a>
-                    <a href="<?= APP_URL ?>/admin/cai-dat/chinh-sach" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chinh_sach' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                    <a href="<?= APP_URL ?>/admin/chinh-sach" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chinh_sach' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'chinh_sach' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:shield-check-outline"></span> Chính sách cửa hàng</span>
                     </a>
                     <a href="<?= APP_URL ?>/admin/cai-dat/nhan-su" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'nhan_su' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
