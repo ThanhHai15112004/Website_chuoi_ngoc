@@ -126,18 +126,18 @@
                 <!-- Nút thao tác -->
                 <div class="flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
                     <?php if ($item['trang_thai'] === 'cho_duyet'): ?>
-                        <button class="px-4 py-1.5 bg-[#6B0D18] text-white rounded-md text-xs font-bold hover:bg-[#8A111F] transition-colors" onclick="approveReview(this)">Duyệt ngay</button>
-                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="openHideModal()">Ẩn</button>
+                        <button class="px-4 py-1.5 bg-[#6B0D18] text-white rounded-md text-xs font-bold hover:bg-[#8A111F] transition-colors" onclick="toggleReviewStatus('<?= $item['id'] ?>', 'da_duyet', this)">Duyệt ngay</button>
+                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="toggleReviewStatus('<?= $item['id'] ?>', 'da_an', this)">Ẩn</button>
                     <?php elseif ($item['trang_thai'] === 'da_duyet'): ?>
-                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="openReviewDrawer()">Trả lời</button>
-                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="openHideModal()">Ẩn</button>
+                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="openReviewDrawer('<?= $item['id'] ?>')">Trả lời</button>
+                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="toggleReviewStatus('<?= $item['id'] ?>', 'da_an', this)">Ẩn</button>
                     <?php elseif ($item['trang_thai'] === 'da_an'): ?>
-                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors">Hiện lại</button>
-                        <button class="px-4 py-1.5 bg-red-50 text-red-600 rounded-md text-xs font-bold hover:bg-red-100 transition-colors ml-auto">Xóa vĩnh viễn</button>
+                        <button class="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 transition-colors" onclick="toggleReviewStatus('<?= $item['id'] ?>', 'da_duyet', this)">Hiện lại</button>
+                        <button class="px-4 py-1.5 bg-red-50 text-red-600 rounded-md text-xs font-bold hover:bg-red-100 transition-colors ml-auto" onclick="deleteReview('<?= $item['id'] ?>')">Xóa vĩnh viễn</button>
                     <?php endif; ?>
                     
                     <?php if ($item['trang_thai'] !== 'da_an'): ?>
-                        <button class="px-4 py-1.5 text-gray-500 hover:text-[#6B0D18] rounded-md text-xs font-medium transition-colors ml-auto flex items-center gap-1" onclick="openReviewDrawer()">
+                        <button class="px-4 py-1.5 text-gray-500 hover:text-[#6B0D18] rounded-md text-xs font-medium transition-colors ml-auto flex items-center gap-1" onclick="openReviewDrawer('<?= $item['id'] ?>')">
                             Chi tiết <span class="iconify" data-icon="mdi:arrow-right"></span>
                         </button>
                     <?php endif; ?>
@@ -149,17 +149,66 @@
     </div>
 
     <!-- Phân trang -->
+    <?php if ($pagination['total_pages'] > 1): ?>
     <div class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <span class="text-sm text-gray-500">Hiển thị 1 - 20 trong <?= number_format($thong_ke['tong'], 0, ',', '.') ?> nội dung</span>
+        <span class="text-sm text-gray-500">
+            Hiển thị <?= ($pagination['page'] - 1) * $pagination['limit'] + 1 ?> - 
+            <?= min($pagination['page'] * $pagination['limit'], $pagination['total']) ?> 
+            trong <?= number_format($pagination['total'], 0, ',', '.') ?> nội dung
+        </span>
         <div class="flex items-center gap-1">
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-bold text-sm shadow-md">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">2</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">3</button>
-            <span class="w-8 h-8 flex items-center justify-center text-gray-500 text-sm">...</span>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">63</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+            <?php
+            $buildPageUrl = function($newPage) {
+                $params = $_GET;
+                $params['page'] = $newPage;
+                return '?' . http_build_query($params);
+            };
+            $currentPage = $pagination['page'];
+            $totalPages = $pagination['total_pages'];
+            ?>
+            
+            <!-- Prev Button -->
+            <?php if ($currentPage > 1): ?>
+                <a href="<?= $buildPageUrl($currentPage - 1) ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+            <?php else: ?>
+                <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+            <?php endif; ?>
+
+            <!-- Page numbers -->
+            <?php
+            $startPage = max(1, $currentPage - 2);
+            $endPage = min($totalPages, $currentPage + 2);
+            if ($startPage > 1) {
+                echo '<a href="' . $buildPageUrl(1) . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">1</a>';
+                if ($startPage > 2) {
+                    echo '<span class="w-8 h-8 flex items-center justify-center text-gray-500 text-sm">...</span>';
+                }
+            }
+
+            for ($i = $startPage; $i <= $endPage; $i++) {
+                if ($i == $currentPage) {
+                    echo '<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-bold text-sm shadow-md">' . $i . '</button>';
+                } else {
+                    echo '<a href="' . $buildPageUrl($i) . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">' . $i . '</a>';
+                }
+            }
+
+            if ($endPage < $totalPages) {
+                if ($endPage < $totalPages - 1) {
+                    echo '<span class="w-8 h-8 flex items-center justify-center text-gray-500 text-sm">...</span>';
+                }
+                echo '<a href="' . $buildPageUrl($totalPages) . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">' . $totalPages . '</a>';
+            }
+            ?>
+
+            <!-- Next Button -->
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="<?= $buildPageUrl($currentPage + 1) ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+            <?php else: ?>
+                <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+            <?php endif; ?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 

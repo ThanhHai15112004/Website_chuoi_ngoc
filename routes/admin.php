@@ -42,6 +42,12 @@ $router->post('/admin/menh-phong-thuy/an-hien/([a-zA-Z0-9_-]+)', 'Admin\MenhPhon
 $router->get('/admin/menh-phong-thuy/sua/([a-zA-Z0-9_-]+)', 'Admin\MenhPhongThuyController@edit');
 $router->post('/admin/menh-phong-thuy/sua/([a-zA-Z0-9_-]+)', 'Admin\MenhPhongThuyController@store');
 $router->get('/admin/binh-luan', 'Admin\BinhLuanController@index');
+$router->get('/admin/binh-luan/detail', 'Admin\BinhLuanController@detail');
+$router->post('/admin/binh-luan/toggle-status', 'Admin\BinhLuanController@toggleStatus');
+$router->post('/admin/binh-luan/reply', 'Admin\BinhLuanController@reply');
+$router->post('/admin/binh-luan/delete', 'Admin\BinhLuanController@delete');
+$router->post('/admin/binh-luan/save-settings', 'Admin\BinhLuanController@saveSettings');
+
 $router->get('/admin/khach-hang', 'Admin\KhachHangController@index');
 $router->get('/admin/khach-hang/them', 'Admin\KhachHangController@create');
 $router->get('/admin/khach-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@show');
