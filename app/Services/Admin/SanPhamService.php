@@ -134,6 +134,7 @@ class SanPhamService
             } else {
                 $product['menh'] = [];
             }
+            $product['bien_the_thuc_te'] = $this->sanPhamModel->getBienTheByProductId($id);
         }
         return $product;
     }
@@ -205,6 +206,34 @@ class SanPhamService
                         $this->sanPhamModel->insertProductImage($productId, $path);
                     }
                 }
+            }
+        }
+
+        // Xử lý Biến thể (Kích thước / Màu sắc)
+        if ($success) {
+            $this->sanPhamModel->deleteBienThe($productId);
+            
+            $tongTonKhoBienThe = 0;
+            if (!empty($data['bien_the']['thuoc_tinh'])) {
+                $thuoc_tinh_arr = $data['bien_the']['thuoc_tinh'];
+                $gia_cong_them_arr = $data['bien_the']['gia_cong_them'];
+                $so_luong_ton_arr = $data['bien_the']['so_luong_ton'];
+                
+                foreach ($thuoc_tinh_arr as $i => $thuoc_tinh) {
+                    $thuoc_tinh = trim($thuoc_tinh);
+                    if ($thuoc_tinh !== '') {
+                        $so_luong = (int)($so_luong_ton_arr[$i] ?? 0);
+                        $gia_cong = (float)($gia_cong_them_arr[$i] ?? 0);
+                        
+                        $this->sanPhamModel->insertBienThe($productId, $thuoc_tinh, $so_luong, $gia_cong);
+                        $tongTonKhoBienThe += $so_luong;
+                    }
+                }
+            }
+            
+            // Cập nhật lại tổng tồn kho nếu có biến thể
+            if ($tongTonKhoBienThe > 0 || !empty($data['bien_the']['thuoc_tinh'])) {
+                $this->sanPhamModel->update($productId, ['tong_ton_kho' => $tongTonKhoBienThe]);
             }
         }
 

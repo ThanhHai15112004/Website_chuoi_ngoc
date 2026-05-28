@@ -75,6 +75,69 @@
                 </div>
             </div>
 
+            <!-- Biến thể (Kích thước / Màu sắc) -->
+            <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
+                    <h3 class="text-base font-bold text-gray-900">Phân loại (Biến thể)</h3>
+                    <button type="button" id="btnAddVariant" class="text-[#6B0D18] text-sm font-medium hover:underline flex items-center gap-1">
+                        <span class="iconify" data-icon="mdi:plus-circle-outline"></span> Thêm
+                    </button>
+                </div>
+                
+                <div id="variantsContainer" class="space-y-3">
+                    <?php 
+                    $bien_the_list = $sp['bien_the_thuc_te'] ?? []; 
+                    if(empty($bien_the_list)): 
+                    ?>
+                        <div class="variant-item bg-gray-50 p-3 rounded-xl border border-gray-200 relative group">
+                            <button type="button" class="remove-variant absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white shadow-sm">
+                                <span class="iconify text-xs" data-icon="mdi:close"></span>
+                            </button>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Tên thuộc tính (VD: Size 8mm)</label>
+                                    <input type="text" name="bien_the[thuoc_tinh][]" placeholder="Tên phân loại" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">Giá cộng thêm</label>
+                                        <input type="number" name="bien_the[gia_cong_them][]" placeholder="0" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">Tồn kho</label>
+                                        <input type="number" name="bien_the[so_luong_ton][]" placeholder="0" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <?php foreach($bien_the_list as $bt): ?>
+                            <div class="variant-item bg-gray-50 p-3 rounded-xl border border-gray-200 relative group">
+                                <button type="button" class="remove-variant absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white shadow-sm">
+                                    <span class="iconify text-xs" data-icon="mdi:close"></span>
+                                </button>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-xs font-medium text-gray-600 mb-1">Tên thuộc tính (VD: Size 8mm)</label>
+                                        <input type="text" name="bien_the[thuoc_tinh][]" value="<?= htmlspecialchars($bt['thuoc_tinh']) ?>" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">Giá cộng thêm</label>
+                                            <input type="number" name="bien_the[gia_cong_them][]" value="<?= $bt['gia_cong_them'] ?>" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">Tồn kho</label>
+                                            <input type="number" name="bien_the[so_luong_ton][]" value="<?= $bt['so_luong_ton'] ?>" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+
             <!-- Nhãn Sản phẩm -->
             <div class="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100">
                 <h3 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-100 pb-3">Gắn nhãn (Tag)</h3>
@@ -148,6 +211,52 @@
                                 }
                                 reader.readAsDataURL(file);
                             });
+                        });
+                    }
+
+                    // Xử lý Thêm / Xóa Biến thể
+                    const btnAddVariant = document.getElementById('btnAddVariant');
+                    const variantsContainer = document.getElementById('variantsContainer');
+
+                    if(btnAddVariant && variantsContainer) {
+                        btnAddVariant.addEventListener('click', function() {
+                            const html = `
+                                <div class="variant-item bg-gray-50 p-3 rounded-xl border border-gray-200 relative group mt-3">
+                                    <button type="button" class="remove-variant absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500 hover:text-white shadow-sm">
+                                        <span class="iconify text-xs" data-icon="mdi:close"></span>
+                                    </button>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">Tên thuộc tính (VD: Size 8mm)</label>
+                                            <input type="text" name="bien_the[thuoc_tinh][]" placeholder="Tên phân loại" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-600 mb-1">Giá cộng thêm</label>
+                                                <input type="number" name="bien_the[gia_cong_them][]" placeholder="0" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-medium text-gray-600 mb-1">Tồn kho</label>
+                                                <input type="number" name="bien_the[so_luong_ton][]" placeholder="0" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            variantsContainer.insertAdjacentHTML('beforeend', html);
+                        });
+
+                        variantsContainer.addEventListener('click', function(e) {
+                            if(e.target.closest('.remove-variant')) {
+                                const item = e.target.closest('.variant-item');
+                                if(variantsContainer.querySelectorAll('.variant-item').length > 1) {
+                                    item.remove();
+                                } else {
+                                    // Xóa trống giá trị
+                                    const inputs = item.querySelectorAll('input');
+                                    inputs.forEach(input => input.value = '');
+                                }
+                            }
                         });
                     }
                 });

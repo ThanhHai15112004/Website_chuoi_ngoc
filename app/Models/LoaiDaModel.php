@@ -202,11 +202,16 @@ class LoaiDaModel
                     mau_sac_hex = :mau_sac_hex,
                     y_nghia = :y_nghia,
                     nhu_cau = :nhu_cau,
-                    hinh_anh = :hinh_anh,
-                    trang_thai = :trang_thai
-                WHERE id = :id";
+                    trang_thai = :trang_thai";
+        
+        if (isset($data['hinh_anh'])) {
+            $sql .= ", hinh_anh = :hinh_anh";
+        }
+        $sql .= " WHERE id = :id";
+
         $stmt = $this->db->prepare($sql);
-        $result = $stmt->execute([
+        
+        $params = [
             'id' => $id,
             'ma_loai_da' => $data['ma_loai_da'] ?? null,
             'ten_loai_da' => $data['ten_loai_da'],
@@ -217,9 +222,14 @@ class LoaiDaModel
             'mau_sac_hex' => $data['mau_sac_hex'] ?? null,
             'y_nghia' => $data['y_nghia'] ?? null,
             'nhu_cau' => isset($data['nhu_cau']) ? json_encode($data['nhu_cau'], JSON_UNESCAPED_UNICODE) : null,
-            'hinh_anh' => $data['hinh_anh'] ?? null,
             'trang_thai' => $data['trang_thai'] ?? 1
-        ]);
+        ];
+
+        if (isset($data['hinh_anh'])) {
+            $params['hinh_anh'] = $data['hinh_anh'];
+        }
+
+        $result = $stmt->execute($params);
 
         if ($result && isset($data['menh_ids'])) {
             $this->syncMenh($id, $data['menh_ids']);

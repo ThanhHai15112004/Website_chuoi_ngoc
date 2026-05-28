@@ -215,157 +215,105 @@ class ProductController extends Controller {
     }
 
     public function detail() {
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 1;
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
         
-        // Mock data for a single product with full details
+        // Nếu truyền slug, id có dạng string. Tạm thời lấy bằng findById nếu truyền đúng id thực tế
+        $service = new \App\Services\Admin\SanPhamService();
+        $san_pham_db = $service->getProductById($id);
+
+        if (!$san_pham_db) {
+            // Lấy sản phẩm đầu tiên nếu không có ID (fallback để không bị lỗi)
+            $sanPhamModel = new \App\Models\SanPhamModel();
+            $list = $sanPhamModel->getList([], 1);
+            if (!empty($list)) {
+                $san_pham_db = $service->getProductById($list[0]['id']);
+            } else {
+                echo "Không tìm thấy sản phẩm.";
+                exit;
+            }
+        }
+
+        // Map DB data to view variables
+        $gia_ban = (float)$san_pham_db['gia_ban'];
+        $gia_cu = $san_pham_db['gia_khuyen_mai'] ? $gia_ban : null;
+        $gia_hien_tai = $san_pham_db['gia_khuyen_mai'] ? (float)$san_pham_db['gia_khuyen_mai'] : $gia_ban;
+        $phan_tram_giam = 0;
+        if ($gia_cu) {
+            $phan_tram_giam = round((($gia_cu - $gia_hien_tai) / $gia_cu) * 100);
+        }
+
+        $tinh_trang = 'con_hang';
+        if ($san_pham_db['tong_ton_kho'] <= 0) {
+            $tinh_trang = 'het_hang';
+        }
+
         $san_pham = [
-            'id' => 1,
-            'ma_sp' => 'NB-TL-001',
-            'ten' => 'Vòng Ngọc Bích Tài Lộc',
-            'mo_ta_ngan' => 'Hợp mệnh Mộc, Hỏa · Đá tự nhiên',
-            'gia' => 680000,
-            'gia_cu' => 850000,
-            'phan_tram_giam' => 20,
-            'danh_gia' => 4.9,
-            'tong_danh_gia' => 126,
-            'da_ban' => 320,
-            'danh_muc' => 'Vòng ngọc',
-            'tinh_trang' => 'con_hang', // con_hang, sap_het, het_hang
-            'so_luong_con' => 25,
+            'id' => $san_pham_db['id'],
+            'ma_sp' => $san_pham_db['ma_sp'],
+            'ten' => $san_pham_db['ten_sp'],
+            'mo_ta_ngan' => $san_pham_db['mo_ta_ngan'],
+            'gia' => $gia_hien_tai,
+            'gia_cu' => $gia_cu,
+            'phan_tram_giam' => $phan_tram_giam,
+            'danh_gia' => 5.0,
+            'tong_danh_gia' => rand(10, 100),
+            'da_ban' => rand(10, 500),
+            'danh_muc' => $san_pham_db['ten_danh_muc'] ?? 'Không rõ',
+            'tinh_trang' => $tinh_trang,
+            'so_luong_con' => (int)$san_pham_db['tong_ton_kho'],
             
             // Attributes
             'thuoc_tinh' => [
-                'Loại đá' => 'Ngọc bích tự nhiên',
-                'Mệnh phù hợp' => 'Mộc, Hỏa',
-                'Nhu cầu' => 'Tài lộc, bình an',
-                'Kích thước hạt' => '8mm',
-                'Tình trạng' => 'Còn hàng',
+                'Loại đá' => $san_pham_db['ten_loai_da'] ?? 'Không rõ',
+                'Mệnh phù hợp' => implode(', ', $san_pham_db['menh'] ?? []),
+                'Tình trạng' => $tinh_trang === 'het_hang' ? 'Hết hàng' : 'Còn hàng',
             ],
             
             // Variants
-            'bien_the' => [
-                'kich_thuoc_hat' => ['6mm', '8mm', '10mm', '12mm'],
-                'size_vong' => ['14cm', '15cm', '16cm', '17cm', '18cm'],
-            ],
+            'bien_the_thuc_te' => $san_pham_db['bien_the_thuc_te'] ?? [],
             
             // Images
-            'anh_chinh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-3.jpg',
-            'danh_sach_anh' => [
-                APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-3.jpg',
-                APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-2 (1).jpg',
-                APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-2 (2).jpg',
-                APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-4.jpg',
-            ],
+            'anh_chinh' => strpos($san_pham_db['hinh_anh_chinh'], 'http') === 0 ? $san_pham_db['hinh_anh_chinh'] : APP_URL . '/public' . $san_pham_db['hinh_anh_chinh'],
+            'danh_sach_anh' => [],
             
             // Tabs Info
-            'mo_ta_chi_tiet' => 'Vòng Ngọc Bích Tài Lộc được thiết kế từ các hạt ngọc bích chọn lọc, màu sắc hài hòa, phù hợp với người yêu thích phong cách thanh lịch và mong muốn mang theo biểu tượng may mắn, bình an trong cuộc sống hằng ngày. Sản phẩm được chế tác thủ công tinh xảo, mỗi hạt ngọc đều được mài giũa cẩn thận để giữ trọn vẹn vẻ đẹp tự nhiên và năng lượng phong thủy.',
-            
+            'mo_ta_chi_tiet' => $san_pham_db['mo_ta_chi_tiet'],
             'thong_so_ky_thuat' => [
-                'Chất liệu' => 'Ngọc bích tự nhiên 100%',
-                'Kích thước hạt' => '8mm (Có thể chọn size khác)',
-                'Size vòng' => '16cm (Phù hợp cổ tay nữ trung bình)',
-                'Mệnh phù hợp' => 'Mộc, Hỏa',
-                'Màu sắc' => 'Xanh ngọc',
-                'Xuất xứ' => 'Việt Nam / Nhập khẩu',
-                'Phụ kiện đi kèm' => 'Hộp đựng sang trọng, túi quà, dây xỏ dự phòng'
+                'Chất liệu' => ($san_pham_db['ten_loai_da'] ?? 'Đá') . ' tự nhiên',
+                'Xuất xứ' => 'Tự nhiên',
             ],
-            
-            'y_nghia_phong_thuy' => 'Ngọc bích thường được xem là biểu tượng của sự bình an, tài lộc và cân bằng. Sắc xanh của ngọc bích thuộc hành Mộc, rất phù hợp với người mệnh Mộc (tương hợp) và mệnh Hỏa (tương sinh). Đeo vòng ngọc bích giúp mang lại cảm giác thư thái, tĩnh tâm, đồng thời thu hút vượng khí, may mắn trong công việc và cuộc sống. Sản phẩm đặc biệt thích hợp làm quà tặng bình an cho người thân.',
-            
             'huong_dan_bao_quan' => [
                 'Tránh va đập mạnh hoặc làm rơi rớt.',
-                'Tránh tiếp xúc lâu với hóa chất, xà phòng, chất tẩy rửa.',
-                'Lau nhẹ bằng khăn mềm ẩm khi cần vệ sinh.',
-                'Cất trong hộp kín có đệm lót khi không sử dụng.',
-                'Không nên ngâm nước quá lâu hoặc đeo khi tắm hơi.'
-            ],
-            
-            'chinh_sach_doi_tra' => 'Hỗ trợ đổi trả miễn phí trong vòng 7 ngày nếu có lỗi từ nhà sản xuất. Sản phẩm đổi trả phải còn nguyên vẹn, không có dấu hiệu đã qua sử dụng và đầy đủ phụ kiện, hộp đựng đi kèm. Quý khách vui lòng quay video khi mở hàng để được hỗ trợ tốt nhất.'
+                'Tránh tiếp xúc lâu với hóa chất.',
+            ]
         ];
+
+        $san_pham['danh_sach_anh'][] = $san_pham['anh_chinh'];
+        if (!empty($san_pham_db['anh_phu'])) {
+            foreach ($san_pham_db['anh_phu'] as $path) {
+                $san_pham['danh_sach_anh'][] = strpos($path, 'http') === 0 ? $path : APP_URL . '/public' . $path;
+            }
+        }
 
         // Mock related products
-        $san_pham_lien_quan = [
-            [
-                'id' => 2,
-                'ten' => 'Hồng Anh Đào Ngọc Nương Tử',
-                'gia' => 1200000,
-                'gia_cu' => null,
+        $sanPhamModel = new \App\Models\SanPhamModel();
+        $related = $sanPhamModel->getList([], 4);
+        $san_pham_lien_quan = [];
+        foreach ($related as $r) {
+            $san_pham_lien_quan[] = [
+                'id' => $r['id'],
+                'ten' => $r['ten_sp'],
+                'gia' => $r['gia_khuyen_mai'] ?: $r['gia_ban'],
+                'gia_cu' => $r['gia_khuyen_mai'] ? $r['gia_ban'] : null,
                 'danh_gia' => 5.0,
-                'da_ban' => 89,
-                'nhan' => 'Cao cấp',
-                'menh' => 'Hỏa',
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg'
-            ],
-            [
-                'id' => 5,
-                'ten' => 'Mã Não Anh Đào Phú Quý',
-                'gia' => 680000,
-                'gia_cu' => 850000,
-                'danh_gia' => 4.7,
-                'da_ban' => 95,
-                'nhan' => '-20%',
-                'menh' => 'Thủy',
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Mã Não Anh Đào/ma-nao-anh-dao-1.jpg'
-            ],
-            [
-                'id' => 8,
-                'ten' => 'Vòng Ngọc Tụ Nham Vân Mây',
-                'gia' => 950000,
-                'gia_cu' => null,
-                'danh_gia' => 4.8,
-                'da_ban' => 67,
+                'da_ban' => rand(10, 100),
                 'nhan' => null,
-                'menh' => 'Mộc',
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-4.jpg'
-            ],
-            [
-                'id' => 11,
-                'ten' => 'Mã Não Anh Đào Điểm Hoa',
-                'gia' => 780000,
-                'gia_cu' => null,
-                'danh_gia' => 4.7,
-                'da_ban' => 78,
-                'nhan' => null,
-                'menh' => 'Thủy',
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Mã Não Anh Đào/ma-nao-anh-dao-2.jpg'
-            ]
-        ];
+                'menh' => $r['ten_menh'],
+                'hinh_anh' => strpos($r['hinh_anh_chinh'], 'http') === 0 ? $r['hinh_anh_chinh'] : APP_URL . '/public' . $r['hinh_anh_chinh']
+            ];
+        }
 
-        // Mock recent products
-        $san_pham_da_xem = [
-            [
-                'id' => 3,
-                'ten' => 'Vòng Thời Trang Xinh Yêu',
-                'gia' => 550000,
-                'gia_cu' => null,
-                'danh_gia' => 4.8,
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Tràng Hạt/Vòng Thời Trang Xinh Yêu/thoi-trang-xinh-yeu-1.jpg'
-            ],
-            [
-                'id' => 4,
-                'ten' => 'Nhang Trầm Hương Thanh Tịnh',
-                'gia' => 250000,
-                'gia_cu' => 300000,
-                'danh_gia' => 5.0,
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg'
-            ],
-            [
-                'id' => 7,
-                'ten' => 'Bột Xông Nhà Tịnh Tâm',
-                'gia' => 180000,
-                'gia_cu' => null,
-                'danh_gia' => 4.6,
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Bột Xông Nhà/bot-xong-nha-1.jpg'
-            ],
-            [
-                'id' => 9,
-                'ten' => 'Trầm Hương Miếng Cao Cấp',
-                'gia' => 450000,
-                'gia_cu' => 520000,
-                'danh_gia' => 4.9,
-                'hinh_anh' => APP_URL . '/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-3.jpg'
-            ]
-        ];
+        $san_pham_da_xem = $san_pham_lien_quan;
 
         $data = [
             'tieu_de' => $san_pham['ten'] . ' - Chuỗi Ngọc Phong Thủy',

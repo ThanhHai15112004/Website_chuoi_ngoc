@@ -32,7 +32,15 @@
     <!-- Price -->
     <div class="bg-[#FDFBF7] p-5 rounded-2xl border border-[#F0E6D2]">
         <div class="flex items-end gap-3 flex-wrap">
-            <span class="text-3xl font-bold text-[#8B0000]"><?= number_format($san_pham['gia'], 0, ',', '.') ?>đ</span>
+            <span id="display_price" class="text-3xl font-bold text-[#8B0000]">
+                <?php 
+                $basePrice = $san_pham['gia'];
+                if (!empty($san_pham['bien_the_thuc_te'])) {
+                    $basePrice += (float)$san_pham['bien_the_thuc_te'][0]['gia_cong_them'];
+                }
+                echo number_format($basePrice, 0, ',', '.');
+                ?>đ
+            </span>
             <?php if (!empty($san_pham['gia_cu'])): ?>
                 <span class="text-lg text-gray-400 line-through mb-1"><?= number_format($san_pham['gia_cu'], 0, ',', '.') ?>đ</span>
                 <?php if (!empty($san_pham['phan_tram_giam'])): ?>
@@ -62,44 +70,25 @@
     <hr class="border-gray-100">
 
     <!-- Variants -->
-    <?php if (!empty($san_pham['bien_the'])): ?>
+    <?php if (!empty($san_pham['bien_the_thuc_te'])): ?>
         <div class="flex flex-col gap-5">
-            <!-- Bead Size -->
-            <?php if (!empty($san_pham['bien_the']['kich_thuoc_hat'])): ?>
             <div>
-                <h3 class="text-sm font-semibold text-gray-900 mb-3">Kích thước hạt</h3>
+                <h3 class="text-sm font-semibold text-gray-900 mb-3">Phân loại / Kích thước</h3>
                 <div class="flex flex-wrap gap-2">
-                    <?php foreach ($san_pham['bien_the']['kich_thuoc_hat'] as $index => $size): ?>
+                    <?php foreach ($san_pham['bien_the_thuc_te'] as $index => $bt): ?>
                         <button type="button" 
                             class="variant-btn border rounded-lg px-4 py-2 text-sm transition-colors duration-200 
-                            <?= $index === 1 ? 'border-[#8B0000] bg-[#8B0000] text-white' : 'border-gray-200 text-gray-700 bg-white hover:border-[#8B0000] hover:text-[#8B0000]' ?>"
-                            onclick="selectVariant(this, 'kich_thuoc_hat')">
-                            <?= htmlspecialchars($size) ?>
+                            <?= $index === 0 ? 'border-[#8B0000] bg-[#8B0000] text-white' : 'border-gray-200 text-gray-700 bg-white hover:border-[#8B0000] hover:text-[#8B0000]' ?>"
+                            data-price-add="<?= $bt['gia_cong_them'] ?>"
+                            data-stock="<?= $bt['so_luong_ton'] ?>"
+                            data-variant-id="<?= $bt['id'] ?>"
+                            onclick="selectRealVariant(this)">
+                            <?= htmlspecialchars($bt['thuoc_tinh']) ?>
                         </button>
                     <?php endforeach; ?>
                 </div>
+                <input type="hidden" name="id_bien_the" id="id_bien_the_input" value="<?= $san_pham['bien_the_thuc_te'][0]['id'] ?>">
             </div>
-            <?php endif; ?>
-
-            <!-- Bracelet Size -->
-            <?php if (!empty($san_pham['bien_the']['size_vong'])): ?>
-            <div>
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-sm font-semibold text-gray-900">Size cổ tay</h3>
-                    <a href="#" class="text-xs text-[#8B0000] hover:underline">Hướng dẫn đo size</a>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <?php foreach ($san_pham['bien_the']['size_vong'] as $index => $size): ?>
-                        <button type="button" 
-                            class="variant-btn border rounded-lg px-4 py-2 text-sm transition-colors duration-200 
-                            <?= $index === 2 ? 'border-[#8B0000] bg-[#8B0000] text-white' : 'border-gray-200 text-gray-700 bg-white hover:border-[#8B0000] hover:text-[#8B0000]' ?>"
-                            onclick="selectVariant(this, 'size_vong')">
-                            <?= htmlspecialchars($size) ?>
-                        </button>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
         </div>
     <?php endif; ?>
 
@@ -111,14 +100,18 @@
             <h3 class="text-sm font-semibold text-gray-900 w-20">Số lượng</h3>
             <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white h-11">
                 <button type="button" class="w-10 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-[#8B0000] transition-colors" onclick="updateQuantity(-1)">-</button>
-                <input type="number" id="quantity" value="1" min="1" max="<?= $san_pham['so_luong_con'] ?>" class="w-12 h-full text-center border-x border-gray-300 text-gray-900 font-medium focus:outline-none appearance-none" style="-moz-appearance: textfield;">
+                <?php
+                $max_qty = $san_pham['so_luong_con'];
+                if (!empty($san_pham['bien_the_thuc_te'])) {
+                    $max_qty = $san_pham['bien_the_thuc_te'][0]['so_luong_ton'];
+                }
+                ?>
+                <input type="number" id="quantity" value="1" min="1" max="<?= $max_qty ?>" class="w-12 h-full text-center border-x border-gray-300 text-gray-900 font-medium focus:outline-none appearance-none" style="-moz-appearance: textfield;">
                 <button type="button" class="w-10 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-[#8B0000] transition-colors" onclick="updateQuantity(1)">+</button>
             </div>
-            <span class="text-sm text-gray-500">
-                <?php if ($san_pham['tinh_trang'] === 'con_hang'): ?>
-                    Còn <?= $san_pham['so_luong_con'] ?> sản phẩm
-                <?php elseif ($san_pham['tinh_trang'] === 'sap_het'): ?>
-                    <span class="text-[#8B0000]">Chỉ còn <?= $san_pham['so_luong_con'] ?> sản phẩm</span>
+            <span id="display_stock" class="text-sm text-gray-500">
+                <?php if ($max_qty > 0): ?>
+                    Còn <?= $max_qty ?> sản phẩm <?= !empty($san_pham['bien_the_thuc_te']) ? '(Phân loại này)' : '' ?>
                 <?php else: ?>
                     <span class="text-red-500 font-medium">Đã hết hàng</span>
                 <?php endif; ?>
@@ -126,12 +119,12 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-3 mt-2">
-            <button type="button" class="flex-1 border-2 border-[#8B0000] bg-white text-[#8B0000] hover:bg-[#8B0000] hover:text-white font-semibold rounded-xl py-3.5 flex items-center justify-center gap-2 transition-colors duration-300 <?= $san_pham['tinh_trang'] === 'het_hang' ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $san_pham['tinh_trang'] === 'het_hang' ? 'disabled' : '' ?>>
+            <button type="button" id="btn_add_cart" class="flex-1 border-2 border-[#8B0000] bg-white text-[#8B0000] hover:bg-[#8B0000] hover:text-white font-semibold rounded-xl py-3.5 flex items-center justify-center gap-2 transition-colors duration-300 <?= $max_qty <= 0 ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $max_qty <= 0 ? 'disabled' : '' ?>>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 Thêm vào giỏ
             </button>
-            <button type="button" class="flex-1 bg-[#8B0000] text-white hover:bg-[#660000] font-semibold rounded-xl py-3.5 transition-colors duration-300 shadow-md <?= $san_pham['tinh_trang'] === 'het_hang' ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $san_pham['tinh_trang'] === 'het_hang' ? 'disabled' : '' ?>>
-                <?= $san_pham['tinh_trang'] === 'het_hang' ? 'Hết hàng' : 'Mua ngay' ?>
+            <button type="button" id="btn_buy_now" class="flex-1 bg-[#8B0000] text-white hover:bg-[#660000] font-semibold rounded-xl py-3.5 transition-colors duration-300 shadow-md <?= $max_qty <= 0 ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $max_qty <= 0 ? 'disabled' : '' ?>>
+                <?= $max_qty <= 0 ? 'Hết hàng' : 'Mua ngay' ?>
             </button>
         </div>
         
@@ -223,8 +216,8 @@
         input.value = val;
     }
 
-    function selectVariant(button, groupName) {
-        // Find all buttons in the same group (siblings of button's parent if wrapped, or just same container)
+    function selectRealVariant(button) {
+        // Find all buttons in the same group
         const container = button.parentElement;
         const buttons = container.querySelectorAll('.variant-btn');
         
@@ -237,5 +230,39 @@
         // Set active
         button.classList.remove('border-gray-200', 'text-gray-700', 'bg-white');
         button.classList.add('border-[#8B0000]', 'bg-[#8B0000]', 'text-white');
+
+        // Update hidden input
+        document.getElementById('id_bien_the_input').value = button.getAttribute('data-variant-id');
+        
+        // Update price
+        const basePrice = <?= $san_pham['gia'] ?>;
+        const addPrice = parseFloat(button.getAttribute('data-price-add'));
+        const newPrice = basePrice + addPrice;
+        document.getElementById('display_price').innerText = new Intl.NumberFormat('vi-VN').format(newPrice) + 'đ';
+        
+        // Update stock
+        const stock = parseInt(button.getAttribute('data-stock'));
+        document.getElementById('quantity').setAttribute('max', stock);
+        const stockDisplay = document.getElementById('display_stock');
+        if (stock > 0) {
+            stockDisplay.innerHTML = 'Còn ' + stock + ' sản phẩm (Phân loại này)';
+            stockDisplay.className = 'text-sm text-gray-500';
+            document.getElementById('btn_add_cart').disabled = false;
+            document.getElementById('btn_add_cart').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn_buy_now').disabled = false;
+            document.getElementById('btn_buy_now').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn_buy_now').innerText = 'Mua ngay';
+        } else {
+            stockDisplay.innerHTML = '<span class="text-red-500 font-medium">Phân loại này đã hết hàng</span>';
+            document.getElementById('btn_add_cart').disabled = true;
+            document.getElementById('btn_add_cart').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn_buy_now').disabled = true;
+            document.getElementById('btn_buy_now').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn_buy_now').innerText = 'Hết hàng';
+            
+            if (parseInt(document.getElementById('quantity').value) > 1) {
+                document.getElementById('quantity').value = 1;
+            }
+        }
     }
 </script>

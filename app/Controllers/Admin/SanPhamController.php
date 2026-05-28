@@ -48,7 +48,14 @@ class SanPhamController extends Controller {
             }, $product['anh_phu'] ?? []),
             'mo_ta_ngan' => $product['mo_ta_ngan'] ?? '',
             'mo_ta_chi_tiet' => $product['mo_ta_chi_tiet'] ?? '',
-            'bien_the' => []
+            'bien_the' => array_map(function($bt) use ($product) {
+                return [
+                    'ten' => $bt['thuoc_tinh'],
+                    'gia_ban' => (float)$product['gia_ban'] + (float)$bt['gia_cong_them'],
+                    'da_ban' => 0, // Tính năng mở rộng sau này
+                    'ton_kho' => (int)$bt['so_luong_ton']
+                ];
+            }, $product['bien_the_thuc_te'] ?? [])
         ];
 
         $data = [
@@ -98,6 +105,7 @@ class SanPhamController extends Controller {
         $sp_view['anh_phu'] = array_map(function($path) {
             return strpos($path, 'http') === 0 ? $path : APP_URL . '/public' . $path;
         }, $product['anh_phu'] ?? []);
+        $sp_view['bien_the_thuc_te'] = $product['bien_the_thuc_te'] ?? [];
 
         $data = [
             'tieu_de' => 'Chỉnh sửa sản phẩm',

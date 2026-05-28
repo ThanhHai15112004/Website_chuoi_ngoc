@@ -81,10 +81,10 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-4 text-sm">
-                                <div class="text-gray-600 cursor-pointer hover:text-[#6B0D18] flex flex-col group/info">
+                                <a href="<?= APP_URL ?>/admin/san-pham?menh=<?= urlencode($item['ten_menh']) ?>" class="text-gray-600 cursor-pointer hover:text-[#6B0D18] flex flex-col group/info">
                                     <span class="font-bold text-gray-800 group-hover/info:text-[#6B0D18]"><?= $item['so_san_pham'] ?></span>
                                     <span class="text-[10px] text-gray-400">Sản phẩm</span>
-                                </div>
+                                </a>
                                 <div class="w-px h-6 bg-gray-200"></div>
                                 <div class="text-gray-600 cursor-pointer hover:text-[#6B0D18] flex flex-col group/info">
                                     <span class="font-bold text-gray-800 group-hover/info:text-[#6B0D18]"><?= $item['so_nam_sinh'] ?></span>

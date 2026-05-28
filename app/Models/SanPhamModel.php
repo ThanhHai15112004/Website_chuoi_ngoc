@@ -282,4 +282,34 @@ class SanPhamModel
         $stmt->bindValue(':id_san_pham', $id_san_pham);
         return $stmt->execute();
     }
+
+    public function getBienTheByProductId($productId)
+    {
+        $sql = "SELECT * FROM san_pham_bien_the WHERE id_san_pham = :id_san_pham ORDER BY thuoc_tinh ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $productId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteBienThe($id_san_pham)
+    {
+        $sql = "DELETE FROM san_pham_bien_the WHERE id_san_pham = :id_san_pham";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $id_san_pham);
+        return $stmt->execute();
+    }
+
+    public function insertBienThe($id_san_pham, $thuoc_tinh, $so_luong_ton, $gia_cong_them)
+    {
+        $id = 'bt_' . uniqid();
+        $sql = "INSERT INTO san_pham_bien_the (id, id_san_pham, thuoc_tinh, so_luong_ton, gia_cong_them) VALUES (:id, :id_san_pham, :thuoc_tinh, :so_luong_ton, :gia_cong_them)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        $stmt->bindValue(':id_san_pham', $id_san_pham);
+        $stmt->bindValue(':thuoc_tinh', $thuoc_tinh);
+        $stmt->bindValue(':so_luong_ton', (int)$so_luong_ton, PDO::PARAM_INT);
+        $stmt->bindValue(':gia_cong_them', (float)$gia_cong_them);
+        return $stmt->execute();
+    }
 }
