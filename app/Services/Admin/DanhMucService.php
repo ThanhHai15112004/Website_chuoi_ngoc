@@ -15,7 +15,7 @@ class DanhMucService
 
     public function getAllCategories($filters = [])
     {
-        $categories = $this->danhMucModel->getAll($filters);
+        $categories = $this->danhMucModel->layTatCa($filters);
         
         // Format lại dữ liệu cho view
         foreach ($categories as &$c) {
@@ -87,28 +87,28 @@ class DanhMucService
 
         if ($id) {
             // Update
-            return $this->danhMucModel->update($id, $catData);
+            return $this->danhMucModel->capNhat($id, $catData);
         } else {
             // Insert
             $catData['id'] = 'dm_' . uniqid();
-            return $this->danhMucModel->insert($catData);
+            return $this->danhMucModel->themMoi($catData);
         }
     }
 
     public function deleteCategory($id)
     {
         // Check if category has products
-        $cat = $this->danhMucModel->findById($id);
+        $cat = $this->danhMucModel->timTheoId($id);
         if (!$cat) return false;
         
         // Do not allow delete if it has products (we can check via getAll query but let's assume UI prevents it)
         // For safety, just soft delete
-        return $this->danhMucModel->softDelete($id);
+        return $this->danhMucModel->xoaMem($id);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        return $this->danhMucModel->toggleStatus($id);
+        return $this->danhMucModel->doiTrangThai($id);
     }
 
     private function removeAccents($string)

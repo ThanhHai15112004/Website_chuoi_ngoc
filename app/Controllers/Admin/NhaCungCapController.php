@@ -134,7 +134,7 @@ class NhaCungCapController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_nha_cung_cap_them', [
             'current_page' => 'nha_cung_cap',
@@ -142,7 +142,7 @@ class NhaCungCapController extends Controller
         ], 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $this->view('admin_nha_cung_cap_them', [
             'current_page' => 'nha_cung_cap',
@@ -152,7 +152,7 @@ class NhaCungCapController extends Controller
     }
 
     // API endpoints cho Drawer
-    public function show($id)
+    public function chiTiet($id)
     {
         // Mock data chi tiết
         $data = [

@@ -18,10 +18,10 @@ class KhachHangService
     {
         $offset = ($page - 1) * $limit;
         
-        $totalItems = $this->khachHangModel->countList($filters);
+        $totalItems = $this->khachHangModel->demDanhSach($filters);
         $totalPages = ceil($totalItems / $limit);
         
-        $customers = $this->khachHangModel->getList($filters, $limit, $offset);
+        $customers = $this->khachHangModel->layDanhSach($filters, $limit, $offset);
 
         $currentYear = (int)date('Y');
 
@@ -69,14 +69,14 @@ class KhachHangService
         ];
     }
 
-    public function getStats()
+    public function layThongKe()
     {
-        return $this->khachHangModel->getStats();
+        return $this->khachHangModel->layThongKe();
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        return $this->khachHangModel->toggleStatus($id);
+        return $this->khachHangModel->doiTrangThai($id);
     }
 
     private function tinhMenhTuNamSinh($nam_sinh)

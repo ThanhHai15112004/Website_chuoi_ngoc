@@ -43,7 +43,7 @@ class BinhLuanController extends Controller
         echo json_encode(['success' => $success]);
     }
 
-    public function toggleStatus()
+    public function doiTrangThai()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'message' => 'Invalid request']);
@@ -54,7 +54,7 @@ class BinhLuanController extends Controller
         $action = $_POST['action'] ?? null;
 
         if ($id && $action) {
-            $success = $this->binhLuanService->toggleStatus($id, $action);
+            $success = $this->binhLuanService->doiTrangThai($id, $action);
             echo json_encode(['success' => $success]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Missing data']);
@@ -91,7 +91,7 @@ class BinhLuanController extends Controller
         }
     }
 
-    public function delete()
+    public function xoa()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'message' => 'Invalid request']);
@@ -101,7 +101,7 @@ class BinhLuanController extends Controller
         $id = $_POST['id'] ?? null;
 
         if ($id) {
-            $success = $this->binhLuanService->delete($id);
+            $success = $this->binhLuanService->xoa($id);
             echo json_encode(['success' => $success]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Missing ID']);

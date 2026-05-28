@@ -26,7 +26,7 @@ class ChinhSachController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_chinh_sach_form', [
             'title' => 'Thêm chính sách',
@@ -34,7 +34,7 @@ class ChinhSachController extends Controller
         ], 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $this->view('admin_chinh_sach_form', [
             'title' => 'Sửa chính sách',

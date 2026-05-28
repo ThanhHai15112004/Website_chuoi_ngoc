@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\DanhGiaConstants;
 
 class DanhGiaModel
 {
@@ -31,7 +32,7 @@ class DanhGiaModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getAll($filters = [], $page = 1, $limit = 10)
+    public function layTatCa($filters = [], $page = 1, $limit = 10)
     {
         $offset = ($page - 1) * $limit;
         
@@ -51,11 +52,11 @@ class DanhGiaModel
 
         if (!empty($filters['status']) && $filters['status'] !== 'all') {
             if ($filters['status'] == 'cho_duyet') {
-                $conditions[] = "dg.trang_thai = 0";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_CHO_DUYET;
             } elseif ($filters['status'] == 'da_duyet') {
-                $conditions[] = "dg.trang_thai = 1";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET;
             } elseif ($filters['status'] == 'da_an') {
-                $conditions[] = "dg.trang_thai = 2";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_AN;
             }
         }
 
@@ -106,11 +107,11 @@ class DanhGiaModel
 
         if (!empty($filters['status']) && $filters['status'] !== 'all') {
             if ($filters['status'] == 'cho_duyet') {
-                $conditions[] = "dg.trang_thai = 0";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_CHO_DUYET;
             } elseif ($filters['status'] == 'da_duyet') {
-                $conditions[] = "dg.trang_thai = 1";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET;
             } elseif ($filters['status'] == 'da_an') {
-                $conditions[] = "dg.trang_thai = 2";
+                $conditions[] = "dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_AN;
             }
         }
 
@@ -141,13 +142,13 @@ class DanhGiaModel
         return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 
-    public function getStats()
+    public function layThongKe()
     {
         $sql = "SELECT 
                 COUNT(*) as tong,
-                SUM(CASE WHEN trang_thai = 0 THEN 1 ELSE 0 END) as cho_duyet,
-                SUM(CASE WHEN trang_thai = 1 THEN 1 ELSE 0 END) as da_duyet,
-                SUM(CASE WHEN trang_thai = 2 THEN 1 ELSE 0 END) as da_an,
+                SUM(CASE WHEN trang_thai = " . DanhGiaConstants::TRANG_THAI_CHO_DUYET . " THEN 1 ELSE 0 END) as cho_duyet,
+                SUM(CASE WHEN trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET . " THEN 1 ELSE 0 END) as da_duyet,
+                SUM(CASE WHEN trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_AN . " THEN 1 ELSE 0 END) as da_an,
                 AVG(so_sao) as diem_tb,
                 SUM(CASE WHEN hinh_anh IS NOT NULL AND hinh_anh != '' THEN 1 ELSE 0 END) as co_anh,
                 SUM(CASE WHEN phan_hoi_noi_dung IS NOT NULL AND phan_hoi_noi_dung != '' THEN 1 ELSE 0 END) as co_phan_hoi
@@ -171,11 +172,10 @@ class DanhGiaModel
 
     public function updateStatus($id, $status)
     {
-        // status map: 'da_duyet' => 1, 'da_an' => 2, 'cho_duyet' => 0
         $statusMap = [
-            'da_duyet' => 1,
-            'da_an' => 2,
-            'cho_duyet' => 0
+            'da_duyet' => DanhGiaConstants::TRANG_THAI_DA_DUYET,
+            'da_an' => DanhGiaConstants::TRANG_THAI_DA_AN,
+            'cho_duyet' => DanhGiaConstants::TRANG_THAI_CHO_DUYET
         ];
         
         if (!isset($statusMap[$status])) {
@@ -205,7 +205,7 @@ class DanhGiaModel
         ]);
     }
 
-    public function delete($id)
+    public function xoa($id)
     {
         $sql = "DELETE FROM danh_gia WHERE id = :id";
         $stmt = $this->db->prepare($sql);

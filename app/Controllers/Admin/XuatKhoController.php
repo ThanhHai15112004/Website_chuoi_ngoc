@@ -65,7 +65,7 @@ class XuatKhoController extends Controller
     /**
      * Màn hình tạo phiếu xuất kho
      */
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_xuat_kho_them', [
             'title' => 'Tạo Phiếu Xuất Kho Mới',
@@ -76,7 +76,7 @@ class XuatKhoController extends Controller
     /**
      * Màn hình chi tiết / duyệt phiếu xuất kho
      */
-    public function show($id)
+    public function chiTiet($id)
     {
         // Mock data chi tiết cho 1 phiếu
         $phieuXuat = [

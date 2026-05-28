@@ -17,10 +17,10 @@ class LoaiDaService
     {
         $offset = ($page - 1) * $limit;
         
-        $totalItems = $this->loaiDaModel->countList($filters);
+        $totalItems = $this->loaiDaModel->demDanhSach($filters);
         $totalPages = ceil($totalItems / $limit);
         
-        $stones = $this->loaiDaModel->getList($filters, $limit, $offset);
+        $stones = $this->loaiDaModel->layDanhSach($filters, $limit, $offset);
 
         // Format data
         foreach ($stones as &$stone) {
@@ -52,9 +52,9 @@ class LoaiDaService
         ];
     }
 
-    public function getStats()
+    public function layThongKe()
     {
-        $allStones = $this->loaiDaModel->getList([], 1000, 0);
+        $allStones = $this->loaiDaModel->layDanhSach([], 1000, 0);
         $total = count($allStones);
         $hienThi = count(array_filter($allStones, fn($s) => $s['trang_thai'] === 'Đang hiển thị'));
         $dangAn = count(array_filter($allStones, fn($s) => $s['trang_thai'] === 'Đang ẩn'));
@@ -110,25 +110,25 @@ class LoaiDaService
         }
 
         if ($isEdit) {
-            return $this->loaiDaModel->update($data['id'], $data);
+            return $this->loaiDaModel->capNhat($data['id'], $data);
         } else {
-            return $this->loaiDaModel->insert($data);
+            return $this->loaiDaModel->themMoi($data);
         }
     }
 
     public function deleteStone($id)
     {
-        return $this->loaiDaModel->softDelete($id);
+        return $this->loaiDaModel->xoaMem($id);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        return $this->loaiDaModel->toggleStatus($id);
+        return $this->loaiDaModel->doiTrangThai($id);
     }
 
     public function getStoneById($id)
     {
-        return $this->loaiDaModel->findById($id);
+        return $this->loaiDaModel->timTheoId($id);
     }
 
     public function getFormDependencies()

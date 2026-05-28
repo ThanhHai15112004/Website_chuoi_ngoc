@@ -15,7 +15,7 @@ class MenhPhongThuyController extends Controller
     public function index()
     {
         $destinies = $this->service->getAdminList($_GET);
-        $stats = $this->service->getStats();
+        $stats = $this->service->layThongKe();
 
         $data = [
             'destinies' => $destinies,
@@ -26,7 +26,7 @@ class MenhPhongThuyController extends Controller
         $this->view('admin_menh_phong_thuy', $data, 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $destiny = $this->service->getDestinyDetails($id);
         if (!$destiny) {
@@ -42,7 +42,7 @@ class MenhPhongThuyController extends Controller
         $this->view('admin_menh_phong_thuy_form', $data, 'admin');
     }
 
-    public function store($id)
+    public function luuMoi($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->service->updateDestiny($id, $_POST);
@@ -52,10 +52,10 @@ class MenhPhongThuyController extends Controller
         }
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->service->toggleStatus($id);
+            $this->service->doiTrangThai($id);
             $_SESSION['flash_success'] = 'Đã thay đổi trạng thái mệnh!';
             header("Location: " . APP_URL . "/admin/menh-phong-thuy");
             exit;

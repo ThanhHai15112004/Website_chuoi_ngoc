@@ -14,9 +14,9 @@ class BinhLuanService
 
     public function getAdminReviewsData($filters = [], $page = 1, $limit = 10)
     {
-        $danhGiaList = $this->danhGiaModel->getAll($filters, $page, $limit);
+        $danhGiaList = $this->danhGiaModel->layTatCa($filters, $page, $limit);
         $total = $this->danhGiaModel->countAll($filters);
-        $stats = $this->danhGiaModel->getStats();
+        $stats = $this->danhGiaModel->layThongKe();
 
         $reviews = [];
         foreach ($danhGiaList as $dg) {
@@ -73,7 +73,7 @@ class BinhLuanService
         ];
     }
 
-    public function toggleStatus($id, $action)
+    public function doiTrangThai($id, $action)
     {
         return $this->danhGiaModel->updateStatus($id, $action);
     }
@@ -106,9 +106,9 @@ class BinhLuanService
         return $this->danhGiaModel->updateReply($id, $content, $adminId);
     }
 
-    public function delete($id)
+    public function xoa($id)
     {
-        return $this->danhGiaModel->delete($id);
+        return $this->danhGiaModel->xoa($id);
     }
 
     public function getSettings()

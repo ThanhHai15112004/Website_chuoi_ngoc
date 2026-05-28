@@ -165,7 +165,7 @@ class VoucherController extends Controller {
         $this->view('admin_voucher', $data, 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $data = [
             'tieu_de' => 'Thêm voucher mới - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'voucher',
@@ -174,7 +174,7 @@ class VoucherController extends Controller {
         $this->view('admin_voucher_form', $data, 'admin');
     }
 
-    public function edit() {
+    public function trangCapNhat() {
         $data = [
             'tieu_de' => 'Chỉnh sửa voucher - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'voucher',

@@ -60,7 +60,7 @@ class ThongBaoController extends Controller {
         $this->view('admin_thong_bao', $data, 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $data = [
             'tieu_de' => 'Tạo thông báo mới - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'hop_thu',
@@ -69,7 +69,7 @@ class ThongBaoController extends Controller {
         $this->view('admin_thong_bao_form', $data, 'admin');
     }
 
-    public function store() {
+    public function luuMoi() {
         header('Content-Type: application/json');
         $input = json_decode(file_get_contents('php://input'), true);
 
@@ -84,7 +84,7 @@ class ThongBaoController extends Controller {
         try {
             if ($targetType === 'internal') {
                 // Admin notification
-                $model->insert([
+                $model->themMoi([
                     'id_nguoi_dung' => null,
                     'tieu_de' => $input['tieu_de'],
                     'noi_dung' => $input['noi_dung'],
@@ -97,7 +97,7 @@ class ThongBaoController extends Controller {
                 $userIds = [];
 
                 if ($targetType === 'all') {
-                    $users = $userModel->getAll();
+                    $users = $userModel->layTatCa();
                     $userIds = array_column($users, 'id');
                 } elseif ($targetType === 'specific') {
                     $userIds = $input['specific_users'] ?? [];
@@ -155,7 +155,7 @@ class ThongBaoController extends Controller {
         echo json_encode(['success' => true]);
     }
 
-    public function delete() {
+    public function xoa() {
         header('Content-Type: application/json');
         $input = json_decode(file_get_contents('php://input'), true);
         $ids = $input['ids'] ?? [];
@@ -167,7 +167,7 @@ class ThongBaoController extends Controller {
 
         $model = new \App\Models\ThongBaoModel();
         foreach ($ids as $id) {
-            $model->delete($id);
+            $model->xoa($id);
         }
         
         echo json_encode(['success' => true]);

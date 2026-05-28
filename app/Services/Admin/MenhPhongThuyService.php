@@ -20,7 +20,7 @@ class MenhPhongThuyService
 
     public function getAdminList($filters = [])
     {
-        $list = $this->model->getAll($filters);
+        $list = $this->model->layTatCa($filters);
         
         foreach ($list as &$item) {
             $item['mau_hop'] = !empty($item['mau_sac_hop']) ? array_map('trim', explode(',', $item['mau_sac_hop'])) : [];
@@ -34,9 +34,9 @@ class MenhPhongThuyService
         return $list;
     }
 
-    public function getStats()
+    public function layThongKe()
     {
-        $all = $this->model->getAll();
+        $all = $this->model->layTatCa();
         
         $loai_da_lien_ket = 0;
         $san_pham_gan_menh = 0;
@@ -61,7 +61,7 @@ class MenhPhongThuyService
 
     public function getDestinyDetails($id)
     {
-        $destiny = $this->model->findById($id);
+        $destiny = $this->model->timTheoId($id);
         if (!$destiny) return null;
 
         $destiny['mau_hop'] = !empty($destiny['mau_sac_hop']) ? array_map('trim', explode(',', $destiny['mau_sac_hop'])) : [];
@@ -136,11 +136,11 @@ class MenhPhongThuyService
             $updateData['nhu_cau'] = null;
         }
 
-        return $this->model->update($id, $updateData);
+        return $this->model->capNhat($id, $updateData);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        return $this->model->toggleStatus($id);
+        return $this->model->doiTrangThai($id);
     }
 }

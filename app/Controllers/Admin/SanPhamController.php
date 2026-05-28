@@ -18,7 +18,7 @@ class SanPhamController extends Controller {
         $this->view('admin_san_pham', $data, 'admin');
     }
 
-    public function show($id) {
+    public function chiTiet($id) {
         $service = new \App\Services\Admin\SanPhamService();
         $product = $service->getProductById($id);
         
@@ -69,7 +69,7 @@ class SanPhamController extends Controller {
         $this->view('admin_san_pham_chi_tiet', $data, 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $service = new \App\Services\Admin\SanPhamService();
         $formData = $service->getFormData();
         
@@ -85,7 +85,7 @@ class SanPhamController extends Controller {
         $this->view('admin_san_pham_form', $data, 'admin');
     }
 
-    public function edit($id) {
+    public function trangCapNhat($id) {
         $service = new \App\Services\Admin\SanPhamService();
         $product = $service->getProductById($id);
         
@@ -119,7 +119,7 @@ class SanPhamController extends Controller {
         $this->view('admin_san_pham_form', $data, 'admin');
     }
 
-    public function store() {
+    public function luuMoi() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->saveProduct($_POST, $_FILES);
@@ -129,7 +129,7 @@ class SanPhamController extends Controller {
         }
     }
 
-    public function update($id) {
+    public function capNhat($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->saveProduct($_POST, $_FILES, $id);
@@ -139,7 +139,7 @@ class SanPhamController extends Controller {
         }
     }
 
-    public function toggleStatus($id) {
+    public function doiTrangThai($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->toggleProductStatus($id);
@@ -149,7 +149,7 @@ class SanPhamController extends Controller {
         }
     }
 
-    public function delete($id) {
+    public function xoa($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
             $service->deleteProduct($id);

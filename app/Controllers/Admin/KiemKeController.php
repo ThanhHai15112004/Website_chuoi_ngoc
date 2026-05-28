@@ -113,7 +113,7 @@ class KiemKeController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         $danhSachKho = $this->getMockKho();
         
@@ -132,7 +132,7 @@ class KiemKeController extends Controller
         ], 'admin');
     }
 
-    public function show($id)
+    public function chiTiet($id)
     {
         $phieu = [
             'id' => $id,

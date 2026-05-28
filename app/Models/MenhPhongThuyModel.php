@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
 
 class MenhPhongThuyModel
 {
@@ -14,7 +15,7 @@ class MenhPhongThuyModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll($filters = [])
+    public function layTatCa($filters = [])
     {
         $sql = "SELECT m.*, 
                 (SELECT COUNT(ldm.id_loai_da) FROM loai_da_menh ldm WHERE ldm.id_menh = m.id) as da_hop_count,
@@ -66,7 +67,7 @@ class MenhPhongThuyModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $sql = "SELECT * FROM menh_phong_thuy WHERE id = :id";
         $stmt = $this->db->prepare($sql);
@@ -74,7 +75,7 @@ class MenhPhongThuyModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $fields = [];
         foreach ($data as $key => $value) {
@@ -88,7 +89,7 @@ class MenhPhongThuyModel
         return $stmt->execute($data);
     }
 
-    public function findByName($name)
+    public function timTheoTen($name)
     {
         $sql = "SELECT * FROM menh_phong_thuy WHERE ten_menh = :name LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -96,9 +97,9 @@ class MenhPhongThuyModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        $sql = "UPDATE menh_phong_thuy SET trang_thai = CASE WHEN trang_thai = 1 THEN 0 ELSE 1 END WHERE id = :id";
+        $sql = "UPDATE menh_phong_thuy SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }

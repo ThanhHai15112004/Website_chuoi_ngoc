@@ -89,7 +89,7 @@ class BannerController extends Controller
     /**
      * Hiển thị form thêm mới banner
      */
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_banner_form', [
             'mode' => 'create',
@@ -102,7 +102,7 @@ class BannerController extends Controller
     /**
      * Hiển thị form sửa banner
      */
-    public function edit()
+    public function trangCapNhat()
     {
         // Mock data cho banner edit
         $mockBanner = [

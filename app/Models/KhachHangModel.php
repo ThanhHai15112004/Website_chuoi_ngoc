@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
+use App\Constants\HangThanhVienConstants;
+use App\Constants\DonHangConstants;
 
 class KhachHangModel
 {
@@ -14,7 +17,7 @@ class KhachHangModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getList($filters = [], $limit = 10, $offset = 0)
+    public function layDanhSach($filters = [], $limit = 10, $offset = 0)
     {
         $sql = "SELECT nd.id, nd.ma_nd as ma, nd.ho_ten as ten, nd.email, nd.so_dien_thoai as sdt, 
                        nd.gioi_tinh, nd.ngay_sinh, nd.nam_sinh, nd.anh_dai_dien, nd.tong_chi_tieu, nd.trang_thai, nd.ngay_tao,
@@ -22,7 +25,7 @@ class KhachHangModel
                        htv.ten_hang as hang,
                        mpt.ten_menh as menh,
                        (SELECT COUNT(*) FROM don_hang dh WHERE dh.id_nguoi_dung = nd.id) as tong_don,
-                       (SELECT COUNT(*) FROM don_hang dh2 WHERE dh2.id_nguoi_dung = nd.id AND dh2.trang_thai_don_hang = 4) as so_don_huy,
+                       (SELECT COUNT(*) FROM don_hang dh2 WHERE dh2.id_nguoi_dung = nd.id AND dh2.trang_thai_don_hang = " . DonHangConstants::TRANG_THAI_DA_HUY . ") as so_don_huy,
                        (SELECT ma_don_hang FROM don_hang dh3 WHERE dh3.id_nguoi_dung = nd.id ORDER BY dh3.ngay_tao DESC LIMIT 1) as ma_don_gan_nhat,
                        (SELECT ngay_tao FROM don_hang dh4 WHERE dh4.id_nguoi_dung = nd.id ORDER BY dh4.ngay_tao DESC LIMIT 1) as ngay_don_gan_nhat
                 FROM nguoi_dung nd
@@ -49,11 +52,11 @@ class KhachHangModel
             } elseif ($filters['tab'] === 'chua_mua') {
                 $sql .= " AND nd.tong_chi_tieu = 0";
             } elseif ($filters['tab'] === 'gold') {
-                $sql .= " AND htv.ten_hang = 'Gold'";
+                $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_GOLD . "'";
             } elseif ($filters['tab'] === 'diamond') {
-                $sql .= " AND htv.ten_hang = 'Diamond'";
+                $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "'";
             } elseif ($filters['tab'] === 'bi_khoa') {
-                $sql .= " AND nd.trang_thai = 0";
+                $sql .= " AND nd.trang_thai = " . SystemConstants::STATUS_INACTIVE;
             }
         }
 
@@ -71,7 +74,7 @@ class KhachHangModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function countList($filters = [])
+    public function demDanhSach($filters = [])
     {
         $sql = "SELECT COUNT(*) as total FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
@@ -96,11 +99,11 @@ class KhachHangModel
             } elseif ($filters['tab'] === 'chua_mua') {
                 $sql .= " AND nd.tong_chi_tieu = 0";
             } elseif ($filters['tab'] === 'gold') {
-                $sql .= " AND htv.ten_hang = 'Gold'";
+                $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_GOLD . "'";
             } elseif ($filters['tab'] === 'diamond') {
-                $sql .= " AND htv.ten_hang = 'Diamond'";
+                $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "'";
             } elseif ($filters['tab'] === 'bi_khoa') {
-                $sql .= " AND nd.trang_thai = 0";
+                $sql .= " AND nd.trang_thai = " . SystemConstants::STATUS_INACTIVE;
             }
         }
 
@@ -113,15 +116,15 @@ class KhachHangModel
         return $row ? (int)$row['total'] : 0;
     }
 
-    public function getStats()
+    public function layThongKe()
     {
         $sql = "SELECT 
                     COUNT(*) as tong,
                     SUM(CASE WHEN ngay_tao >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as khach_moi,
                     SUM(CASE WHEN tong_chi_tieu > 0 THEN 1 ELSE 0 END) as da_mua,
                     SUM(CASE WHEN tong_chi_tieu = 0 THEN 1 ELSE 0 END) as chua_mua,
-                    SUM(CASE WHEN trang_thai = 0 THEN 1 ELSE 0 END) as bi_khoa,
-                    (SELECT COUNT(*) FROM nguoi_dung nd2 LEFT JOIN hang_thanh_vien htv2 ON nd2.id_hang_thanh_vien = htv2.id WHERE nd2.id_vai_tro IS NULL AND htv2.ten_hang = 'Diamond') as diamond
+                    SUM(CASE WHEN trang_thai = " . SystemConstants::STATUS_INACTIVE . " THEN 1 ELSE 0 END) as bi_khoa,
+                    (SELECT COUNT(*) FROM nguoi_dung nd2 LEFT JOIN hang_thanh_vien htv2 ON nd2.id_hang_thanh_vien = htv2.id WHERE nd2.id_vai_tro IS NULL AND htv2.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "') as diamond
                 FROM nguoi_dung
                 WHERE id_vai_tro IS NULL";
         
@@ -138,7 +141,7 @@ class KhachHangModel
         ];
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $sql = "SELECT * FROM nguoi_dung WHERE id = ? AND id_vai_tro IS NULL";
         $stmt = $this->db->prepare($sql);
@@ -188,13 +191,13 @@ class KhachHangModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        $stmt = $this->db->prepare("UPDATE nguoi_dung SET trang_thai = 1 - trang_thai WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE nguoi_dung SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
-    public function insert($data)
+    public function themMoi($data)
     {
         $fields = array_keys($data);
         $placeholders = array_fill(0, count($fields), '?');
@@ -205,7 +208,7 @@ class KhachHangModel
         return $stmt->execute(array_values($data));
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $fields = [];
         $values = [];

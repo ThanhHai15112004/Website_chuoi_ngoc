@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
 
 class LoaiDaModel
 {
@@ -14,7 +15,7 @@ class LoaiDaModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll()
+    public function layTatCa()
     {
         $sql = "SELECT id, ten_loai_da as ten, ma_loai_da as ma, ten_tieng_anh, trang_thai FROM loai_da WHERE da_xoa = 0 ORDER BY ten_loai_da ASC";
         $stmt = $this->db->prepare($sql);
@@ -22,7 +23,7 @@ class LoaiDaModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getList($filters = [], $limit = 10, $offset = 0)
+    public function layDanhSach($filters = [], $limit = 10, $offset = 0)
     {
         $sql = "SELECT ld.*,
                 (SELECT COUNT(*) FROM san_pham sp WHERE sp.id_loai_da = ld.id AND sp.da_xoa = 0) as so_san_pham,
@@ -100,7 +101,7 @@ class LoaiDaModel
         return $results;
     }
 
-    public function countList($filters = [])
+    public function demDanhSach($filters = [])
     {
         $sql = "SELECT COUNT(*) as total FROM loai_da ld WHERE ld.da_xoa = 0";
         $params = [];
@@ -140,7 +141,7 @@ class LoaiDaModel
         return $row ? (int)$row['total'] : 0;
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $stmt = $this->db->prepare("
             SELECT ld.*,
@@ -164,7 +165,7 @@ class LoaiDaModel
         return $row;
     }
 
-    public function insert($data)
+    public function themMoi($data)
     {
         $sql = "INSERT INTO loai_da (id, ma_loai_da, ten_loai_da, ten_tieng_anh, slug, nhom, mau_sac_ten, mau_sac_hex, y_nghia, nhu_cau, hinh_anh, trang_thai) 
                 VALUES (:id, :ma_loai_da, :ten_loai_da, :ten_tieng_anh, :slug, :nhom, :mau_sac_ten, :mau_sac_hex, :y_nghia, :nhu_cau, :hinh_anh, :trang_thai)";
@@ -190,7 +191,7 @@ class LoaiDaModel
         return $result;
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $sql = "UPDATE loai_da SET 
                     ma_loai_da = :ma_loai_da,
@@ -237,15 +238,15 @@ class LoaiDaModel
         return $result;
     }
 
-    public function softDelete($id)
+    public function xoaMem($id)
     {
         $stmt = $this->db->prepare("UPDATE loai_da SET da_xoa = 1 WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        $stmt = $this->db->prepare("UPDATE loai_da SET trang_thai = 1 - trang_thai WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE loai_da SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = ?");
         return $stmt->execute([$id]);
     }
 

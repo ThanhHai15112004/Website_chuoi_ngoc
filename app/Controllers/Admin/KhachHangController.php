@@ -16,7 +16,7 @@ class KhachHangController extends Controller
         $filters = $_GET;
         
         $dataResponse = $service->getAdminCustomerData($filters, $page, $limit);
-        $thong_ke = $service->getStats();
+        $thong_ke = $service->layThongKe();
 
         $data = [
             'tieu_de' => 'Quản lý Khách Hàng',
@@ -30,10 +30,10 @@ class KhachHangController extends Controller
     }
 
 
-    public function create()
+    public function taoMoi()
     {
         $rankModel = new \App\Models\HangThanhVienModel();
-        $ranks = $rankModel->getAll();
+        $ranks = $rankModel->layTatCa();
 
         $data = [
             'current_page' => 'them_khach_hang',
@@ -46,9 +46,9 @@ class KhachHangController extends Controller
     public function ranks()
     {
         $service = new \App\Services\Admin\HangThanhVienService();
-        $ranks = $service->getRankData();
-        $history = $service->getRankHistory();
-        $khach_sap_len_hang = $service->getUsersNearNextRank();
+        $ranks = $service->layDuLieuHang();
+        $history = $service->layLichSuHang();
+        $khach_sap_len_hang = $service->layNguoiDungGanLenHang();
 
         $voucherModel = new \App\Models\VoucherModel();
         $vouchers = $voucherModel->getActiveVouchers();
@@ -68,7 +68,7 @@ class KhachHangController extends Controller
     {
         header('Content-Type: application/json');
         $model = new \App\Models\HangThanhVienModel();
-        $rank = $model->findById($id);
+        $rank = $model->timTheoId($id);
         
         if ($rank) {
             echo json_encode([
@@ -89,7 +89,7 @@ class KhachHangController extends Controller
         }
     }
 
-    public function show($ma_nd)
+    public function chiTiet($ma_nd)
     {
         $model = new \App\Models\KhachHangModel();
         $kh_db = $model->findByMa($ma_nd);
@@ -168,10 +168,10 @@ class KhachHangController extends Controller
         $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $model = new \App\Models\KhachHangModel();
-        $kh = $model->findById($id);
+        $kh = $model->timTheoId($id);
         
         if (!$kh) {
             header('Location: ' . APP_URL . '/admin/khach-hang');
@@ -179,7 +179,7 @@ class KhachHangController extends Controller
         }
 
         $rankModel = new \App\Models\HangThanhVienModel();
-        $ranks = $rankModel->getAll();
+        $ranks = $rankModel->layTatCa();
 
         $data = [
             'tieu_de' => 'Sửa khách hàng - Admin',
@@ -215,13 +215,13 @@ class KhachHangController extends Controller
 
         if ($tenMenh) {
             $menhModel = new \App\Models\MenhPhongThuyModel();
-            $menhRecord = $menhModel->findByName($tenMenh);
+            $menhRecord = $menhModel->timTheoTen($tenMenh);
             if ($menhRecord) return $menhRecord['id'];
         }
         return null;
     }
 
-    public function store()
+    public function luuMoi()
     {
         header('Content-Type: application/json');
         
@@ -280,7 +280,7 @@ class KhachHangController extends Controller
         ];
 
         try {
-            $model->insert($data);
+            $model->themMoi($data);
             
             $logModel = new \App\Models\NhatKyHoatDongModel();
             $logModel->log('Thêm mới', 'Khách hàng', $id, "Thêm mới khách hàng: $ho_ten");
@@ -345,7 +345,7 @@ class KhachHangController extends Controller
         }
 
         try {
-            $model->update($id, $data);
+            $model->capNhat($id, $data);
             
             $logModel = new \App\Models\NhatKyHoatDongModel();
             $logModel->log('Cập nhật', 'Khách hàng', $id, "Cập nhật thông tin khách hàng: $ho_ten");
@@ -373,7 +373,7 @@ class KhachHangController extends Controller
         $logModel = new \App\Models\NhatKyHoatDongModel();
 
         try {
-            $model->update($id, [
+            $model->capNhat($id, [
                 'danh_sach_voucher' => json_encode($vouchers, JSON_UNESCAPED_UNICODE)
             ]);
             $logModel->log('Cập nhật voucher hạng', 'Hạng thành viên', $id, "Đã gán " . count($vouchers) . " voucher cho hạng " . $id);
@@ -410,18 +410,18 @@ class KhachHangController extends Controller
 
         try {
             if ($isEdit) {
-                $model->update($id, $data);
+                $model->capNhat($id, $data);
                 $logModel->log('Cập nhật hạng', 'Hạng thành viên', $id, "Cập nhật hạng: " . $data['ten_hang']);
             } else {
                 // Check if ID already exists
-                $existing = $model->findById($id);
+                $existing = $model->timTheoId($id);
                 if ($existing) {
                     echo json_encode(['success' => false, 'message' => 'Lỗi: Tên định danh (ID) này đã tồn tại. Vui lòng nhập ID khác.']);
                     return;
                 }
                 
                 $data['id'] = $id; // User defined ID for rank
-                $model->insert($data);
+                $model->themMoi($data);
                 $logModel->log('Thêm mới hạng', 'Hạng thành viên', $id, "Thêm mới hạng: " . $data['ten_hang']);
             }
             echo json_encode(['success' => true, 'message' => 'Lưu thành công']);
@@ -437,7 +437,7 @@ class KhachHangController extends Controller
         $logModel = new \App\Models\NhatKyHoatDongModel();
         
         try {
-            $model->delete($id);
+            $model->xoa($id);
             $logModel->log('Xóa hạng', 'Hạng thành viên', $id, "Xóa hạng: " . $id);
             echo json_encode(['success' => true]);
         } catch (\Exception $e) {
@@ -455,7 +455,7 @@ class KhachHangController extends Controller
         $logModel = new \App\Models\NhatKyHoatDongModel();
         
         try {
-            $model->update($id, ['trang_thai' => $status]);
+            $model->capNhat($id, ['trang_thai' => $status]);
             $logModel->log('Cập nhật trạng thái hạng', 'Hạng thành viên', $id, "Trạng thái mới: " . $status);
             echo json_encode(['success' => true]);
         } catch (\Exception $e) {

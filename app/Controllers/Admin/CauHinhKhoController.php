@@ -134,7 +134,7 @@ class CauHinhKhoController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_cau_hinh_kho_them', [
             'current_page' => 'cau_hinh_kho',
@@ -142,7 +142,7 @@ class CauHinhKhoController extends Controller
         ], 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $this->view('admin_cau_hinh_kho_them', [
             'current_page' => 'cau_hinh_kho',

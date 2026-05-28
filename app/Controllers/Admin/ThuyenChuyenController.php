@@ -108,7 +108,7 @@ class ThuyenChuyenController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         // Mock data kho hàng
         $dsKho = ['Kho tổng', 'Kho online', 'Kho cửa hàng', 'Kho chờ kiểm', 'Kho sẵn bán', 'Kho lỗi / bảo hành'];
@@ -119,7 +119,7 @@ class ThuyenChuyenController extends Controller
         ], 'admin');
     }
 
-    public function show($id)
+    public function chiTiet($id)
     {
         $ds = $this->getMockDanhSach();
         $phieu = null;

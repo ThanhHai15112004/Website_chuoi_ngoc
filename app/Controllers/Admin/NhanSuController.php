@@ -94,7 +94,7 @@ class NhanSuController extends Controller
         ], 'admin');
     }
 
-    public function create()
+    public function taoMoi()
     {
         $this->view('admin_nhan_su_form', [
             'title' => 'Thêm nhân viên',
@@ -102,7 +102,7 @@ class NhanSuController extends Controller
         ], 'admin');
     }
 
-    public function show($id)
+    public function chiTiet($id)
     {
         $this->view('admin_nhan_su_view', [
             'title' => 'Chi tiết nhân viên',
@@ -111,7 +111,7 @@ class NhanSuController extends Controller
         ], 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $this->view('admin_nhan_su_form', [
             'title' => 'Sửa thông tin nhân viên',

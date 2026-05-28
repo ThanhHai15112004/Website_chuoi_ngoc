@@ -145,7 +145,7 @@ class DonHangController extends Controller
         $this->view('admin_don_hang', $data, 'admin');
     }
 
-    public function show($id)
+    public function chiTiet($id)
     {
         // Mock data cho chi tiết đơn hàng
         $don_hang = [

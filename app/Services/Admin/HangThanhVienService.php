@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\HangThanhVienModel;
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
 
 class HangThanhVienService
 {
@@ -17,9 +18,9 @@ class HangThanhVienService
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getRankData()
+    public function layDuLieuHang()
     {
-        $ranks = $this->model->getAll();
+        $ranks = $this->model->layTatCa();
         $formattedRanks = [];
 
         foreach ($ranks as $r) {
@@ -33,14 +34,14 @@ class HangThanhVienService
                 'benefits' => $r['dac_quyen'] ? json_decode($r['dac_quyen'], true) : [],
                 'customer_count' => (int)$r['customer_count'],
                 'vouchers' => $r['danh_sach_voucher'] ? json_decode($r['danh_sach_voucher'], true) : [],
-                'status' => $r['trang_thai'] == 1 ? 'active' : 'inactive'
+                'status' => $r['trang_thai'] == SystemConstants::STATUS_ACTIVE ? 'active' : 'inactive'
             ];
         }
 
         return $formattedRanks;
     }
 
-    public function getRankHistory()
+    public function layLichSuHang()
     {
         $sql = "SELECT nd.ho_ten as nguoi_tao, log.ngay_tao as thoi_gian, 
                        CONCAT(log.hanh_dong, ' - ', log.module) as noi_dung
@@ -62,17 +63,17 @@ class HangThanhVienService
         return $history;
     }
 
-    public function getUsersNearNextRank()
+    public function layNguoiDungGanLenHang()
     {
         // Thuật toán: Lấy tổng chi tiêu của từng khách, tìm hạng tiếp theo của khách đó,
         // Nếu số tiền còn thiếu (hạng tiếp - tổng chi tiêu) < 1.000.000đ thì lấy
         
-        $ranks = $this->model->getAll();
+        $ranks = $this->model->layTatCa();
         
         $sql = "SELECT nd.id, nd.ho_ten, nd.tong_chi_tieu, htv.ten_hang as current_rank
                 FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
-                WHERE nd.id_vai_tro IS NULL AND nd.trang_thai = 1";
+                WHERE nd.id_vai_tro IS NULL AND nd.trang_thai = " . SystemConstants::STATUS_ACTIVE;
         
         $stmt = $this->db->query($sql);
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);

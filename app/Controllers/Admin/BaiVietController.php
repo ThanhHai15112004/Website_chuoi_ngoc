@@ -12,7 +12,7 @@ class BaiVietController extends Controller {
         $this->view('admin_bai_viet', $data, 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $data = [
             'tieu_de' => 'Thêm bài viết mới - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'bai_viet',
@@ -21,7 +21,7 @@ class BaiVietController extends Controller {
         $this->view('admin_bai_viet_form', $data, 'admin');
     }
 
-    public function edit() {
+    public function trangCapNhat() {
         $data = [
             'tieu_de' => 'Chỉnh sửa bài viết - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'bai_viet',

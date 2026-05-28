@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
 
 class DanhMucModel
 {
@@ -14,7 +15,7 @@ class DanhMucModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll($filters = [])
+    public function layTatCa($filters = [])
     {
         $sortBy = 'dm.thu_tu ASC, dm.ten_danh_muc ASC';
         
@@ -63,14 +64,14 @@ class DanhMucModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $stmt = $this->db->prepare("SELECT * FROM danh_muc WHERE id = ? AND da_xoa = 0");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function insert($data)
+    public function themMoi($data)
     {
         $sql = "INSERT INTO danh_muc (id, ten_danh_muc, ma_danh_muc, slug, hinh_anh, mo_ta, vi_tri, thu_tu, trang_thai) 
                 VALUES (:id, :ten_danh_muc, :ma_danh_muc, :slug, :hinh_anh, :mo_ta, :vi_tri, :thu_tu, :trang_thai)";
@@ -88,7 +89,7 @@ class DanhMucModel
         ]);
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $fields = [];
         foreach ($data as $key => $value) {
@@ -101,15 +102,15 @@ class DanhMucModel
         return $stmt->execute($data);
     }
 
-    public function softDelete($id)
+    public function xoaMem($id)
     {
         $stmt = $this->db->prepare("UPDATE danh_muc SET da_xoa = 1 WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
-        $stmt = $this->db->prepare("UPDATE danh_muc SET trang_thai = 1 - trang_thai WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE danh_muc SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }

@@ -14,7 +14,7 @@ class SanPhamModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getStats()
+    public function layThongKe()
     {
         $sql = "SELECT 
             COUNT(*) AS tong_san_pham,
@@ -35,7 +35,7 @@ class SanPhamModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getList($filters = [], $limit = 10, $offset = 0)
+    public function layDanhSach($filters = [], $limit = 10, $offset = 0)
     {
         $sql = "SELECT 
                 sp.id, sp.ma_sp, sp.ten_sp, sp.hinh_anh_chinh, sp.mo_ta_ngan, 
@@ -128,7 +128,7 @@ class SanPhamModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function countList($filters = [])
+    public function demDanhSach($filters = [])
     {
         $sql = "SELECT COUNT(*) as total
             FROM san_pham sp
@@ -192,7 +192,7 @@ class SanPhamModel
         return $row ? (int)$row['total'] : 0;
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $sql = "SELECT sp.*, dm.ten_danh_muc, ld.ten_loai_da, mpt.ten_menh 
             FROM san_pham sp
@@ -206,7 +206,7 @@ class SanPhamModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function insert($data)
+    public function themMoi($data)
     {
         $fields = array_keys($data);
         $placeholders = array_map(function($f) { return ":$f"; }, $fields);
@@ -218,7 +218,7 @@ class SanPhamModel
         return $stmt->execute();
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $sets = [];
         foreach ($data as $key => $val) {
@@ -242,7 +242,7 @@ class SanPhamModel
         return $stmt->execute();
     }
 
-    public function softDelete($id)
+    public function xoaMem($id)
     {
         $sql = "UPDATE san_pham SET da_xoa = 1 WHERE id = :id";
         $stmt = $this->db->prepare($sql);

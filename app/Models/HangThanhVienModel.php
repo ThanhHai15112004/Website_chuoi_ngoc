@@ -14,7 +14,7 @@ class HangThanhVienModel
         $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getAll()
+    public function layTatCa()
     {
         $sql = "SELECT htv.*, 
                        (SELECT COUNT(*) FROM nguoi_dung nd WHERE nd.id_hang_thanh_vien = htv.id AND nd.id_vai_tro IS NULL) as customer_count
@@ -25,7 +25,7 @@ class HangThanhVienModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function findById($id)
+    public function timTheoId($id)
     {
         $sql = "SELECT * FROM hang_thanh_vien WHERE id = ?";
         $stmt = $this->db->prepare($sql);
@@ -33,7 +33,7 @@ class HangThanhVienModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data)
+    public function capNhat($id, $data)
     {
         $fields = [];
         $params = [];
@@ -53,7 +53,7 @@ class HangThanhVienModel
         return $stmt->execute($params);
     }
 
-    public function insert($data)
+    public function themMoi($data)
     {
         $fields = array_keys($data);
         $placeholders = array_fill(0, count($fields), '?');
@@ -63,7 +63,7 @@ class HangThanhVienModel
         return $stmt->execute(array_values($data));
     }
 
-    public function delete($id)
+    public function xoa($id)
     {
         $sql = "DELETE FROM hang_thanh_vien WHERE id = ?";
         $stmt = $this->db->prepare($sql);

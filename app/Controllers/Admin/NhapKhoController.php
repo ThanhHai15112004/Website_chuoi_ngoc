@@ -155,15 +155,15 @@ class NhapKhoController extends Controller {
         $this->view('admin_nhap_kho', ['danhSachPhieuNhap' => $danhSachPhieuNhap], 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $this->view('admin_nhap_kho_them', [], 'admin');
     }
 
-    public function edit($id) {
+    public function trangCapNhat($id) {
         $this->view('admin_nhap_kho_them', ['id' => $id, 'isEdit' => true], 'admin');
     }
 
-    public function show($id) {
+    public function chiTiet($id) {
         $this->view('admin_nhap_kho_chitiet', ['id' => $id], 'admin');
     }
 

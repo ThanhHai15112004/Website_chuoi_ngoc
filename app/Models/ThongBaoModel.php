@@ -39,7 +39,7 @@ class ThongBaoModel
     /**
      * Thêm 1 thông báo
      */
-    public function insert($data)
+    public function themMoi($data)
     {
         $id = uniqid('tb_');
         $sql = "INSERT INTO thong_bao (id, id_nguoi_dung, tieu_de, noi_dung, loai_thong_bao, link, da_doc, ngay_tao) 
@@ -124,7 +124,7 @@ class ThongBaoModel
     /**
      * Xóa thông báo
      */
-    public function delete($id)
+    public function xoa($id)
     {
         $sql = "DELETE FROM thong_bao WHERE id = ?";
         $stmt = $this->db->prepare($sql);

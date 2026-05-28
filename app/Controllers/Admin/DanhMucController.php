@@ -26,7 +26,7 @@ class DanhMucController extends Controller {
         $this->view('admin_danh_muc', $data, 'admin');
     }
 
-    public function store()
+    public function luuMoi()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\DanhMucService();
@@ -38,7 +38,7 @@ class DanhMucController extends Controller {
         }
     }
 
-    public function delete($id)
+    public function xoa($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\DanhMucService();
@@ -49,11 +49,11 @@ class DanhMucController extends Controller {
         }
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\DanhMucService();
-            $service->toggleStatus($id);
+            $service->doiTrangThai($id);
             $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/danh-muc');
             header("Location: $referer");
             exit;

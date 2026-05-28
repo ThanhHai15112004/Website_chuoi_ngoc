@@ -14,7 +14,7 @@ class LoaiDaController extends Controller {
         $filters = $_GET;
         
         $dataResponse = $service->getAdminStoneData($filters, $page, $limit);
-        $thong_ke = $service->getStats();
+        $thong_ke = $service->layThongKe();
 
         $data = [
             'tieu_de' => 'Quản lý Loại Đá / Ngọc',
@@ -27,7 +27,7 @@ class LoaiDaController extends Controller {
         $this->view('admin_loai_da', $data, 'admin');
     }
 
-    public function store()
+    public function luuMoi()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\LoaiDaService();
@@ -50,7 +50,7 @@ class LoaiDaController extends Controller {
         }
     }
 
-    public function delete($id)
+    public function xoa($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\LoaiDaService();
@@ -61,18 +61,18 @@ class LoaiDaController extends Controller {
         }
     }
 
-    public function toggleStatus($id)
+    public function doiTrangThai($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\LoaiDaService();
-            $service->toggleStatus($id);
+            $service->doiTrangThai($id);
             $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/loai-da');
             header("Location: $referer");
             exit;
         }
     }
 
-    public function create() {
+    public function taoMoi() {
         $service = new \App\Services\Admin\LoaiDaService();
         $deps = $service->getFormDependencies();
 
@@ -86,7 +86,7 @@ class LoaiDaController extends Controller {
         $this->view('admin_loai_da_form', $data, 'admin');
     }
 
-    public function edit($id)
+    public function trangCapNhat($id)
     {
         $service = new \App\Services\Admin\LoaiDaService();
         $stone = $service->getStoneById($id);

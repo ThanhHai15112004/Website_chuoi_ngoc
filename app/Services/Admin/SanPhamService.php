@@ -27,7 +27,7 @@ class SanPhamService
         $offset = ($page - 1) * $limit;
 
         // 1. Get statistics
-        $stats = $this->sanPhamModel->getStats();
+        $stats = $this->sanPhamModel->layThongKe();
         // Cung cấp các gán default nếu db rỗng
         $thong_ke = [
             'tong_san_pham' => $stats['tong_san_pham'] ?? 0,
@@ -39,18 +39,18 @@ class SanPhamService
         ];
 
         // 2. Get Filter Lists
-        $danh_muc_db = $this->danhMucModel->getAll();
+        $danh_muc_db = $this->danhMucModel->layTatCa();
         $danh_muc_list = array_column($danh_muc_db, 'ten_danh_muc');
 
-        $loai_da_db = $this->loaiDaModel->getAll();
+        $loai_da_db = $this->loaiDaModel->layTatCa();
         $loai_da_list = array_column($loai_da_db, 'ten_loai_da');
 
-        $menh_db = $this->menhModel->getAll();
+        $menh_db = $this->menhModel->layTatCa();
         $menh_list = array_column($menh_db, 'ten_menh');
 
         // 3. Get Products
-        $productsRaw = $this->sanPhamModel->getList($filters, $limit, $offset);
-        $totalProducts = $this->sanPhamModel->countList($filters);
+        $productsRaw = $this->sanPhamModel->layDanhSach($filters, $limit, $offset);
+        $totalProducts = $this->sanPhamModel->demDanhSach($filters);
 
         $san_pham_list = [];
         foreach ($productsRaw as $sp) {
@@ -118,15 +118,15 @@ class SanPhamService
     public function getFormData()
     {
         return [
-            'danh_muc_list' => $this->danhMucModel->getAll(),
-            'loai_da_list' => $this->loaiDaModel->getAll(),
-            'menh_list' => $this->menhModel->getAll(),
+            'danh_muc_list' => $this->danhMucModel->layTatCa(),
+            'loai_da_list' => $this->loaiDaModel->layTatCa(),
+            'menh_list' => $this->menhModel->layTatCa(),
         ];
     }
 
     public function getProductById($id)
     {
-        $product = $this->sanPhamModel->findById($id);
+        $product = $this->sanPhamModel->timTheoId($id);
         if ($product) {
             $product['anh_phu'] = $this->sanPhamModel->getProductImages($id);
             if (!empty($product['id_menh_phong_thuy'])) {
@@ -186,10 +186,10 @@ class SanPhamService
         }
 
         if ($id) {
-            $success = $this->sanPhamModel->update($id, $productData);
+            $success = $this->sanPhamModel->capNhat($id, $productData);
             $productId = $id;
         } else {
-            $success = $this->sanPhamModel->insert($productData);
+            $success = $this->sanPhamModel->themMoi($productData);
             $productId = $productData['id'];
         }
 
@@ -233,7 +233,7 @@ class SanPhamService
             
             // Cập nhật lại tổng tồn kho nếu có biến thể
             if ($tongTonKhoBienThe > 0 || !empty($data['bien_the']['thuoc_tinh'])) {
-                $this->sanPhamModel->update($productId, ['tong_ton_kho' => $tongTonKhoBienThe]);
+                $this->sanPhamModel->capNhat($productId, ['tong_ton_kho' => $tongTonKhoBienThe]);
             }
         }
 
@@ -242,7 +242,7 @@ class SanPhamService
 
     public function toggleProductStatus($id)
     {
-        $product = $this->sanPhamModel->findById($id);
+        $product = $this->sanPhamModel->timTheoId($id);
         if ($product) {
             $newStatus = $product['trang_thai'] == 1 ? 0 : 1;
             return $this->sanPhamModel->updateStatus($id, $newStatus);
@@ -252,7 +252,7 @@ class SanPhamService
 
     public function deleteProduct($id)
     {
-        return $this->sanPhamModel->softDelete($id);
+        return $this->sanPhamModel->xoaMem($id);
     }
 
     private function createSlug($string)
@@ -287,7 +287,7 @@ class SanPhamService
 
     public function duplicateProduct($id)
     {
-        $product = $this->sanPhamModel->findById($id);
+        $product = $this->sanPhamModel->timTheoId($id);
         if (!$product) {
             return false;
         }
@@ -316,7 +316,7 @@ class SanPhamService
             'da_xoa' => 0
         ];
 
-        $success = $this->sanPhamModel->insert($newProductData);
+        $success = $this->sanPhamModel->themMoi($newProductData);
 
         if ($success) {
             $images = $this->sanPhamModel->getProductImages($id);

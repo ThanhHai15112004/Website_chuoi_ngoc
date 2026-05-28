@@ -110,7 +110,7 @@ class KhuyenMaiController extends Controller {
         $this->view('admin_khuyen_mai', $data, 'admin');
     }
 
-    public function create() {
+    public function taoMoi() {
         $data = [
             'tieu_de' => 'Thêm khuyến mãi - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'khuyen_mai',
@@ -119,7 +119,7 @@ class KhuyenMaiController extends Controller {
         $this->view('admin_khuyen_mai_form', $data, 'admin');
     }
 
-    public function edit() {
+    public function trangCapNhat() {
         $data = [
             'tieu_de' => 'Sửa khuyến mãi - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'khuyen_mai',

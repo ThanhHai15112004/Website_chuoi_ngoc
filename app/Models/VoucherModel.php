@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Core\Database;
 use PDO;
+use App\Constants\SystemConstants;
 
 class VoucherModel
 {
@@ -18,7 +19,7 @@ class VoucherModel
     {
         $sql = "SELECT id, ma_voucher, loai_giam, gia_tri, don_toi_thieu, giam_toi_da, so_luong, da_dung, ngay_ket_thuc 
                 FROM voucher 
-                WHERE trang_thai = 1 AND ngay_ket_thuc >= NOW()
+                WHERE trang_thai = " . SystemConstants::STATUS_ACTIVE . " AND ngay_ket_thuc >= NOW()
                 ORDER BY ngay_ket_thuc ASC";
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
