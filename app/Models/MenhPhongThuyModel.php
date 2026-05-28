@@ -88,6 +88,14 @@ class MenhPhongThuyModel
         return $stmt->execute($data);
     }
 
+    public function findByName($name)
+    {
+        $sql = "SELECT * FROM menh_phong_thuy WHERE ten_menh = :name LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['name' => $name]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function toggleStatus($id)
     {
         $sql = "UPDATE menh_phong_thuy SET trang_thai = CASE WHEN trang_thai = 1 THEN 0 ELSE 1 END WHERE id = :id";

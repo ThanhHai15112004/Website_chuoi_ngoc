@@ -50,10 +50,22 @@ $router->post('/admin/binh-luan/save-settings', 'Admin\BinhLuanController@saveSe
 
 $router->get('/admin/khach-hang', 'Admin\KhachHangController@index');
 $router->get('/admin/khach-hang/them', 'Admin\KhachHangController@create');
+$router->post('/admin/khach-hang/luu', 'Admin\KhachHangController@store');
+$router->get('/admin/khach-hang/sua/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@edit');
+$router->post('/admin/khach-hang/cap-nhat/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@updateCustomer');
 $router->get('/admin/khach-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@show');
 $router->get('/admin/khach-hang/hang-thanh-vien', 'Admin\KhachHangController@ranks');
+$router->get('/admin/khach-hang/hang-thanh-vien/api/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@apiDetailRank');
+$router->post('/admin/khach-hang/hang-thanh-vien/luu', 'Admin\KhachHangController@storeRank');
+$router->post('/admin/khach-hang/hang-thanh-vien/gan-voucher', 'Admin\KhachHangController@assignVouchersRank');
+$router->post('/admin/khach-hang/hang-thanh-vien/xoa/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@deleteRank');
+$router->post('/admin/khach-hang/hang-thanh-vien/an-hien/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@toggleRankStatus');
 $router->get('/admin/notification', 'Admin\ThongBaoController@index');
 $router->get('/admin/notification/them', 'Admin\ThongBaoController@create');
+$router->post('/admin/notification/luu', 'Admin\ThongBaoController@store');
+$router->post('/admin/notification/read', 'Admin\ThongBaoController@markAsRead');
+$router->post('/admin/notification/delete', 'Admin\ThongBaoController@delete');
+$router->post('/admin/notification/read-all', 'Admin\ThongBaoController@markAllAsRead');
 
 $router->get('/admin/post', 'Admin\BaiVietController@index');
 $router->get('/admin/post/them', 'Admin\BaiVietController@create');

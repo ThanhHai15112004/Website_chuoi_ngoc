@@ -6,7 +6,7 @@
             <p class="text-sm text-gray-500 mt-1">Quản lý toàn bộ tin nhắn và thông báo từ hệ thống</p>
         </div>
         <div class="flex gap-2">
-            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-red-900 transition-colors flex items-center gap-2 shadow-sm">
+            <button onclick="markAllAsRead()" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 hover:text-red-900 transition-colors flex items-center gap-2 shadow-sm">
                 <span class="iconify text-lg" data-icon="mdi:check-all"></span>
                 Đánh dấu tất cả đã đọc
             </button>
@@ -35,14 +35,14 @@
                         </div>
                     </label>
                     <div class="h-6 w-px bg-gray-300 mx-1 hidden sm:block"></div>
-                    <button class="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors tooltip" title="Tải lại">
+                    <button class="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded transition-colors tooltip" title="Tải lại" onclick="window.location.reload()">
                         <span class="iconify text-xl" data-icon="mdi:refresh"></span>
                     </button>
                     <div class="flex gap-1 hidden" id="bulkActions">
-                        <button class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors tooltip" title="Đánh dấu đã đọc">
+                        <button class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors tooltip" title="Đánh dấu đã đọc" onclick="bulkMarkRead()">
                             <span class="iconify text-xl" data-icon="mdi:email-open-outline"></span>
                         </button>
-                        <button class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors tooltip" title="Xóa">
+                        <button class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors tooltip" title="Xóa" onclick="bulkDelete()">
                             <span class="iconify text-xl" data-icon="mdi:delete-outline"></span>
                         </button>
                     </div>
@@ -113,4 +113,55 @@
             }, 300); // Đợi DOM & Drawer transition sẵn sàng
         <?php endif; ?>
     });
+
+    function getSelectedIds() {
+        return Array.from(document.querySelectorAll('.msg-checkbox:checked')).map(cb => cb.value);
+    }
+
+    async function processAction(url, ids, extraData = {}) {
+        if (!ids.length) return;
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids, ...extraData })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.message || 'Có lỗi xảy ra');
+            }
+        } catch (e) {
+            alert('Lỗi kết nối');
+        }
+    }
+
+    function bulkMarkRead() {
+        processAction('<?= APP_URL ?>/admin/notification/read', getSelectedIds(), { status: 1 });
+    }
+
+    function bulkDelete() {
+        if(confirm('Bạn có chắc chắn muốn xóa các thông báo đã chọn?')) {
+            processAction('<?= APP_URL ?>/admin/notification/delete', getSelectedIds());
+        }
+    }
+
+    function toggleRead(id, status) {
+        processAction('<?= APP_URL ?>/admin/notification/read', [id], { status });
+    }
+
+    function deleteItem(id) {
+        if(confirm('Bạn có chắc chắn muốn xóa thông báo này?')) {
+            processAction('<?= APP_URL ?>/admin/notification/delete', [id]);
+        }
+    }
+
+    function markAllAsRead() {
+        fetch('<?= APP_URL ?>/admin/notification/read-all', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) window.location.reload();
+        });
+    }
 </script>

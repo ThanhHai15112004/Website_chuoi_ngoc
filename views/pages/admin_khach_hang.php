@@ -26,15 +26,6 @@ $customers = $customers ?? [];
     <!-- Stats Cards -->
     <?php include __DIR__ . '/../components/Admin/khach_hang/stats_cards.php'; ?>
 
-    <!-- Tabs Phân Loại -->
-    <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide mb-4">
-        <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-colors">Tất cả (<?= $thong_ke['tong'] ?>)</button>
-        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0 transition-colors">Khách mới (<?= $thong_ke['khach_moi'] ?>)</button>
-        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0 transition-colors">Đã mua hàng (<?= $thong_ke['da_mua'] ?>)</button>
-        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0 transition-colors">Gold</button>
-        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-full text-sm font-medium hover:bg-gray-50 whitespace-nowrap shrink-0 transition-colors">Diamond</button>
-        <button class="px-4 py-2 bg-white border border-gray-200 text-red-600 rounded-full text-sm font-medium hover:bg-red-50 whitespace-nowrap shrink-0 transition-colors">Bị khóa (<?= $thong_ke['bi_khoa'] ?>)</button>
-    </div>
 
     <!-- Search & Filter Bar -->
     <?php include __DIR__ . '/../components/Admin/khach_hang/search_filter.php'; ?>
@@ -154,15 +145,48 @@ $customers = $customers ?? [];
 
     <!-- Phân trang -->
     <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <span class="text-sm text-gray-500">Hiển thị 1 - 20 trong <?= number_format($thong_ke['tong'], 0, ',', '.') ?> khách hàng</span>
+        <?php
+        $page = $pagination['page'] ?? 1;
+        $limit = $pagination['limit'] ?? 20;
+        $totalItems = $pagination['total_items'] ?? 0;
+        $totalPages = $pagination['total_pages'] ?? 1;
+        
+        $startItem = ($page - 1) * $limit + 1;
+        $endItem = min($page * $limit, $totalItems);
+        
+        // Build query string for pagination links
+        $queryParams = $_GET;
+        unset($queryParams['page']);
+        $queryString = http_build_query($queryParams);
+        $baseUrl = APP_URL . '/admin/khach-hang?' . ($queryString ? $queryString . '&' : '');
+        ?>
+        <span class="text-sm text-gray-500">Hiển thị <?= $totalItems > 0 ? "$startItem - $endItem" : "0" ?> trong <?= number_format($totalItems, 0, ',', '.') ?> khách hàng</span>
+        
+        <?php if ($totalPages > 1): ?>
         <div class="flex items-center gap-1">
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-bold text-sm shadow-md">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">2</button>
-            <span class="w-8 h-8 flex items-center justify-center text-gray-500 text-sm">...</span>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white">123</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+            <?php if ($page > 1): ?>
+                <a href="<?= $baseUrl ?>page=<?= $page - 1 ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+            <?php else: ?>
+                <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <?php if ($i == $page): ?>
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-bold text-sm shadow-md"><?= $i ?></button>
+                <?php elseif ($i == 1 || $i == $totalPages || abs($i - $page) <= 1): ?>
+                    <a href="<?= $baseUrl ?>page=<?= $i ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 font-medium text-sm bg-white"><?= $i ?></a>
+                <?php elseif (abs($i - $page) == 2): ?>
+                    <span class="w-8 h-8 flex items-center justify-center text-gray-500 text-sm">...</span>
+                <?php endif; ?>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="<?= $baseUrl ?>page=<?= $page + 1 ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 bg-white"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+            <?php else: ?>
+                <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-100 text-gray-300 bg-gray-50 cursor-not-allowed"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+            <?php endif; ?>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -2,8 +2,8 @@
 // views/pages/admin_customer_ranks.php
 $ranks = $ranks ?? [];
 $history = $history ?? [];
+$khach_sap_len_hang = $khach_sap_len_hang ?? [];
 ?>
-
 <div class="animate-[fadeInPage_0.3s_ease-out] max-w-7xl mx-auto pb-12">
     <!-- Breadcrumb -->
     <div class="mb-4">

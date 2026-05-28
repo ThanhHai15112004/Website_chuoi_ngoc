@@ -121,7 +121,7 @@
             </h3>
             <div class="flex items-center gap-3">
                 <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-50" onclick="closeModal('editRankModal')">Đóng</button>
-                <button class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm" onclick="showToast('Đã lưu thông tin hạng!'); closeModal('editRankModal');">Lưu thay đổi</button>
+                <button id="btn-save-rank" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm" onclick="saveRank()">Lưu thay đổi</button>
             </div>
         </div>
         
@@ -145,7 +145,7 @@
                             </div>
                             <div class="col-span-2">
                                 <label class="block text-xs font-bold text-gray-700 mb-1">Mô tả hạng <span class="text-red-500">*</span></label>
-                                <input type="text" value="Hạng thân thiết dành cho khách mua thường xuyên" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18]">
+                                <input type="text" id="rank-desc-input" value="Hạng thân thiết dành cho khách mua thường xuyên" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18]">
                             </div>
                             <div class="col-span-2">
                                 <label class="block text-xs font-bold text-gray-700 mb-2">Màu sắc chủ đạo <span class="text-red-500">*</span></label>
@@ -307,45 +307,37 @@
                 <input type="text" placeholder="Tìm kiếm voucher theo mã hoặc tên..." class="w-full pl-10 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-300 focus:bg-white transition-colors">
             </div>
             
-            <div class="space-y-2 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar">
-                <!-- Voucher Item -->
-                <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors has-[:checked]:bg-blue-50 has-[:checked]:border-blue-200 group">
-                    <input type="checkbox" class="mt-1 text-blue-600 focus:ring-blue-500 rounded border-gray-300 cursor-pointer" checked>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-gray-800 text-sm group-has-[:checked]:text-blue-900">GOLD5</span>
-                            <span class="px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded">Giảm 5%</span>
+            <div class="space-y-2 max-h-[280px] overflow-y-auto pr-2 custom-scrollbar" id="voucher-list-container">
+                <?php if(!empty($vouchers)): ?>
+                    <?php foreach($vouchers as $vc): ?>
+                    <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors has-[:checked]:bg-blue-50 has-[:checked]:border-blue-200 group">
+                        <input type="checkbox" value="<?= $vc['ma_voucher'] ?>" class="rank-voucher-checkbox mt-1 text-blue-600 focus:ring-blue-500 rounded border-gray-300 cursor-pointer">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-gray-800 text-sm group-has-[:checked]:text-blue-900"><?= $vc['ma_voucher'] ?></span>
+                                <?php if($vc['loai_giam'] == 1): ?>
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded">Giảm <?= $vc['gia_tri'] ?>%</span>
+                                <?php else: ?>
+                                <span class="px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded">Giảm <?= number_format($vc['gia_tri'], 0, ',', '.') ?>đ</span>
+                                <?php endif; ?>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-1 group-has-[:checked]:text-blue-700/80">
+                                Đơn tối thiểu: <?= number_format($vc['don_toi_thieu'], 0, ',', '.') ?>đ 
+                                <?php if($vc['giam_toi_da'] > 0) echo '- Tối đa: ' . number_format($vc['giam_toi_da'], 0, ',', '.') . 'đ'; ?>
+                            </p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-1 group-has-[:checked]:text-blue-700/80">Giảm 5% cho tất cả các đơn hàng, tối đa 100k</p>
-                    </div>
-                </label>
-                
-                <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors has-[:checked]:bg-blue-50 has-[:checked]:border-blue-200 group">
-                    <input type="checkbox" class="mt-1 text-blue-600 focus:ring-blue-500 rounded border-gray-300 cursor-pointer">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-gray-800 text-sm group-has-[:checked]:text-blue-900">FREESHIPVIP</span>
-                            <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-600 text-[10px] font-bold rounded">Freeship</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-1 group-has-[:checked]:text-blue-700/80">Miễn phí vận chuyển toàn quốc cho đơn từ 0đ</p>
-                    </div>
-                </label>
-                
-                <label class="flex items-start gap-3 p-3 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors has-[:checked]:bg-blue-50 has-[:checked]:border-blue-200 group">
-                    <input type="checkbox" class="mt-1 text-blue-600 focus:ring-blue-500 rounded border-gray-300 cursor-pointer">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <span class="font-bold text-gray-800 text-sm group-has-[:checked]:text-blue-900">SINHNHAT</span>
-                            <span class="px-1.5 py-0.5 bg-purple-100 text-purple-600 text-[10px] font-bold rounded">Giảm 200k</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-1 line-clamp-1 group-has-[:checked]:text-blue-700/80">Quà tặng sinh nhật thành viên ưu tú</p>
-                    </div>
-                </label>
+                    </label>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p class="text-center text-sm text-gray-500 py-4">Chưa có voucher nào đang hoạt động</p>
+                <?php endif; ?>
             </div>
             
+            <input type="hidden" id="assign-rank-id-input">
+
             <div class="flex items-center gap-3 mt-6 pt-4 border-t border-gray-100">
                 <button class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-bold hover:bg-gray-200 transition-colors" onclick="closeModal('assignVoucherModal')">Hủy</button>
-                <button class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm flex justify-center items-center gap-2" onclick="closeModal('assignVoucherModal'); showToast('Đã lưu danh sách voucher!');">
+                <button id="btn-save-vouchers" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition-colors shadow-sm flex justify-center items-center gap-2" onclick="saveAssignVoucher()">
                     <span class="iconify" data-icon="mdi:check"></span> Lưu thay đổi
                 </button>
             </div>

@@ -48,15 +48,15 @@
 
                 <!-- Hover Actions -->
                 <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur px-2 py-1.5 rounded-lg shadow-sm border border-gray-100" onclick="event.stopPropagation()">
-                    <button class="p-1.5 text-gray-400 hover:text-red-600 rounded transition-colors tooltip" title="Xóa">
+                    <button class="p-1.5 text-gray-400 hover:text-red-600 rounded transition-colors tooltip" title="Xóa" onclick="deleteItem('<?= $item['id'] ?>')">
                         <span class="iconify text-lg" data-icon="mdi:delete-outline"></span>
                     </button>
                     <?php if(!$item['da_doc']): ?>
-                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu đã đọc">
+                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu đã đọc" onclick="toggleRead('<?= $item['id'] ?>', 1)">
                             <span class="iconify text-lg" data-icon="mdi:email-open-outline"></span>
                         </button>
                     <?php else: ?>
-                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu chưa đọc">
+                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu chưa đọc" onclick="toggleRead('<?= $item['id'] ?>', 0)">
                             <span class="iconify text-lg" data-icon="mdi:email-outline"></span>
                         </button>
                     <?php endif; ?>

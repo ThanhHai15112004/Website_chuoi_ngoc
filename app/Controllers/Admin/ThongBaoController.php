@@ -6,74 +6,56 @@ use App\Core\Controller;
 
 class ThongBaoController extends Controller {
     public function index() {
-        // Mock data for inbox/notifications
-        $mockNotifications = [
-            [
-                'id' => 1,
-                'tieu_de' => 'Đơn hàng mới #DH001',
-                'noi_dung' => 'Khách hàng Nguyễn Văn A vừa đặt Vòng tay Thạch Anh Tóc Vàng. Vui lòng kiểm tra và xử lý đơn hàng sớm nhất.',
-                'loai' => 'don_hang',
-                'nguoi_gui' => 'Hệ thống',
-                'thoi_gian' => '2 phút trước',
-                'da_doc' => false,
-                'icon' => 'mdi:receipt-text-outline',
-                'color_class' => 'bg-blue-100 text-blue-600',
-                'link' => '/admin/don-hang/chi-tiet/DH001'
-            ],
-            [
-                'id' => 2,
-                'tieu_de' => 'Cảnh báo bảo mật',
-                'noi_dung' => 'Có đăng nhập bất thường từ địa chỉ IP 192.168.1.55 vào tài khoản Admin. Vui lòng kiểm tra lại nếu không phải là bạn.',
-                'loai' => 'he_thong',
-                'nguoi_gui' => 'Bảo mật',
-                'thoi_gian' => '15 phút trước',
-                'da_doc' => false,
-                'icon' => 'mdi:shield-alert-outline',
-                'color_class' => 'bg-red-100 text-red-600',
-                'link' => '/admin/nhat-ky-hoat-dong'
-            ],
-            [
-                'id' => 3,
-                'tieu_de' => 'Đánh giá 5 sao từ khách hàng',
-                'noi_dung' => 'Khách hàng Trần B vừa để lại đánh giá 5 sao cho sản phẩm Vòng Cẩm Thạch: "Sản phẩm rất đẹp, đóng gói cẩn thận. Sẽ ủng hộ shop dài dài."',
-                'loai' => 'danh_gia',
-                'nguoi_gui' => 'Trần B',
-                'thoi_gian' => '1 giờ trước',
-                'da_doc' => true,
-                'icon' => 'mdi:star-circle-outline',
-                'color_class' => 'bg-amber-100 text-amber-600',
-                'link' => '/admin/binh-luan'
-            ],
-            [
-                'id' => 4,
-                'tieu_de' => 'Thành viên mới đăng ký',
-                'noi_dung' => 'Lê Văn C vừa đăng ký tài khoản mới trên hệ thống.',
-                'loai' => 'he_thong',
-                'nguoi_gui' => 'Hệ thống',
-                'thoi_gian' => 'Hôm qua',
-                'da_doc' => true,
-                'icon' => 'mdi:account-plus-outline',
-                'color_class' => 'bg-emerald-100 text-emerald-600',
-                'link' => '/admin/khach-hang/chi-tiet/KH005'
-            ],
-            [
-                'id' => 5,
-                'tieu_de' => 'Sắp hết hàng trong kho',
-                'noi_dung' => 'Sản phẩm Nhẫn Mắt Hổ Size 16mm hiện chỉ còn 2 chiếc trong kho. Vui lòng lên kế hoạch nhập hàng.',
-                'loai' => 'he_thong',
-                'nguoi_gui' => 'Hệ thống',
-                'thoi_gian' => '2 ngày trước',
-                'da_doc' => true,
-                'icon' => 'mdi:package-variant-closed',
-                'color_class' => 'bg-orange-100 text-orange-600',
-                'link' => '/admin/ton-kho'
-            ]
-        ];
+        $model = new \App\Models\ThongBaoModel();
+        $rawNotifications = $model->getAdminNotifications();
+
+        $notifications = [];
+        foreach ($rawNotifications as $raw) {
+            $icon = 'mdi:bell-outline';
+            $colorClass = 'bg-gray-100 text-gray-600';
+            
+            // Map icon and color based on loai_thong_bao
+            switch ($raw['loai_thong_bao']) {
+                case 'don_hang':
+                    $icon = 'mdi:receipt-text-outline';
+                    $colorClass = 'bg-blue-100 text-blue-600';
+                    break;
+                case 'he_thong':
+                    $icon = 'mdi:shield-alert-outline';
+                    $colorClass = 'bg-red-100 text-red-600';
+                    break;
+                case 'danh_gia':
+                    $icon = 'mdi:star-circle-outline';
+                    $colorClass = 'bg-amber-100 text-amber-600';
+                    break;
+                case 'tai_khoan':
+                    $icon = 'mdi:account-plus-outline';
+                    $colorClass = 'bg-emerald-100 text-emerald-600';
+                    break;
+                case 'kho':
+                    $icon = 'mdi:package-variant-closed';
+                    $colorClass = 'bg-orange-100 text-orange-600';
+                    break;
+            }
+
+            $notifications[] = [
+                'id' => $raw['id'],
+                'tieu_de' => $raw['tieu_de'],
+                'noi_dung' => $raw['noi_dung'],
+                'loai' => $raw['loai_thong_bao'],
+                'nguoi_gui' => 'Hệ thống', // or fetch from user if it's from a user
+                'thoi_gian' => date('H:i d/m/Y', strtotime($raw['ngay_tao'])),
+                'da_doc' => (bool)$raw['da_doc'],
+                'icon' => $icon,
+                'color_class' => $colorClass,
+                'link' => $raw['link'] ?? '#'
+            ];
+        }
 
         $data = [
             'tieu_de' => 'Hộp thư & Thông báo',
             'current_page' => 'hop_thu',
-            'notifications' => $mockNotifications
+            'notifications' => $notifications
         ];
         $this->view('admin_thong_bao', $data, 'admin');
     }
@@ -85,5 +67,109 @@ class ThongBaoController extends Controller {
             'is_edit' => false,
         ];
         $this->view('admin_thong_bao_form', $data, 'admin');
+    }
+
+    public function store() {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (!$input || empty($input['tieu_de']) || empty($input['noi_dung']) || empty($input['loai_thong_bao'])) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\ThongBaoModel();
+        $targetType = $input['target_type'] ?? 'all';
+
+        try {
+            if ($targetType === 'internal') {
+                // Admin notification
+                $model->insert([
+                    'id_nguoi_dung' => null,
+                    'tieu_de' => $input['tieu_de'],
+                    'noi_dung' => $input['noi_dung'],
+                    'loai_thong_bao' => $input['loai_thong_bao'],
+                    'link' => $input['link'] ?? null
+                ]);
+            } else {
+                // Fetch users based on target type
+                $userModel = new \App\Models\KhachHangModel();
+                $userIds = [];
+
+                if ($targetType === 'all') {
+                    $users = $userModel->getAll();
+                    $userIds = array_column($users, 'id');
+                } elseif ($targetType === 'specific') {
+                    $userIds = $input['specific_users'] ?? [];
+                } elseif ($targetType === 'group') {
+                    // Logic to fetch users by group/rank... omitted for brevity, assuming specific_users holds them
+                    $userIds = $input['specific_users'] ?? []; 
+                }
+
+                if (empty($userIds)) {
+                    echo json_encode(['success' => false, 'message' => 'Không tìm thấy người dùng mục tiêu']);
+                    return;
+                }
+
+                $model->insertMultiple($userIds, [
+                    'tieu_de' => $input['tieu_de'],
+                    'noi_dung' => $input['noi_dung'],
+                    'loai_thong_bao' => $input['loai_thong_bao'],
+                    'link' => $input['link'] ?? null
+                ]);
+            }
+
+            echo json_encode(['success' => true, 'message' => 'Gửi thông báo thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
+        }
+    }
+
+    public function markAsRead() {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        $status = $input['status'] ?? 1; // 1 = read, 0 = unread
+
+        if (empty($ids)) {
+            echo json_encode(['success' => false, 'message' => 'Chưa chọn thông báo']);
+            return;
+        }
+
+        $model = new \App\Models\ThongBaoModel();
+        foreach ($ids as $id) {
+            if ($status == 1) {
+                $model->markAsRead($id);
+            } else {
+                $model->markAsUnread($id);
+            }
+        }
+        
+        echo json_encode(['success' => true]);
+    }
+
+    public function markAllAsRead() {
+        header('Content-Type: application/json');
+        $model = new \App\Models\ThongBaoModel();
+        $model->markAllAsRead(true); // true = admin inbox
+        echo json_encode(['success' => true]);
+    }
+
+    public function delete() {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+
+        if (empty($ids)) {
+            echo json_encode(['success' => false, 'message' => 'Chưa chọn thông báo']);
+            return;
+        }
+
+        $model = new \App\Models\ThongBaoModel();
+        foreach ($ids as $id) {
+            $model->delete($id);
+        }
+        
+        echo json_encode(['success' => true]);
     }
 }

@@ -1,3 +1,9 @@
+    <?php
+        $totalRanks = count($ranks);
+        $totalCustomersWithRank = array_sum(array_column($ranks, 'customer_count'));
+        $nearRankCount = count($khach_sap_len_hang);
+        $topRanks = array_slice($ranks, 0, 3); // Get up to 3 ranks for the stat cards
+    ?>
     <!-- 1. Card Thống Kê Nhanh -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
         <div class="bg-white rounded-[20px] shadow-sm border border-gray-100 p-4">
@@ -5,45 +11,58 @@
                 <span class="iconify" data-icon="mdi:format-list-bulleted"></span>
             </div>
             <p class="text-xs text-gray-500 mb-0.5">Tổng số hạng</p>
-            <p class="text-xl font-bold text-gray-800">3 <span class="text-[10px] font-normal text-gray-400">hạng</span></p>
+            <p class="text-xl font-bold text-gray-800"><?= $totalRanks ?> <span class="text-[10px] font-normal text-gray-400">hạng</span></p>
         </div>
-        <div class="bg-gradient-to-b from-gray-50 to-white rounded-[20px] shadow-sm border border-gray-200 p-4 relative overflow-hidden">
-            <div class="absolute -right-2 -bottom-2 text-gray-200 opacity-50"><span class="iconify text-6xl" data-icon="mdi:medal-outline"></span></div>
-            <div class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mb-3 relative z-10">
-                <span class="iconify" data-icon="mdi:medal-outline"></span>
+
+        <?php foreach($topRanks as $r): 
+            $baseColor = 'gray';
+            if (!empty($r['badge'])) {
+                $parts = explode('-', $r['badge']);
+                if (isset($parts[1])) $baseColor = $parts[1];
+            }
+            if ($baseColor === '#6B0D18' || strpos($r['badge'], 'red') !== false) $baseColor = 'red';
+            
+            $icon = 'mdi:medal-outline';
+            if ($baseColor === 'yellow') $icon = 'mdi:crown';
+            elseif ($baseColor === 'red') $icon = 'mdi:diamond-stone';
+            elseif ($baseColor === 'emerald') $icon = 'mdi:leaf';
+            elseif ($baseColor === 'blue') $icon = 'mdi:shield-star';
+
+            $iconColor = "text-{$baseColor}-600";
+            if ($baseColor === 'red') $iconColor = 'text-[#6B0D18]';
+        ?>
+        <div class="bg-gradient-to-b from-<?= $baseColor ?>-50 to-white rounded-[20px] shadow-sm border border-<?= $baseColor ?>-200 p-4 relative overflow-hidden">
+            <div class="absolute -right-2 -bottom-2 text-<?= $baseColor ?>-200 opacity-50"><span class="iconify text-6xl" data-icon="<?= $icon ?>"></span></div>
+            <div class="w-8 h-8 rounded-full bg-<?= $baseColor ?>-100 <?= $iconColor ?> flex items-center justify-center mb-3 relative z-10">
+                <span class="iconify" data-icon="<?= $icon ?>"></span>
             </div>
-            <p class="text-xs text-gray-500 mb-0.5 relative z-10">Khách Silver</p>
-            <p class="text-xl font-bold text-gray-800 relative z-10">1.820 <span class="text-[10px] font-normal text-gray-400">người</span></p>
+            <p class="text-xs text-<?= $baseColor ?>-800 mb-0.5 relative z-10">Khách <?= $r['name'] ?></p>
+            <p class="text-xl font-bold text-<?= $baseColor ?>-700 relative z-10"><?= number_format($r['customer_count'], 0, ',', '.') ?> <span class="text-[10px] font-normal text-<?= $baseColor ?>-600/60">người</span></p>
         </div>
-        <div class="bg-gradient-to-b from-yellow-50 to-white rounded-[20px] shadow-sm border border-yellow-200 p-4 relative overflow-hidden">
-            <div class="absolute -right-2 -bottom-2 text-yellow-200 opacity-50"><span class="iconify text-6xl" data-icon="mdi:crown"></span></div>
-            <div class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-3 relative z-10">
-                <span class="iconify" data-icon="mdi:crown"></span>
-            </div>
-            <p class="text-xs text-yellow-800 mb-0.5 relative z-10">Khách Gold</p>
-            <p class="text-xl font-bold text-yellow-700 relative z-10">520 <span class="text-[10px] font-normal text-yellow-600/60">người</span></p>
+        <?php endforeach; ?>
+
+        <?php 
+        // If there are less than 3 ranks, fill with empty slots to maintain layout
+        for($i = count($topRanks); $i < 3; $i++): ?>
+        <div class="bg-gray-50 rounded-[20px] shadow-sm border border-gray-100 p-4 relative overflow-hidden opacity-50">
+            <p class="text-xs text-gray-400 mb-0.5">Chưa thiết lập</p>
+            <p class="text-xl font-bold text-gray-300">0</p>
         </div>
-        <div class="bg-gradient-to-b from-red-50 to-white rounded-[20px] shadow-sm border border-red-200 p-4 relative overflow-hidden">
-            <div class="absolute -right-2 -bottom-2 text-red-200 opacity-50"><span class="iconify text-6xl" data-icon="mdi:diamond-stone"></span></div>
-            <div class="w-8 h-8 rounded-full bg-red-100 text-[#6B0D18] flex items-center justify-center mb-3 relative z-10">
-                <span class="iconify" data-icon="mdi:diamond-stone"></span>
-            </div>
-            <p class="text-xs text-red-800 mb-0.5 relative z-10">Khách Diamond</p>
-            <p class="text-xl font-bold text-[#6B0D18] relative z-10">86 <span class="text-[10px] font-normal text-red-800/60">người</span></p>
-        </div>
+        <?php endfor; ?>
+
         <div class="bg-white rounded-[20px] shadow-sm border border-gray-100 p-4">
             <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mb-3">
                 <span class="iconify" data-icon="mdi:account-group"></span>
             </div>
             <p class="text-xs text-gray-500 mb-0.5">Tổng khách có hạng</p>
-            <p class="text-xl font-bold text-gray-800">2.426 <span class="text-[10px] font-normal text-gray-400">người</span></p>
+            <p class="text-xl font-bold text-gray-800"><?= number_format($totalCustomersWithRank, 0, ',', '.') ?> <span class="text-[10px] font-normal text-gray-400">người</span></p>
         </div>
         <div class="bg-amber-50 rounded-[20px] shadow-sm border border-amber-200 p-4">
             <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mb-3">
                 <span class="iconify" data-icon="mdi:trending-up"></span>
             </div>
             <p class="text-xs text-amber-800 mb-0.5">Sắp lên hạng</p>
-            <p class="text-xl font-bold text-amber-600">48 <span class="text-[10px] font-normal text-amber-600/60">người</span></p>
+            <p class="text-xl font-bold text-amber-600"><?= $nearRankCount ?> <span class="text-[10px] font-normal text-amber-600/60">người</span></p>
         </div>
     </div>
 
@@ -51,20 +70,31 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <?php foreach($ranks as $rank): ?>
             <?php 
-                $borderClass = 'border-gray-200';
-                $icon = 'mdi:medal-outline';
-                $iconColor = 'text-gray-500';
+                $baseColor = 'gray';
+                if (!empty($rank['badge'])) {
+                    $parts = explode('-', $rank['badge']);
+                    if (isset($parts[1])) $baseColor = $parts[1];
+                }
                 
-                if($rank['id'] === 'gold') {
-                    $borderClass = 'border-yellow-300 ring-2 ring-yellow-50';
-                    $icon = 'mdi:crown';
-                    $iconColor = 'text-yellow-500';
+                $borderClass = "border-{$baseColor}-200";
+                if ($baseColor !== 'gray') {
+                    $borderClass = "border-{$baseColor}-300 ring-2 ring-{$baseColor}-50";
                 }
-                if($rank['id'] === 'diamond') {
+                
+                // Fallback specific colors if needed
+                if ($baseColor === '#6B0D18' || strpos($rank['badge'], 'red') !== false) {
+                    $baseColor = 'red';
                     $borderClass = 'border-red-300 ring-2 ring-red-50';
-                    $icon = 'mdi:diamond-stone';
-                    $iconColor = 'text-[#6B0D18]';
                 }
+
+                $icon = 'mdi:medal-outline';
+                if ($baseColor === 'yellow') $icon = 'mdi:crown';
+                elseif ($baseColor === 'red') $icon = 'mdi:diamond-stone';
+                elseif ($baseColor === 'emerald') $icon = 'mdi:leaf';
+                elseif ($baseColor === 'blue') $icon = 'mdi:shield-star';
+
+                $iconColor = "text-{$baseColor}-500";
+                if ($baseColor === 'red') $iconColor = 'text-[#6B0D18]';
             ?>
             <div class="bg-white rounded-3xl shadow-sm border <?= $borderClass ?> p-6 relative overflow-hidden flex flex-col">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-gray-50 to-transparent opacity-50 pointer-events-none rounded-bl-full"></div>

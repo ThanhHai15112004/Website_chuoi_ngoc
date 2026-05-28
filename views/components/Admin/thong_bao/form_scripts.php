@@ -127,4 +127,52 @@
             confirmModal.classList.add('hidden');
         }, 300);
     }
+
+    async function submitNotification() {
+        const title = document.getElementById('noti-title').value;
+        const content = document.getElementById('noti-content').value;
+        const type = document.getElementById('noti-type').value;
+        const targetType = document.querySelector('input[name="target"]:checked').value;
+        // In a real app, collect specific_users if targetType is 'specific'
+        const specificUsers = []; // mock
+
+        if(!title || !content) {
+            alert('Vui lòng nhập đầy đủ tiêu đề và nội dung.');
+            closeConfirmModal();
+            return;
+        }
+
+        const data = {
+            tieu_de: title,
+            noi_dung: content,
+            loai_thong_bao: type,
+            target_type: targetType,
+            specific_users: specificUsers,
+            link: null // Could map to link input
+        };
+
+        document.getElementById('btn-final-send').disabled = true;
+        document.getElementById('btn-final-send').innerHTML = '<span class="iconify animate-spin" data-icon="mdi:loading"></span> Đang gửi...';
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/notification/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            
+            if(result.success) {
+                alert('Gửi thông báo thành công!');
+                window.location.href = '<?= APP_URL ?>/admin/notification';
+            } else {
+                alert(result.message || 'Có lỗi xảy ra');
+            }
+        } catch(e) {
+            console.error(e);
+            alert('Lỗi kết nối máy chủ');
+        } finally {
+            closeConfirmModal();
+        }
+    }
 </script>

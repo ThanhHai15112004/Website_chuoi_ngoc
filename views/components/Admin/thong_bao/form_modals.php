@@ -22,7 +22,7 @@
         
         <div class="flex gap-3 justify-end">
             <button onclick="closeConfirmModal()" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Kiểm tra lại</button>
-            <button onclick="closeConfirmModal(); alert('Đã gửi thông báo thành công!')" id="btn-final-send" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Xác nhận gửi</button>
+            <button onclick="submitNotification()" id="btn-final-send" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>Xác nhận gửi</button>
         </div>
     </div>
 </div>

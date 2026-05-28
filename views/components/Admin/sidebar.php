@@ -158,9 +158,6 @@ function isGroupActive($pages, $current) {
                     <a href="<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'hang_thanh_vien' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'hang_thanh_vien' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:star-circle-outline"></span> Quản lý hạng thành viên</span>
                     </a>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg <?= $current_page === 'chi_tiet_khach_hang' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-red-900' ?> transition-colors text-sm <?= $current_page !== 'chi_tiet_khach_hang' ? 'hidden' : '' ?>">
-                        Chi tiết khách hàng
-                    </a>
                     <a href="<?= APP_URL ?>/admin/notification" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'hop_thu' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'hop_thu' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:email-outline"></span> Hộp thư / thông báo</span>
                         <span class="<?= $current_page === 'hop_thu' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>

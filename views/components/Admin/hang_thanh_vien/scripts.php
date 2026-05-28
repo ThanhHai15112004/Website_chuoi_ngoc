@@ -51,39 +51,223 @@
     function openRankDetailModal(rankId) {
         document.getElementById('rankDetailModal').classList.remove('hidden');
     }
+    let isEditingRank = false;
+
     function openAddRankModal() { 
+        isEditingRank = false;
         document.getElementById('editRankModal').querySelector('h3').innerHTML = '<span class="iconify text-gray-500 text-2xl" data-icon="mdi:medal-outline"></span> Thêm hạng mới';
         document.getElementById('rank-id-input').value = '';
         document.getElementById('rank-id-input').readOnly = false;
         document.getElementById('rank-display-name-input').value = '';
-        document.getElementById('rank-condition-input').value = '';
+        document.getElementById('rank-condition-input').value = '0';
         document.getElementById('rank-discount-input').value = '0';
+        document.getElementById('rank-desc-input').value = '';
         document.querySelectorAll('.rank-privilege-checkbox').forEach(cb => cb.checked = false);
         document.querySelector('input[name="rank_color"][value="gray"]').checked = true;
 
         document.getElementById('editRankModal').classList.remove('hidden'); 
         updateRankPreview();
     }
-    function openEditRankModal(rankId) { 
-        document.getElementById('editRankModal').querySelector('h3').innerHTML = '<span class="iconify text-yellow-500 text-2xl" data-icon="mdi:crown"></span> Chỉnh sửa hạng: <span class="uppercase text-yellow-600">GOLD</span>';
-        document.getElementById('rank-id-input').value = 'Gold';
-        document.getElementById('rank-id-input').readOnly = true;
-        document.getElementById('rank-display-name-input').value = 'Thành viên Gold';
-        document.getElementById('rank-condition-input').value = '3.000.000';
-        document.getElementById('rank-discount-input').value = '5';
-        document.querySelectorAll('.rank-privilege-checkbox').forEach(cb => {
-            if (cb.value === 'Freeship định kỳ' || cb.value === 'Nhận ưu đãi sớm') cb.checked = true;
-            else cb.checked = false;
-        });
-        document.querySelector('input[name="rank_color"][value="yellow"]').checked = true;
 
-        document.getElementById('editRankModal').classList.remove('hidden'); 
-        updateRankPreview();
+    async function openEditRankModal(rankId) { 
+        isEditingRank = true;
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/api/chi-tiet/${rankId}`);
+            const json = await res.json();
+            
+            if (json.success) {
+                const data = json.data;
+                document.getElementById('editRankModal').querySelector('h3').innerHTML = `<span class="iconify text-yellow-500 text-2xl" data-icon="mdi:crown"></span> Chỉnh sửa hạng: <span class="uppercase text-yellow-600">${data.ten_hang}</span>`;
+                document.getElementById('rank-id-input').value = data.id;
+                document.getElementById('rank-id-input').readOnly = true;
+                document.getElementById('rank-display-name-input').value = data.ten_hang;
+                document.getElementById('rank-condition-input').value = new Intl.NumberFormat('vi-VN').format(data.chi_tieu_toi_thieu);
+                document.getElementById('rank-discount-input').value = data.phan_tram_giam;
+                document.getElementById('rank-desc-input').value = data.mo_ta;
+                
+                document.querySelectorAll('.rank-privilege-checkbox').forEach(cb => {
+                    cb.checked = data.dac_quyen.includes(cb.value);
+                });
+                
+                const colorInput = document.querySelector(`input[name="rank_color"][value="${data.mau_sac.split('-')[1]}"]`);
+                if (colorInput) {
+                    colorInput.checked = true;
+                } else {
+                    document.querySelector(`input[name="rank_color"][value="gray"]`).checked = true;
+                }
+
+                document.getElementById('editRankModal').classList.remove('hidden'); 
+                updateRankPreview();
+            } else {
+                showToast(json.message);
+            }
+        } catch (error) {
+            console.error("Error loading rank details:", error);
+            showToast("Lỗi kết nối máy chủ");
+        }
     }
-    function openAssignVoucherModal(rankId) { 
+
+    async function saveRank() {
+        const id = document.getElementById('rank-id-input').value;
+        const ten_hang = document.getElementById('rank-display-name-input').value;
+        let chi_tieu = document.getElementById('rank-condition-input').value.replace(/\./g, '');
+        const phan_tram_giam = document.getElementById('rank-discount-input').value;
+        const mo_ta = document.getElementById('rank-desc-input').value;
+        const mau_sac_input = document.querySelector('input[name="rank_color"]:checked').value;
+        
+        let mau_sac = 'bg-gray-100 text-gray-700 border-gray-200'; // default
+        if (mau_sac_input === 'yellow') mau_sac = 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        else if (mau_sac_input === 'red') mau_sac = 'bg-red-100 text-[#6B0D18] border-red-200 shadow-sm';
+        else if (mau_sac_input === 'blue') mau_sac = 'bg-blue-100 text-blue-800 border-blue-200';
+        else if (mau_sac_input === 'emerald') mau_sac = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+
+        const privileges = [];
+        document.querySelectorAll('.rank-privilege-checkbox:checked').forEach(cb => {
+            privileges.push(cb.value);
+        });
+
+        if (!id || !ten_hang || !mo_ta) {
+            showToast("Vui lòng nhập đủ các thông tin bắt buộc!");
+            return;
+        }
+
+        const btnSave = document.getElementById('btn-save-rank');
+        const originalText = btnSave.innerHTML;
+        btnSave.innerHTML = '<span class="iconify animate-spin text-lg" data-icon="mdi:loading"></span> Đang lưu...';
+        btnSave.disabled = true;
+
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/luu`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: id,
+                    isEdit: isEditingRank,
+                    ten_hang: ten_hang,
+                    chi_tieu_toi_thieu: chi_tieu,
+                    phan_tram_giam: phan_tram_giam,
+                    mo_ta: mo_ta,
+                    mau_sac: mau_sac,
+                    dac_quyen: privileges
+                })
+            });
+            const json = await res.json();
+            
+            if (json.success) {
+                showToast(json.message);
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(json.message);
+                btnSave.innerHTML = originalText;
+                btnSave.disabled = false;
+            }
+        } catch (error) {
+            showToast("Lỗi kết nối máy chủ");
+            btnSave.innerHTML = originalText;
+            btnSave.disabled = false;
+        }
+    }
+
+    async function toggleRankStatus(id, currentStatus) {
+        if (!confirm('Bạn có chắc muốn thay đổi trạng thái hạng này?')) return;
+        const newStatus = currentStatus === 'active' ? 0 : 1;
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/an-hien/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            const json = await res.json();
+            if (json.success) {
+                showToast('Đã cập nhật trạng thái hạng!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast('Có lỗi xảy ra');
+            }
+        } catch (error) {
+            showToast('Lỗi kết nối máy chủ');
+        }
+    }
+
+    async function deleteRankItem(id) {
+        if (!confirm('Bạn có chắc muốn xóa hạng này? Hành động này không thể hoàn tác!')) return;
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/xoa/${id}`, { method: 'POST' });
+            const json = await res.json();
+            if (json.success) {
+                showToast('Đã xóa hạng!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(json.message);
+            }
+        } catch (error) {
+            showToast('Lỗi kết nối máy chủ');
+        }
+    }
+    async function openAssignVoucherModal(rankId) { 
         document.getElementById('assign-rank-name').textContent = rankId;
-        document.getElementById('assignVoucherModal').classList.remove('hidden');
+        document.getElementById('assign-rank-id-input').value = rankId;
+        
+        // Reset checkboxes
+        document.querySelectorAll('.rank-voucher-checkbox').forEach(cb => cb.checked = false);
+
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/api/chi-tiet/${rankId}`);
+            const json = await res.json();
+            
+            if (json.success) {
+                const assignedVouchers = json.data.danh_sach_voucher || [];
+                document.querySelectorAll('.rank-voucher-checkbox').forEach(cb => {
+                    if (assignedVouchers.includes(cb.value)) {
+                        cb.checked = true;
+                    }
+                });
+                document.getElementById('assignVoucherModal').classList.remove('hidden');
+            } else {
+                showToast(json.message);
+            }
+        } catch (error) {
+            console.error("Error loading rank details:", error);
+            showToast("Lỗi kết nối máy chủ");
+        }
     }
+
+    async function saveAssignVoucher() {
+        const id = document.getElementById('assign-rank-id-input').value;
+        const vouchers = [];
+        document.querySelectorAll('.rank-voucher-checkbox:checked').forEach(cb => {
+            vouchers.push(cb.value);
+        });
+
+        const btnSave = document.getElementById('btn-save-vouchers');
+        const originalText = btnSave.innerHTML;
+        btnSave.innerHTML = '<span class="iconify animate-spin text-lg" data-icon="mdi:loading"></span> Đang lưu...';
+        btnSave.disabled = true;
+
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/khach-hang/hang-thanh-vien/gan-voucher`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, vouchers: vouchers })
+            });
+            const json = await res.json();
+            
+            if (json.success) {
+                showToast(json.message);
+                closeModal('assignVoucherModal');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(json.message);
+                btnSave.innerHTML = originalText;
+                btnSave.disabled = false;
+            }
+        } catch (error) {
+            showToast("Lỗi kết nối máy chủ");
+            btnSave.innerHTML = originalText;
+            btnSave.disabled = false;
+        }
+    }
+
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
     function showToast(message) {

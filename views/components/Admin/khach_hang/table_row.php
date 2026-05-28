@@ -4,9 +4,13 @@
                         </td>
                         <td class="py-4 px-3">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-500 uppercase shrink-0">
-                                    <?= mb_substr($kh['ten'], 0, 1) ?>
-                                </div>
+                                <?php if(!empty($kh['anh_dai_dien'])): ?>
+                                    <img src="<?= APP_URL . '/public' . $kh['anh_dai_dien'] ?>" class="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0">
+                                <?php else: ?>
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center font-bold text-gray-500 uppercase shrink-0">
+                                        <?= mb_substr($kh['ten'], 0, 1) ?>
+                                    </div>
+                                <?php endif; ?>
                                 <div>
                                     <div class="flex items-center gap-1.5">
                                         <a href="<?= APP_URL ?>/admin/khach-hang/chi-tiet/<?= $kh['ma'] ?>" class="font-bold text-gray-800 hover:text-[#6B0D18] text-sm"><?= $kh['ten'] ?></a>
@@ -17,7 +21,17 @@
                                             <span class="iconify text-red-500 text-sm" data-icon="mdi:alert-circle" title="Có nhiều đơn hủy"></span>
                                         <?php endif; ?>
                                     </div>
-                                    <p class="text-[11px] text-gray-500 mt-0.5"><?= $kh['ma'] ?> • <?= $kh['gioi_tinh'] ?><?= $kh['tuoi'] ? ' ' . $kh['tuoi'] . ' tuổi' : '' ?></p>
+                                    <?php
+                                    $age_text = '';
+                                    if (!empty($kh['ngay_sinh'])) {
+                                        $age = date('Y') - date('Y', strtotime($kh['ngay_sinh']));
+                                        $age_text = " • $age tuổi (" . date('d/m/Y', strtotime($kh['ngay_sinh'])) . ")";
+                                    } elseif (!empty($kh['nam_sinh'])) {
+                                        $age = date('Y') - $kh['nam_sinh'];
+                                        $age_text = " • $age tuổi";
+                                    }
+                                    ?>
+                                    <p class="text-[11px] text-gray-500 mt-0.5"><?= $kh['ma'] ?> • <?= $kh['gioi_tinh'] ?><?= $age_text ?></p>
                                 </div>
                             </div>
                         </td>
@@ -85,6 +99,7 @@
                                 
                                 <!-- Dropdown Menu -->
                                 <div class="absolute right-6 top-10 mt-1 w-56 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] border border-gray-100 py-2 hidden z-10 transform origin-top-right transition-all">
+                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/sua/<?= $kh['id'] ?>'"><span class="iconify text-gray-400" data-icon="mdi:account-edit-outline"></span> Chỉnh sửa hồ sơ</button>
                                     <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/chi-tiet/<?= $kh['ma'] ?>'"><span class="iconify text-gray-400" data-icon="mdi:cart-outline"></span> Xem đơn hàng</button>
                                     <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openNotifyModal()"><span class="iconify text-gray-400" data-icon="mdi:bell-outline"></span> Gửi thông báo</button>
                                     <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openVoucherModal()"><span class="iconify text-gray-400" data-icon="mdi:ticket-percent-outline"></span> Gán voucher</button>

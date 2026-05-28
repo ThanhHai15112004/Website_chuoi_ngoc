@@ -7,236 +7,459 @@ class KhachHangController extends Controller
 {
     public function index()
     {
-        $thong_ke = [
-            'tong' => 2458,
-            'khach_moi' => 126,
-            'da_mua' => 1230,
-            'chua_mua' => 1228,
-            'bi_khoa' => 12,
-            'diamond' => 36
-        ];
-
-        $customers = [
-            [
-                'ma' => 'KH000123',
-                'ten' => 'Nguyễn Văn A',
-                'gioi_tinh' => 'Nam',
-                'tuoi' => '22',
-                'sdt' => '0901234567',
-                'email' => 'nguyenvana@gmail.com',
-                'hang' => 'Gold',
-                'tong_don' => 12,
-                'tong_chi_tieu' => 3500000,
-                'don_gan_nhat' => [
-                    'ma' => '#DH202600123',
-                    'ngay' => '17/05/2026',
-                    'trang_thai' => 'Thành công'
-                ],
-                'nam_sinh' => '2004',
-                'menh' => 'Thủy',
-                'trang_thai' => 'hoat_dong',
-                'ngay_dang_ky' => '18/05/2026',
-                'ghi_chu_vip' => true
-            ],
-            [
-                'ma' => 'CUS-000124',
-                'ten' => 'Trần Thị B',
-                'gioi_tinh' => 'Nữ',
-                'tuoi' => '28',
-                'sdt' => '0987654321',
-                'email' => 'tranthib@gmail.com',
-                'hang' => 'Diamond',
-                'tong_don' => 45,
-                'tong_chi_tieu' => 15600000,
-                'don_gan_nhat' => [
-                    'ma' => '#DH202600888',
-                    'ngay' => '10/05/2026',
-                    'trang_thai' => 'Đang giao'
-                ],
-                'nam_sinh' => '1998',
-                'menh' => 'Mộc',
-                'trang_thai' => 'hoat_dong',
-                'ngay_dang_ky' => '01/01/2025',
-                'ghi_chu_vip' => true
-            ],
-            [
-                'ma' => 'KH000125',
-                'ten' => 'Lê Hoàng C',
-                'gioi_tinh' => 'Nam',
-                'tuoi' => '',
-                'sdt' => '0911222333',
-                'email' => 'lehoangc@hotmail.com',
-                'hang' => 'Silver',
-                'tong_don' => 0,
-                'tong_chi_tieu' => 0,
-                'don_gan_nhat' => null,
-                'nam_sinh' => '',
-                'menh' => '',
-                'trang_thai' => 'chua_xac_thuc',
-                'ngay_dang_ky' => '19/05/2026',
-                'ghi_chu_vip' => false
-            ],
-            [
-                'ma' => 'KH000126',
-                'ten' => 'Phạm D',
-                'gioi_tinh' => 'Nữ',
-                'tuoi' => '35',
-                'sdt' => '0933444555',
-                'email' => 'phamd@yahoo.com',
-                'hang' => 'Silver',
-                'tong_don' => 5,
-                'tong_chi_tieu' => 1200000,
-                'don_gan_nhat' => [
-                    'ma' => '#DH202500444',
-                    'ngay' => '20/12/2025',
-                    'trang_thai' => 'Đã hủy'
-                ],
-                'nam_sinh' => '1991',
-                'menh' => 'Hỏa',
-                'trang_thai' => 'bi_khoa',
-                'ngay_dang_ky' => '10/10/2025',
-                'ghi_chu_vip' => false,
-                'nhieu_don_huy' => true
-            ]
-        ];
+        $service = new \App\Services\Admin\KhachHangService();
+        
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($page < 1) $page = 1;
+        
+        $limit = 20;
+        $filters = $_GET;
+        
+        $dataResponse = $service->getAdminCustomerData($filters, $page, $limit);
+        $thong_ke = $service->getStats();
 
         $data = [
-            'thong_ke' => $thong_ke,
-            'customers' => $customers,
+            'tieu_de' => 'Quản lý Khách Hàng',
             'current_page' => 'khach_hang',
-            'tieu_de' => 'Quản lý khách hàng - Admin'
+            'customers' => $dataResponse['list'],
+            'pagination' => $dataResponse['pagination'],
+            'thong_ke' => $thong_ke
         ];
 
         $this->view('admin_khach_hang', $data, 'admin');
     }
 
-    public function show($id)
-    {
-        $khach_hang = [
-            'ma' => $id,
-            'ten' => 'Nguyễn Văn A',
-            'gioi_tinh' => 'Nam',
-            'ngay_sinh' => '15/08/2004',
-            'nam_sinh' => '2004',
-            'sdt' => '0901234567',
-            'email' => 'nguyenvana@gmail.com',
-            'hang' => 'Gold',
-            'trang_thai' => 'hoat_dong',
-            'ngay_dang_ky' => '17/05/2026',
-            'lan_dang_nhap_cuoi' => '20/05/2026',
-            'tong_chi_tieu' => 3500000,
-            'dieu_kien_hang_hien_tai' => 2000000,
-            'muc_len_hang_tiep_theo' => 10000000,
-            'tong_don' => 12,
-            'don_thanh_cong' => 10,
-            'so_voucher' => 5,
-            'so_yeu_thich' => 8,
-            'so_danh_gia' => 4,
-            'menh' => 'Thủy',
-            'mau_phu_hop' => ['Đen', 'Xanh dương', 'Trắng'],
-            'da_goi_y' => ['Obsidian', 'Aquamarine', 'Thạch anh trắng'],
-            'ghi_chu_noibo' => [
-                ['id' => 1, 'noi_dung' => 'Khách thường mua làm quà tặng, nhớ đóng hộp cẩn thận nhé.', 'nguoi_tao' => 'Hải Admin', 'thoi_gian' => '10/05/2026']
-            ],
-            'dia_chi' => [
-                ['id' => 1, 'ten_nguoi_nhan' => 'Nguyễn Văn A', 'sdt' => '0901234567', 'dia_chi' => '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP. HCM', 'mac_dinh' => true],
-                ['id' => 2, 'ten_nguoi_nhan' => 'Trần Thị B', 'sdt' => '0987654321', 'dia_chi' => '456 Tôn Đức Thắng, Phường 5, Quận Phú Nhuận, TP. HCM', 'mac_dinh' => false]
-            ],
-            'don_hang' => [
-                ['ma' => '#DH202600123', 'ngay_dat' => '17/05/2026', 'san_pham' => 'Vòng tay Tỳ Hưu Thạch Anh Tóc Vàng', 'tong_tien' => 1250000, 'trang_thai' => 'Thành công'],
-                ['ma' => '#DH202600055', 'ngay_dat' => '10/02/2026', 'san_pham' => 'Nhẫn Kim Tiền Bạc Ý 925', 'tong_tien' => 450000, 'trang_thai' => 'Thành công'],
-                ['ma' => '#DH202500892', 'ngay_dat' => '20/12/2025', 'san_pham' => 'Vòng gỗ Trầm Hương 108 hạt', 'tong_tien' => 1800000, 'trang_thai' => 'Đã hủy']
-            ],
-            'voucher' => [
-                ['ma' => 'GOLD5', 'mota' => 'Giảm 5% cho đơn từ 500k', 'han_dung' => '31/05/2026', 'trang_thai' => 'Hợp lệ', 'nguon' => 'Hạng Gold'],
-                ['ma' => 'WELCOME10', 'mota' => 'Giảm 10% cho khách mới', 'han_dung' => '01/01/2026', 'trang_thai' => 'Hết hạn', 'nguon' => 'Đăng ký']
-            ],
-            'yeu_thich' => [
-                ['ten' => 'Lắc tay Thạch Anh Tím', 'gia' => 850000, 'da' => 'Thạch Anh Tím', 'menh' => 'Hỏa, Thổ', 'trang_thai' => 'Còn hàng', 'ngay_them' => '19/05/2026']
-            ],
-            'danh_gia' => [
-                ['san_pham' => 'Vòng tay Tỳ Hưu Thạch Anh Tóc Vàng', 'sao' => 5, 'noi_dung' => 'Sản phẩm rất đẹp, đóng gói cẩn thận. Mình rất ưng ý. Sẽ ủng hộ shop thêm nhiều lần nữa.', 'ngay' => '18/05/2026', 'trang_thai' => 'Đã duyệt']
-            ],
-            'lich_su' => [
-                ['loai' => 'login', 'noi_dung' => 'Đăng nhập', 'thoi_gian' => '2 giờ trước'],
-                ['loai' => 'order', 'noi_dung' => 'Thanh toán thành công đơn #DH202600123', 'thoi_gian' => '17/05/2026'],
-                ['loai' => 'rank', 'noi_dung' => 'Được thăng hạng lên GOLD', 'thoi_gian' => '17/05/2026']
-            ],
-            'canh_bao' => [
-                // 'Khách có nhiều đơn hủy (2 đơn)'
-            ]
-        ];
-
-        $data = [
-            'current_page' => 'chi_tiet_khach_hang',
-            'tieu_de' => 'Chi tiết khách hàng - Admin',
-            'id' => $id,
-            'kh' => $khach_hang
-        ];
-        $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
-    }
 
     public function create()
     {
+        $rankModel = new \App\Models\HangThanhVienModel();
+        $ranks = $rankModel->getAll();
+
         $data = [
             'current_page' => 'them_khach_hang',
-            'tieu_de' => 'Thêm khách hàng mới - Admin'
+            'tieu_de' => 'Thêm khách hàng mới - Admin',
+            'ranks' => $ranks
         ];
         $this->view('admin_khach_hang_them', $data, 'admin');
     }
 
     public function ranks()
     {
-        $ranks = [
-            [
-                'id' => 'silver',
-                'name' => 'Silver',
-                'badge' => 'bg-gray-100 text-gray-700 border-gray-200',
-                'desc' => 'Hạng cơ bản cho khách hàng mới',
-                'condition_spend' => 0,
-                'discount' => 2,
-                'benefits' => ['Voucher cơ bản', 'Ưu đãi sinh nhật', 'Theo dõi đơn hàng'],
-                'customer_count' => 1820,
-                'vouchers' => ['SILVER2'],
-                'status' => 'active'
-            ],
-            [
-                'id' => 'gold',
-                'name' => 'Gold',
-                'badge' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
-                'desc' => 'Hạng thân thiết dành cho khách mua thường xuyên',
-                'condition_spend' => 3000000,
-                'discount' => 5,
-                'benefits' => ['Giảm giá cao hơn', 'Freeship định kỳ', 'Nhận ưu đãi sớm'],
-                'customer_count' => 520,
-                'vouchers' => ['GOLD5'],
-                'status' => 'active'
-            ],
-            [
-                'id' => 'diamond',
-                'name' => 'Diamond',
-                'badge' => 'bg-red-100 text-[#6B0D18] border-red-200 shadow-sm',
-                'desc' => 'Hạng cao cấp dành cho khách hàng VIP',
-                'condition_spend' => 10000000,
-                'discount' => 10,
-                'benefits' => ['Giảm giá cao nhất', 'Quà tặng đặc biệt', 'Ưu tiên hỗ trợ', 'Tư vấn chọn vòng riêng'],
-                'customer_count' => 86,
-                'vouchers' => ['DIAMOND10', 'FREESHIPVIP'],
-                'status' => 'active'
-            ]
-        ];
+        $service = new \App\Services\Admin\HangThanhVienService();
+        $ranks = $service->getRankData();
+        $history = $service->getRankHistory();
+        $khach_sap_len_hang = $service->getUsersNearNextRank();
 
-        $history = [
-            ['nguoi_tao' => 'Hải Admin', 'thoi_gian' => '18/05/2026, 10:00', 'noi_dung' => 'Gán voucher GOLD5 cho hạng Gold.'],
-            ['nguoi_tao' => 'Hải Admin', 'thoi_gian' => '18/05/2026, 09:30', 'noi_dung' => 'Cập nhật điều kiện Gold từ 2.000.000đ thành 3.000.000đ.']
-        ];
+        $voucherModel = new \App\Models\VoucherModel();
+        $vouchers = $voucherModel->getActiveVouchers();
 
         $data = [
             'current_page' => 'hang_thanh_vien',
             'tieu_de' => 'Quản lý hạng thành viên - Admin',
             'ranks' => $ranks,
-            'history' => $history
+            'history' => $history,
+            'khach_sap_len_hang' => $khach_sap_len_hang,
+            'vouchers' => $vouchers
         ];
         $this->view('admin_hang_thanh_vien', $data, 'admin');
+    }
+
+    public function apiDetailRank($id)
+    {
+        header('Content-Type: application/json');
+        $model = new \App\Models\HangThanhVienModel();
+        $rank = $model->findById($id);
+        
+        if ($rank) {
+            echo json_encode([
+                'success' => true, 
+                'data' => [
+                    'id' => $rank['id'],
+                    'ten_hang' => $rank['ten_hang'],
+                    'mo_ta' => $rank['mo_ta'],
+                    'chi_tieu_toi_thieu' => (int)$rank['chi_tieu_toi_thieu'],
+                    'phan_tram_giam' => (float)$rank['phan_tram_giam'],
+                    'mau_sac' => $rank['mau_sac'] ?? 'yellow',
+                    'dac_quyen' => $rank['dac_quyen'] ? json_decode($rank['dac_quyen'], true) : [],
+                    'danh_sach_voucher' => $rank['danh_sach_voucher'] ? json_decode($rank['danh_sach_voucher'], true) : [],
+                ]
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Không tìm thấy hạng']);
+        }
+    }
+
+    public function show($ma_nd)
+    {
+        $model = new \App\Models\KhachHangModel();
+        $kh_db = $model->findByMa($ma_nd);
+
+        if (!$kh_db) {
+            header('Location: ' . APP_URL . '/admin/khach-hang');
+            exit;
+        }
+
+        $don_hangs = $model->getOrdersByUser($kh_db['id']);
+        $vouchers = $model->getVouchersByUser($kh_db['id']);
+        $logs = $model->getLogsByUser($kh_db['id']);
+
+        // Format data to match the old view's expectations
+        $khach_hang = [
+            'id' => $kh_db['id'],
+            'ma' => $kh_db['ma_nd'],
+            'ten' => $kh_db['ho_ten'],
+            'gioi_tinh' => $kh_db['gioi_tinh'] === 'nam' ? 'Nam' : ($kh_db['gioi_tinh'] === 'nu' ? 'Nữ' : 'Khác'),
+            'ngay_sinh' => $kh_db['ngay_sinh'] ? date('d/m/Y', strtotime($kh_db['ngay_sinh'])) : 'Chưa cập nhật',
+            'nam_sinh' => $kh_db['nam_sinh'] ?? '',
+            'sdt' => $kh_db['so_dien_thoai'],
+            'email' => $kh_db['email'],
+            'hang' => $kh_db['ten_hang'] ?? 'Thành viên',
+            'trang_thai' => $kh_db['trang_thai'] == 1 ? 'hoat_dong' : 'bi_khoa',
+            'ngay_dang_ky' => date('d/m/Y', strtotime($kh_db['ngay_tao'])),
+            'lan_dang_nhap_cuoi' => 'Chưa có dữ liệu',
+            'tong_chi_tieu' => $kh_db['tong_chi_tieu'] ?? 0,
+            'dieu_kien_hang_hien_tai' => 0,
+            'muc_len_hang_tiep_theo' => 0,
+            'tong_don' => count($don_hangs),
+            'don_thanh_cong' => count(array_filter($don_hangs, fn($d) => $d['trang_thai_don_hang'] == 3)),
+            'so_voucher' => count($vouchers),
+            'so_yeu_thich' => 0,
+            'so_danh_gia' => 0,
+            'menh' => $kh_db['ten_menh'] ?? 'Chưa xác định',
+            'mau_phu_hop' => [],
+            'da_goi_y' => [],
+            'ghi_chu_noibo' => !empty($kh_db['ghi_chu_vip']) ? [
+                ['id' => 1, 'noi_dung' => $kh_db['ghi_chu_vip'], 'nguoi_tao' => 'Ghi chú VIP', 'thoi_gian' => date('d/m/Y')]
+            ] : [],
+            'dia_chi' => [],
+            'don_hang' => array_map(function($d) {
+                $status = 'Đang xử lý';
+                if ($d['trang_thai_don_hang'] == 3) $status = 'Thành công';
+                if ($d['trang_thai_don_hang'] == 4) $status = 'Đã hủy';
+                return [
+                    'id' => $d['id'],
+                    'ma' => $d['ma'],
+                    'ngay_dat' => date('d/m/Y', strtotime($d['ngay_tao'])),
+                    'san_pham' => 'Sản phẩm trong đơn',
+                    'tong_tien' => $d['tong_tien'],
+                    'trang_thai' => $status
+                ];
+            }, $don_hangs),
+            'voucher' => [],
+            'yeu_thich' => [],
+            'danh_gia' => [],
+            'lich_su' => array_map(function($l) {
+                return [
+                    'loai' => 'activity',
+                    'noi_dung' => $l['hanh_dong'] . ' - ' . $l['ghi_chu'],
+                    'thoi_gian' => date('H:i d/m/Y', strtotime($l['ngay_tao']))
+                ];
+            }, $logs),
+            'canh_bao' => []
+        ];
+
+        $data = [
+            'current_page' => 'khach_hang',
+            'tieu_de' => 'Chi tiết khách hàng - Admin',
+            'id' => $kh_db['id'],
+            'kh' => $khach_hang
+        ];
+        
+        $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
+    }
+
+    public function edit($id)
+    {
+        $model = new \App\Models\KhachHangModel();
+        $kh = $model->findById($id);
+        
+        if (!$kh) {
+            header('Location: ' . APP_URL . '/admin/khach-hang');
+            exit;
+        }
+
+        $rankModel = new \App\Models\HangThanhVienModel();
+        $ranks = $rankModel->getAll();
+
+        $data = [
+            'tieu_de' => 'Sửa khách hàng - Admin',
+            'current_page' => 'khach_hang',
+            'ranks' => $ranks,
+            'kh' => $kh
+        ];
+        $this->view('admin_khach_hang_sua', $data, 'admin');
+    }
+
+    private function calculateMenh($namSinh) {
+        if (!$namSinh) return null;
+        
+        $canList = [4 => 'Giáp', 5 => 'Ất', 6 => 'Bính', 7 => 'Đinh', 8 => 'Mậu', 9 => 'Kỷ', 0 => 'Canh', 1 => 'Tân', 2 => 'Nhâm', 3 => 'Quý'];
+        $canValues = ['Giáp' => 1, 'Ất' => 1, 'Bính' => 2, 'Đinh' => 2, 'Mậu' => 3, 'Kỷ' => 3, 'Canh' => 4, 'Tân' => 4, 'Nhâm' => 5, 'Quý' => 5];
+        
+        $chiList = [4 => 'Tý', 5 => 'Sửu', 6 => 'Dần', 7 => 'Mão', 8 => 'Thìn', 9 => 'Tỵ', 10 => 'Ngọ', 11 => 'Mùi', 0 => 'Thân', 1 => 'Dậu', 2 => 'Tuất', 3 => 'Hợi'];
+        $chiValues = ['Tý' => 0, 'Sửu' => 0, 'Ngọ' => 0, 'Mùi' => 0, 'Dần' => 1, 'Mão' => 1, 'Thân' => 1, 'Dậu' => 1, 'Thìn' => 2, 'Tỵ' => 2, 'Tuất' => 2, 'Hợi' => 2];
+        
+        $canIndex = $namSinh % 10;
+        $chiIndex = $namSinh % 12;
+        
+        $canName = $canList[$canIndex] ?? '';
+        $chiName = $chiList[$chiIndex] ?? '';
+        
+        if(!$canName || !$chiName) return null;
+
+        $menhValue = $canValues[$canName] + $chiValues[$chiName];
+        if ($menhValue > 5) $menhValue -= 5;
+        
+        $menhMap = [1 => 'Kim', 2 => 'Thủy', 3 => 'Hỏa', 4 => 'Thổ', 5 => 'Mộc'];
+        $tenMenh = $menhMap[$menhValue] ?? null;
+
+        if ($tenMenh) {
+            $menhModel = new \App\Models\MenhPhongThuyModel();
+            $menhRecord = $menhModel->findByName($tenMenh);
+            if ($menhRecord) return $menhRecord['id'];
+        }
+        return null;
+    }
+
+    public function store()
+    {
+        header('Content-Type: application/json');
+        
+        $ho_ten = $_POST['ho_ten'] ?? '';
+        $so_dien_thoai = $_POST['so_dien_thoai'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $gioi_tinh = $_POST['gioi_tinh'] ?? null;
+        $ngay_sinh = !empty($_POST['ngay_sinh']) ? $_POST['ngay_sinh'] : null;
+        $nam_sinh = $ngay_sinh ? (int)date('Y', strtotime($ngay_sinh)) : null;
+        $id_hang_thanh_vien = !empty($_POST['id_hang_thanh_vien']) && $_POST['id_hang_thanh_vien'] !== 'none' ? $_POST['id_hang_thanh_vien'] : null;
+        $trang_thai = $_POST['trang_thai'] === 'active' ? 1 : 0;
+        $ghi_chu_vip = $_POST['ghi_chu_vip'] ?? '';
+        $mat_khau_input = $_POST['mat_khau'] ?? '123456';
+
+        if (empty($ho_ten) || empty($so_dien_thoai)) {
+            echo json_encode(['success' => false, 'message' => 'Họ tên và số điện thoại là bắt buộc']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        
+        $id = uniqid('kh_');
+        $ma_nd = 'KH' . strtoupper(substr(uniqid(), -4));
+        $id_menh = $this->calculateMenh($nam_sinh);
+        $mat_khau = password_hash($mat_khau_input, PASSWORD_DEFAULT);
+        
+        $anh_dai_dien = null;
+        if (isset($_FILES['anh_dai_dien']) && $_FILES['anh_dai_dien']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/users/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            
+            $ext = pathinfo($_FILES['anh_dai_dien']['name'], PATHINFO_EXTENSION);
+            $fileName = $id . '.' . $ext;
+            
+            if (move_uploaded_file($_FILES['anh_dai_dien']['tmp_name'], $uploadDir . $fileName)) {
+                $anh_dai_dien = '/uploads/users/' . $fileName;
+            }
+        }
+
+        $data = [
+            'id' => $id,
+            'ma_nd' => $ma_nd,
+            'ho_ten' => $ho_ten,
+            'so_dien_thoai' => $so_dien_thoai,
+            'email' => $email ? $email : "$ma_nd@noemail.com",
+            'mat_khau' => $mat_khau,
+            'gioi_tinh' => $gioi_tinh,
+            'ngay_sinh' => $ngay_sinh,
+            'nam_sinh' => $nam_sinh,
+            'id_menh' => $id_menh,
+            'id_hang_thanh_vien' => $id_hang_thanh_vien,
+            'trang_thai' => $trang_thai,
+            'ghi_chu_vip' => $ghi_chu_vip,
+            'anh_dai_dien' => $anh_dai_dien,
+            'id_vai_tro' => null
+        ];
+
+        try {
+            $model->insert($data);
+            
+            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel->log('Thêm mới', 'Khách hàng', $id, "Thêm mới khách hàng: $ho_ten");
+
+            echo json_encode(['success' => true, 'message' => 'Tạo khách hàng thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function updateCustomer($id)
+    {
+        header('Content-Type: application/json');
+        
+        $ho_ten = $_POST['ho_ten'] ?? '';
+        $so_dien_thoai = $_POST['so_dien_thoai'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $gioi_tinh = $_POST['gioi_tinh'] ?? null;
+        $ngay_sinh = !empty($_POST['ngay_sinh']) ? $_POST['ngay_sinh'] : null;
+        $nam_sinh = $ngay_sinh ? (int)date('Y', strtotime($ngay_sinh)) : null;
+        $id_hang_thanh_vien = !empty($_POST['id_hang_thanh_vien']) && $_POST['id_hang_thanh_vien'] !== 'none' ? $_POST['id_hang_thanh_vien'] : null;
+        $trang_thai = $_POST['trang_thai'] === 'active' ? 1 : 0;
+        $ghi_chu_vip = $_POST['ghi_chu_vip'] ?? '';
+        $mat_khau_input = $_POST['mat_khau'] ?? '';
+
+        if (empty($ho_ten) || empty($so_dien_thoai)) {
+            echo json_encode(['success' => false, 'message' => 'Họ tên và số điện thoại là bắt buộc']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        
+        $id_menh = $this->calculateMenh($nam_sinh);
+        
+        $data = [
+            'ho_ten' => $ho_ten,
+            'so_dien_thoai' => $so_dien_thoai,
+            'email' => $email,
+            'gioi_tinh' => $gioi_tinh,
+            'ngay_sinh' => $ngay_sinh,
+            'nam_sinh' => $nam_sinh,
+            'id_menh' => $id_menh,
+            'id_hang_thanh_vien' => $id_hang_thanh_vien,
+            'trang_thai' => $trang_thai,
+            'ghi_chu_vip' => $ghi_chu_vip
+        ];
+
+        if (!empty($mat_khau_input)) {
+            $data['mat_khau'] = password_hash($mat_khau_input, PASSWORD_DEFAULT);
+        }
+
+        if (isset($_FILES['anh_dai_dien']) && $_FILES['anh_dai_dien']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../public/uploads/users/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            
+            $ext = pathinfo($_FILES['anh_dai_dien']['name'], PATHINFO_EXTENSION);
+            $fileName = $id . '.' . $ext;
+            
+            if (move_uploaded_file($_FILES['anh_dai_dien']['tmp_name'], $uploadDir . $fileName)) {
+                $data['anh_dai_dien'] = '/uploads/users/' . $fileName;
+            }
+        }
+
+        try {
+            $model->update($id, $data);
+            
+            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel->log('Cập nhật', 'Khách hàng', $id, "Cập nhật thông tin khách hàng: $ho_ten");
+
+            echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function assignVouchersRank()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        $id = $input['id'] ?? '';
+        $vouchers = $input['vouchers'] ?? [];
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\HangThanhVienModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+
+        try {
+            $model->update($id, [
+                'danh_sach_voucher' => json_encode($vouchers, JSON_UNESCAPED_UNICODE)
+            ]);
+            $logModel->log('Cập nhật voucher hạng', 'Hạng thành viên', $id, "Đã gán " . count($vouchers) . " voucher cho hạng " . $id);
+            echo json_encode(['success' => true, 'message' => 'Gán voucher thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
+        }
+    }
+
+    public function storeRank()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $id = $input['id'] ?? '';
+        $isEdit = $input['isEdit'] ?? false;
+        
+        $data = [
+            'ten_hang' => $input['ten_hang'],
+            'mo_ta' => $input['mo_ta'],
+            'chi_tieu_toi_thieu' => $input['chi_tieu_toi_thieu'],
+            'phan_tram_giam' => $input['phan_tram_giam'],
+            'mau_sac' => $input['mau_sac'],
+            'dac_quyen' => json_encode($input['dac_quyen'], JSON_UNESCAPED_UNICODE)
+        ];
+
+        $model = new \App\Models\HangThanhVienModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+
+        try {
+            if ($isEdit) {
+                $model->update($id, $data);
+                $logModel->log('Cập nhật hạng', 'Hạng thành viên', $id, "Cập nhật hạng: " . $data['ten_hang']);
+            } else {
+                // Check if ID already exists
+                $existing = $model->findById($id);
+                if ($existing) {
+                    echo json_encode(['success' => false, 'message' => 'Lỗi: Tên định danh (ID) này đã tồn tại. Vui lòng nhập ID khác.']);
+                    return;
+                }
+                
+                $data['id'] = $id; // User defined ID for rank
+                $model->insert($data);
+                $logModel->log('Thêm mới hạng', 'Hạng thành viên', $id, "Thêm mới hạng: " . $data['ten_hang']);
+            }
+            echo json_encode(['success' => true, 'message' => 'Lưu thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
+        }
+    }
+
+    public function deleteRank($id)
+    {
+        header('Content-Type: application/json');
+        $model = new \App\Models\HangThanhVienModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $model->delete($id);
+            $logModel->log('Xóa hạng', 'Hạng thành viên', $id, "Xóa hạng: " . $id);
+            echo json_encode(['success' => true]);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: Khách hàng đang dùng hạng này']);
+        }
+    }
+
+    public function toggleRankStatus($id)
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $status = $input['status'] ?? 1;
+        
+        $model = new \App\Models\HangThanhVienModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $model->update($id, ['trang_thai' => $status]);
+            $logModel->log('Cập nhật trạng thái hạng', 'Hạng thành viên', $id, "Trạng thái mới: " . $status);
+            echo json_encode(['success' => true]);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false]);
+        }
     }
 }

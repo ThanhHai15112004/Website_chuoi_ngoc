@@ -75,15 +75,15 @@
                                         </button>
                                         <div class="h-px bg-gray-100 my-1"></div>
                                         <?php if($rank['status'] === 'active'): ?>
-                                        <button onclick="if(confirm('Bạn có chắc muốn tạm ngưng hạng này?')) showToast('Đã tạm ngưng hạng!');" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-50 transition-colors text-left">
+                                        <button onclick="toggleRankStatus('<?= $rank['id'] ?>', 'active')" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-50 transition-colors text-left">
                                             <span class="iconify text-lg" data-icon="mdi:pause-circle-outline"></span> Tạm ngưng
                                         </button>
                                         <?php else: ?>
-                                        <button onclick="showToast('Đã kích hoạt hạng!');" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors text-left">
+                                        <button onclick="toggleRankStatus('<?= $rank['id'] ?>', 'inactive')" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 transition-colors text-left">
                                             <span class="iconify text-lg" data-icon="mdi:play-circle-outline"></span> Kích hoạt
                                         </button>
                                         <?php endif; ?>
-                                        <button onclick="if(confirm('Bạn có chắc muốn xóa hạng này? Hành động này không thể hoàn tác!')) showToast('Đã xóa hạng!');" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors text-left">
+                                        <button onclick="deleteRankItem('<?= $rank['id'] ?>')" class="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors text-left">
                                             <span class="iconify text-lg" data-icon="mdi:trash-can-outline"></span> Xóa
                                         </button>
                                     </div>
@@ -105,47 +105,28 @@
                     <h3 class="font-bold text-amber-900 flex items-center gap-2">
                         <span class="iconify" data-icon="mdi:trending-up"></span> Khách sắp lên hạng
                     </h3>
-                    <span class="px-2 py-0.5 bg-white text-amber-700 text-xs font-bold rounded shadow-sm">48 người</span>
+                    <span class="px-2 py-0.5 bg-white text-amber-700 text-xs font-bold rounded shadow-sm"><?= count($khach_sap_len_hang) ?> người</span>
                 </div>
                 <p class="text-xs text-amber-700/80 mb-4">Gửi voucher hoặc tin nhắn để khuyến khích khách hàng mua sắm đạt mốc hạng mới.</p>
                 
                 <div class="space-y-3">
-                    <!-- Item -->
-                    <div class="bg-white p-3 rounded-xl border border-amber-100 shadow-sm flex items-center justify-between group">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm hover:text-[#6B0D18] cursor-pointer">Trần Thị B</p>
-                            <p class="text-[10px] font-bold text-gray-500 mt-0.5">SILVER <span class="iconify inline text-amber-500" data-icon="mdi:arrow-right-thick"></span> GOLD</p>
+                    <?php if(empty($khach_sap_len_hang)): ?>
+                        <div class="text-sm text-amber-700 italic text-center py-4">Chưa có dữ liệu.</div>
+                    <?php else: ?>
+                        <?php foreach($khach_sap_len_hang as $kh): ?>
+                        <div class="bg-white p-3 rounded-xl border border-amber-100 shadow-sm flex items-center justify-between group">
+                            <div>
+                                <p class="font-bold text-gray-800 text-sm hover:text-[#6B0D18] cursor-pointer" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/chi-tiet/<?= $kh['id'] ?>'"><?= $kh['ten'] ?></p>
+                                <p class="text-[10px] font-bold text-gray-500 mt-0.5"><?= strtoupper($kh['current_rank']) ?> <span class="iconify inline text-amber-500" data-icon="mdi:arrow-right-thick"></span> <?= strtoupper($kh['next_rank']) ?></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[11px] text-gray-500">Còn thiếu</p>
+                                <p class="text-sm font-bold text-[#6B0D18]"><?= number_format($kh['con_thieu'], 0, ',', '.') ?>đ</p>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-[11px] text-gray-500">Còn thiếu</p>
-                            <p class="text-sm font-bold text-[#6B0D18]">150.000đ</p>
-                        </div>
-                    </div>
-                    <!-- Item -->
-                    <div class="bg-white p-3 rounded-xl border border-amber-100 shadow-sm flex items-center justify-between group">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm hover:text-[#6B0D18] cursor-pointer">Lê Văn C</p>
-                            <p class="text-[10px] font-bold text-gray-500 mt-0.5">GOLD <span class="iconify inline text-amber-500" data-icon="mdi:arrow-right-thick"></span> DIAMOND</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[11px] text-gray-500">Còn thiếu</p>
-                            <p class="text-sm font-bold text-[#6B0D18]">450.000đ</p>
-                        </div>
-                    </div>
-                    <!-- Item -->
-                    <div class="bg-white p-3 rounded-xl border border-amber-100 shadow-sm flex items-center justify-between group">
-                        <div>
-                            <p class="font-bold text-gray-800 text-sm hover:text-[#6B0D18] cursor-pointer">Phạm Thu D</p>
-                            <p class="text-[10px] font-bold text-gray-500 mt-0.5">SILVER <span class="iconify inline text-amber-500" data-icon="mdi:arrow-right-thick"></span> GOLD</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[11px] text-gray-500">Còn thiếu</p>
-                            <p class="text-sm font-bold text-[#6B0D18]">820.000đ</p>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
-                
-                <button class="w-full mt-4 py-2 bg-white border border-amber-200 text-amber-800 text-sm font-bold rounded-xl hover:bg-amber-100 transition-colors">Xem tất cả</button>
             </div>
         </div>
 
