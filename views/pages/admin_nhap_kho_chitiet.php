@@ -6,13 +6,13 @@
         <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
             <a href="<?= APP_URL ?>/admin/nhap-kho" class="hover:text-[#6B0D18] transition-colors">Phiếu nhập kho</a>
             <span class="iconify text-gray-400" data-icon="mdi:chevron-right"></span>
-            <span class="text-gray-900 font-medium"><?= $phieuNhap['id'] ?></span>
+            <span class="text-gray-900 font-medium"><?= htmlspecialchars($phieuNhap['ma_phieu']) ?></span>
         </div>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <h2 class="text-2xl font-bold text-gray-900 leading-tight">Chi tiết phiếu: <?= $phieuNhap['id'] ?></h2>
+                <h2 class="text-2xl font-bold text-gray-900 leading-tight">Chi tiết phiếu: <?= htmlspecialchars($phieuNhap['ma_phieu']) ?></h2>
                 <span class="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-sm font-bold">
-                    <?= $phieuNhap['trang_thai'] ?>
+                    Trạng thái: <?= $phieuNhap['trang_thai'] ?>
                 </span>
             </div>
             <div class="flex items-center gap-3">
@@ -39,15 +39,15 @@
                     <span class="iconify text-xl" data-icon="mdi:check"></span>
                 </div>
                 <div class="text-sm font-bold text-gray-900 mt-2">Khởi tạo</div>
-                <div class="text-xs text-gray-500"><?= $phieuNhap['ngay_tao'] ?></div>
+                <div class="text-xs text-gray-500"><?= date('H:i d/m/Y', strtotime($phieuNhap['ngay_tao'])) ?></div>
             </div>
 
             <div class="relative z-10 flex flex-col items-center">
                 <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center border-4 border-white shadow-sm">
                     <span class="iconify text-xl" data-icon="mdi:check"></span>
                 </div>
-                <div class="text-sm font-bold text-gray-900 mt-2">Đã duyệt</div>
-                <div class="text-xs text-gray-500"><?= $phieuNhap['ngay_duyet'] ?></div>
+                <div class="text-sm font-bold text-gray-900 mt-2">Cập nhật lúc</div>
+                <div class="text-xs text-gray-500"><?= !empty($phieuNhap['ngay_nhap']) ? date('H:i d/m/Y', strtotime($phieuNhap['ngay_nhap'])) : 'Chưa cập nhật' ?></div>
             </div>
 
             <div class="relative z-10 flex flex-col items-center">
@@ -75,24 +75,24 @@
                 <div class="space-y-4">
                     <div>
                         <div class="text-xs text-gray-500 mb-1">Nhà cung cấp</div>
-                        <div class="font-bold text-gray-900"><?= $phieuNhap['nha_cung_cap'] ?></div>
+                        <div class="font-bold text-gray-900"><?= htmlspecialchars($phieuNhap['ten_ncc'] ?? 'Khác') ?></div>
                     </div>
                     <div>
                         <div class="text-xs text-gray-500 mb-1">Người tạo</div>
-                        <div class="font-medium text-gray-900"><?= $phieuNhap['nguoi_tao'] ?></div>
+                        <div class="font-medium text-gray-900"><?= htmlspecialchars($phieuNhap['nguoi_tao'] ?? 'Hệ thống') ?></div>
                     </div>
                     <div>
-                        <div class="text-xs text-gray-500 mb-1">Người duyệt</div>
-                        <div class="font-medium text-gray-900"><?= $phieuNhap['nguoi_duyet'] ?></div>
+                        <div class="text-xs text-gray-500 mb-1">Người kiểm/duyệt</div>
+                        <div class="font-medium text-gray-900"><?= htmlspecialchars($phieuNhap['nguoi_kiem'] ?? 'Chưa có') ?></div>
                     </div>
                     <div>
                         <div class="text-xs text-gray-500 mb-1">Kho nhận</div>
-                        <div class="font-medium text-gray-900">Kho Tổng - Hà Nội</div>
+                        <div class="font-medium text-gray-900">Chưa phân kho</div>
                     </div>
                     <div>
                         <div class="text-xs text-gray-500 mb-1">Ghi chú</div>
                         <div class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <?= $phieuNhap['ghi_chu'] ?>
+                            <?= htmlspecialchars($phieuNhap['ghi_chu'] ?? 'Không có') ?>
                         </div>
                     </div>
                 </div>
@@ -102,12 +102,12 @@
                 <h3 class="text-base font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Thanh toán</h3>
                 <div class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Tổng tiền yêu cầu:</span>
-                        <span class="font-medium text-gray-900"><?= number_format($phieuNhap['tong_tien_yeu_cau'], 0, ',', '.') ?> đ</span>
+                        <span class="text-sm text-gray-500">Tổng tiền dự kiến:</span>
+                        <span class="font-medium text-gray-900"><?= number_format($phieuNhap['tong_tien'], 0, ',', '.') ?> đ</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-sm text-gray-500">Tổng tiền thực tế:</span>
-                        <span class="font-bold text-[#6B0D18] text-lg"><?= number_format($phieuNhap['tong_tien_thuc_te'], 0, ',', '.') ?> đ</span>
+                        <span class="text-sm text-gray-500">Đã thanh toán:</span>
+                        <span class="font-bold text-[#6B0D18] text-lg"><?= number_format($phieuNhap['tien_da_tra'], 0, ',', '.') ?> đ</span>
                     </div>
                     <div class="pt-3 border-t border-gray-100">
                         <div class="flex justify-between items-center">
@@ -142,28 +142,29 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
-                            <?php foreach ($danhSachSP as $index => $sp): ?>
-                                <tr class="hover:bg-gray-50/50 transition-colors <?= $sp['sl_thuc_nhan'] < $sp['sl_yeu_cau'] ? 'bg-red-50/30' : '' ?>">
+                            <?php foreach ($danhSachSP as $index => $sp): 
+                                $slThucNhan = $sp['so_luong_nhan'] ?? $sp['so_luong'];
+                            ?>
+                                <tr class="hover:bg-gray-50/50 transition-colors <?= $slThucNhan < $sp['so_luong'] ? 'bg-red-50/30' : '' ?>">
                                     <td class="py-3 px-4 text-center text-sm text-gray-500"><?= $index + 1 ?></td>
                                     <td class="py-3 px-4">
-                                        <div class="font-bold text-gray-900"><?= $sp['ten'] ?></div>
-                                        <div class="text-xs text-gray-500 mt-0.5">Mã: <?= $sp['sku'] ?> • <?= $sp['bien_the'] ?></div>
+                                        <div class="font-bold text-gray-900"><?= htmlspecialchars($sp['product_name']) ?></div>
+                                        <div class="text-xs text-gray-500 mt-0.5">Mã: <?= htmlspecialchars($sp['sku']) ?> • <?= htmlspecialchars($sp['variant_name']) ?></div>
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <span class="font-bold text-gray-500"><?= $sp['sl_yeu_cau'] ?></span>
+                                        <span class="font-bold text-gray-500"><?= $sp['so_luong'] ?></span>
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <!-- Cột này cho phép nhập để nhân viên kho báo cáo -->
-                                        <input type="number" min="0" value="<?= $sp['sl_thuc_nhan'] ?>" class="w-20 px-2 py-1.5 border <?= $sp['sl_thuc_nhan'] < $sp['sl_yeu_cau'] ? 'border-red-300 text-red-700 bg-red-50' : 'border-gray-300' ?> rounded focus:outline-none focus:border-red-900 text-sm text-center font-bold">
-                                        <?php if ($sp['sl_thuc_nhan'] < $sp['sl_yeu_cau']): ?>
-                                            <div class="text-[10px] text-red-600 mt-1 font-medium">Thiếu <?= $sp['sl_yeu_cau'] - $sp['sl_thuc_nhan'] ?></div>
+                                        <input type="number" min="0" value="<?= $slThucNhan ?>" readonly class="w-20 px-2 py-1.5 border <?= $slThucNhan < $sp['so_luong'] ? 'border-red-300 text-red-700 bg-red-50' : 'border-gray-300 bg-gray-50' ?> rounded focus:outline-none focus:border-red-900 text-sm text-center font-bold">
+                                        <?php if ($slThucNhan < $sp['so_luong']): ?>
+                                            <div class="text-[10px] text-red-600 mt-1 font-medium">Thiếu <?= $sp['so_luong'] - $slThucNhan ?></div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="py-3 px-4 text-right">
                                         <span class="text-sm text-gray-600"><?= number_format($sp['don_gia'], 0, ',', '.') ?> đ</span>
                                     </td>
                                     <td class="py-3 px-4 text-right">
-                                        <span class="font-bold text-gray-900"><?= number_format($sp['thanh_tien'], 0, ',', '.') ?> đ</span>
+                                        <span class="font-bold text-gray-900"><?= number_format($slThucNhan * $sp['don_gia'], 0, ',', '.') ?> đ</span>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

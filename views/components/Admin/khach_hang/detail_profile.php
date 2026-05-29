@@ -37,21 +37,21 @@
             <!-- Thao tác nhanh -->
             <div class="flex flex-wrap items-center gap-2">
                 <?php if($kh['trang_thai'] === 'bi_khoa'): ?>
-                    <button class="px-4 py-2 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-lg text-sm font-bold hover:bg-emerald-100 transition-colors flex items-center gap-2 shadow-sm" onclick="openLockModal()">
+                    <button class="px-4 py-2 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-lg text-sm font-bold hover:bg-emerald-100 transition-colors flex items-center gap-2 shadow-sm" onclick="openLockModal('<?= $kh['id'] ?>')">
                         <span class="iconify" data-icon="mdi:lock-open-outline"></span> Mở khóa tài khoản
                     </button>
                 <?php else: ?>
-                    <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openLockModal()">
+                    <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openLockModal('<?= $kh['id'] ?>')">
                         Khóa tài khoản
                     </button>
                 <?php endif; ?>
-                <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openRankModal()">
+                <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openRankModal('<?= $kh['id'] ?>')">
                     Cập nhật hạng
                 </button>
-                <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openVoucherModal()">
+                <button class="px-3 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2" onclick="openVoucherModal('<?= $kh['id'] ?>')">
                     Gán voucher
                 </button>
-                <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] transition-colors flex items-center gap-2 shadow-sm" onclick="openNotifyModal()">
+                <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] transition-colors flex items-center gap-2 shadow-sm" onclick="openNotifyModal('<?= $kh['id'] ?>')">
                     <span class="iconify" data-icon="mdi:bell-outline"></span> Gửi thông báo
                 </button>
             </div>

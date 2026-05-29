@@ -26,10 +26,10 @@ $title = $isEdit ? 'Sửa phiếu nhập kho' : 'Tạo phiếu nhập kho';
             <button class="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm">
                 Hủy bỏ
             </button>
-            <button class="px-6 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">
+            <button onclick="saveAndSend(true)" type="button" class="px-6 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">
                 Lưu nháp
             </button>
-            <button onclick="saveAndSend()" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+            <button onclick="saveAndSend(false)" type="button" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
                 <span class="iconify" data-icon="mdi:send"></span> Gửi kiểm hàng
             </button>
         </div>
@@ -55,8 +55,48 @@ $title = $isEdit ? 'Sửa phiếu nhập kho' : 'Tạo phiếu nhập kho';
 <?php require_once __DIR__ . '/../components/Admin/shared/modal_add_product.php'; ?>
 
 <script>
-    function saveAndSend() {
-        // Giả lập lưu thành công
-        window.location.href = '<?= APP_URL ?>/admin/nhap-kho';
+    async function saveAndSend(isDraft = false) {
+        if (typeof nkProducts === 'undefined' || nkProducts.length === 0) {
+            alert('Vui lòng thêm ít nhất 1 sản phẩm vào phiếu nhập.');
+            return;
+        }
+
+        const payload = {
+            ma_phieu: document.getElementById('nk_ma_phieu')?.value || '',
+            loai_phieu: 1,
+            ly_do: document.getElementById('nk_loai_phieu')?.value || 'Nhập hàng',
+            muc_do_uu_tien: document.getElementById('nk_muc_do_uu_tien')?.value || '0',
+            ngay_du_kien: document.getElementById('nk_ngay_du_kien')?.value || '',
+            id_nha_cung_cap: document.getElementById('nk_id_nha_cung_cap')?.value || '',
+            ghi_chu: document.getElementById('nk_ghi_chu')?.value || '',
+            tien_da_tra: document.getElementById('nk_tien_da_tra')?.value || 0,
+            tong_tien: document.getElementById('nk_tong_tien')?.value || 0,
+            trang_thai: isDraft ? 0 : 1, // 0: Nháp, 1: Chờ kiểm hàng
+            chi_tiet: nkProducts.map(p => ({
+                id_bien_the: p.id,
+                so_luong: p.qty,
+                don_gia: p.price,
+                ghi_chu_ct: p.note
+            }))
+        };
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/nhap-kho/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '<?= APP_URL ?>/admin/nhap-kho';
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+        }
     }
 </script>

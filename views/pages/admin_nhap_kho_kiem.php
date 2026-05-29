@@ -79,9 +79,9 @@ $current_page = 'nhap_kho';
             <button onclick="closeModal('modalGuiDuyet')" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
                 Quay lại kiểm tra
             </button>
-            <a href="<?= APP_URL ?>/admin/nhap-kho" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-medium hover:bg-red-900 shadow-sm">
+            <button onclick="submitKiemHang()" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-medium hover:bg-red-900 shadow-sm">
                 Xác nhận gửi duyệt
-            </a>
+            </button>
         </div>
     </div>
 </div>
@@ -97,5 +97,39 @@ $current_page = 'nhap_kho';
         const el = document.getElementById(id);
         el.classList.add('hidden');
         el.classList.remove('flex');
+    }
+
+    async function submitKiemHang() {
+        const rows = document.querySelectorAll('.sku-row');
+        const chiTiet = [];
+        rows.forEach(row => {
+            chiTiet.push({
+                id_chi_tiet: row.getAttribute('data-id'),
+                so_luong_nhan: parseInt(row.querySelector('.qty-received').value) || 0,
+                so_luong_loi: parseInt(row.querySelector('.qty-error').value) || 0,
+                ly_do: row.querySelector('.note-error').value || ''
+            });
+        });
+
+        const payload = { chi_tiet: chiTiet };
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/nhap-kho/kiem-hang/luu/<?= $id ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '<?= APP_URL ?>/admin/nhap-kho';
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+        }
     }
 </script>

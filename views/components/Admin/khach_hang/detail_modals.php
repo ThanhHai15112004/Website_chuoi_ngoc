@@ -24,17 +24,17 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Tiêu đề</label>
-                    <input type="text" placeholder="Nhập tiêu đề..." value="Quà tặng đặc biệt dành cho bạn!" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18]">
+                    <input type="text" id="notifyTitle" placeholder="Nhập tiêu đề..." value="Quà tặng đặc biệt dành cho bạn!" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18]">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">Nội dung</label>
-                    <textarea rows="4" placeholder="Nhập nội dung..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] resize-none">Chuỗi Ngọc xin tặng bạn mã giảm giá 10% cho lần mua sắm tiếp theo. Cảm ơn bạn đã luôn ủng hộ!</textarea>
+                    <textarea id="notifyContent" rows="4" placeholder="Nhập nội dung..." class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] resize-none">Chuỗi Ngọc xin tặng bạn mã giảm giá 10% cho lần mua sắm tiếp theo. Cảm ơn bạn đã luôn ủng hộ!</textarea>
                 </div>
             </div>
             
             <div class="mt-6 flex justify-end gap-3">
                 <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="closeModal('notifyModal')">Hủy</button>
-                <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="showToast('Đã gửi thông báo cho khách hàng!'); closeModal('notifyModal');">Gửi thông báo</button>
+                <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitNotify('<?= $khach_hang['id'] ?? '' ?>')">Gửi thông báo</button>
             </div>
         </div>
         
@@ -108,7 +108,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="closeModal('voucherModal')">Hủy</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="showToast('Đã gán voucher thành công!'); closeModal('voucherModal');"><span class="iconify" data-icon="mdi:check"></span> Gán Voucher</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitAssignVoucher('<?= $khach_hang['id'] ?? '' ?>')"><span class="iconify" data-icon="mdi:check"></span> Gán Voucher</button>
         </div>
     </div>
 </div>
@@ -123,26 +123,18 @@
         <div class="p-6 space-y-5">
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
                 <span class="text-sm font-medium text-gray-600">Hạng hiện tại:</span>
-                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded border border-yellow-200 uppercase">GOLD</span>
+                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded border border-yellow-200 uppercase"><?= htmlspecialchars($khach_hang['hang'] ?? 'Chưa có') ?></span>
             </div>
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Chọn hạng mới <span class="text-red-500">*</span></label>
-                <div class="grid grid-cols-3 gap-2">
-                    <label class="border border-gray-200 rounded-lg p-2 text-center cursor-pointer hover:bg-gray-50 flex flex-col items-center gap-1">
-                        <input type="radio" name="newRank" value="silver" class="hidden">
+                <div class="grid grid-cols-3 gap-2" id="rankSelectionGrid">
+                    <?php if(!empty($hang_thanh_viens)): foreach($hang_thanh_viens as $hang): ?>
+                    <label class="border border-gray-200 rounded-lg p-2 text-center cursor-pointer hover:bg-gray-50 flex flex-col items-center gap-1 radio-rank-label">
+                        <input type="radio" name="newRank" value="<?= $hang['id'] ?>" class="hidden" onchange="highlightRankRadio(this)">
                         <span class="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"><span class="iconify text-sm" data-icon="mdi:medal-outline"></span></span>
-                        <span class="text-xs font-bold text-gray-600">SILVER</span>
+                        <span class="text-xs font-bold text-gray-600"><?= htmlspecialchars($hang['ten_hang']) ?></span>
                     </label>
-                    <label class="border-2 border-[#6B0D18] bg-red-50/30 rounded-lg p-2 text-center cursor-pointer flex flex-col items-center gap-1">
-                        <input type="radio" name="newRank" value="gold" checked class="hidden">
-                        <span class="w-6 h-6 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600"><span class="iconify text-sm" data-icon="mdi:crown"></span></span>
-                        <span class="text-xs font-bold text-[#6B0D18]">GOLD</span>
-                    </label>
-                    <label class="border border-gray-200 rounded-lg p-2 text-center cursor-pointer hover:bg-gray-50 flex flex-col items-center gap-1">
-                        <input type="radio" name="newRank" value="diamond" class="hidden">
-                        <span class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-600"><span class="iconify text-sm" data-icon="mdi:diamond-stone"></span></span>
-                        <span class="text-xs font-bold text-gray-600">DIAMOND</span>
-                    </label>
+                    <?php endforeach; endif; ?>
                 </div>
             </div>
             <div>
@@ -156,7 +148,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="closeModal('rankModal')">Hủy</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="showToast('Đã cập nhật hạng thành công!'); closeModal('rankModal');">Lưu thay đổi</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitUpdateRank('<?= $khach_hang['id'] ?? '' ?>')">Lưu thay đổi</button>
         </div>
     </div>
 </div>
@@ -192,7 +184,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="closeModal('lockModal')">Hủy bỏ</button>
-            <button class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 shadow-sm" onclick="showToast('Đã khóa tài khoản khách hàng!'); closeModal('lockModal');">Xác nhận Khóa</button>
+            <button class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 shadow-sm" onclick="submitLock('<?= $khach_hang['id'] ?? '' ?>')">Xác nhận Khóa</button>
         </div>
     </div>
 </div>

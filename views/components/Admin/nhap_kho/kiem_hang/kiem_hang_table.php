@@ -19,42 +19,32 @@
 
     <!-- Bảng sản phẩm -->
     <div class="overflow-x-auto w-full">
-        <table class="w-full text-left border-collapse min-w-[1200px]">
+        <table class="w-full text-left border-collapse min-w-[1000px]" id="table-kiem-hang">
             <thead>
                 <tr class="bg-gray-100 border-b border-gray-200 text-[11px] uppercase text-gray-500 tracking-wider">
-                    <th class="py-3 px-4 font-semibold w-16 text-center">Trạng thái</th>
                     <th class="py-3 px-4 font-semibold w-72">Sản phẩm / SKU</th>
                     <th class="py-3 px-4 font-semibold text-center w-24">Dự kiến</th>
                     <th class="py-3 px-4 font-semibold text-center w-32">Thực nhận</th>
                     <th class="py-3 px-4 font-semibold text-center w-24">Hàng lỗi</th>
-                    <th class="py-3 px-4 font-semibold w-40">Kết quả</th>
                     <th class="py-3 px-4 font-semibold w-48">Lý do lỗi / Ghi chú</th>
-                    <th class="py-3 px-4 font-semibold text-center w-20">Thao tác</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
                 
-                <?php foreach ($danhSachKiem as $sp): ?>
-                <tr class="sku-row hover:bg-gray-50 transition-colors <?= $sp['ket_qua'] === 'Có hàng lỗi' || $sp['ket_qua'] === 'Thiếu hàng' ? 'bg-rose-50/20' : '' ?>" data-sku="<?= $sp['sku'] ?>">
-                    <!-- Trạng thái -->
-                    <td class="py-3 px-4 text-center">
-                        <?php if($sp['ket_qua'] === 'Đạt'): ?>
-                            <span class="iconify text-2xl text-emerald-500" data-icon="mdi:check-circle"></span>
-                        <?php elseif($sp['ket_qua'] === 'Chưa kiểm'): ?>
-                            <span class="iconify text-2xl text-gray-300" data-icon="mdi:circle-outline"></span>
-                        <?php else: ?>
-                            <span class="iconify text-2xl text-rose-500" data-icon="mdi:alert-circle"></span>
-                        <?php endif; ?>
-                    </td>
-
+                <?php foreach ($danhSachSP as $sp): ?>
+                <tr class="sku-row hover:bg-gray-50 transition-colors" data-id="<?= $sp['id'] ?>" data-sku="<?= $sp['sku'] ?>">
                     <!-- Sản phẩm -->
                     <td class="py-3 px-4">
                         <div class="flex items-start gap-3">
-                            <img src="<?= $sp['anh'] ?>" class="w-12 h-12 rounded object-cover border border-gray-200" alt="">
+                            <?php if ($sp['image']): ?>
+                                <img src="<?= APP_URL ?>/<?= $sp['image'] ?>" class="w-12 h-12 rounded object-cover border border-gray-200" alt="">
+                            <?php else: ?>
+                                <div class="w-12 h-12 bg-gray-100 rounded border flex items-center justify-center"><span class="iconify text-gray-400" data-icon="mdi:image"></span></div>
+                            <?php endif; ?>
                             <div>
-                                <div class="font-medium text-gray-900 text-sm"><?= $sp['ten'] ?></div>
+                                <div class="font-medium text-gray-900 text-sm"><?= $sp['product_name'] ?></div>
                                 <div class="text-xs text-gray-500 mt-0.5">SKU: <?= $sp['sku'] ?></div>
-                                <div class="text-[11px] text-gray-400 mt-0.5"><?= $sp['bien_the'] ?></div>
+                                <div class="text-[11px] text-gray-400 mt-0.5"><?= $sp['variant_name'] ?></div>
                             </div>
                         </div>
                     </td>
@@ -67,51 +57,18 @@
                     <!-- Thực nhận -->
                     <td class="py-3 px-4">
                         <div class="flex items-center justify-center gap-1">
-                            <button class="w-7 h-7 rounded border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100"><span class="iconify" data-icon="mdi:minus"></span></button>
-                            <input type="number" min="0" value="<?= $sp['so_luong_nhan'] ?>" class="qty-received w-14 px-2 py-1 text-center border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold <?= $sp['so_luong_nhan'] > 0 ? 'text-[#6B0D18]' : 'text-gray-900' ?>">
-                            <button class="w-7 h-7 rounded border border-gray-300 flex items-center justify-center text-gray-500 hover:bg-gray-100"><span class="iconify" data-icon="mdi:plus"></span></button>
+                            <input type="number" min="0" value="<?= $sp['so_luong_nhan'] ?? $sp['so_luong'] ?>" class="qty-received w-16 px-2 py-1 text-center border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold text-[#6B0D18]">
                         </div>
                     </td>
 
                     <!-- Hàng lỗi -->
                     <td class="py-3 px-4 text-center">
-                        <input type="number" min="0" value="<?= $sp['loi'] ?>" class="w-14 px-2 py-1 text-center border border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold <?= $sp['loi'] > 0 ? 'text-rose-600 border-rose-300 bg-rose-50' : 'text-gray-900' ?>">
-                    </td>
-
-                    <!-- Kết quả -->
-                    <td class="py-3 px-4">
-                        <?php if($sp['ket_qua'] === 'Đạt'): ?>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Đạt</span>
-                        <?php elseif($sp['ket_qua'] === 'Thiếu hàng'): ?>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-orange-50 text-orange-700 border border-orange-200">Thiếu: <?= $sp['thieu'] ?></span>
-                        <?php elseif($sp['ket_qua'] === 'Có hàng lỗi'): ?>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">Có lỗi: <?= $sp['loi'] ?></span>
-                        <?php else: ?>
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-medium bg-gray-100 text-gray-600 border border-gray-200">Chưa kiểm</span>
-                        <?php endif; ?>
+                        <input type="number" min="0" value="<?= $sp['so_luong_loi'] ?? 0 ?>" class="qty-error w-16 px-2 py-1 text-center border border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold">
                     </td>
 
                     <!-- Lý do / Ghi chú -->
                     <td class="py-3 px-4">
-                        <?php if($sp['loi'] > 0 || $sp['thieu'] > 0): ?>
-                            <select class="block w-full py-1 pl-2 pr-6 text-xs border-gray-300 rounded-md focus:ring-[#6B0D18] focus:border-[#6B0D18] mb-1">
-                                <option value="" disabled <?= !isset($sp['ly_do']) ? 'selected' : '' ?>>-- Chọn lý do --</option>
-                                <option value="1" <?= isset($sp['ly_do']) && strpos($sp['ly_do'], 'thiếu') !== false ? 'selected' : '' ?>>Nhà cung cấp giao thiếu</option>
-                                <option value="2" <?= isset($sp['ly_do']) && strpos($sp['ly_do'], 'nứt') !== false ? 'selected' : '' ?>>Vỡ / nứt mẻ</option>
-                                <option value="3">Sai màu / sai mẫu</option>
-                                <option value="4">Lý do khác</option>
-                            </select>
-                            <input type="text" placeholder="Ghi chú thêm..." value="<?= $sp['ghi_chu'] ?? '' ?>" class="block w-full py-1 px-2 text-xs border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]">
-                        <?php else: ?>
-                            <input type="text" placeholder="Ghi chú..." class="block w-full py-1.5 px-2 text-xs border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]">
-                        <?php endif; ?>
-                    </td>
-
-                    <!-- Thao tác -->
-                    <td class="py-3 px-4 text-center">
-                        <button onclick="openModal('modalGhiNhanLoi')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded transition-colors tooltip border border-rose-200 bg-white shadow-sm" title="Ghi nhận lỗi chi tiết">
-                            <span class="iconify text-lg" data-icon="mdi:alert-box-outline"></span>
-                        </button>
+                        <input type="text" placeholder="Ghi chú lỗi nếu có..." value="<?= $sp['loi_thieu_chi_tiet'] ?? '' ?>" class="note-error block w-full py-1.5 px-2 text-xs border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]">
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -139,29 +96,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         const qtyInput = row.querySelector('.qty-received');
                         if (qtyInput) {
                             qtyInput.value = parseInt(qtyInput.value) + 1;
-                            qtyInput.classList.add('text-[#6B0D18]');
                         }
                     }
                     
-                    // Hiệu ứng highlight dòng
                     row.classList.add('bg-yellow-50');
                     setTimeout(() => row.classList.remove('bg-yellow-50'), 1500);
                     
-                    if (typeof showToast === 'function') {
-                        showToast(`Đã ghi nhận SKU: ${sku}`);
-                    } else {
-                        alert(`Đã ghi nhận SKU: ${sku}`);
-                    }
-                    
                     this.value = ''; // Reset input
                 } else {
-                    if (typeof showToast === 'function') {
-                        // showToast is configured in admin_nhap_kho, but this is admin_nhap_kho_kiem.
-                        // I will assume there's a global showToast or just use alert for mockup if missing.
-                        alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
-                    } else {
-                        alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
-                    }
+                    alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
                 }
             }
         });

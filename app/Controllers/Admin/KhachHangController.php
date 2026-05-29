@@ -23,7 +23,9 @@ class KhachHangController extends Controller
             'current_page' => 'khach_hang',
             'customers' => $dataResponse['list'],
             'pagination' => $dataResponse['pagination'],
-            'thong_ke' => $thong_ke
+            'thong_ke' => $thong_ke,
+            'hang_thanh_viens' => (new \App\Models\HangThanhVienModel())->layTatCa(),
+            'menh_phong_thuys' => (new \App\Models\MenhPhongThuyModel())->layTatCa()
         ];
 
         $this->view('admin_khach_hang', $data, 'admin');
@@ -59,7 +61,8 @@ class KhachHangController extends Controller
             'ranks' => $ranks,
             'history' => $history,
             'khach_sap_len_hang' => $khach_sap_len_hang,
-            'vouchers' => $vouchers
+            'vouchers' => $vouchers,
+            'config' => (new \App\Models\CauHinhModel())->getAll()
         ];
         $this->view('admin_hang_thanh_vien', $data, 'admin');
     }
@@ -100,8 +103,26 @@ class KhachHangController extends Controller
         }
 
         $don_hangs = $model->getOrdersByUser($kh_db['id']);
-        $vouchers = $model->getVouchersByUser($kh_db['id']);
         $logs = $model->getLogsByUser($kh_db['id']);
+        
+        $raw_vouchers = $model->layVoucher($kh_db['id']);
+        $raw_yeuthich = $model->layYeuThich($kh_db['id']);
+        $raw_danhgia  = $model->layDanhGia($kh_db['id']);
+
+        $rankModel = new \App\Models\HangThanhVienModel();
+        $ranks = $rankModel->layTatCa();
+        $tongChiTieu = (int)($kh_db['tong_chi_tieu'] ?? 0);
+        $dieuKienHangHienTai = 0;
+        $mucLenHangTiepTheo = 0;
+        foreach ($ranks as $r) {
+            if ((int)$r['chi_tieu_toi_thieu'] <= $tongChiTieu) {
+                $dieuKienHangHienTai = (int)$r['chi_tieu_toi_thieu'];
+            }
+            if ((int)$r['chi_tieu_toi_thieu'] > $tongChiTieu) {
+                $mucLenHangTiepTheo = (int)$r['chi_tieu_toi_thieu'];
+                break;
+            }
+        }
 
         // Format data to match the old view's expectations
         $khach_hang = [
@@ -118,51 +139,89 @@ class KhachHangController extends Controller
             'ngay_dang_ky' => date('d/m/Y', strtotime($kh_db['ngay_tao'])),
             'lan_dang_nhap_cuoi' => 'Chưa có dữ liệu',
             'tong_chi_tieu' => $kh_db['tong_chi_tieu'] ?? 0,
-            'dieu_kien_hang_hien_tai' => 0,
-            'muc_len_hang_tiep_theo' => 0,
+            'dieu_kien_hang_hien_tai' => $dieuKienHangHienTai,
+            'muc_len_hang_tiep_theo' => $mucLenHangTiepTheo,
             'tong_don' => count($don_hangs),
             'don_thanh_cong' => count(array_filter($don_hangs, fn($d) => $d['trang_thai_don_hang'] == 3)),
-            'so_voucher' => count($vouchers),
-            'so_yeu_thich' => 0,
-            'so_danh_gia' => 0,
+            'so_voucher' => count($raw_vouchers),
+            'so_yeu_thich' => count($raw_yeuthich),
+            'so_danh_gia' => count($raw_danhgia),
             'menh' => $kh_db['ten_menh'] ?? 'Chưa xác định',
             'mau_phu_hop' => [],
             'da_goi_y' => [],
             'ghi_chu_noibo' => !empty($kh_db['ghi_chu_vip']) ? [
                 ['id' => 1, 'noi_dung' => $kh_db['ghi_chu_vip'], 'nguoi_tao' => 'Ghi chú VIP', 'thoi_gian' => date('d/m/Y')]
             ] : [],
-            'dia_chi' => [],
+            'dia_chi' => !empty($kh_db['dia_chi']) ? [
+                [
+                    'mac_dinh' => true,
+                    'ten_nguoi_nhan' => $kh_db['ho_ten'],
+                    'sdt' => $kh_db['so_dien_thoai'],
+                    'dia_chi' => $kh_db['dia_chi']
+                ]
+            ] : [],
             'don_hang' => array_map(function($d) {
                 $status = 'Đang xử lý';
                 if ($d['trang_thai_don_hang'] == 3) $status = 'Thành công';
                 if ($d['trang_thai_don_hang'] == 4) $status = 'Đã hủy';
                 return [
                     'id' => $d['id'],
-                    'ma' => $d['ma'],
+                    'ma' => $d['ma_don_hang'] ?? $d['ma'] ?? '',
                     'ngay_dat' => date('d/m/Y', strtotime($d['ngay_tao'])),
                     'san_pham' => 'Sản phẩm trong đơn',
                     'tong_tien' => $d['tong_tien'],
                     'trang_thai' => $status
                 ];
             }, $don_hangs),
-            'voucher' => [],
-            'yeu_thich' => [],
-            'danh_gia' => [],
-            'lich_su' => array_map(function($l) {
+            'voucher' => array_map(function($v) {
                 return [
-                    'loai' => 'activity',
-                    'noi_dung' => $l['hanh_dong'] . ' - ' . $l['ghi_chu'],
-                    'thoi_gian' => date('H:i d/m/Y', strtotime($l['ngay_tao']))
+                    'ma' => $v['ma'],
+                    'nguon' => 'Hệ thống',
+                    'trang_thai' => $v['trang_thai'] == 1 ? 'Hợp lệ' : 'Hết hạn',
+                    'mota' => 'Giảm ' . ($v['loai_giam'] === 'phan_tram' ? $v['gia_tri'].'%' : number_format($v['gia_tri'], 0, ',', '.').'đ'),
+                    'han_dung' => date('d/m/Y', strtotime($v['han_dung']))
                 ];
-            }, $logs),
-            'canh_bao' => []
+            }, $raw_vouchers),
+            'yeu_thich' => array_map(function($y) {
+                return [
+                    'ten' => $y['ten'],
+                    'gia' => $y['gia'],
+                    'trang_thai' => $y['trang_thai'] == 1 ? 'Đang bán' : 'Ngừng bán',
+                    'hinh_anh' => $y['hinh_anh'],
+                    'menh' => $y['menh'] ?? 'Chưa xác định',
+                    'ngay_them' => 'Gần đây'
+                ];
+            }, $raw_yeuthich),
+            'danh_gia' => array_map(function($d) {
+                $status = 'Chờ duyệt';
+                if ($d['trang_thai'] == 1) $status = 'Đã duyệt';
+                elseif ($d['trang_thai'] == 2) $status = 'Đã ẩn';
+                return [
+                    'san_pham' => $d['san_pham'],
+                    'hinh_anh' => $d['hinh_anh'],
+                    'trang_thai' => $status,
+                    'sao' => $d['sao'],
+                    'ngay' => date('d/m/Y H:i', strtotime($d['ngay'])),
+                    'noi_dung' => $d['noi_dung']
+                ];
+            }, $raw_danhgia),
+            'nhat_ky' => array_map(function($l) {
+                return [
+                    'id' => uniqid(),
+                    'loai' => 'system',
+                    'thoi_gian' => date('d/m/Y H:i', strtotime($l['ngay_tao'])),
+                    'hanh_dong' => $l['hanh_dong'],
+                    'noi_dung' => $l['ghi_chu'] ?? $l['hanh_dong']
+                ];
+            }, $logs)
         ];
 
         $data = [
             'current_page' => 'khach_hang',
-            'tieu_de' => 'Chi tiết khách hàng - Admin',
-            'id' => $kh_db['id'],
-            'kh' => $khach_hang
+            'tieu_de' => 'Chi tiết khách hàng - ' . $kh_db['ho_ten'],
+            'kh' => $khach_hang,
+            'khach_hang' => $khach_hang,
+            'hang_thanh_viens' => (new \App\Models\HangThanhVienModel())->layTatCa()
         ];
         
         $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
@@ -239,6 +298,17 @@ class KhachHangController extends Controller
         if (empty($ho_ten) || empty($so_dien_thoai)) {
             echo json_encode(['success' => false, 'message' => 'Họ tên và số điện thoại là bắt buộc']);
             return;
+        }
+
+        if (empty($id_hang_thanh_vien)) {
+            $rankModel = new \App\Models\HangThanhVienModel();
+            $ranks = $rankModel->layTatCa();
+            foreach ($ranks as $r) {
+                if ($r['ten_hang'] === \App\Constants\HangThanhVienConstants::HANG_BRONZE) {
+                    $id_hang_thanh_vien = $r['id'];
+                    break;
+                }
+            }
         }
 
         $model = new \App\Models\KhachHangModel();
@@ -424,6 +494,10 @@ class KhachHangController extends Controller
                 $model->themMoi($data);
                 $logModel->log('Thêm mới hạng', 'Hạng thành viên', $id, "Thêm mới hạng: " . $data['ten_hang']);
             }
+            
+            // Tự động đồng bộ hạng cho toàn bộ khách hàng sau khi thay đổi cấu hình hạng
+            (new \App\Services\Admin\HangThanhVienService())->capNhatHangTatCaKhachHang();
+            
             echo json_encode(['success' => true, 'message' => 'Lưu thành công']);
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
@@ -460,6 +534,247 @@ class KhachHangController extends Controller
             echo json_encode(['success' => true]);
         } catch (\Exception $e) {
             echo json_encode(['success' => false]);
+        }
+    }
+
+    public function bulkNotify()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        $title = $input['title'] ?? '';
+        $message = $input['message'] ?? '';
+        
+        if (empty($ids) || empty($title) || empty($message)) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $thongBaoModel = new \App\Models\ThongBaoModel();
+        try {
+            $thongBaoModel->insertMultiple($ids, [
+                'tieu_de' => $title,
+                'noi_dung' => $message,
+                'loai_thong_bao' => 'he_thong'
+            ]);
+            
+            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel->log('Gửi thông báo', 'Khách hàng', 'Bulk', "Gửi thông báo cho " . count($ids) . " khách hàng");
+            
+            echo json_encode(['success' => true, 'message' => 'Gửi thông báo thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function bulkLock()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        
+        if (empty($ids)) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        try {
+            foreach ($ids as $id) {
+                $model->doiTrangThai($id);
+            }
+            $logModel->log('Khóa/Mở khóa tài khoản', 'Khách hàng', 'Bulk', "Thay đổi trạng thái " . count($ids) . " khách hàng");
+            echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function bulkDelete()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        
+        if (empty($ids)) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        try {
+            foreach ($ids as $id) {
+                $model->xoa($id);
+            }
+            $logModel->log('Xóa tài khoản', 'Khách hàng', 'Bulk', "Xóa mềm " . count($ids) . " khách hàng");
+            echo json_encode(['success' => true, 'message' => 'Xóa tài khoản thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function bulkAssignVoucher()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        $voucher_ids = $input['vouchers'] ?? [];
+        
+        if (empty($ids) || empty($voucher_ids)) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $db->beginTransaction();
+            $stmt = $db->prepare("INSERT INTO nguoi_dung_voucher (id, id_nguoi_dung, id_voucher, trang_thai, ngay_tao) VALUES (?, ?, ?, 0, NOW())");
+            
+            foreach ($ids as $userId) {
+                foreach ($voucher_ids as $voucherId) {
+                    $stmt->execute([uniqid('uv_'), $userId, $voucherId]);
+                }
+            }
+            $db->commit();
+            
+            $logModel->log('Gán voucher', 'Khách hàng', 'Bulk', "Gán " . count($voucher_ids) . " voucher cho " . count($ids) . " khách hàng");
+            echo json_encode(['success' => true, 'message' => 'Gán voucher thành công']);
+        } catch (\Exception $e) {
+            $db->rollBack();
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function resetPassword()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? '';
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $newPassword = password_hash('123456', PASSWORD_DEFAULT);
+            $model->capNhat($id, ['mat_khau' => $newPassword]);
+            $logModel->log('Reset mật khẩu', 'Khách hàng', $id, "Mật khẩu đã được reset về mặc định");
+            echo json_encode(['success' => true, 'message' => 'Mật khẩu đã được khôi phục về mặc định (123456)']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function adjustPoints()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? '';
+        $points = (int)($input['points'] ?? 0);
+        
+        if (!$id || $points === 0) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $db = \App\Core\Database::getInstance()->getConnection();
+        
+        try {
+            $stmt = $db->prepare("UPDATE nguoi_dung SET diem_tich_luy = diem_tich_luy + ? WHERE id = ?");
+            $stmt->execute([$points, $id]);
+            
+            $action = $points > 0 ? "Cộng" : "Trừ";
+            $logModel->log('Điều chỉnh điểm', 'Khách hàng', $id, "$action " . abs($points) . " điểm tích lũy");
+            echo json_encode(['success' => true, 'message' => 'Cập nhật điểm thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function saveConfig()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $cauHinhModel = new \App\Models\CauHinhModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            foreach ($input as $key => $value) {
+                $cauHinhModel->set($key, $value);
+            }
+            $logModel->log('Lưu cấu hình', 'Hệ thống', 'Config', "Cập nhật cấu hình hạng thành viên");
+            echo json_encode(['success' => true, 'message' => 'Lưu cấu hình thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function updateRank()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? '';
+        $id_hang = $input['id_hang'] ?? null;
+        
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $model->capNhat($id, ['id_hang_thanh_vien' => $id_hang]);
+            $logModel->log('Cập nhật hạng', 'Khách hàng', $id, "Cập nhật hạng thành viên bằng thủ công");
+            echo json_encode(['success' => true, 'message' => 'Cập nhật hạng thành viên thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function sendNotification()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = $input['id'] ?? '';
+        $title = $input['title'] ?? '';
+        $message = $input['message'] ?? '';
+        
+        if (!$id || !$title || !$message) {
+            echo json_encode(['success' => false, 'message' => 'Dữ liệu không hợp lệ']);
+            return;
+        }
+
+        $thongBaoModel = new \App\Models\ThongBaoModel();
+        $logModel = new \App\Models\NhatKyHoatDongModel();
+        
+        try {
+            $thongBaoModel->themMoi([
+                'id_nguoi_dung' => $id,
+                'tieu_de' => $title,
+                'noi_dung' => $message,
+                'loai_thong_bao' => 'he_thong'
+            ]);
+            $logModel->log('Gửi thông báo', 'Khách hàng', $id, "Gửi thông báo cá nhân: $title");
+            echo json_encode(['success' => true, 'message' => 'Gửi thông báo thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
     }
 }

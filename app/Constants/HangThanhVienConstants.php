@@ -4,8 +4,8 @@ namespace App\Constants;
 
 class HangThanhVienConstants
 {
-    public const HANG_DIAMOND = 'Diamond';
-    public const HANG_GOLD = 'Gold';
-    public const HANG_SILVER = 'Silver';
-    public const HANG_BRONZE = 'Bronze';
+    public const HANG_DIAMOND = 'Kim Cương';
+    public const HANG_GOLD = 'Vàng';
+    public const HANG_SILVER = 'Bạc';
+    public const HANG_BRONZE = 'Đồng';
 }

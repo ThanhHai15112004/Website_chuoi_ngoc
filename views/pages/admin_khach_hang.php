@@ -33,14 +33,14 @@ $customers = $customers ?? [];
     <!-- Thanh thao tác hàng loạt (ẩn mặc định) -->
     <div id="bulkActionBar" class="hidden bg-white border border-[#6B0D18]/20 rounded-xl shadow-sm mb-4 px-4 py-3 flex items-center justify-between animate-[fadeInPage_0.2s_ease-out]">
         <div class="flex items-center gap-2 text-sm text-gray-700">
-            <span class="w-6 h-6 rounded bg-[#6B0D18]/10 text-[#6B0D18] font-bold flex items-center justify-center">2</span>
+            <span id="bulkSelectedCount" class="w-6 h-6 rounded bg-[#6B0D18]/10 text-[#6B0D18] font-bold flex items-center justify-center">0</span>
             <span>Khách hàng đang chọn</span>
         </div>
         <div class="flex items-center gap-2">
-            <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded text-xs font-medium hover:bg-[#8A111F]" onclick="openNotifyModal()">Gửi thông báo</button>
-            <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded text-xs font-medium hover:bg-gray-50" onclick="openVoucherModal()">Gán voucher</button>
-            <button class="px-3 py-1.5 border border-red-200 text-red-600 rounded text-xs font-medium hover:bg-red-50" onclick="openLockModal()">Khóa tài khoản</button>
-            <button class="px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700" onclick="openDeleteModal()">Xóa</button>
+            <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded text-xs font-medium hover:bg-[#8A111F]" onclick="submitBulkNotify()">Gửi thông báo</button>
+            <button class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 rounded text-xs font-medium hover:bg-gray-50" onclick="submitBulkAssignVoucher()">Gán voucher</button>
+            <button class="px-3 py-1.5 border border-red-200 text-red-600 rounded text-xs font-medium hover:bg-red-50" onclick="submitBulkLock()">Khóa tài khoản</button>
+            <button class="px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700" onclick="submitBulkDelete()">Xóa</button>
         </div>
     </div>
 
@@ -53,12 +53,27 @@ $customers = $customers ?? [];
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
                         <th class="py-4 pl-6 pr-3 w-12">
-                            <input type="checkbox" class="w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18] cursor-pointer" onchange="toggleBulkAction(this)">
+                            <input type="checkbox" id="selectAllCheckbox" class="w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18] cursor-pointer" onchange="toggleAllCheckboxes(this)">
                         </th>
                         <th class="py-4 px-3 font-bold">Khách hàng</th>
                         <th class="py-4 px-3 font-bold">Liên hệ</th>
                         <th class="py-4 px-3 font-bold">Hạng</th>
-                        <th class="py-4 px-3 font-bold">Lịch sử mua</th>
+                        <th class="py-4 px-3 font-bold group">
+                            <?php
+                                $currentSort = $_GET['sort'] ?? '';
+                                $nextSort = ($currentSort === 'chi_tieu_desc') ? 'chi_tieu_asc' : 'chi_tieu_desc';
+                                $queryParams = $_GET;
+                                $queryParams['sort'] = $nextSort;
+                                $sortUrl = '?' . http_build_query($queryParams);
+                            ?>
+                            <a href="<?= $sortUrl ?>" class="flex items-center gap-1 hover:text-[#6B0D18] transition-colors w-fit">
+                                Lịch sử mua
+                                <div class="flex flex-col text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
+                                    <span class="iconify <?= $currentSort === 'chi_tieu_asc' ? 'text-[#6B0D18] opacity-100' : 'text-gray-400' ?> -mb-1.5" data-icon="mdi:menu-up"></span>
+                                    <span class="iconify <?= $currentSort === 'chi_tieu_desc' ? 'text-[#6B0D18] opacity-100' : 'text-gray-400' ?>" data-icon="mdi:menu-down"></span>
+                                </div>
+                            </a>
+                        </th>
                         <th class="py-4 px-3 font-bold">Mệnh</th>
                         <th class="py-4 px-3 font-bold">Trạng thái</th>
                         <th class="py-4 pr-6 pl-3 font-bold text-right">Thao tác</th>
@@ -79,7 +94,7 @@ $customers = $customers ?? [];
             <?php foreach ($customers as $kh): ?>
             <div class="p-4 flex gap-4">
                 <div class="shrink-0 pt-1">
-                    <input type="checkbox" class="w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18]">
+                    <input type="checkbox" value="<?= $kh['id'] ?>" class="user-checkbox w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18]" onchange="toggleBulkAction(this)">
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-start mb-2">
@@ -105,11 +120,10 @@ $customers = $customers ?? [];
                         <button onclick="toggleActionMenu(this)" class="p-1 text-gray-400 hover:text-gray-700">
                             <span class="iconify" data-icon="mdi:dots-vertical"></span>
                         </button>
-                        <!-- Mobile Dropdown -->
                         <div class="absolute right-4 mt-8 w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] border border-gray-100 py-2 hidden z-10">
                             <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/chi-tiet/<?= $kh['ma'] ?>'">Xem đơn hàng</button>
-                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50" onclick="openRankModal()">Cập nhật hạng</button>
-                            <button class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50" onclick="openDeleteModal()">Xóa tài khoản</button>
+                            <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50" onclick="openRankModal('<?= $kh['id'] ?>')">Cập nhật hạng</button>
+                            <button class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50" onclick="openDeleteModal('<?= $kh['id'] ?>')">Xóa tài khoản</button>
                         </div>
                     </div>
                     

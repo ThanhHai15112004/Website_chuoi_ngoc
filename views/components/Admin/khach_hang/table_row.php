@@ -1,6 +1,6 @@
                     <tr class="hover:bg-gray-50/50 transition-colors group">
                         <td class="py-4 pl-6 pr-3">
-                            <input type="checkbox" class="w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18] cursor-pointer" onchange="toggleBulkAction(this)">
+                            <input type="checkbox" value="<?= $kh['id'] ?>" class="user-checkbox w-4 h-4 text-[#6B0D18] border-gray-300 rounded focus:ring-[#6B0D18] cursor-pointer" onchange="toggleBulkAction(this)">
                         </td>
                         <td class="py-4 px-3">
                             <div class="flex items-center gap-3">
@@ -44,12 +44,16 @@
                             </div>
                         </td>
                         <td class="py-4 px-3">
-                            <?php if ($kh['hang'] === 'Gold'): ?>
-                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">GOLD</span>
-                            <?php elseif ($kh['hang'] === 'Diamond'): ?>
-                                <span class="px-2 py-1 bg-red-100 text-[#6B0D18] text-xs font-bold rounded">DIAMOND</span>
+                            <?php if ($kh['hang'] === 'Vàng'): ?>
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded">VÀNG</span>
+                            <?php elseif ($kh['hang'] === 'Kim Cương'): ?>
+                                <span class="px-2 py-1 bg-red-100 text-[#6B0D18] text-xs font-bold rounded">KIM CƯƠNG</span>
+                            <?php elseif ($kh['hang'] === 'Bạc'): ?>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded">BẠC</span>
+                            <?php elseif ($kh['hang'] === 'Đồng'): ?>
+                                <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs font-bold rounded">ĐỒNG</span>
                             <?php else: ?>
-                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded">SILVER</span>
+                                <span class="px-2 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded">CHƯA CÓ</span>
                             <?php endif; ?>
                         </td>
                         <td class="py-4 px-3">
@@ -101,16 +105,16 @@
                                 <div class="absolute right-6 top-10 mt-1 w-56 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.1)] border border-gray-100 py-2 hidden z-10 transform origin-top-right transition-all">
                                     <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/sua/<?= $kh['id'] ?>'"><span class="iconify text-gray-400" data-icon="mdi:account-edit-outline"></span> Chỉnh sửa hồ sơ</button>
                                     <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="window.location.href='<?= APP_URL ?>/admin/khach-hang/chi-tiet/<?= $kh['ma'] ?>'"><span class="iconify text-gray-400" data-icon="mdi:cart-outline"></span> Xem đơn hàng</button>
-                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openNotifyModal()"><span class="iconify text-gray-400" data-icon="mdi:bell-outline"></span> Gửi thông báo</button>
-                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openVoucherModal()"><span class="iconify text-gray-400" data-icon="mdi:ticket-percent-outline"></span> Gán voucher</button>
-                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openRankModal()"><span class="iconify text-gray-400" data-icon="mdi:chevron-double-up"></span> Cập nhật hạng</button>
+                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openNotifyModal('<?= $kh['id'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:bell-outline"></span> Gửi thông báo</button>
+                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openVoucherModal('<?= $kh['id'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:ticket-percent-outline"></span> Gán voucher</button>
+                                    <button class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2" onclick="openRankModal('<?= $kh['id'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:chevron-double-up"></span> Cập nhật hạng</button>
                                     <div class="h-px bg-gray-100 my-1"></div>
                                     <?php if ($kh['trang_thai'] === 'bi_khoa'): ?>
-                                        <button class="w-full px-4 py-2 text-left text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2" onclick="alert('Đã mở khóa!')"><span class="iconify" data-icon="mdi:lock-open-outline"></span> Mở khóa tài khoản</button>
+                                        <button class="w-full px-4 py-2 text-left text-sm text-emerald-600 hover:bg-emerald-50 flex items-center gap-2" onclick="submitSingleLock('<?= $kh['id'] ?>', 'unlock')"><span class="iconify" data-icon="mdi:lock-open-outline"></span> Mở khóa tài khoản</button>
                                     <?php else: ?>
-                                        <button class="w-full px-4 py-2 text-left text-sm text-amber-600 hover:bg-amber-50 flex items-center gap-2" onclick="openLockModal()"><span class="iconify" data-icon="mdi:lock-outline"></span> Khóa tài khoản</button>
+                                        <button class="w-full px-4 py-2 text-left text-sm text-amber-600 hover:bg-amber-50 flex items-center gap-2" onclick="openLockModal('<?= $kh['id'] ?>')"><span class="iconify" data-icon="mdi:lock-outline"></span> Khóa tài khoản</button>
                                     <?php endif; ?>
-                                    <button class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2" onclick="openDeleteModal()"><span class="iconify" data-icon="mdi:delete-outline"></span> Xóa tài khoản</button>
+                                    <button class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2" onclick="openDeleteModal('<?= $kh['id'] ?>')"><span class="iconify" data-icon="mdi:delete-outline"></span> Xóa tài khoản</button>
                                 </div>
                             </div>
                         </td>

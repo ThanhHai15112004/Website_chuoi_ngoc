@@ -31,7 +31,7 @@ class KhachHangModel
                 FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
                 LEFT JOIN menh_phong_thuy mpt ON nd.id_menh = mpt.id
-                WHERE nd.id_vai_tro IS NULL";
+                WHERE nd.id_vai_tro IS NULL AND nd.deleted_at IS NULL";
 
         $params = [];
 
@@ -60,7 +60,49 @@ class KhachHangModel
             }
         }
 
-        $sql .= " ORDER BY nd.ngay_tao DESC LIMIT :limit OFFSET :offset";
+        if (!empty($filters['id_hang_thanh_vien'])) {
+            $sql .= " AND nd.id_hang_thanh_vien = :id_hang_thanh_vien";
+            $params['id_hang_thanh_vien'] = $filters['id_hang_thanh_vien'];
+        }
+
+        if (!empty($filters['id_menh'])) {
+            $sql .= " AND nd.id_menh = :id_menh";
+            $params['id_menh'] = $filters['id_menh'];
+        }
+
+        if (!empty($filters['thang_sinh'])) {
+            $sql .= " AND MONTH(nd.ngay_sinh) = :thang_sinh";
+            $params['thang_sinh'] = $filters['thang_sinh'];
+        }
+
+        if (isset($filters['trang_thai_loc']) && $filters['trang_thai_loc'] !== '') {
+            $sql .= " AND nd.trang_thai = :trang_thai_loc";
+            $params['trang_thai_loc'] = $filters['trang_thai_loc'];
+        }
+
+        if (isset($filters['chi_tieu_tu']) && $filters['chi_tieu_tu'] !== '') {
+            $sql .= " AND nd.tong_chi_tieu >= :chi_tieu_tu";
+            $params['chi_tieu_tu'] = $filters['chi_tieu_tu'];
+        }
+
+        if (isset($filters['chi_tieu_den']) && $filters['chi_tieu_den'] !== '') {
+            $sql .= " AND nd.tong_chi_tieu <= :chi_tieu_den";
+            $params['chi_tieu_den'] = $filters['chi_tieu_den'];
+        }
+
+        if (!empty($filters['sort'])) {
+            if ($filters['sort'] === 'chi_tieu_desc') {
+                $sql .= " ORDER BY nd.tong_chi_tieu DESC, nd.ngay_tao DESC";
+            } elseif ($filters['sort'] === 'chi_tieu_asc') {
+                $sql .= " ORDER BY nd.tong_chi_tieu ASC, nd.ngay_tao DESC";
+            } else {
+                $sql .= " ORDER BY nd.ngay_tao DESC";
+            }
+        } else {
+            $sql .= " ORDER BY nd.ngay_tao DESC";
+        }
+
+        $sql .= " LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
 
@@ -78,7 +120,7 @@ class KhachHangModel
     {
         $sql = "SELECT COUNT(*) as total FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
-                WHERE nd.id_vai_tro IS NULL";
+                WHERE nd.id_vai_tro IS NULL AND nd.deleted_at IS NULL";
 
         $params = [];
 
@@ -105,6 +147,36 @@ class KhachHangModel
             } elseif ($filters['tab'] === 'bi_khoa') {
                 $sql .= " AND nd.trang_thai = " . SystemConstants::STATUS_INACTIVE;
             }
+        }
+
+        if (!empty($filters['id_hang_thanh_vien'])) {
+            $sql .= " AND nd.id_hang_thanh_vien = :id_hang_thanh_vien";
+            $params['id_hang_thanh_vien'] = $filters['id_hang_thanh_vien'];
+        }
+
+        if (!empty($filters['id_menh'])) {
+            $sql .= " AND nd.id_menh = :id_menh";
+            $params['id_menh'] = $filters['id_menh'];
+        }
+
+        if (!empty($filters['thang_sinh'])) {
+            $sql .= " AND MONTH(nd.ngay_sinh) = :thang_sinh";
+            $params['thang_sinh'] = $filters['thang_sinh'];
+        }
+
+        if (isset($filters['trang_thai_loc']) && $filters['trang_thai_loc'] !== '') {
+            $sql .= " AND nd.trang_thai = :trang_thai_loc";
+            $params['trang_thai_loc'] = $filters['trang_thai_loc'];
+        }
+
+        if (isset($filters['chi_tieu_tu']) && $filters['chi_tieu_tu'] !== '') {
+            $sql .= " AND nd.tong_chi_tieu >= :chi_tieu_tu";
+            $params['chi_tieu_tu'] = $filters['chi_tieu_tu'];
+        }
+
+        if (isset($filters['chi_tieu_den']) && $filters['chi_tieu_den'] !== '') {
+            $sql .= " AND nd.tong_chi_tieu <= :chi_tieu_den";
+            $params['chi_tieu_den'] = $filters['chi_tieu_den'];
         }
 
         $stmt = $this->db->prepare($sql);
@@ -126,7 +198,7 @@ class KhachHangModel
                     SUM(CASE WHEN trang_thai = " . SystemConstants::STATUS_INACTIVE . " THEN 1 ELSE 0 END) as bi_khoa,
                     (SELECT COUNT(*) FROM nguoi_dung nd2 LEFT JOIN hang_thanh_vien htv2 ON nd2.id_hang_thanh_vien = htv2.id WHERE nd2.id_vai_tro IS NULL AND htv2.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "') as diamond
                 FROM nguoi_dung
-                WHERE id_vai_tro IS NULL";
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -143,7 +215,7 @@ class KhachHangModel
 
     public function timTheoId($id)
     {
-        $sql = "SELECT * FROM nguoi_dung WHERE id = ? AND id_vai_tro IS NULL";
+        $sql = "SELECT * FROM nguoi_dung WHERE id = ? AND id_vai_tro IS NULL AND deleted_at IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -155,7 +227,7 @@ class KhachHangModel
                 FROM nguoi_dung nd 
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id 
                 LEFT JOIN menh_phong_thuy mpt ON nd.id_menh = mpt.id
-                WHERE nd.ma_nd = ? AND nd.id_vai_tro IS NULL";
+                WHERE nd.ma_nd = ? AND nd.id_vai_tro IS NULL AND nd.deleted_at IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$ma]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -174,10 +246,15 @@ class KhachHangModel
 
     public function getVouchersByUser($userId)
     {
-        // Hệ thống hiện tại không có bảng liên kết voucher với user.
-        // Tạm thời trả về danh sách rỗng, hoặc có thể lấy các voucher user đã dùng qua đơn hàng.
-        // Ở đây trả về rỗng để hiển thị "Chưa có voucher nào" tránh lỗi.
-        return [];
+        $sql = "SELECT v.id, v.ma_voucher as ma, v.loai_giam, v.gia_tri, v.don_toi_thieu, v.giam_toi_da, 
+                       v.ngay_ket_thuc, ndv.trang_thai as tinh_trang_su_dung
+                FROM nguoi_dung_voucher ndv
+                JOIN voucher v ON ndv.id_voucher = v.id
+                WHERE ndv.id_nguoi_dung = ?
+                ORDER BY ndv.ngay_tao DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getLogsByUser($userId)
@@ -224,5 +301,50 @@ class KhachHangModel
         $stmt = $this->db->prepare($sql);
         
         return $stmt->execute($values);
+    }
+
+    public function xoa($id)
+    {
+        $sql = "UPDATE nguoi_dung SET deleted_at = NOW() WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public function layVoucher($userId)
+    {
+        $sql = "SELECT v.ma_voucher as ma, v.loai_giam, v.gia_tri, v.giam_toi_da, v.don_toi_thieu, v.ngay_ket_thuc as han_dung,
+                       ndv.trang_thai
+                FROM nguoi_dung_voucher ndv
+                JOIN voucher v ON ndv.id_voucher = v.id
+                WHERE ndv.id_nguoi_dung = ?
+                ORDER BY ndv.ngay_tao DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layYeuThich($userId)
+    {
+        $sql = "SELECT sp.id, sp.ten_sp as ten, sp.gia_ban as gia, sp.trang_thai, sp.hinh_anh_chinh as hinh_anh,
+                       mpt.ten_menh as menh
+                FROM san_pham_yeu_thich spy
+                JOIN san_pham sp ON spy.id_san_pham = sp.id
+                LEFT JOIN menh_phong_thuy mpt ON sp.id_menh_phong_thuy = mpt.id
+                WHERE spy.id_nguoi_dung = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layDanhGia($userId)
+    {
+        $sql = "SELECT dg.so_sao as sao, dg.noi_dung, dg.ngay_tao as ngay, dg.trang_thai, sp.ten_sp as san_pham, sp.hinh_anh_chinh as hinh_anh
+                FROM danh_gia dg
+                JOIN san_pham sp ON dg.id_san_pham = sp.id
+                WHERE dg.id_nguoi_dung = ?
+                ORDER BY dg.ngay_tao DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -25,7 +25,7 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span class="iconify text-gray-400 text-lg" data-icon="mdi:magnify"></span>
                 </div>
-                <input type="text" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] sm:text-sm text-gray-700 bg-gray-50/50 focus:bg-white transition-colors" placeholder="Tìm theo tên sản phẩm, mã SKU, hoặc quét mã vạch...">
+                <input type="text" id="modalSearchInput" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] sm:text-sm text-gray-700 bg-gray-50/50 focus:bg-white transition-colors" placeholder="Tìm theo tên sản phẩm, mã SKU...">
             </div>
             <div class="w-full sm:w-48">
                 <select class="block w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] sm:text-sm text-gray-700 bg-white">
@@ -39,80 +39,11 @@
 
         <!-- Danh sách Kết quả -->
         <div class="flex-1 overflow-y-auto p-6 bg-gray-50/30 custom-scrollbar">
-            <div class="space-y-3">
-                
-                <!-- Item 1 -->
-                <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#6B0D18]/40 hover:shadow-sm transition-all group">
-                    <div class="flex items-center gap-4">
-                        <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?ixlib=rb-4.0.3&w=100&q=80" alt="Sản phẩm" class="w-14 h-14 rounded-lg object-cover border border-gray-100">
-                        <div>
-                            <div class="font-bold text-gray-900">Vòng Ngọc Bích Tài Lộc</div>
-                            <div class="text-xs text-gray-500 mt-1 flex items-center gap-3">
-                                <span>SKU: NB-TL-16</span>
-                                <span>Size: 16cm</span>
-                                <span class="text-emerald-600 font-medium">Tồn kho: 25</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
-                        <div class="text-right">
-                            <div class="font-bold text-[#6B0D18]">1.200.000đ</div>
-                        </div>
-                        <button type="button" class="px-4 py-2 bg-red-50 text-[#6B0D18] border border-red-100 rounded-lg hover:bg-[#6B0D18] hover:text-white hover:border-[#6B0D18] text-sm font-medium transition-colors flex items-center gap-1.5 shrink-0" onclick="addProductToTable('Vòng Ngọc Bích Tài Lộc', 'NB-TL-16')">
-                            <span class="iconify" data-icon="mdi:plus"></span> Thêm
-                        </button>
-                    </div>
+            <div class="space-y-3" id="modalProductList">
+                <div class="text-center py-8 text-gray-500">
+                    <span class="iconify text-3xl mx-auto mb-2 text-gray-300" data-icon="mdi:loading-spin"></span>
+                    Đang tải danh sách sản phẩm...
                 </div>
-
-                <!-- Item 2 -->
-                <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#6B0D18]/40 hover:shadow-sm transition-all group">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-lg bg-gray-100 border border-gray-100 flex items-center justify-center shrink-0">
-                            <span class="iconify text-2xl text-gray-400" data-icon="mdi:image-outline"></span>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-900">Nhẫn ngọc trai đính kim cương</div>
-                            <div class="text-xs text-gray-500 mt-1 flex items-center gap-3">
-                                <span>SKU: NT-002</span>
-                                <span>Đá: Kim cương tự nhiên</span>
-                                <span class="text-rose-600 font-medium">Tồn kho: 1</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
-                        <div class="text-right">
-                            <div class="font-bold text-[#6B0D18]">3.500.000đ</div>
-                        </div>
-                        <button type="button" class="px-4 py-2 bg-red-50 text-[#6B0D18] border border-red-100 rounded-lg hover:bg-[#6B0D18] hover:text-white hover:border-[#6B0D18] text-sm font-medium transition-colors flex items-center gap-1.5 shrink-0" onclick="addProductToTable('Nhẫn ngọc trai đính kim cương', 'NT-002')">
-                            <span class="iconify" data-icon="mdi:plus"></span> Thêm
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Item 3 (Hết hàng) -->
-                <div class="bg-gray-50 border border-gray-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 opacity-70">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-lg bg-gray-200 border border-gray-200 flex items-center justify-center shrink-0">
-                            <span class="iconify text-2xl text-gray-400" data-icon="mdi:image-outline"></span>
-                        </div>
-                        <div>
-                            <div class="font-bold text-gray-700">Lắc tay bạc đính đá Ruby</div>
-                            <div class="text-xs text-gray-500 mt-1 flex items-center gap-3">
-                                <span>SKU: LT-RB-01</span>
-                                <span class="text-gray-500 font-bold">Hết hàng</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
-                        <div class="text-right">
-                            <div class="font-bold text-gray-500">850.000đ</div>
-                        </div>
-                        <button type="button" disabled class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed shrink-0">
-                            Hết hàng
-                        </button>
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -167,9 +98,124 @@
         }
     }
 
-    function addProductToTable(name, sku) {
-        // Mock function
-        alert('Đã thêm sản phẩm: ' + name);
-        // Có thể bổ sung animation JS tạo dòng mới ở form_products table tại đây
+    let modalSearchTimeout = null;
+
+    document.getElementById('modalSearchInput')?.addEventListener('input', function(e) {
+        clearTimeout(modalSearchTimeout);
+        modalSearchTimeout = setTimeout(() => {
+            loadModalProducts(e.target.value);
+        }, 300);
+    });
+
+    function openAddProductModal() {
+        const modal = document.getElementById('addProductModal');
+        const overlay = document.getElementById('addProductModalOverlay');
+        const content = document.getElementById('addProductModalContent');
+        
+        if (modal && overlay) {
+            overlay.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                overlay.classList.add('opacity-100');
+                
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            loadModalProducts('');
+        }
+    }
+
+    async function loadModalProducts(keyword = '') {
+        const listContainer = document.getElementById('modalProductList');
+        if (!listContainer) return;
+
+        listContainer.innerHTML = '<div class="text-center py-8 text-gray-500"><span class="iconify text-3xl mx-auto mb-2 text-gray-300 animate-spin" data-icon="mdi:loading"></span>Đang tải dữ liệu...</div>';
+        
+        try {
+            const res = await fetch(`<?= APP_URL ?>/admin/ton-kho/api/search-variants?keyword=${encodeURIComponent(keyword)}`);
+            const data = await res.json();
+            
+            if (!data || data.length === 0) {
+                listContainer.innerHTML = '<div class="text-center py-8 text-gray-500">Không tìm thấy sản phẩm nào.</div>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach(item => {
+                const img = item.image ? `<img src="<?= APP_URL ?>/${item.image}" alt="Sản phẩm" class="w-14 h-14 rounded-lg object-cover border border-gray-100">` : `<div class="w-14 h-14 rounded-lg bg-gray-100 border border-gray-100 flex items-center justify-center shrink-0"><span class="iconify text-2xl text-gray-400" data-icon="mdi:image-outline"></span></div>`;
+                
+                const stock = parseInt(item.stock || 0);
+                const isOutOfStock = stock <= 0;
+                
+                // Determine form type based on which JS functions exist
+                const isXuatKho = typeof addToXkCart !== 'undefined';
+                
+                let btnHtml = '';
+                if (isXuatKho && isOutOfStock) {
+                    btnHtml = `<button type="button" disabled class="px-4 py-2 bg-gray-100 text-gray-400 rounded-lg text-sm font-medium cursor-not-allowed shrink-0">Hết hàng</button>`;
+                } else {
+                    btnHtml = `<button type="button" class="px-4 py-2 bg-red-50 text-[#6B0D18] border border-red-100 rounded-lg hover:bg-[#6B0D18] hover:text-white hover:border-[#6B0D18] text-sm font-medium transition-colors flex items-center gap-1.5 shrink-0" onclick='addProductFromModal(${JSON.stringify(item).replace(/'/g, "&#39;")})'><span class="iconify" data-icon="mdi:plus"></span> Thêm</button>`;
+                }
+
+                const price = parseInt(item.price || 0);
+
+                html += `
+                <div class="bg-white border border-gray-200 rounded-xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#6B0D18]/40 hover:shadow-sm transition-all group ${isOutOfStock ? 'opacity-70' : ''}">
+                    <div class="flex items-center gap-4">
+                        ${img}
+                        <div>
+                            <div class="font-bold text-gray-900">${item.product_name || item.name}</div>
+                            <div class="text-xs text-gray-500 mt-1 flex items-center gap-3">
+                                <span>SKU: ${item.sku}</span>
+                                <span>${item.variant_name || item.variant}</span>
+                                <span class="${isOutOfStock ? 'text-gray-500 font-bold' : 'text-emerald-600 font-medium'}">Tồn kho: ${stock}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
+                        <div class="text-right">
+                            <div class="font-bold text-[#6B0D18]">${price.toLocaleString('vi-VN')}đ</div>
+                        </div>
+                        ${btnHtml}
+                    </div>
+                </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            listContainer.innerHTML = '<div class="text-center py-8 text-red-500">Lỗi tải dữ liệu.</div>';
+        }
+    }
+
+    function addProductFromModal(item) {
+        if (typeof addVariantToTable === 'function') {
+            // Nhap Kho
+            addVariantToTable({
+                id: item.id,
+                name: item.product_name || item.name,
+                variant: item.variant_name || item.variant,
+                sku: item.sku,
+                image: item.image,
+                price: item.price || 0
+            });
+        } else if (typeof addToXkCart === 'function') {
+            // Xuat kho
+            addToXkCart(item.id, item.product_name || item.name, item.sku, item.variant_name || item.variant, item.price, item.stock || 0, item.image);
+        }
+        
+        // Show success animation or toast
+        const toast = document.createElement('div');
+        toast.className = 'fixed bottom-4 right-4 bg-emerald-500 text-white px-4 py-2 rounded shadow-lg z-[70] flex items-center gap-2 transition-all duration-300 transform translate-y-0 opacity-100';
+        toast.innerHTML = `<span class="iconify text-xl" data-icon="mdi:check-circle"></span> Đã thêm ${item.product_name || item.name}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => toast.remove(), 300);
+        }, 1500);
     }
 </script>

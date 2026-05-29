@@ -22,10 +22,10 @@ $current_page = 'xuat_kho';
             <button type="button" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm">
                 Hủy bỏ
             </button>
-            <button type="button" class="px-6 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">
+            <button type="button" onclick="saveAndSend(0)" class="px-6 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">
                 Lưu nháp
             </button>
-            <button type="button" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+            <button type="button" onclick="saveAndSend(1)" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
                 <span class="iconify text-lg" data-icon="mdi:send-check-outline"></span> Gửi duyệt
             </button>
         </div>
@@ -48,3 +48,50 @@ $current_page = 'xuat_kho';
 
 <!-- Modal Thêm Sản Phẩm -->
 <?php require_once __DIR__ . '/../components/Admin/shared/modal_add_product.php'; ?>
+
+<script>
+    async function saveAndSend(trangThai = 0) {
+        if (typeof xkProducts === 'undefined' || xkProducts.length === 0) {
+            alert('Vui lòng thêm ít nhất 1 sản phẩm vào phiếu xuất.');
+            return;
+        }
+
+        const payload = {
+            ma_phieu: document.getElementById('xk_ma_phieu')?.value || '',
+            loai_phieu: document.getElementById('xk_loai_phieu')?.value || '1',
+            muc_do_uu_tien: document.getElementById('xk_muc_do_uu_tien')?.value || '0',
+            ngay_du_kien: document.getElementById('xk_ngay_du_kien')?.value || '',
+            id_nha_cung_cap: document.getElementById('xk_id_nha_cung_cap')?.value || '',
+            id_don_hang: document.getElementById('xk_id_don_hang')?.value || '',
+            ly_do: document.getElementById('xk_ly_do')?.value || '',
+            ghi_chu: document.getElementById('xk_ghi_chu')?.value || '',
+            tong_tien: document.getElementById('xk_tong_tien')?.value || 0,
+            trang_thai: trangThai,
+            chi_tiet: xkProducts.map(p => ({
+                id_bien_the: p.id,
+                so_luong: p.qty,
+                don_gia: p.price,
+                ghi_chu_ct: p.note
+            }))
+        };
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/xuat-kho/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                alert(data.message);
+                window.location.href = '<?= APP_URL ?>/admin/xuat-kho';
+            } else {
+                alert('Lỗi: ' + data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+        }
+    }
+</script>

@@ -23,8 +23,11 @@
                     
                     <?php if($kh['muc_len_hang_tiep_theo'] > 0): ?>
                         <?php
-                            $progress = ($kh['tong_chi_tieu'] / $kh['muc_len_hang_tiep_theo']) * 100;
+                            $range = $kh['muc_len_hang_tiep_theo'] - $kh['dieu_kien_hang_hien_tai'];
+                            $current = $kh['tong_chi_tieu'] - $kh['dieu_kien_hang_hien_tai'];
+                            $progress = $range > 0 ? ($current / $range) * 100 : 100;
                             if($progress > 100) $progress = 100;
+                            if($progress < 0) $progress = 0;
                         ?>
                         <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2 mb-1">
                             <div class="bg-[#6B0D18] h-1.5 rounded-full" style="width: <?= $progress ?>%"></div>
@@ -235,7 +238,7 @@
             <!-- TAB: VOUCHER -->
             <div id="tab-voucher" class="tab-content hidden space-y-4 animate-[fadeInPage_0.2s_ease-out]">
                 <div class="flex justify-end mb-2">
-                    <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] transition-colors flex items-center gap-2 shadow-sm" onclick="openVoucherModal()">
+                    <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] transition-colors flex items-center gap-2 shadow-sm" onclick="openVoucherModal('<?= $kh['id'] ?>')">
                         <span class="iconify" data-icon="mdi:ticket-percent-outline"></span> Gán voucher mới
                     </button>
                 </div>
@@ -275,8 +278,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     <?php foreach($kh['yeu_thich'] as $sp): ?>
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group">
-                        <div class="h-32 bg-gray-100 flex items-center justify-center relative">
-                            <span class="iconify text-gray-300 text-4xl" data-icon="mdi:image-outline"></span>
+                        <div class="h-32 bg-gray-100 flex items-center justify-center relative overflow-hidden">
+                            <?php if(!empty($sp['hinh_anh'])): ?>
+                                <?php $imgSrc = strpos($sp['hinh_anh'], 'http') === 0 ? $sp['hinh_anh'] : (strpos($sp['hinh_anh'], '/') === 0 ? APP_URL . $sp['hinh_anh'] : APP_URL . '/public/uploads/san_pham/' . $sp['hinh_anh']); ?>
+                                <img src="<?= $imgSrc ?>" alt="<?= $sp['ten'] ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <span class="iconify text-gray-300 text-4xl" data-icon="mdi:image-outline"></span>
+                            <?php endif; ?>
                             <div class="absolute top-2 right-2 px-2 py-1 bg-white/90 backdrop-blur rounded text-[10px] font-bold text-gray-700 shadow-sm">
                                 <?= $sp['ngay_them'] ?>
                             </div>
@@ -301,7 +309,7 @@
                         <h4 class="font-bold text-red-900 text-sm">Gợi ý chăm sóc</h4>
                         <p class="text-xs text-red-700 mt-0.5">Khách hàng có <?= count($kh['yeu_thich']) ?> sản phẩm yêu thích nhưng chưa mua.</p>
                     </div>
-                    <button class="px-4 py-2 bg-[#6B0D18] text-white text-xs font-bold rounded-lg shadow-sm hover:bg-[#8A111F]" onclick="openNotifyModal()">Gửi voucher ưu đãi</button>
+                    <button class="px-4 py-2 bg-[#6B0D18] text-white text-xs font-bold rounded-lg shadow-sm hover:bg-[#8A111F]" onclick="openNotifyModal('<?= $kh['id'] ?>')">Gửi voucher ưu đãi</button>
                 </div>
             </div>
 
@@ -310,8 +318,13 @@
                 <?php foreach($kh['danh_gia'] as $dg): ?>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                            <span class="iconify text-gray-400 text-xl" data-icon="mdi:image-outline"></span>
+                        <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+                            <?php if(!empty($dg['hinh_anh'])): ?>
+                                <?php $imgSrcDg = strpos($dg['hinh_anh'], 'http') === 0 ? $dg['hinh_anh'] : (strpos($dg['hinh_anh'], '/') === 0 ? APP_URL . $dg['hinh_anh'] : APP_URL . '/public/uploads/san_pham/' . $dg['hinh_anh']); ?>
+                                <img src="<?= $imgSrcDg ?>" alt="<?= $dg['san_pham'] ?>" class="w-full h-full object-cover">
+                            <?php else: ?>
+                                <span class="iconify text-gray-400 text-xl" data-icon="mdi:image-outline"></span>
+                            <?php endif; ?>
                         </div>
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center justify-between gap-2 mb-1">

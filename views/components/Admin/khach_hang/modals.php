@@ -19,14 +19,14 @@
         </div>
         <div class="p-6 space-y-4">
             <div class="bg-blue-50 border border-blue-100 p-3 rounded-lg text-sm text-blue-700 mb-2">
-                Hạng hiện tại của <strong>Nguyễn Văn A</strong>: <span class="font-bold">GOLD</span>
+                Bạn đang thực hiện thao tác cập nhật hạng cho khách hàng này.
             </div>
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">Chọn hạng mới <span class="text-red-500">*</span></label>
                 <select class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18]">
-                    <option value="silver">Silver</option>
-                    <option value="gold" selected>Gold</option>
-                    <option value="diamond">Diamond</option>
+                    <?php foreach ($hang_thanh_viens ?? [] as $htv): ?>
+                        <option value="<?= $htv['id'] ?>"><?= $htv['ten_hang'] ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div>
@@ -36,7 +36,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="document.getElementById('rankModal').classList.add('hidden')">Hủy</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="document.getElementById('rankModal').classList.add('hidden'); alert('Đã cập nhật hạng');">Lưu thay đổi</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitSingleRank()">Lưu thay đổi</button>
         </div>
     </div>
 </div>
@@ -52,10 +52,8 @@
             <p class="text-sm text-gray-500 text-center mb-5">Khách hàng sẽ không thể đăng nhập hoặc đặt hàng bằng tài khoản này cho đến khi được mở khóa.</p>
             
             <div class="bg-gray-50 rounded-lg p-3 mb-4 flex items-center gap-3 border border-gray-100">
-                <div class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center font-bold text-gray-500">N</div>
                 <div>
-                    <p class="text-sm font-bold text-gray-800">Nguyễn Văn A</p>
-                    <p class="text-xs text-gray-500">nguyenvana@gmail.com</p>
+                    <p class="text-sm font-bold text-gray-800">Xác nhận thao tác trên tài khoản khách hàng</p>
                 </div>
             </div>
 
@@ -72,7 +70,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="document.getElementById('lockModal').classList.add('hidden')">Hủy</button>
-            <button class="px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-bold hover:bg-amber-700 shadow-sm" onclick="document.getElementById('lockModal').classList.add('hidden'); alert('Đã khóa');">Xác nhận khóa</button>
+            <button class="px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-bold hover:bg-amber-700 shadow-sm" onclick="submitSingleLock()">Xác nhận khóa</button>
         </div>
     </div>
 </div>
@@ -85,11 +83,11 @@
                 <span class="iconify text-2xl" data-icon="mdi:alert-circle-outline"></span>
             </div>
             <h3 class="text-lg font-bold text-gray-800 text-center mb-2">Cảnh báo: Xóa vĩnh viễn?</h3>
-            <p class="text-sm text-gray-500 text-center mb-5">Dữ liệu tài khoản của <strong>Nguyễn Văn A</strong> sẽ bị xóa sạch khỏi hệ thống. Nếu chỉ để cấm truy cập, hãy dùng chức năng <strong>Khóa tài khoản</strong>.</p>
+            <p class="text-sm text-gray-500 text-center mb-5">Dữ liệu tài khoản của khách hàng này sẽ bị xóa sạch khỏi hệ thống. Nếu chỉ để cấm truy cập, hãy dùng chức năng <strong>Khóa tài khoản</strong>.</p>
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="document.getElementById('deleteModal').classList.add('hidden')">Hủy</button>
-            <button class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 shadow-sm" onclick="document.getElementById('deleteModal').classList.add('hidden'); alert('Đã xóa vĩnh viễn');">Vẫn xóa</button>
+            <button class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 shadow-sm" onclick="submitSingleDelete()">Vẫn xóa</button>
         </div>
     </div>
 </div>
@@ -104,7 +102,7 @@
         <div class="p-6 space-y-4">
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">Người nhận</label>
-                <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 font-medium">Nguyễn Văn A</div>
+                <div class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-600 font-medium">Khách hàng được chọn</div>
             </div>
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1">Loại thông báo</label>
@@ -125,7 +123,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="document.getElementById('notifyModal').classList.add('hidden')">Hủy</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="document.getElementById('notifyModal').classList.add('hidden'); alert('Đã gửi thông báo');"><span class="iconify" data-icon="mdi:send"></span> Gửi ngay</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitSingleNotify()"><span class="iconify" data-icon="mdi:send"></span> Gửi ngay</button>
         </div>
     </div>
 </div>
@@ -138,7 +136,7 @@
             <button class="text-gray-400 hover:text-gray-700" onclick="document.getElementById('voucherModal').classList.add('hidden')"><span class="iconify text-xl" data-icon="mdi:close"></span></button>
         </div>
         <div class="p-6">
-            <p class="text-sm text-gray-500 mb-4">Chọn voucher đang có hiệu lực để tặng riêng cho <strong class="text-gray-800">Nguyễn Văn A</strong>.</p>
+            <p class="text-sm text-gray-500 mb-4">Chọn voucher đang có hiệu lực để tặng riêng cho khách hàng này.</p>
             
             <div class="space-y-3 max-h-60 overflow-y-auto pr-2">
                 <!-- Voucher Item -->
@@ -175,7 +173,7 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
             <button class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50" onclick="document.getElementById('voucherModal').classList.add('hidden')">Hủy</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="document.getElementById('voucherModal').classList.add('hidden'); alert('Đã gán voucher');"><span class="iconify" data-icon="mdi:check"></span> Hoàn tất gán</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg text-sm font-bold hover:bg-[#8A111F] shadow-sm flex items-center gap-2" onclick="submitSingleAssignVoucher()"><span class="iconify" data-icon="mdi:check"></span> Hoàn tất gán</button>
         </div>
     </div>
 </div>

@@ -6,13 +6,13 @@
         <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
             <a href="<?= APP_URL ?>/admin/xuat-kho" class="hover:text-[#6B0D18] transition-colors">Phiếu xuất kho</a>
             <span class="iconify text-gray-400" data-icon="mdi:chevron-right"></span>
-            <span class="text-gray-900 font-medium"><?= $phieuXuat['id'] ?></span>
+            <span class="text-gray-900 font-medium"><?= htmlspecialchars($phieuXuat['ma_phieu']) ?></span>
         </div>
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <h2 class="text-2xl font-bold text-gray-900 leading-tight">Chi tiết phiếu xuất: <?= $phieuXuat['id'] ?></h2>
+                <h2 class="text-2xl font-bold text-gray-900 leading-tight">Chi tiết phiếu xuất: <?= htmlspecialchars($phieuXuat['ma_phieu']) ?></h2>
                 <span class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-sm font-bold">
-                    <?= $phieuXuat['trang_thai'] ?>
+                    Trạng thái: <?= $phieuXuat['trang_thai'] ?>
                 </span>
             </div>
             <div class="flex items-center gap-3">
@@ -39,7 +39,7 @@
                     <span class="iconify text-xl" data-icon="mdi:check"></span>
                 </div>
                 <div class="text-sm font-bold text-gray-900 mt-2">Khởi tạo</div>
-                <div class="text-xs text-gray-500"><?= $phieuXuat['ngay_tao'] ?></div>
+                <div class="text-xs text-gray-500"><?= date('H:i d/m/Y', strtotime($phieuXuat['ngay_tao'])) ?></div>
             </div>
 
             <div class="relative z-10 flex flex-col items-center">
@@ -87,7 +87,7 @@
                     <div>
                         <div class="text-xs text-gray-500 mb-1">Ghi chú</div>
                         <div class="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                            <?= $phieuXuat['ghi_chu'] ?>
+                            <?= htmlspecialchars($phieuXuat['ghi_chu'] ?? 'Không có ghi chú') ?>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-base font-bold text-gray-900">Danh sách sản phẩm xuất</h3>
                     <div class="text-sm text-gray-500 font-medium">
-                        Tổng cộng: <span class="text-gray-900 font-bold"><?= $phieuXuat['tong_so_luong'] ?></span> sản phẩm
+                        Tổng cộng: <span class="text-gray-900 font-bold"><?= array_sum(array_column($danhSachSP, 'so_luong')) ?></span> sản phẩm
                     </div>
                 </div>
 
@@ -120,19 +120,19 @@
                                 <tr class="hover:bg-gray-50/50 transition-colors">
                                     <td class="py-3 px-4 text-center text-sm text-gray-500"><?= $index + 1 ?></td>
                                     <td class="py-3 px-4">
-                                        <div class="font-bold text-gray-900"><?= $sp['ten'] ?></div>
-                                        <div class="text-xs text-gray-500 mt-0.5">Mã: <?= $sp['sku'] ?> • <?= $sp['bien_the'] ?></div>
+                                        <div class="font-bold text-gray-900"><?= htmlspecialchars($sp['product_name']) ?></div>
+                                        <div class="text-xs text-gray-500 mt-0.5">Mã: <?= htmlspecialchars($sp['sku']) ?> • <?= htmlspecialchars($sp['variant_name']) ?></div>
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <span class="font-medium text-gray-500"><?= $sp['sl_ton_kho'] ?></span>
+                                        <span class="font-medium text-gray-500"><?= $sp['current_stock'] ?></span>
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         <span class="font-bold text-[#6B0D18] bg-red-50 px-3 py-1 rounded text-lg">
-                                            -<?= $sp['sl_xuat'] ?>
+                                            -<?= $sp['so_luong'] ?>
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <span class="font-bold text-emerald-600"><?= $sp['sl_ton_kho'] - $sp['sl_xuat'] ?></span>
+                                        <span class="font-bold text-emerald-600"><?= max(0, $sp['current_stock'] - $sp['so_luong']) ?></span>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

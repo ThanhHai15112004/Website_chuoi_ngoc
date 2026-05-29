@@ -117,4 +117,43 @@ class HangThanhVienService
         // Chỉ lấy top 10
         return array_slice($result, 0, 10);
     }
+
+    public function capNhatHangTatCaKhachHang()
+    {
+        $ranks = $this->model->layTatCa();
+        // Sắp xếp rank giảm dần theo chi tiêu (ví dụ: Kim cương -> Vàng -> Bạc -> Đồng)
+        usort($ranks, function($a, $b) {
+            return (int)$b['chi_tieu_toi_thieu'] <=> (int)$a['chi_tieu_toi_thieu'];
+        });
+
+        $sql = "SELECT id, tong_chi_tieu, id_hang_thanh_vien FROM nguoi_dung WHERE id_vai_tro IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE;
+        $stmt = $this->db->query($sql);
+        $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $updateStmt = $this->db->prepare("UPDATE nguoi_dung SET id_hang_thanh_vien = ? WHERE id = ?");
+
+        $updatedCount = 0;
+        foreach ($customers as $c) {
+            $tongChiTieu = (int)$c['tong_chi_tieu'];
+            $newRankId = null;
+
+            foreach ($ranks as $r) {
+                if ($tongChiTieu >= (int)$r['chi_tieu_toi_thieu']) {
+                    $newRankId = $r['id'];
+                    break;
+                }
+            }
+
+            if ($newRankId !== null && $newRankId != $c['id_hang_thanh_vien']) {
+                $updateStmt->execute([$newRankId, $c['id']]);
+                $updatedCount++;
+                
+                // Ghi log
+                $logId = uniqid('nk_');
+                $logStmt = $this->db->prepare("INSERT INTO nhat_ky_hoat_dong (id, id_nguoi_dung, hanh_dong, module, gia_tri_cu, gia_tri_moi, ngay_tao) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                $logStmt->execute([$logId, $c['id'], 'Thăng hạng tự động', 'Hạng thành viên', $c['id_hang_thanh_vien'], $newRankId]);
+            }
+        }
+        return $updatedCount;
+    }
 }

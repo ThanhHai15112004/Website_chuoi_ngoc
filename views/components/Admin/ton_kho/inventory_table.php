@@ -20,7 +20,11 @@
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
-                                <span class="iconify text-gray-400 text-2xl" data-icon="mdi:image-outline"></span>
+                                <?php if (!empty($p['image']) && $p['image'] !== 'images/placeholder.jpg'): ?>
+                                    <img src="<?= APP_URL ?>/<?= htmlspecialchars($p['image']) ?>" alt="<?= htmlspecialchars($p['name']) ?>" class="w-full h-full object-cover">
+                                <?php else: ?>
+                                    <span class="iconify text-gray-400 text-2xl" data-icon="mdi:image-outline"></span>
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <div class="font-bold text-gray-900 line-clamp-1 hover:text-red-900 cursor-pointer"><?= $p['name'] ?></div>
@@ -99,17 +103,17 @@
                                     <span class="iconify" data-icon="mdi:dots-vertical"></span>
                                 </button>
                                 <div class="dropdown-menu hidden absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 py-1">
-                                    <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
+                                    <a href="<?= APP_URL ?>/admin/nhap-kho/them?variant_id=<?= $p['variant_id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
                                         <span class="iconify text-lg" data-icon="mdi:tray-arrow-down"></span> Nhập kho sản phẩm này
                                     </a>
-                                    <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
+                                    <a href="<?= APP_URL ?>/admin/xuat-kho/them?variant_id=<?= $p['variant_id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
                                         <span class="iconify text-lg" data-icon="mdi:tray-arrow-up"></span> Xuất kho
                                     </a>
-                                    <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
+                                    <button type="button" onclick="openAdjustmentModal('<?= $p['variant_id'] ?>', '<?= htmlspecialchars(addslashes($p['name'] . ' - ' . $p['variant'])) ?>', <?= $p['stock_current'] ?>)" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-900">
                                         <span class="iconify text-lg" data-icon="mdi:tune"></span> Điều chỉnh sai lệch
-                                    </a>
+                                    </button>
                                     <hr class="my-1 border-gray-100">
-                                    <a href="<?= APP_URL ?>/admin/san-pham/chi-tiet?id=<?= $p['id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                    <a href="<?= APP_URL ?>/admin/san-pham/chi-tiet/<?= $p['product_id'] ?>" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                         <span class="iconify text-lg" data-icon="mdi:eye-outline"></span> Xem trang sản phẩm
                                     </a>
                                 </div>
@@ -123,21 +127,62 @@
 </div>
 
 <!-- Phân trang -->
-<div class="p-4 border-t border-gray-200 bg-white flex items-center justify-between">
+<?php
+$currentPage = $pagination['current_page'] ?? 1;
+$lastPage = $pagination['last_page'] ?? 1;
+$total = $pagination['total'] ?? 0;
+$perPage = $pagination['per_page'] ?? 20;
+
+$startItem = ($currentPage - 1) * $perPage + 1;
+if ($total == 0) $startItem = 0;
+$endItem = min($currentPage * $perPage, $total);
+
+$queryParams = $_GET;
+unset($queryParams['page']);
+$queryString = !empty($queryParams) ? '&' . http_build_query($queryParams) : '';
+$baseUrl = APP_URL . '/admin/ton-kho?';
+?>
+<div class="p-4 border-t border-gray-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="text-sm text-gray-500">
-        Hiển thị <span class="font-medium text-gray-900">1</span> đến <span class="font-medium text-gray-900">6</span> trong tổng số <span class="font-medium text-gray-900">256</span> sản phẩm
+        Hiển thị <span class="font-medium text-gray-900"><?= $startItem ?></span> đến <span class="font-medium text-gray-900"><?= $endItem ?></span> trong tổng số <span class="font-medium text-gray-900"><?= $total ?></span> sản phẩm
     </div>
+    
+    <?php if ($lastPage > 1): ?>
     <div class="flex items-center gap-1">
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">
-            <span class="iconify" data-icon="mdi:chevron-left"></span>
-        </button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-medium text-sm shadow-sm">1</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">2</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">3</button>
-        <span class="w-8 h-8 flex items-center justify-center text-gray-500">...</span>
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">42</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
-            <span class="iconify" data-icon="mdi:chevron-right"></span>
-        </button>
+        <?php if ($currentPage > 1): ?>
+            <a href="<?= $baseUrl . 'page=' . ($currentPage - 1) . $queryString ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                <span class="iconify" data-icon="mdi:chevron-left"></span>
+            </a>
+        <?php else: ?>
+            <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">
+                <span class="iconify" data-icon="mdi:chevron-left"></span>
+            </button>
+        <?php endif; ?>
+
+        <?php
+        $window = 2;
+        for ($i = 1; $i <= $lastPage; $i++) {
+            if ($i == 1 || $i == $lastPage || ($i >= $currentPage - $window && $i <= $currentPage + $window)) {
+                if ($i == $currentPage) {
+                    echo '<span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-medium text-sm shadow-sm">' . $i . '</span>';
+                } else {
+                    echo '<a href="' . $baseUrl . 'page=' . $i . $queryString . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">' . $i . '</a>';
+                }
+            } elseif ($i == $currentPage - $window - 1 || $i == $currentPage + $window + 1) {
+                echo '<span class="w-8 h-8 flex items-center justify-center text-gray-500">...</span>';
+            }
+        }
+        ?>
+
+        <?php if ($currentPage < $lastPage): ?>
+            <a href="<?= $baseUrl . 'page=' . ($currentPage + 1) . $queryString ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                <span class="iconify" data-icon="mdi:chevron-right"></span>
+            </a>
+        <?php else: ?>
+            <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">
+                <span class="iconify" data-icon="mdi:chevron-right"></span>
+            </button>
+        <?php endif; ?>
     </div>
+    <?php endif; ?>
 </div>
