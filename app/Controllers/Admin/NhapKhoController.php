@@ -31,7 +31,12 @@ class NhapKhoController extends Controller {
 
     public function taoMoi() {
         $nhaCungCapList = $this->nhapKhoService->layDanhSachNhaCungCap();
-        $this->view('admin_nhap_kho_them', ['nhaCungCapList' => $nhaCungCapList], 'admin');
+        $khoModel = new \App\Models\KhoHangModel();
+        $danhSachKho = $khoModel->layDanhSachChoSelect();
+        $this->view('admin_nhap_kho_them', [
+            'nhaCungCapList' => $nhaCungCapList,
+            'danhSachKho' => $danhSachKho
+        ], 'admin');
     }
 
     public function luuMoi() {
@@ -100,6 +105,24 @@ class NhapKhoController extends Controller {
 
             $result = $this->nhapKhoService->hoanThanhKiemHang($id, $userId, $chiTietKiem);
             
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    public function duyet($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->nhapKhoService->duyetPhieu($id);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    public function huy($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->nhapKhoService->huyPhieu($id);
             header('Content-Type: application/json');
             echo json_encode($result);
             exit;

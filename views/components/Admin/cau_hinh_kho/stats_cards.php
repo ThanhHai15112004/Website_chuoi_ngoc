@@ -63,6 +63,6 @@
             <p class="text-[11px] font-semibold text-[#6B0D18] uppercase tracking-wider mb-1">Kho mặc định</p>
             <span class="iconify text-[#6B0D18] text-lg" data-icon="mdi:star"></span>
         </div>
-        <h3 class="text-sm font-bold text-gray-900 mt-2 relative z-10 leading-tight">Kho Online</h3>
+        <h3 class="text-sm font-bold text-gray-900 mt-2 relative z-10 leading-tight"><?= htmlspecialchars($stats['kho_mac_dinh'] ?? 'Chưa đặt') ?></h3>
     </div>
 </div>

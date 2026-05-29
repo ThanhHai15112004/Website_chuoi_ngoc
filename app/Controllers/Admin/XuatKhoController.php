@@ -35,9 +35,12 @@ class XuatKhoController extends Controller
 
     public function taoMoi()
     {
+        $khoModel = new \App\Models\KhoHangModel();
+        $danhSachKho = $khoModel->layDanhSachChoSelect();
         $this->view('admin_xuat_kho_them', [
             'title' => 'Tạo Phiếu Xuất Kho Mới',
-            'current_page' => 'xuat_kho'
+            'current_page' => 'xuat_kho',
+            'danhSachKho' => $danhSachKho
         ], 'admin');
     }
 
@@ -113,6 +116,16 @@ class XuatKhoController extends Controller
 
             $result = $this->xuatKhoService->hoanThanhXuatKho($id, $userId, $chiTietKiem);
             
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    public function huy($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->xuatKhoService->huyPhieu($id);
             header('Content-Type: application/json');
             echo json_encode($result);
             exit;

@@ -7,7 +7,7 @@
             <h3 class="text-lg font-bold text-gray-900">Ngưỡng cảnh báo kho</h3>
             <p class="text-sm text-gray-500 mt-1">Cấu hình hệ thống tự động thông báo khi tồn kho đạt đến các mức độ bất thường.</p>
         </div>
-        <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+        <button onclick="saveCanhBao()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
             <span class="iconify" data-icon="mdi:content-save"></span> Lưu cấu hình
         </button>
     </div>
@@ -35,7 +35,7 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Ngưỡng cảnh báo (mặc định)</label>
                     <div class="relative">
-                        <input type="number" value="5" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
+                        <input type="number" id="cb_nguong_sap_het" value="<?= $cauHinh['nguong_sap_het'] ?? '5' ?>" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-500 text-sm">SP</div>
                     </div>
                 </div>
@@ -63,13 +63,13 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Ngưỡng tồn cao (> SP)</label>
                     <div class="relative">
-                        <input type="number" value="50" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
+                        <input type="number" id="cb_nguong_ton_cao" value="<?= $cauHinh['nguong_ton_cao'] ?? '50' ?>" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">Thời gian không bán (Ngày)</label>
                     <div class="relative">
-                        <input type="number" value="60" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
+                        <input type="number" id="cb_ngay_khong_ban" value="<?= $cauHinh['ngay_khong_ban'] ?? '60' ?>" class="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
                     </div>
                 </div>
             </div>
@@ -137,3 +137,29 @@
     </div>
 
 </div>
+
+<script>
+    async function saveCanhBao() {
+        const payload = {
+            nguong_sap_het: document.getElementById('cb_nguong_sap_het')?.value || '5',
+            nguong_ton_cao: document.getElementById('cb_nguong_ton_cao')?.value || '50',
+            ngay_khong_ban: document.getElementById('cb_ngay_khong_ban')?.value || '60'
+        };
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/cau-hinh/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Có lỗi xảy ra.', 'error');
+        }
+    }
+</script>

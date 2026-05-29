@@ -37,9 +37,9 @@ class NhapKhoService
             elseif ($item['trang_thai_thanh_toan'] == 1) $item['thanh_toan'] = 'Thanh toán một phần';
             else $item['thanh_toan'] = 'Đã thanh toán';
 
-            // 0: Nháp, 1: Chờ kiểm hàng, 2: Đang kiểm, 3: Hoàn thành, 4: Đã hủy
+            // 0: Nháp, 1: Chờ duyệt, 2: Đang kiểm, 3: Hoàn thành, 4: Đã hủy
             if ($item['trang_thai'] == 0) $item['status_text'] = 'Nháp';
-            elseif ($item['trang_thai'] == 1) $item['status_text'] = 'Chờ kiểm hàng';
+            elseif ($item['trang_thai'] == 1) $item['status_text'] = 'Chờ duyệt';
             elseif ($item['trang_thai'] == 2) $item['status_text'] = 'Đang kiểm hàng';
             elseif ($item['trang_thai'] == 3) $item['status_text'] = 'Đã nhập kho';
             elseif ($item['trang_thai'] == 4) $item['status_text'] = 'Đã hủy';
@@ -131,5 +131,23 @@ class NhapKhoService
             return ['success' => true, 'message' => 'Kiểm hàng thành công. Sản phẩm đã được nhập kho.'];
         }
         return ['success' => false, 'message' => 'Lỗi khi kiểm hàng.'];
+    }
+
+    public function duyetPhieu($id)
+    {
+        $success = $this->phieuKhoModel->capNhatTrangThai($id, 2); // 2: Đang kiểm hàng
+        if ($success) {
+            return ['success' => true, 'message' => 'Đã duyệt phiếu. Chuyển sang đang kiểm hàng.'];
+        }
+        return ['success' => false, 'message' => 'Lỗi khi duyệt phiếu.'];
+    }
+
+    public function huyPhieu($id)
+    {
+        $success = $this->phieuKhoModel->xoaPhieu($id); // xoaPhieu set trang_thai = 4
+        if ($success) {
+            return ['success' => true, 'message' => 'Đã hủy phiếu thành công.'];
+        }
+        return ['success' => false, 'message' => 'Lỗi khi hủy phiếu. Không thể hủy phiếu đã hoàn thành.'];
     }
 }

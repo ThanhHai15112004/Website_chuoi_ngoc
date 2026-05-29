@@ -2,15 +2,16 @@
 // views/components/Admin/cau_hinh_kho/tabs/tab_sku_barcode.php
 ?>
 <div class="p-6">
-    <div class="flex justify-between items-center pb-4 border-b border-gray-100 mb-6">
-        <div>
-            <h3 class="text-lg font-bold text-gray-900">Cấu hình SKU & Mã vạch</h3>
-            <p class="text-sm text-gray-500 mt-1">Thiết lập quy tắc sinh mã tự động cho hàng hóa và cấu hình in tem nhãn.</p>
+    <form id="formCauHinhSKU" onsubmit="event.preventDefault(); saveCauHinhSKU();">
+        <div class="flex justify-between items-center pb-4 border-b border-gray-100 mb-6">
+            <div>
+                <h3 class="text-lg font-bold text-gray-900">Cấu hình SKU & Mã vạch</h3>
+                <p class="text-sm text-gray-500 mt-1">Thiết lập quy tắc sinh mã tự động cho hàng hóa và cấu hình in tem nhãn.</p>
+            </div>
+            <button type="submit" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+                <span class="iconify" data-icon="mdi:content-save"></span> Lưu cấu hình
+            </button>
         </div>
-        <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
-            <span class="iconify" data-icon="mdi:content-save"></span> Lưu cấu hình
-        </button>
-    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
@@ -41,22 +42,18 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Tiền tố mặc định</label>
-                            <input type="text" value="VNG" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
+                            <input type="text" name="sku_prefix" value="<?= htmlspecialchars($cauHinh['sku_prefix'] ?? 'SP') ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-700 mb-1">Ký tự phân cách</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm">
-                                <option value="-">Gạch ngang (-)</option>
-                                <option value="_">Gạch dưới (_)</option>
-                                <option value="">Không phân cách</option>
-                            </select>
+                            <label class="block text-xs font-medium text-gray-700 mb-1">Số lượng ký tự mã tự động</label>
+                            <input type="number" name="sku_length" value="<?= htmlspecialchars($cauHinh['sku_length'] ?? '6') ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" />
                         </div>
                     </div>
                 </div>
 
                 <div class="p-4 border border-dashed border-[#6B0D18]/40 bg-red-50/20 rounded-xl text-center">
-                    <span class="text-xs text-gray-500 block mb-1">Preview mã SKU</span>
-                    <span class="text-lg font-mono font-bold text-[#6B0D18]">VNG-VONG-NGOC-001</span>
+                    <span class="text-xs text-gray-500 block mb-1">Preview mã SKU mẫu</span>
+                    <span class="text-lg font-mono font-bold text-[#6B0D18]"><?= htmlspecialchars($cauHinh['sku_prefix'] ?? 'SP') ?>000001</span>
                 </div>
             </div>
         </div>
@@ -82,18 +79,18 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Chuẩn mã vạch</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm">
-                                <option value="code128">Code 128 (Khuyên dùng)</option>
-                                <option value="ean13">EAN-13</option>
-                                <option value="upc">UPC-A</option>
+                            <select name="barcode_type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm">
+                                <option value="code128" <?= ($cauHinh['barcode_type'] ?? '') == 'code128' ? 'selected' : '' ?>>Code 128 (Khuyên dùng)</option>
+                                <option value="ean13" <?= ($cauHinh['barcode_type'] ?? '') == 'ean13' ? 'selected' : '' ?>>EAN-13</option>
+                                <option value="upc" <?= ($cauHinh['barcode_type'] ?? '') == 'upc' ? 'selected' : '' ?>>UPC-A</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-medium text-gray-700 mb-1">Kích thước giấy in tem</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm">
-                                <option value="35x22">35x22 mm (2 tem/hàng)</option>
-                                <option value="50x30">50x30 mm (1 tem/hàng)</option>
-                                <option value="100x150">100x150 mm (Khổ lớn)</option>
+                            <select name="barcode_print_size" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm">
+                                <option value="35x22" <?= ($cauHinh['barcode_print_size'] ?? '') == '35x22' ? 'selected' : '' ?>>35x22 mm (2 tem/hàng)</option>
+                                <option value="50x30" <?= ($cauHinh['barcode_print_size'] ?? '') == '50x30' ? 'selected' : '' ?>>50x30 mm (1 tem/hàng)</option>
+                                <option value="100x150" <?= ($cauHinh['barcode_print_size'] ?? '') == '100x150' ? 'selected' : '' ?>>100x150 mm (Khổ lớn)</option>
                             </select>
                         </div>
                     </div>
@@ -102,20 +99,18 @@
                         <label class="block text-xs font-medium text-gray-700 mb-2">Thông tin hiển thị trên tem nhãn</label>
                         <div class="grid grid-cols-2 gap-2">
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                                <input type="hidden" name="barcode_print_name" value="0">
+                                <input type="checkbox" name="barcode_print_name" value="1" <?= ($cauHinh['barcode_print_name'] ?? '1') == '1' ? 'checked' : '' ?> class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Tên sản phẩm</span>
                             </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                            <label class="flex items-center gap-2 cursor-pointer opacity-50 tooltip" title="Mã SKU luôn hiển thị dưới Barcode">
+                                <input type="checkbox" checked disabled class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Mã SKU</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
+                                <input type="hidden" name="barcode_print_price" value="0">
+                                <input type="checkbox" name="barcode_print_price" value="1" <?= ($cauHinh['barcode_print_price'] ?? '1') == '1' ? 'checked' : '' ?> class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
                                 <span class="text-sm text-gray-700">Giá bán</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
-                                <span class="text-sm text-gray-700">Logo cửa hàng</span>
                             </label>
                         </div>
                     </div>
@@ -124,4 +119,28 @@
             </div>
         </div>
     </div>
+    </form>
 </div>
+
+<script>
+    async function saveCauHinhSKU() {
+        const form = document.getElementById('formCauHinhSKU');
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/cau-hinh/luu', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (e) {
+            console.error(e);
+            showToast('Lỗi hệ thống', 'error');
+        }
+    }
+</script>

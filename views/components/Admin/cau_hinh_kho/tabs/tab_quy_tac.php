@@ -7,7 +7,7 @@
             <h3 class="text-lg font-bold text-gray-900">Quy tắc tồn kho & Bán hàng</h3>
             <p class="text-sm text-gray-500 mt-1">Thiết lập cách hệ thống xử lý tồn kho khi có đơn hàng, hủy đơn hoặc hết hàng.</p>
         </div>
-        <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
+        <button onclick="saveQuyTac()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium text-sm transition-colors flex items-center gap-2 shadow-sm">
             <span class="iconify" data-icon="mdi:content-save"></span> Lưu cấu hình
         </button>
     </div>
@@ -23,21 +23,21 @@
                 </h4>
                 <div class="space-y-3">
                     <label class="flex items-start gap-3 p-3 rounded-lg border border-[#6B0D18]/30 bg-red-50/20 cursor-pointer transition-colors">
-                        <input type="radio" name="tru_kho" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" checked>
+                        <input type="radio" name="tru_kho" value="xac_nhan_don" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" <?= ($cauHinh['quy_tac_tru_kho'] ?? 'xac_nhan_don') === 'xac_nhan_don' ? 'checked' : '' ?>>
                         <div>
                             <span class="block text-sm font-semibold text-gray-900">Khi Admin xác nhận đơn (Khuyên dùng)</span>
                             <span class="block text-xs text-gray-500 mt-0.5">Tồn kho chỉ bị trừ thực tế khi đơn được cửa hàng xác nhận có thể giao.</span>
                         </div>
                     </label>
                     <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors">
-                        <input type="radio" name="tru_kho" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]">
+                        <input type="radio" name="tru_kho" value="dat_hang" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" <?= ($cauHinh['quy_tac_tru_kho'] ?? '') === 'dat_hang' ? 'checked' : '' ?>>
                         <div>
                             <span class="block text-sm font-medium text-gray-700">Khi khách đặt hàng thành công</span>
                             <span class="block text-xs text-gray-500 mt-0.5">Hệ thống sẽ trừ kho ngay khi có mã đơn hàng. Tránh bị khách khác mua mất.</span>
                         </div>
                     </label>
                     <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors">
-                        <input type="radio" name="tru_kho" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]">
+                        <input type="radio" name="tru_kho" value="dang_giao" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" <?= ($cauHinh['quy_tac_tru_kho'] ?? '') === 'dang_giao' ? 'checked' : '' ?>>
                         <div>
                             <span class="block text-sm font-medium text-gray-700">Khi đơn chuyển sang Đang giao</span>
                             <span class="block text-xs text-gray-500 mt-0.5">Chỉ trừ kho khi hàng đã xuất khỏi kho giao cho ĐVVC.</span>
@@ -87,14 +87,14 @@
                 </h4>
                 <div class="space-y-3">
                     <label class="flex items-start gap-3 p-3 rounded-lg border border-[#6B0D18]/30 bg-red-50/20 cursor-pointer transition-colors">
-                        <input type="radio" name="chon_kho" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" checked>
+                        <input type="radio" name="chon_kho" value="kho_mac_dinh" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" <?= ($cauHinh['chon_kho_tru'] ?? 'kho_mac_dinh') === 'kho_mac_dinh' ? 'checked' : '' ?>>
                         <div>
                             <span class="block text-sm font-semibold text-gray-900">Luôn trừ từ kho mặc định</span>
                             <span class="block text-xs text-gray-500 mt-0.5">Tất cả đơn online sẽ lấy hàng từ 1 kho mặc định được chỉ định sẵn (VD: Kho Online).</span>
                         </div>
                     </label>
                     <label class="flex items-start gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors">
-                        <input type="radio" name="chon_kho" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]">
+                        <input type="radio" name="chon_kho" value="admin_chon" class="mt-0.5 text-[#6B0D18] focus:ring-[#6B0D18]" <?= ($cauHinh['chon_kho_tru'] ?? '') === 'admin_chon' ? 'checked' : '' ?>>
                         <div>
                             <span class="block text-sm font-medium text-gray-700">Admin chọn kho khi xác nhận</span>
                             <span class="block text-xs text-gray-500 mt-0.5">Nhân viên xử lý đơn sẽ tự chọn xuất từ kho nào dựa vào thực tế hàng hóa.</span>
@@ -136,3 +136,28 @@
         </div>
     </div>
 </div>
+
+<script>
+    async function saveQuyTac() {
+        const payload = {
+            quy_tac_tru_kho: document.querySelector('input[name="tru_kho"]:checked')?.value || 'xac_nhan_don',
+            chon_kho_tru: document.querySelector('input[name="chon_kho"]:checked')?.value || 'kho_mac_dinh'
+        };
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/cau-hinh/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Có lỗi xảy ra.', 'error');
+        }
+    }
+</script>

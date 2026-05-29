@@ -22,7 +22,7 @@
                     Uy tín cao <span class="text-gray-400 text-xs ml-1">(<?= $stats['danh_gia_tot'] ?>)</span>
                 </button>
                 <button class="relative py-3 px-4 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-t-lg transition-colors">
-                    Chưa có đơn nhập <span class="text-gray-400 text-xs ml-1">(1)</span>
+                    Chưa có đơn nhập <span class="text-gray-400 text-xs ml-1">(<?= $stats['tong'] - $stats['danh_gia_tot'] ?>)</span>
                 </button>
             </nav>
         </div>
@@ -90,16 +90,22 @@
         </div>
     </div>
     
+    <?php if(!empty($_GET['keyword']) || !empty($_GET['trang_thai'])): ?>
     <!-- Active Filters Display -->
     <div class="px-4 pb-4 flex items-center gap-2 flex-wrap">
         <span class="text-sm text-gray-500 mr-1">Đang lọc:</span>
+        <?php if(!empty($_GET['keyword'])): ?>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-[#6B0D18] border border-red-100">
-            Khu vực: TP.HCM
-            <button class="text-[#6B0D18] hover:text-red-900 focus:outline-none"><span class="iconify" data-icon="mdi:close"></span></button>
+            Từ khóa: <?= htmlspecialchars($_GET['keyword']) ?>
+            <a href="?<?= http_build_query(array_merge($_GET, ['keyword' => ''])) ?>" class="text-[#6B0D18] hover:text-red-900 focus:outline-none"><span class="iconify" data-icon="mdi:close"></span></a>
         </span>
+        <?php endif; ?>
+        <?php if(!empty($_GET['trang_thai'])): ?>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-red-50 text-[#6B0D18] border border-red-100">
-            Có công nợ
-            <button class="text-[#6B0D18] hover:text-red-900 focus:outline-none"><span class="iconify" data-icon="mdi:close"></span></button>
+            Trạng thái: <?= htmlspecialchars($_GET['trang_thai']) ?>
+            <a href="?<?= http_build_query(array_merge($_GET, ['trang_thai' => ''])) ?>" class="text-[#6B0D18] hover:text-red-900 focus:outline-none"><span class="iconify" data-icon="mdi:close"></span></a>
         </span>
+        <?php endif; ?>
     </div>
+    <?php endif; ?>
 </div>

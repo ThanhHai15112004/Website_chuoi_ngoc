@@ -1,63 +1,7 @@
 <?php
 // views/components/Admin/cau_hinh_kho/modals.php
+$danhSachKhoSelect = $danhSachKhoSelect ?? [];
 ?>
-<!-- Modal Tạm ngừng kho -->
-<div id="modalPause" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalPauseContent">
-        <div class="p-6">
-            <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-4 mx-auto">
-                <span class="iconify text-2xl" data-icon="mdi:pause-circle-outline"></span>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Tạm ngừng kho này?</h3>
-            <p class="text-sm text-gray-500 text-center mb-4">Kho sẽ không được dùng cho nhập, xuất hoặc bán hàng mới, nhưng dữ liệu tồn kho vẫn được giữ lại.</p>
-            
-            <div class="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs text-rose-700 mb-6 text-center">
-                Kho này hiện còn <span class="font-bold">1.240</span> sản phẩm. Đảm bảo không có đơn hàng đang xử lý trước khi tạm ngừng.
-            </div>
-
-            <div class="flex items-center gap-3">
-                <button type="button" onclick="closeModal('modalPause')" class="flex-1 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors">
-                    Hủy bỏ
-                </button>
-                <button type="button" class="flex-1 py-2.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-medium transition-colors shadow-sm">
-                    Xác nhận tạm ngừng
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Ngừng dùng kho (Xóa kho) -->
-<div id="modalDelete" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalDeleteContent">
-        <div class="p-6">
-            <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 mb-4 mx-auto">
-                <span class="iconify text-2xl" data-icon="mdi:alert-outline"></span>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Ngừng dùng kho?</h3>
-            <p class="text-sm text-gray-500 text-center mb-4">Kho sẽ được lưu trữ và không thể chọn trong các thao tác mới. Lịch sử tồn kho vẫn được giữ lại.</p>
-            
-            <div class="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs text-rose-700 mb-6 text-center font-medium">
-                Kho này vẫn còn hàng. Hãy chuyển hàng sang kho khác trước khi ngừng dùng.
-            </div>
-
-            <div class="flex flex-col gap-3">
-                <button type="button" class="w-full py-2.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 font-medium transition-colors">
-                    Chuyển hàng sang kho khác
-                </button>
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="closeModal('modalDelete')" class="flex-1 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors">
-                        Hủy bỏ
-                    </button>
-                    <button type="button" class="flex-1 py-2.5 bg-gray-300 text-white rounded-lg cursor-not-allowed font-medium transition-colors shadow-sm" disabled>
-                        Ngừng dùng kho
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal Thêm Vị Trí Khu Vực -->
 <div id="modalThemViTri" class="fixed inset-0 bg-gray-900/50 z-[60] hidden items-center justify-center backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden transform scale-95 opacity-0 transition-all duration-300" id="modalThemViTriContent">
@@ -75,27 +19,26 @@
         <div class="p-6 space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Kho trực thuộc <span class="text-red-500">*</span></label>
-                <select class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm">
-                    <option>Kho Online</option>
-                    <option>Kho Tổng</option>
+                <select id="vt_id_kho" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm">
+                    <?php foreach ($danhSachKhoSelect as $k): ?>
+                        <option value="<?= htmlspecialchars($k['id']) ?>"><?= htmlspecialchars($k['ten_kho']) ?> (<?= htmlspecialchars($k['ma_kho']) ?>)</option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Cấp độ vị trí <span class="text-red-500">*</span></label>
-                    <select class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm">
-                        <option>Khu vực (Zone)</option>
-                        <option>Kệ (Rack)</option>
-                        <option>Ngăn (Bin)</option>
+                    <select id="vt_cap_do" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm">
+                        <option value="khu">Khu vực (Zone)</option>
+                        <option value="ke">Kệ (Rack)</option>
+                        <option value="ngan">Ngăn (Bin)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Vị trí cha (Tùy chọn)</label>
-                    <select class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm text-gray-500">
-                        <option value="">-- Chọn Khu vực cha --</option>
-                        <option>Khu A - Vòng ngọc</option>
-                        <option>Khu B - Nhẫn</option>
+                    <select id="vt_id_cha" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm text-gray-500">
+                        <option value="">-- Không có (Gốc) --</option>
                     </select>
                 </div>
             </div>
@@ -103,17 +46,17 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Mã vị trí <span class="text-red-500">*</span></label>
-                    <input type="text" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="VD: KV-C">
+                    <input type="text" id="vt_ma" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="VD: KV-C">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Tên vị trí <span class="text-red-500">*</span></label>
-                    <input type="text" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="VD: Khu C - Hộp quà">
+                    <input type="text" id="vt_ten" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="VD: Khu C - Hộp quà">
                 </div>
             </div>
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Sức chứa tối đa (Số lượng SP)</label>
-                <input type="number" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="Để trống nếu không giới hạn">
+                <input type="number" id="vt_suc_chua" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" placeholder="Để trống nếu không giới hạn">
             </div>
         </div>
 
@@ -122,14 +65,58 @@
             <button type="button" onclick="closeModal('modalThemViTri')" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors text-sm">
                 Hủy bỏ
             </button>
-            <button type="button" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium transition-colors shadow-sm flex items-center gap-2 text-sm">
+            <button type="button" onclick="saveViTri()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 font-medium transition-colors shadow-sm flex items-center gap-2 text-sm">
                 <span class="iconify" data-icon="mdi:check"></span> Thêm vị trí
             </button>
         </div>
     </div>
 </div>
 
+<!-- Toast cho trang chính -->
+<div id="toast" class="fixed bottom-6 right-6 bg-white border-l-4 border-emerald-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]">
+    <div class="bg-emerald-100 rounded-full p-1" id="toast-icon-bg">
+        <span class="iconify text-emerald-600" data-icon="mdi:check" id="toast-icon"></span>
+    </div>
+    <div>
+        <h4 class="text-sm font-bold text-gray-900" id="toast-title">Thành công</h4>
+        <p class="text-sm text-gray-600 mt-0.5" id="toast-msg">Thao tác thành công.</p>
+    </div>
+    <button type="button" onclick="hideToast()" class="text-gray-400 hover:text-gray-600 ml-4"><span class="iconify" data-icon="mdi:close"></span></button>
+</div>
+
 <script>
+    // Toast
+    let toastTimeout;
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMsg = document.getElementById('toast-msg');
+        const toastIconBg = document.getElementById('toast-icon-bg');
+        const toastIcon = document.getElementById('toast-icon');
+        toastMsg.textContent = msg;
+        if (type === 'success') {
+            toast.className = 'fixed bottom-6 right-6 bg-white border-l-4 border-emerald-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]';
+            toastIconBg.className = 'bg-emerald-100 rounded-full p-1';
+            toastIcon.className = 'iconify text-emerald-600';
+            toastIcon.setAttribute('data-icon', 'mdi:check');
+            toastTitle.textContent = 'Thành công';
+        } else {
+            toast.className = 'fixed bottom-6 right-6 bg-white border-l-4 border-rose-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]';
+            toastIconBg.className = 'bg-rose-100 rounded-full p-1';
+            toastIcon.className = 'iconify text-rose-600';
+            toastIcon.setAttribute('data-icon', 'mdi:alert-circle-outline');
+            toastTitle.textContent = 'Lỗi';
+        }
+        void toast.offsetWidth;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => hideToast(), 3000);
+    }
+    function hideToast() {
+        document.getElementById('toast').classList.add('translate-y-20', 'opacity-0');
+    }
+
+    // Modal open/close
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         const content = document.getElementById(modalId + 'Content');
@@ -153,5 +140,45 @@
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }, 300);
+    }
+
+    // Save vị trí
+    async function saveViTri() {
+        const maVt = document.getElementById('vt_ma').value.trim();
+        const tenVt = document.getElementById('vt_ten').value.trim();
+        const idKho = document.getElementById('vt_id_kho').value;
+
+        if (!maVt || !tenVt || !idKho) {
+            showToast('Vui lòng điền đầy đủ thông tin bắt buộc.', 'error');
+            return;
+        }
+
+        const payload = {
+            id_kho: idKho,
+            id_cha: document.getElementById('vt_id_cha').value || null,
+            ma_vi_tri: maVt,
+            ten_vi_tri: tenVt,
+            cap_do: document.getElementById('vt_cap_do').value,
+            suc_chua: document.getElementById('vt_suc_chua').value || null
+        };
+
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/vi-tri/luu', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeModal('modalThemViTri');
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Có lỗi xảy ra khi kết nối.', 'error');
+        }
     }
 </script>

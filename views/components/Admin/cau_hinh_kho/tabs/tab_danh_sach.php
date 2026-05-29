@@ -51,17 +51,17 @@
                         <td class="py-3 px-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
-                                    <span class="iconify text-xl text-gray-500" data-icon="<?= $kho['loai'] == 'Kho online' ? 'mdi:web' : ($kho['loai'] == 'Kho tổng' ? 'mdi:warehouse' : 'mdi:store-outline') ?>"></span>
+                                    <span class="iconify text-xl text-gray-500" data-icon="<?= $kho['loai_kho'] == 'online' ? 'mdi:web' : ($kho['loai_kho'] == 'tong' ? 'mdi:warehouse' : ($kho['loai_kho'] == 'cua_hang' ? 'mdi:store-outline' : 'mdi:alert-box-outline')) ?>"></span>
                                 </div>
                                 <div class="flex flex-col">
                                     <div class="flex items-center gap-2 mb-0.5">
-                                        <a href="javascript:void(0)" onclick="openDrawer('<?= $kho['id'] ?>')" class="font-bold text-gray-900 hover:text-[#6B0D18] transition-colors text-sm"><?= $kho['ten'] ?></a>
+                                        <a href="javascript:void(0)" onclick="openDrawer('<?= $kho['id'] ?>')" class="font-bold text-gray-900 hover:text-[#6B0D18] transition-colors text-sm"><?= htmlspecialchars($kho['ten_kho']) ?></a>
                                         <?php if($kho['mac_dinh']): ?>
                                             <span class="bg-red-50 text-[#6B0D18] px-1.5 py-0.5 rounded text-[10px] font-bold border border-red-100 tooltip" title="Kho xuất mặc định cho đơn Online">Mặc định</span>
                                         <?php endif; ?>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <span class="text-xs font-semibold text-[#6B0D18]" title="Mã kho"><?= $kho['id'] ?></span>
+                                        <span class="text-xs font-semibold text-[#6B0D18]" title="Mã kho"><?= htmlspecialchars($kho['ma_kho']) ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -69,8 +69,8 @@
 
                         <!-- 2. Cột Loại & Mô tả -->
                         <td class="py-3 px-4">
-                            <div class="text-sm font-medium text-gray-700"><?= $kho['loai'] ?></div>
-                            <div class="text-[11px] text-gray-500 mt-0.5 truncate max-w-[150px]" title="<?= $kho['mo_ta'] ?>"><?= $kho['mo_ta'] ?></div>
+                            <div class="text-sm font-medium text-gray-700"><?= htmlspecialchars($kho['loai_kho_text'] ?? $kho['loai_kho']) ?></div>
+                            <div class="text-[11px] text-gray-500 mt-0.5 truncate max-w-[150px]" title="<?= htmlspecialchars($kho['mo_ta'] ?? '') ?>"><?= htmlspecialchars($kho['mo_ta'] ?? '') ?></div>
                         </td>
 
                         <!-- 3. Cột Người phụ trách -->
@@ -81,8 +81,8 @@
                                         <?= substr($kho['nguoi_phu_trach'], 0, 1) ?>
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-medium text-gray-900"><?= $kho['nguoi_phu_trach'] ?></span>
-                                        <span class="text-[11px] text-gray-500"><?= $kho['vai_tro_npt'] ?></span>
+                                        <span class="text-sm font-medium text-gray-900"><?= htmlspecialchars($kho['nguoi_phu_trach']) ?></span>
+                                        <span class="text-[11px] text-gray-500">Phụ trách kho</span>
                                     </div>
                                 </div>
                             <?php else: ?>
@@ -106,23 +106,20 @@
                         <td class="py-3 px-4 text-center">
                             <?php
                                 $badgeClass = '';
-                                switch ($kho['trang_thai']) {
-                                    case 'Đang hoạt động':
+                                switch ((int)$kho['trang_thai']) {
+                                    case 1:
                                         $badgeClass = 'bg-emerald-50 text-emerald-700 border border-emerald-200';
                                         break;
-                                    case 'Tạm ngừng':
+                                    case 2:
                                         $badgeClass = 'bg-amber-50 text-amber-700 border border-amber-200';
                                         break;
-                                    case 'Ngừng dùng':
+                                    case 0:
                                         $badgeClass = 'bg-gray-100 text-gray-600 border border-gray-200';
-                                        break;
-                                    case 'Chờ cấu hình':
-                                        $badgeClass = 'bg-rose-50 text-rose-700 border border-rose-200';
                                         break;
                                 }
                             ?>
                             <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-md text-[11px] font-semibold <?= $badgeClass ?> w-24">
-                                <?= $kho['trang_thai'] ?>
+                                <?= $kho['trang_thai_text'] ?? $kho['trang_thai'] ?>
                             </span>
                         </td>
 
@@ -148,18 +145,18 @@
                                             <div class="border-t border-gray-100 my-1"></div>
                                             
                                             <?php if(!$kho['mac_dinh']): ?>
-                                                <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                                <a href="javascript:void(0)" onclick="datMacDinh('<?= $kho['id'] ?>')" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                                     <span class="iconify text-lg text-emerald-500" data-icon="mdi:star-outline"></span> Đặt làm mặc định
                                                 </a>
                                             <?php endif; ?>
                                             
-                                            <?php if($kho['trang_thai'] === 'Đang hoạt động'): ?>
-                                                <a href="#" onclick="openModal('modalPause')" class="flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors font-medium">
+                                            <?php if((int)$kho['trang_thai'] === 1): ?>
+                                                <a href="javascript:void(0)" onclick="tamNgungKho('<?= $kho['id'] ?>')" class="flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors font-medium">
                                                     <span class="iconify text-lg" data-icon="mdi:pause-circle-outline"></span> Tạm ngừng
                                                 </a>
                                             <?php endif; ?>
                                             
-                                            <a href="#" onclick="openModal('modalDelete')" class="flex items-center gap-2 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
+                                            <a href="javascript:void(0)" onclick="ngungDungKho('<?= $kho['id'] ?>')" class="flex items-center gap-2 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
                                                 <span class="iconify text-lg" data-icon="mdi:archive-cancel-outline"></span> Ngừng dùng kho
                                             </a>
                                         </div>
@@ -225,4 +222,61 @@
             el.style.right = '';
         });
     }, true);
+
+    // === API Actions ===
+    async function datMacDinh(id) {
+        if (!confirm('Đặt kho này làm kho mặc định?')) return;
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/mac-dinh/' + id, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                if (typeof showToast === 'function') showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                if (typeof showToast === 'function') showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function tamNgungKho(id) {
+        if (!confirm('Tạm ngừng kho này? Kho sẽ không dùng cho nhập/xuất mới.')) return;
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/trang-thai/' + id, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ trang_thai: 2 })
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (typeof showToast === 'function') showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                if (typeof showToast === 'function') showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function ngungDungKho(id) {
+        if (!confirm('Ngừng dùng kho này? Kho sẽ được lưu trữ và không chọn được trong các thao tác mới.')) return;
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/cau-hinh-kho/trang-thai/' + id, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ trang_thai: 0 })
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (typeof showToast === 'function') showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                if (typeof showToast === 'function') showToast(data.message, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
 </script>

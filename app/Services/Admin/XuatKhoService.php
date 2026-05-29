@@ -116,4 +116,13 @@ class XuatKhoService
         }
         return ['success' => false, 'message' => 'Lỗi khi xuất kho.'];
     }
+
+    public function huyPhieu($id)
+    {
+        $success = $this->phieuKhoModel->xoaPhieu($id); // xoaPhieu set trang_thai = 4
+        if ($success) {
+            return ['success' => true, 'message' => 'Đã hủy phiếu thành công.'];
+        }
+        return ['success' => false, 'message' => 'Lỗi khi hủy phiếu. Không thể hủy phiếu đã hoàn thành.'];
+    }
 }

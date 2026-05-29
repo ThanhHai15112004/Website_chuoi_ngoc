@@ -31,41 +31,30 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 text-sm">
-                <?php foreach($nhatKy as $log): ?>
+                <?php if(empty($nhatKy)): ?>
+                <tr><td colspan="6" class="text-center py-8 text-gray-500">Chưa có nhật ký hoạt động nào.</td></tr>
+                <?php else: foreach($nhatKy as $log): 
+                    $nguoiThaoTac = $log['nguoi_thao_tac'] ?? 'Hệ thống';
+                    $chuCai = mb_substr($nguoiThaoTac, 0, 1);
+                ?>
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 text-gray-500 text-xs"><?= $log['thoi_gian'] ?></td>
+                    <td class="py-3 px-4 text-gray-500 text-xs"><?= date('d/m/Y H:i', strtotime($log['ngay_tao'])) ?></td>
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-2">
                             <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold">
-                                <?= substr($log['nguoi_thao_tac'], 0, 1) ?>
+                                <?= htmlspecialchars($chuCai) ?>
                             </div>
-                            <span class="font-medium text-gray-900"><?= $log['nguoi_thao_tac'] ?></span>
+                            <span class="font-medium text-gray-900"><?= htmlspecialchars($nguoiThaoTac) ?></span>
                         </div>
                     </td>
-                    <td class="py-3 px-4 font-medium text-gray-700"><?= $log['hanh_dong'] ?></td>
+                    <td class="py-3 px-4 font-medium text-gray-700"><?= htmlspecialchars($log['hanh_dong'] ?? '') ?></td>
                     <td class="py-3 px-4 text-gray-500">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100"><?= $log['module'] ?></span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100"><?= htmlspecialchars($log['module'] ?? '') ?></span>
                     </td>
-                    <td class="py-3 px-4 text-rose-600 line-through text-xs"><?= $log['cu'] ?></td>
-                    <td class="py-3 px-4 text-emerald-600 font-medium text-xs"><?= $log['moi'] ?></td>
+                    <td class="py-3 px-4 text-rose-600 line-through text-xs"><?= htmlspecialchars($log['chi_tiet_cu'] ?? '-') ?></td>
+                    <td class="py-3 px-4 text-emerald-600 font-medium text-xs"><?= htmlspecialchars($log['chi_tiet_moi'] ?? '-') ?></td>
                 </tr>
-                <?php endforeach; ?>
-                <!-- Dữ liệu tĩnh bổ sung cho phong phú -->
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="py-3 px-4 text-gray-500 text-xs">17/05/2026 14:20</td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">Q</div>
-                            <span class="font-medium text-gray-900">Quản lý kho</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4 font-medium text-gray-700">Thêm khu vực mới</td>
-                    <td class="py-3 px-4 text-gray-500">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-gray-100">Kho Online</span>
-                    </td>
-                    <td class="py-3 px-4 text-rose-600 line-through text-xs">-</td>
-                    <td class="py-3 px-4 text-emerald-600 font-medium text-xs">Khu C - Hộp quà</td>
-                </tr>
+                <?php endforeach; endif; ?>
             </tbody>
         </table>
     </div>

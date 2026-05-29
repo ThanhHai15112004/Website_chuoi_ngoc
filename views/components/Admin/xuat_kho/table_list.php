@@ -124,7 +124,7 @@
                                         
                                         <?php if($xk['trang_thai'] != 3 && $xk['trang_thai'] != 4): ?>
                                             <div class="border-t border-gray-100 my-1"></div>
-                                            <a href="javascript:void(0)" class="flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
+                                            <a href="javascript:void(0)" onclick="huyPhieu('<?= $xk['id'] ?>')" class="flex items-center gap-2 px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50 transition-colors font-medium">
                                                 <span class="iconify text-lg" data-icon="mdi:trash-can-outline"></span> Hủy phiếu
                                             </a>
                                         <?php endif; ?>
@@ -155,7 +155,56 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-white border-l-4 border-emerald-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]">
+        <div class="bg-emerald-100 rounded-full p-1" id="toast-icon-bg">
+            <span class="iconify text-emerald-600" data-icon="mdi:check" id="toast-icon"></span>
+        </div>
+        <div>
+            <h4 class="text-sm font-bold text-gray-900" id="toast-title">Thành công</h4>
+            <p class="text-sm text-gray-600 mt-0.5" id="toast-msg">Thao tác thành công.</p>
+        </div>
+        <button type="button" onclick="hideToast()" class="text-gray-400 hover:text-gray-600 ml-4"><span class="iconify" data-icon="mdi:close"></span></button>
+    </div>
+
 <script>
+    let toastTimeout;
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toast');
+        const toastTitle = document.getElementById('toast-title');
+        const toastMsg = document.getElementById('toast-msg');
+        const toastIconBg = document.getElementById('toast-icon-bg');
+        const toastIcon = document.getElementById('toast-icon');
+
+        toastMsg.textContent = msg;
+
+        if (type === 'success') {
+            toast.className = 'fixed bottom-6 right-6 bg-white border-l-4 border-emerald-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]';
+            toastIconBg.className = 'bg-emerald-100 rounded-full p-1';
+            toastIcon.className = 'iconify text-emerald-600';
+            toastIcon.setAttribute('data-icon', 'mdi:check');
+            toastTitle.textContent = 'Thành công';
+        } else {
+            toast.className = 'fixed bottom-6 right-6 bg-white border-l-4 border-rose-500 shadow-xl rounded-lg p-4 flex items-start gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[70]';
+            toastIconBg.className = 'bg-rose-100 rounded-full p-1';
+            toastIcon.className = 'iconify text-rose-600';
+            toastIcon.setAttribute('data-icon', 'mdi:alert-circle-outline');
+            toastTitle.textContent = 'Lỗi';
+        }
+
+        void toast.offsetWidth;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            hideToast();
+        }, 3000);
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('translate-y-20', 'opacity-0');
+    }
     function toggleDropdown(button) {
         const menu = button.nextElementSibling;
         const isHidden = menu.classList.contains('hidden');
@@ -196,21 +245,39 @@
     }, true);
 
     async function duyetPhieu(id) {
-        if(confirm('Xác nhận duyệt phiếu xuất kho này?')) {
+        if(confirm('Xác nhận duyệt phiếu xuất kho này? Phiếu sẽ chuyển sang trạng thái Chuẩn bị hàng.')) {
             try {
                 const res = await fetch('<?= APP_URL ?>/admin/xuat-kho/duyet/' + id, {
                     method: 'POST'
                 });
                 const data = await res.json();
                 if(data.success) {
-                    alert(data.message);
-                    window.location.reload();
+                    showToast(data.message, 'success');
+                    setTimeout(() => window.location.reload(), 1000);
                 } else {
-                    alert(data.message);
+                    showToast(data.message, 'error');
                 }
             } catch (err) {
                 console.error(err);
-                alert('Có lỗi xảy ra');
+                showToast('Có lỗi xảy ra', 'error');
+            }
+        }
+    }
+
+    async function huyPhieu(id) {
+        if(confirm('Bạn có chắc chắn muốn hủy phiếu xuất kho này không? (Thao tác này không thể hoàn tác)')) {
+            try {
+                const res = await fetch('<?= APP_URL ?>/admin/xuat-kho/huy/' + id, { method: 'POST' });
+                const data = await res.json();
+                if(data.success) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showToast(data.message, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Có lỗi xảy ra', 'error');
             }
         }
     }
