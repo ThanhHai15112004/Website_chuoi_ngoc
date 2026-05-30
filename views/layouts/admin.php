@@ -104,5 +104,8 @@
             </main>
         </div>
     <?php endif; ?>
+
+    <!-- Global Toast Component -->
+    <?php require_once __DIR__ . '/../components/common/toast.php'; ?>
 </body>
 </html>

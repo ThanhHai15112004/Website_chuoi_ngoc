@@ -31,6 +31,7 @@
                 <tr class="bg-gray-50 border-b border-gray-200 text-[11px] uppercase text-gray-500 tracking-wider">
                     <th class="py-3 px-4 font-semibold w-10 text-center">#</th>
                     <th class="py-3 px-4 font-semibold w-80">Sản phẩm & Biến thể</th>
+                    <th class="py-3 px-4 font-semibold w-48">Vị trí lưu (Tùy chọn)</th>
                     <th class="py-3 px-4 font-semibold text-right w-32">Số lượng</th>
                     <th class="py-3 px-4 font-semibold text-right w-40">Đơn giá nhập</th>
                     <th class="py-3 px-4 font-semibold text-right w-40">Thành tiền</th>
@@ -52,6 +53,14 @@
 
 <script>
 let nkProducts = [];
+let availableLocations = [];
+
+// Load ds vị trí
+fetch('<?= APP_URL ?>/admin/cau-hinh-kho/api/vi-tri-hop-le')
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) availableLocations = data.data;
+    });
 
 // Tìm kiếm sản phẩm qua API
 let searchTimeout = null;
@@ -108,7 +117,7 @@ function addVariantToTable(item) {
     document.getElementById('nk_search_results').classList.add('hidden');
     
     // Check if exists
-    const existing = nkProducts.find(p => p.id === item.id);
+    const existing = nkProducts.find(p => String(p.id) === String(item.id));
     if (existing) {
         existing.qty += 1;
     } else {
@@ -117,22 +126,24 @@ function addVariantToTable(item) {
             name: item.name,
             variant: item.variant,
             sku: item.sku,
+            don_vi_tinh: item.don_vi_tinh,
             image: item.image,
             qty: 1,
             price: 0,
-            note: ''
+            note: '',
+            id_vi_tri: ''
         });
     }
     renderTable();
 }
 
 function removeVariant(id) {
-    nkProducts = nkProducts.filter(p => p.id !== id);
+    nkProducts = nkProducts.filter(p => String(p.id) !== String(id));
     renderTable();
 }
 
 function updateVariantField(id, field, value) {
-    const item = nkProducts.find(p => p.id === id);
+    const item = nkProducts.find(p => String(p.id) === String(id));
     if (item) {
         item[field] = value;
         renderTable();
@@ -171,7 +182,16 @@ function renderTable() {
                     </div>
                 </td>
                 <td class="py-3 px-4">
-                    <input type="number" min="1" value="${item.qty}" onchange="updateVariantField('${item.id}', 'qty', parseFloat(this.value)||1)" class="block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
+                    <select onchange="updateVariantField('${item.id}', 'id_vi_tri', this.value)" class="block w-full px-2 py-1.5 border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-xs">
+                        <option value="">-- Không chọn --</option>
+                        ${availableLocations.map(loc => `<option value="${loc.id}" ${String(item.id_vi_tri) === String(loc.id) ? 'selected' : ''}>${loc.ten_kho} > ${loc.ten_vi_tri}</option>`).join('')}
+                    </select>
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-1">
+                        <input type="number" min="1" value="${item.qty}" onchange="updateVariantField('${item.id}', 'qty', parseFloat(this.value)||1)" class="block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">
+                        <span class="text-xs text-gray-500 whitespace-nowrap">${item.don_vi_tinh || ''}</span>
+                    </div>
                 </td>
                 <td class="py-3 px-4">
                     <input type="number" min="0" value="${item.price}" onchange="updateVariantField('${item.id}', 'price', parseFloat(this.value)||0)" class="block w-full px-2 py-1.5 text-right border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-semibold">

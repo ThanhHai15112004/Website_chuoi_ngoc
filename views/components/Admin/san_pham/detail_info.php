@@ -102,7 +102,7 @@
 
                     <div class="flex justify-between items-center py-2 border-b border-dashed border-gray-200">
                         <span class="text-sm text-gray-500">Đã bán</span>
-                        <span class="font-bold text-gray-900 text-base"><?= number_format($san_pham['da_ban']) ?> <span class="text-xs font-normal text-gray-500">sản phẩm</span></span>
+                        <span class="font-bold text-gray-900 text-base"><?= number_format($san_pham['da_ban']) ?> <span class="text-xs font-normal text-gray-500"><?= htmlspecialchars($san_pham['don_vi_tinh'] ?? 'sản phẩm') ?></span></span>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-dashed border-gray-200">
                         <span class="text-sm text-gray-500">Doanh thu tạm tính</span>
@@ -123,7 +123,7 @@
                 <div class="mb-5 flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100">
                     <span class="text-sm text-gray-700 font-medium">Tổng tồn kho:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-xl font-bold text-gray-900"><?= $san_pham['ton_kho'] ?></span>
+                        <span class="text-xl font-bold text-gray-900"><?= $san_pham['ton_kho'] ?> <span class="text-sm font-medium text-gray-500"><?= htmlspecialchars($san_pham['don_vi_tinh'] ?? '') ?></span></span>
                         <span class="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded uppercase">Còn hàng</span>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                                 <div class="text-xs text-gray-500 mt-0.5"><?= number_format($bt['gia_ban'], 0, ',', '.') ?>đ &bull; Đã bán: <?= $bt['da_ban'] ?></div>
                             </div>
                             <div class="text-right">
-                                <div class="text-sm font-bold <?= $bt['ton_kho'] > 5 ? 'text-gray-900' : 'text-orange-500' ?>"><?= $bt['ton_kho'] ?></div>
+                                <div class="text-sm font-bold <?= $bt['ton_kho'] > 5 ? 'text-gray-900' : 'text-orange-500' ?>"><?= $bt['ton_kho'] ?> <?= htmlspecialchars($san_pham['don_vi_tinh'] ?? '') ?></div>
                                 <div class="text-[10px] text-gray-400">Tồn kho</div>
                             </div>
                         </div>

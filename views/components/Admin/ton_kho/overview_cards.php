@@ -56,7 +56,7 @@
         </div>
         <div class="text-sm text-gray-500 font-medium mb-1">Tổng số lượng tồn</div>
         <div class="text-2xl font-bold text-gray-900"><?= number_format($stats['total_items'], 0, ',', '.') ?></div>
-        <div class="text-xs text-gray-400 mt-1">Đơn vị: món/chuỗi</div>
+        <div class="text-xs text-gray-400 mt-1">Tổng cộng các loại ĐVT</div>
     </div>
 
     <!-- Card 7: Giá trị tồn kho -->

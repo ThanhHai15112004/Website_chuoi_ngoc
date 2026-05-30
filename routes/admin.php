@@ -87,8 +87,10 @@ $router->get('/admin/banner/sua', 'Admin\BannerController@trangCapNhat');
 
 $router->get('/admin/bao-cao-doanh-thu', 'Admin\BaoCaoDoanhThuController@index');
 $router->get('/admin/bao-cao-san-pham', 'Admin\BaoCaoSanPhamController@index');
-$router->get('/admin/ton-kho', 'Admin\TonKhoController@index');
+$router->post('/admin/ton-kho/dieu-chinh', 'Admin\TonKhoController@dieuChinh');
 $router->get('/admin/ton-kho/api/search-variants', 'Admin\TonKhoController@apiSearchVariants');
+$router->get('/admin/ton-kho/api/vi-tri/([a-zA-Z0-9_-]+)', 'Admin\TonKhoController@apiViTriCuaBienThe');
+$router->get('/admin/cau-hinh-kho/api/vi-tri-hop-le', 'Admin\CauHinhKhoController@apiDanhSachViTriHople');
 $router->post('/admin/ton-kho/dieu-chinh', 'Admin\TonKhoController@dieuChinh');
 $router->get('/admin/nhap-kho', 'Admin\NhapKhoController@index');
 $router->get('/admin/nhap-kho/them', 'Admin\NhapKhoController@taoMoi');
@@ -129,6 +131,7 @@ $router->post('/admin/cau-hinh-kho/cap-nhat/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKho
 $router->post('/admin/cau-hinh-kho/trang-thai/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@doiTrangThai');
 $router->post('/admin/cau-hinh-kho/mac-dinh/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@datMacDinh');
 $router->get('/admin/cau-hinh-kho/api/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@apiChiTiet');
+$router->get('/admin/cau-hinh-kho/api/vi-tri/san-pham/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@apiSanPhamTaiViTri');
 $router->post('/admin/cau-hinh-kho/vi-tri/luu', 'Admin\CauHinhKhoController@luuViTri');
 $router->post('/admin/cau-hinh-kho/vi-tri/xoa/([a-zA-Z0-9_-]+)', 'Admin\CauHinhKhoController@xoaViTri');
 $router->post('/admin/cau-hinh-kho/cau-hinh/luu', 'Admin\CauHinhKhoController@luuCauHinh');

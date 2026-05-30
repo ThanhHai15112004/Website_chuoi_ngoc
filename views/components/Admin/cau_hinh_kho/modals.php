@@ -181,4 +181,84 @@ $danhSachKhoSelect = $danhSachKhoSelect ?? [];
             showToast('Có lỗi xảy ra khi kết nối.', 'error');
         }
     }
+
+    // Dynamic select for Vi tri cha
+    function setupViTriModal(khoId, parentId) {
+        const khoSelect = document.getElementById('vt_id_kho');
+        if (khoId) khoSelect.value = khoId;
+
+        // Auto select cap_do based on parent
+        if (parentId && treeData[khoId]) {
+            function findParent(items) {
+                if (!items) return null;
+                for (const item of items) {
+                    if (item.id === parentId) return item;
+                    if (item.children) {
+                        const found = findParent(item.children);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+            const parentNode = findParent(treeData[khoId].children);
+            if (parentNode) {
+                const capDoSelect = document.getElementById('vt_cap_do');
+                if (parentNode.cap_do === 'khu') capDoSelect.value = 'ke';
+                else if (parentNode.cap_do === 'ke') capDoSelect.value = 'ngan';
+                else if (parentNode.cap_do === 'ngan') capDoSelect.value = 'ngan';
+            }
+        } else {
+            document.getElementById('vt_cap_do').value = 'khu';
+        }
+        
+        loadViTriCha();
+        
+        setTimeout(() => {
+            if (parentId) {
+                const chaSelect = document.getElementById('vt_id_cha');
+                const optionExists = Array.from(chaSelect.options).some(opt => opt.value === parentId);
+                if (optionExists) chaSelect.value = parentId;
+            } else {
+                document.getElementById('vt_id_cha').value = "";
+            }
+        }, 50);
+    }
+
+    document.getElementById('vt_id_kho').addEventListener('change', loadViTriCha);
+    // document.getElementById('vt_cap_do').addEventListener('change', loadViTriCha); // Removed because all parents are valid for any cap_do
+
+    function loadViTriCha() {
+        const khoId = document.getElementById('vt_id_kho').value;
+        const chaSelect = document.getElementById('vt_id_cha');
+        
+        const currentValue = chaSelect.value;
+        chaSelect.innerHTML = '<option value="">-- Không có (Gốc) --</option>';
+        chaSelect.disabled = false;
+        
+        if (!khoId) return;
+
+        const kho = treeData[khoId];
+        if (!kho) return;
+
+        function addOptions(items, level = 0) {
+            if (!items) return;
+            items.forEach(item => {
+                const prefix = '— '.repeat(level);
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                let capName = item.cap_do === 'khu' ? 'Khu' : (item.cap_do === 'ke' ? 'Kệ' : 'Ngăn');
+                opt.textContent = prefix + item.ten_vi_tri + ` (${capName} - ${item.ma_vi_tri})`;
+                chaSelect.appendChild(opt);
+                addOptions(item.children, level + 1);
+            });
+        }
+
+        addOptions(kho.children);
+
+        // Restore value if it still exists
+        if (currentValue) {
+            const optionExists = Array.from(chaSelect.options).some(opt => opt.value === currentValue);
+            if (optionExists) chaSelect.value = currentValue;
+        }
+    }
 </script>

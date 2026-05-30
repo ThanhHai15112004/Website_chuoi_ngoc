@@ -64,7 +64,7 @@
                     </td>
                     <td class="py-3 px-4 text-center">
                         <span class="inline-block px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-lg font-bold <?= $p['stock_current'] <= 0 ? 'text-red-600' : 'text-gray-900' ?>">
-                            <?= $p['stock_current'] ?>
+                            <?= $p['stock_current'] ?> <span class="text-xs font-normal text-gray-500"><?= htmlspecialchars($p['don_vi_tinh'] ?? '') ?></span>
                         </span>
                     </td>
                     <td class="py-3 px-4 text-center">

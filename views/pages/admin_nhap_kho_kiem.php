@@ -50,30 +50,25 @@ $current_page = 'nhap_kho';
             </button>
         </div>
         <div class="p-6">
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex gap-3 mb-4">
+            <div id="modalAlertBox" class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex gap-3 mb-4 hidden">
                 <span class="iconify text-yellow-600 text-xl shrink-0" data-icon="mdi:alert"></span>
-                <p class="text-sm text-yellow-800">Còn <span class="font-bold">1</span> sản phẩm chưa kiểm. Bạn có chắc chắn muốn gửi duyệt phiếu nhập này?</p>
+                <p class="text-sm text-yellow-800" id="modalAlertText"></p>
             </div>
             
             <div class="space-y-2 text-sm text-gray-600 mb-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
                 <div class="flex justify-between">
                     <span>Tổng sản phẩm:</span>
-                    <span class="font-medium text-gray-900">4</span>
+                    <span class="font-medium text-gray-900" id="modalTotalSP">0</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Sản phẩm đạt:</span>
-                    <span class="font-medium text-emerald-600">2</span>
+                    <span class="font-medium text-emerald-600" id="modalPassedSP">0</span>
                 </div>
                 <div class="flex justify-between border-t border-dashed border-gray-200 pt-2">
                     <span>Sản phẩm có lỗi/thiếu:</span>
-                    <span class="font-bold text-rose-600">1</span>
+                    <span class="font-bold text-rose-600" id="modalErrorSP">0</span>
                 </div>
             </div>
-
-            <label class="flex items-start gap-2 cursor-pointer mt-2">
-                <input type="checkbox" class="mt-0.5 rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18]">
-                <span class="text-sm text-gray-700">Ghi chú cho người duyệt: "Sản phẩm MDC-QA-SP chưa được giao"</span>
-            </label>
         </div>
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3">
             <button onclick="closeModal('modalGuiDuyet')" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -88,6 +83,47 @@ $current_page = 'nhap_kho';
 
 <script>
     function openModal(id) {
+        if (id === 'modalGuiDuyet') {
+            const rows = document.querySelectorAll('.sku-row');
+            let total = rows.length;
+            let passed = 0;
+            let error = 0;
+            let unchecked = 0;
+
+            rows.forEach(row => {
+                const expected = parseInt(row.querySelector('td:nth-child(2)').innerText.trim()) || 0;
+                const received = parseInt(row.querySelector('.qty-received').value) || 0;
+                const errQty = parseInt(row.querySelector('.qty-error').value) || 0;
+
+                if (received === 0 && errQty === 0) {
+                    unchecked++;
+                } else if (errQty > 0 || received < expected) {
+                    error++;
+                } else {
+                    passed++;
+                }
+            });
+
+            document.getElementById('modalTotalSP').innerText = total;
+            document.getElementById('modalPassedSP').innerText = passed;
+            document.getElementById('modalErrorSP').innerText = error;
+
+            const alertBox = document.getElementById('modalAlertBox');
+            const alertText = document.getElementById('modalAlertText');
+            if (unchecked > 0) {
+                alertBox.classList.remove('hidden');
+                alertText.innerHTML = `Còn <span class="font-bold">${unchecked}</span> sản phẩm chưa kiểm đếm (số lượng = 0). Bạn có chắc chắn muốn gửi duyệt phiếu nhập này?`;
+            } else if (error > 0) {
+                alertBox.classList.remove('hidden');
+                alertBox.className = 'bg-rose-50 border border-rose-200 rounded-lg p-3 flex gap-3 mb-4';
+                alertBox.querySelector('.iconify').className = 'iconify text-rose-600 text-xl shrink-0';
+                alertText.className = 'text-sm text-rose-800';
+                alertText.innerHTML = `Có <span class="font-bold">${error}</span> sản phẩm bị lỗi hoặc thiếu. Bạn hãy chắc chắn đã điền ghi chú đầy đủ trước khi hoàn thành.`;
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
         const el = document.getElementById(id);
         el.classList.remove('hidden');
         el.classList.add('flex');
@@ -106,6 +142,7 @@ $current_page = 'nhap_kho';
             chiTiet.push({
                 id_chi_tiet: row.getAttribute('data-id'),
                 so_luong_nhan: parseInt(row.querySelector('.qty-received').value) || 0,
+                id_vi_tri: row.querySelector('.location-select').value || '',
                 so_luong_loi: parseInt(row.querySelector('.qty-error').value) || 0,
                 ly_do: row.querySelector('.note-error').value || ''
             });
@@ -122,14 +159,16 @@ $current_page = 'nhap_kho';
             const data = await res.json();
             
             if (data.success) {
-                alert(data.message);
-                window.location.href = '<?= APP_URL ?>/admin/nhap-kho';
+                showToast(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = '<?= APP_URL ?>/admin/nhap-kho';
+                }, 1000);
             } else {
-                alert('Lỗi: ' + data.message);
+                showToast('Lỗi: ' + data.message, 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+            showToast('Có lỗi xảy ra khi kết nối đến máy chủ.', 'error');
         }
     }
 </script>

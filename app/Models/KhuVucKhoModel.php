@@ -19,7 +19,8 @@ class KhuVucKhoModel
      */
     public function layTreeKhuVuc()
     {
-        $sql = "SELECT kv.*, kh.ten_kho, kh.ma_kho
+        $sql = "SELECT kv.*, kh.ten_kho, kh.ma_kho,
+                       (SELECT COALESCE(SUM(so_luong), 0) FROM san_pham_vi_tri WHERE id_vi_tri = kv.id) as so_luong_hien_tai
                 FROM khu_vuc_kho kv
                 JOIN kho_hang kh ON kv.id_kho = kh.id
                 WHERE kh.trang_thai = 1
@@ -108,6 +109,35 @@ class KhuVucKhoModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Lấy chi tiết một vị trí
+     */
+    public function layChiTietViTri($id)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM khu_vuc_kho WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Lấy tổng sức chứa của các vị trí con
+     */
+    public function layTongSucChuaCon($id_cha, $exclude_id = null)
+    {
+        $sql = "SELECT SUM(suc_chua) as total FROM khu_vuc_kho WHERE id_cha = :id_cha AND suc_chua IS NOT NULL";
+        $params = ['id_cha' => $id_cha];
+        
+        if ($exclude_id) {
+            $sql .= " AND id != :exclude_id";
+            $params['exclude_id'] = $exclude_id;
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (int)$result['total'] : 0;
+    }
+
     public function themViTri($data)
     {
         try {
@@ -160,6 +190,13 @@ class KhuVucKhoModel
         $stmtCheck->execute(['id' => $id]);
         if ($stmtCheck->fetchColumn() > 0) {
             return false; // Không thể xóa nếu có con
+        }
+
+        // Kiểm tra có sản phẩm đang chứa không
+        $stmtCheckSp = $this->db->prepare("SELECT COALESCE(SUM(so_luong), 0) FROM san_pham_vi_tri WHERE id_vi_tri = :id");
+        $stmtCheckSp->execute(['id' => $id]);
+        if ($stmtCheckSp->fetchColumn() > 0) {
+            return false; // Không thể xóa nếu có sản phẩm
         }
 
         $stmt = $this->db->prepare("DELETE FROM khu_vuc_kho WHERE id = :id");

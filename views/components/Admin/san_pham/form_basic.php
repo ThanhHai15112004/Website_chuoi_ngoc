@@ -8,10 +8,22 @@
                         <input type="text" name="ten_sp" value="<?= $sp['ten_sp'] ?? '' ?>" placeholder="Nhập tên sản phẩm..." class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm">
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Mã sản phẩm (Tự động nếu để trống)</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Mã sản phẩm (Tự động)</label>
                             <input type="text" name="ma_sp" value="<?= $sp['ma_sp'] ?? '' ?>" placeholder="VD: VNB-001" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all text-sm font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Đơn vị tính <span class="text-red-500">*</span></label>
+                            <select name="don_vi_tinh" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-[#6B0D18] text-gray-600 appearance-none pr-10 relative bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_1rem_center] bg-[length:1em_1em] text-sm">
+                                <?php 
+                                    $dvtList = ['Cái', 'Sợi', 'Chuỗi', 'Viên', 'Bộ', 'Hộp', 'Thùng', 'Gram', 'Kg'];
+                                    $currentDvt = $sp['don_vi_tinh'] ?? 'Cái';
+                                ?>
+                                <?php foreach($dvtList as $dvt): ?>
+                                    <option value="<?= $dvt ?>" <?= $currentDvt === $dvt ? 'selected' : '' ?>><?= $dvt ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1.5">Danh mục <span class="text-red-500">*</span></label>

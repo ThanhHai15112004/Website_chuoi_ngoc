@@ -38,7 +38,7 @@ class SanPhamModel
     public function layDanhSach($filters = [], $limit = 10, $offset = 0)
     {
         $sql = "SELECT 
-                sp.id, sp.ma_sp, sp.ten_sp, sp.hinh_anh_chinh, sp.mo_ta_ngan, 
+                sp.id, sp.ma_sp, sp.ten_sp, sp.hinh_anh_chinh, sp.mo_ta_ngan, sp.don_vi_tinh,
                 sp.gia_ban, sp.gia_khuyen_mai, sp.tong_ton_kho, sp.trang_thai, sp.ngay_tao, sp.luot_xem,
                 dm.ten_danh_muc, 
                 ld.ten_loai_da, 

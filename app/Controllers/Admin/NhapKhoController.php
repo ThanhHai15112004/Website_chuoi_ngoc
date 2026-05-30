@@ -90,10 +90,19 @@ class NhapKhoController extends Controller {
         // Đổi trạng thái thành Đang kiểm hàng (2) nếu đang ở Nháp/Chờ kiểm
         // ... (Optional, có thể update trạng thái ở đây)
 
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT kv.id, kv.ten_vi_tri, kv.ma_vi_tri, kv.cap_do, k.ten_kho 
+                FROM khu_vuc_kho kv
+                JOIN kho_hang k ON kv.id_kho = k.id
+                WHERE kv.cap_do IN ('ke', 'ngan') AND k.trang_thai = 1
+                ORDER BY k.ten_kho, kv.ten_vi_tri");
+        $dsViTri = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         $this->view('admin_nhap_kho_kiem', [
             'id' => $id, 
             'phieuNhap' => $data['phieu'],
-            'danhSachSP' => $data['chi_tiet']
+            'danhSachSP' => $data['chi_tiet'],
+            'dsViTri' => $dsViTri
         ], 'admin');
     }
 

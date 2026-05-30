@@ -21,6 +21,7 @@ class TonKhoModel
                 sp.id as product_id,
                 sp.ten_sp as name,
                 sp.ma_sp as sku,
+                sp.don_vi_tinh as don_vi_tinh,
                 COALESCE(bt.thuoc_tinh, 'Mặc định') as variant,
                 COALESCE(bt.so_luong_ton, sp.tong_ton_kho) as stock_current,
                 COALESCE(bt.nguong_canh_bao, 5) as stock_threshold,

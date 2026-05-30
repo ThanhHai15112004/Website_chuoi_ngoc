@@ -84,6 +84,7 @@ $current_page = 'xuat_kho';
                             <th class="py-3 px-4 w-12 text-center">Trạng thái</th>
                             <th class="py-3 px-4 w-64">Sản phẩm</th>
                             <th class="py-3 px-4 w-40">Mã SKU / Biến thể</th>
+                            <th class="py-3 px-4 min-w-[150px]">Vị trí lấy hàng</th>
                             <th class="py-3 px-4 text-center w-28">Cần xuất</th>
                             <th class="py-3 px-4 text-center w-32">Thực xuất</th>
                             <th class="py-3 px-4 w-32">Kết quả</th>
@@ -110,13 +111,20 @@ $current_page = 'xuat_kho';
                                 <div class="text-sm font-mono text-gray-700"><?= $sp['sku'] ?></div>
                                 <div class="text-xs text-gray-500 mt-0.5"><?= $sp['variant_name'] ?></div>
                             </td>
+                            <td class="py-4 px-4">
+                                <?php if (!empty($sp['ten_vi_tri'])): ?>
+                                    <div class="text-sm text-gray-900 font-medium"><?= htmlspecialchars($sp['ten_kho'] . ' > ' . $sp['ten_vi_tri']) ?></div>
+                                <?php else: ?>
+                                    <span class="text-xs text-gray-400 italic">Chưa xác định</span>
+                                <?php endif; ?>
+                            </td>
                             <td class="py-4 px-4 text-center">
                                 <span class="font-bold text-gray-900 text-lg"><?= $sp['so_luong'] ?></span>
                             </td>
                             <td class="py-4 px-4">
                                 <div class="flex items-center justify-center gap-2">
                                     <button onclick="updateQty(this, -1, <?= $sp['so_luong'] ?>)" class="w-8 h-8 rounded bg-white border border-gray-300 text-gray-600 flex items-center justify-center hover:bg-gray-50 font-bold">-</button>
-                                    <input type="text" value="<?= $sp['so_luong_nhan'] ?? 0 ?>" readonly class="qty-input w-12 text-center font-bold text-gray-900 bg-transparent border-none focus:outline-none text-lg">
+                                    <input type="number" min="0" max="<?= $sp['so_luong'] ?>" value="<?= $sp['so_luong_nhan'] ?? 0 ?>" onchange="updateQtyManual(this, <?= $sp['so_luong'] ?>)" class="qty-input w-16 text-center font-bold text-gray-900 bg-white border border-gray-300 rounded focus:outline-none focus:border-[#6B0D18] text-lg px-1 py-0.5 mx-1">
                                     <button onclick="updateQty(this, 1, <?= $sp['so_luong'] ?>)" class="w-8 h-8 rounded bg-white border border-gray-300 text-gray-600 flex items-center justify-center hover:bg-gray-50 font-bold">+</button>
                                 </div>
                             </td>
@@ -146,6 +154,10 @@ $current_page = 'xuat_kho';
             </button>
         </div>
         <div class="p-6">
+            <div id="modalAlertBox" class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex gap-3 mb-4 hidden">
+                <span class="iconify text-yellow-600 text-xl shrink-0" data-icon="mdi:alert"></span>
+                <p class="text-sm text-yellow-800" id="modalAlertText"></p>
+            </div>
             <p class="text-sm text-gray-600 mb-4">Hệ thống sẽ <strong class="text-rose-600">trừ số lượng thực xuất khỏi tồn kho</strong>.</p>
             
             <label class="flex items-start gap-2 mb-6 cursor-pointer">
@@ -187,12 +199,24 @@ $current_page = 'xuat_kho';
                     row.classList.add('bg-yellow-50');
                     setTimeout(() => row.classList.remove('bg-yellow-50'), 1000);
                 } else {
-                    alert('SKU không tồn tại trong phiếu!');
+                    showToast('SKU không tồn tại trong phiếu!', 'error');
                 }
                 this.value = '';
             }
         });
     });
+
+    function updateQtyManual(input, maxQty) {
+        let newQty = parseInt(input.value) || 0;
+        if(newQty < 0) newQty = 0;
+        if(newQty > maxQty) newQty = maxQty;
+        input.value = newQty;
+        
+        const btn = input.parentElement.querySelector('button');
+        if (btn) {
+            updateQty(btn, 0, maxQty);
+        }
+    }
 
     function updateQty(btn, change, maxQty) {
         const input = btn.parentElement.querySelector('.qty-input');
@@ -254,6 +278,26 @@ $current_page = 'xuat_kho';
     }
 
     function openModal(id) {
+        if (id === 'modalXacNhanXuat') {
+            const rows = document.querySelectorAll('.sp-row');
+            let missing = 0;
+
+            rows.forEach(row => {
+                const max = parseInt(row.getAttribute('data-max')) || 0;
+                const qty = parseInt(row.querySelector('.qty-input').value) || 0;
+                if (qty < max) missing++;
+            });
+
+            const alertBox = document.getElementById('modalAlertBox');
+            const alertText = document.getElementById('modalAlertText');
+            if (missing > 0) {
+                alertBox.classList.remove('hidden');
+                alertText.innerHTML = `Còn <span class="font-bold">${missing}</span> sản phẩm chưa lấy đủ số lượng. Các sản phẩm lấy thiếu sẽ được ghi nhận là lỗi/thất thoát. Bạn có chắc chắn?`;
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
         const modal = document.getElementById(id);
         const overlay = document.getElementById('modalOverlay');
         if (modal && overlay) {
@@ -289,7 +333,7 @@ $current_page = 'xuat_kho';
 
     async function submitChuanBi() {
         if (!document.getElementById('chkConfirm').checked) {
-            alert('Vui lòng xác nhận đồng ý trừ tồn kho!');
+            showToast('Vui lòng xác nhận đồng ý trừ tồn kho!', 'error');
             return;
         }
 
@@ -316,14 +360,14 @@ $current_page = 'xuat_kho';
             const data = await res.json();
             
             if (data.success) {
-                alert(data.message);
-                window.location.href = '<?= APP_URL ?>/admin/xuat-kho';
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.href = '<?= APP_URL ?>/admin/xuat-kho', 1000);
             } else {
-                alert('Lỗi: ' + data.message);
+                showToast('Lỗi: ' + data.message, 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('Có lỗi xảy ra.');
+            showToast('Có lỗi xảy ra.', 'error');
         }
     }
 </script>

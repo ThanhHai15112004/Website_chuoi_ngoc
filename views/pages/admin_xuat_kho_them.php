@@ -52,7 +52,14 @@ $current_page = 'xuat_kho';
 <script>
     async function saveAndSend(trangThai = 0) {
         if (typeof xkProducts === 'undefined' || xkProducts.length === 0) {
-            alert('Vui lòng thêm ít nhất 1 sản phẩm vào phiếu xuất.');
+            showToast('Vui lòng thêm ít nhất 1 sản phẩm vào phiếu xuất.', 'error');
+            return;
+        }
+
+        // Validate if location is selected for all products
+        const missingLoc = xkProducts.some(p => !p.id_vi_tri);
+        if (missingLoc) {
+            showToast('Vui lòng chọn Vị trí lưu (Kệ/Ngăn) cho tất cả sản phẩm.', 'error');
             return;
         }
 
@@ -71,7 +78,8 @@ $current_page = 'xuat_kho';
                 id_bien_the: p.id,
                 so_luong: p.qty,
                 don_gia: p.price,
-                ghi_chu_ct: p.note
+                ghi_chu_ct: p.note,
+                id_vi_tri: p.id_vi_tri
             }))
         };
 
@@ -84,14 +92,14 @@ $current_page = 'xuat_kho';
             const data = await res.json();
             
             if (data.success) {
-                alert(data.message);
-                window.location.href = '<?= APP_URL ?>/admin/xuat-kho';
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.href = '<?= APP_URL ?>/admin/xuat-kho', 1000);
             } else {
-                alert('Lỗi: ' + data.message);
+                showToast('Lỗi: ' + data.message, 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('Có lỗi xảy ra khi kết nối đến máy chủ.');
+            showToast('Có lỗi xảy ra khi kết nối đến máy chủ.', 'error');
         }
     }
 </script>

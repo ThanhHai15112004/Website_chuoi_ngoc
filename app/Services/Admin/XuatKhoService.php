@@ -70,13 +70,27 @@ class XuatKhoService
 
         $chiTiet = [];
         if (!empty($data['chi_tiet']) && is_array($data['chi_tiet'])) {
+            $db = \App\Core\Database::getInstance()->getConnection();
+            $stmt = $db->prepare("SELECT so_luong FROM san_pham_vi_tri WHERE id_vi_tri = ? AND id_bien_the = ?");
+            
             foreach ($data['chi_tiet'] as $item) {
                 if (!empty($item['id_bien_the']) && $item['so_luong'] > 0) {
+                    $idViTri = !empty($item['id_vi_tri']) ? $item['id_vi_tri'] : null;
+                    
+                    if ($idViTri) {
+                        $stmt->execute([$idViTri, $item['id_bien_the']]);
+                        $slTaiViTri = (int)$stmt->fetchColumn();
+                        if ($item['so_luong'] > $slTaiViTri) {
+                            return ['success' => false, 'message' => 'Số lượng xuất lớn hơn số lượng có sẵn tại vị trí được chọn.'];
+                        }
+                    }
+
                     $chiTiet[] = [
                         'id_bien_the' => $item['id_bien_the'],
                         'so_luong' => $item['so_luong'],
                         'don_gia' => $item['don_gia'] ?? 0,
-                        'ghi_chu_ct' => $item['ghi_chu_ct'] ?? null
+                        'ghi_chu_ct' => $item['ghi_chu_ct'] ?? null,
+                        'id_vi_tri' => $idViTri
                     ];
                 }
             }

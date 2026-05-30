@@ -122,8 +122,8 @@ class PhieuKhoModel
             ]);
 
             $sqlCt = "INSERT INTO chi_tiet_phieu_kho (
-                          id, id_phieu_kho, id_bien_the, so_luong, don_gia, ghi_chu_ct
-                      ) VALUES (?, ?, ?, ?, ?, ?)";
+                          id, id_phieu_kho, id_bien_the, id_vi_tri, so_luong, don_gia, ghi_chu_ct
+                      ) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmtCt = $this->db->prepare($sqlCt);
 
             foreach ($chiTiet as $ct) {
@@ -135,6 +135,7 @@ class PhieuKhoModel
                     $idCt,
                     $idPhieu,
                     $ct['id_bien_the'],
+                    $ct['id_vi_tri'] ?? null,
                     $ct['so_luong'],
                     $ct['don_gia'],
                     $ct['ghi_chu_ct'] ?? null
@@ -181,13 +182,17 @@ class PhieuKhoModel
 
         $sqlCt = "SELECT ct.*, 
                          bt.thuoc_tinh as variant_name, bt.so_luong_ton as current_stock,
-                         sp.ten_sp as product_name, sp.ma_sp as sku,
+                         sp.ten_sp as product_name, sp.ma_sp as sku, sp.don_vi_tinh as don_vi_tinh,
                          dm.ten_danh_muc as category_name,
-                         sp.hinh_anh_chinh as image
+                         sp.hinh_anh_chinh as image,
+                         kv.ten_vi_tri as ten_vi_tri, kv.ma_vi_tri as ma_vi_tri,
+                         k.ten_kho as ten_kho
                   FROM chi_tiet_phieu_kho ct
                   LEFT JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
                   LEFT JOIN san_pham sp ON bt.id_san_pham = sp.id
                   LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
+                  LEFT JOIN khu_vuc_kho kv ON ct.id_vi_tri = kv.id
+                  LEFT JOIN kho_hang k ON kv.id_kho = k.id
                   WHERE ct.id_phieu_kho = ?";
         $stmtCt = $this->db->prepare($sqlCt);
         $stmtCt->execute([$id]);
@@ -205,15 +210,17 @@ class PhieuKhoModel
             $this->db->beginTransaction();
 
             $sqlUpdateCt = "UPDATE chi_tiet_phieu_kho 
-                            SET so_luong_nhan = ?, so_luong_loi = ?, loi_thieu_chi_tiet = ? 
+                            SET so_luong_nhan = ?, so_luong_loi = ?, loi_thieu_chi_tiet = ?, id_vi_tri = ?
                             WHERE id = ? AND id_phieu_kho = ?";
             $stmtUpdateCt = $this->db->prepare($sqlUpdateCt);
 
             foreach ($dataKiem as $ct) {
+                $idViTri = !empty($ct['id_vi_tri']) ? $ct['id_vi_tri'] : null;
                 $stmtUpdateCt->execute([
                     $ct['so_luong_nhan'],
                     $ct['so_luong_loi'],
                     $ct['ly_do'],
+                    $idViTri,
                     $ct['id_chi_tiet'],
                     $idPhieu
                 ]);
@@ -275,7 +282,7 @@ class PhieuKhoModel
 
     private function congTonKhoThucTe($idPhieu)
     {
-        $sql = "SELECT id_bien_the, COALESCE(so_luong_nhan, so_luong) as sl_nhan, so_luong_loi 
+        $sql = "SELECT id_bien_the, id_vi_tri, COALESCE(so_luong_nhan, so_luong) as sl_nhan, so_luong_loi 
                 FROM chi_tiet_phieu_kho WHERE id_phieu_kho = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$idPhieu]);
@@ -289,6 +296,12 @@ class PhieuKhoModel
             $slThucNhap = max(0, $ct['sl_nhan'] - $ct['so_luong_loi']);
             if ($slThucNhap > 0 && $ct['id_bien_the']) {
                 $stmtUpdateBt->execute([$slThucNhap, $ct['id_bien_the']]);
+                
+                // Cập nhật vị trí kho nếu có
+                if (!empty($ct['id_vi_tri'])) {
+                    $spvtModel = new \App\Models\SanPhamViTriModel();
+                    $spvtModel->congSoLuong($ct['id_vi_tri'], $ct['id_bien_the'], $slThucNhap);
+                }
                 
                 $stmtGetSp->execute([$ct['id_bien_the']]);
                 $sp = $stmtGetSp->fetch();
@@ -312,7 +325,7 @@ class PhieuKhoModel
 
     private function truTonKhoThucTe($idPhieu)
     {
-        $sql = "SELECT id_bien_the, COALESCE(so_luong_nhan, so_luong) as sl_nhan
+        $sql = "SELECT id_bien_the, id_vi_tri, COALESCE(so_luong_nhan, so_luong) as sl_nhan
                 FROM chi_tiet_phieu_kho WHERE id_phieu_kho = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$idPhieu]);
@@ -326,6 +339,12 @@ class PhieuKhoModel
             $slThucXuat = max(0, $ct['sl_nhan']); // Số lượng thực tế đã xuất đi
             if ($slThucXuat > 0 && $ct['id_bien_the']) {
                 $stmtUpdateBt->execute([$slThucXuat, $ct['id_bien_the']]);
+                
+                // Trừ khỏi vị trí kho nếu có
+                if (!empty($ct['id_vi_tri'])) {
+                    $spvtModel = new \App\Models\SanPhamViTriModel();
+                    $spvtModel->truSoLuong($ct['id_vi_tri'], $ct['id_bien_the'], $slThucXuat);
+                }
                 
                 $stmtGetSp->execute([$ct['id_bien_the']]);
                 $sp = $stmtGetSp->fetch();

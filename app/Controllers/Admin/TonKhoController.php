@@ -96,6 +96,7 @@ class TonKhoController extends Controller
                 'name' => $item['name'],
                 'variant' => $item['variant'],
                 'sku' => $item['sku'],
+                'don_vi_tinh' => $item['don_vi_tinh'],
                 'image' => $item['image'],
                 'price' => $item['price'] ?? 0,
                 'stock' => $item['stock_current'] ?? 0
@@ -104,6 +105,15 @@ class TonKhoController extends Controller
 
         header('Content-Type: application/json');
         echo json_encode($list);
+        exit;
+    }
+
+    public function apiViTriCuaBienThe($idBienThe)
+    {
+        $spvtModel = new \App\Models\SanPhamViTriModel();
+        $locations = $spvtModel->layViTriCuaBienThe($idBienThe);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'data' => $locations]);
         exit;
     }
 }

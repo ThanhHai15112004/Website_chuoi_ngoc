@@ -147,11 +147,38 @@ class CauHinhKhoService
             return ['success' => false, 'message' => 'Vui lòng điền đầy đủ thông tin bắt buộc.'];
         }
 
+        if ($data['cap_do'] === 'ngan' && empty($data['id_cha'])) {
+            return ['success' => false, 'message' => 'Ngăn bắt buộc phải thuộc một Kệ. Không thể là cấp gốc.'];
+        }
+
+        // Validate sức chứa nếu có vị trí cha
+        if (!empty($data['id_cha'])) {
+            $parent = $this->khuVucModel->layChiTietViTri($data['id_cha']);
+            if ($parent && !empty($parent['suc_chua'])) {
+                $newCap = !empty($data['suc_chua']) ? (int)$data['suc_chua'] : 0;
+                
+                if ($newCap === 0) {
+                    return ['success' => false, 'message' => 'Vị trí cha có giới hạn sức chứa, vị trí con bắt buộc phải nhập sức chứa cụ thể.'];
+                }
+
+                $sumChildren = $this->khuVucModel->layTongSucChuaCon($data['id_cha']);
+                if (($sumChildren + $newCap) > (int)$parent['suc_chua']) {
+                    return ['success' => false, 'message' => 'Lỗi: Tổng sức chứa các vị trí con (' . ($sumChildren + $newCap) . ') vượt quá sức chứa của vị trí cha (' . $parent['suc_chua'] . ').'];
+                }
+            }
+        }
+
         $id = $this->khuVucModel->themViTri($data);
         if ($id) {
             return ['success' => true, 'id' => $id, 'message' => 'Thêm vị trí thành công.'];
         }
         return ['success' => false, 'message' => 'Có lỗi xảy ra khi thêm vị trí.'];
+    }
+
+    public function laySanPhamTaiViTri($idViTri)
+    {
+        $spvtModel = new \App\Models\SanPhamViTriModel();
+        return $spvtModel->layDanhSachSanPhamTaiViTri($idViTri);
     }
 
     public function xoaViTri($id)

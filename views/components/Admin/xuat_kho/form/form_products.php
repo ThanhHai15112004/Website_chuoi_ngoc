@@ -33,6 +33,7 @@
             <thead>
                 <tr class="bg-gray-50 border-y border-gray-100 text-xs uppercase tracking-wider text-gray-500">
                     <th class="py-3 px-4 font-semibold w-72">Sản phẩm & Biến thể</th>
+                    <th class="py-3 px-4 font-semibold w-48">Vị trí xuất</th>
                     <th class="py-3 px-4 font-semibold text-center w-24">Tồn kho hiện tại</th>
                     <th class="py-3 px-4 font-semibold text-center w-32">Số lượng xuất</th>
                     <th class="py-3 px-4 font-semibold text-right w-32">Đơn giá / Thành tiền</th>
@@ -89,11 +90,11 @@
         data.forEach(item => {
             html += `
                 <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 flex items-center gap-3" 
-                     onclick="addToXkCart(${item.id}, '${item.product_name}', '${item.sku}', '${item.variant_name}', ${item.price}, ${item.stock}, '${item.image}')">
+                     onclick="addToXkCart(${item.id}, '${item.name}', '${item.sku}', '${item.variant}', ${item.price}, ${item.stock}, '${item.image}', '${item.don_vi_tinh || ''}')">
                     <img src="${appUrl}/${item.image}" class="w-10 h-10 rounded object-cover border">
                     <div>
-                        <div class="text-sm font-bold text-gray-900">${item.product_name}</div>
-                        <div class="text-xs text-gray-500">SKU: ${item.sku} | Biến thể: ${item.variant_name} | Tồn: ${item.stock}</div>
+                        <div class="text-sm font-bold text-gray-900">${item.name}</div>
+                        <div class="text-xs text-gray-500">SKU: ${item.sku} | Biến thể: ${item.variant} | Tồn: ${item.stock} ${item.don_vi_tinh || ''}</div>
                     </div>
                 </div>
             `;
@@ -109,40 +110,50 @@
         }
     });
 
-    function addToXkCart(id, name, sku, variant, price, stock, image) {
-        const exist = xkProducts.find(p => p.id === id);
+    function addToXkCart(id, name, sku, variant, price, stock, image, don_vi_tinh) {
+        const exist = xkProducts.find(p => String(p.id) === String(id));
         if (exist) {
             if (exist.qty < stock) exist.qty++;
-            else alert('Số lượng xuất vượt quá tồn kho hiện tại!');
+            else showToast('Số lượng xuất vượt quá tồn kho hiện tại!', 'error');
+            searchInput.value = '';
+            searchResults.classList.add('hidden');
+            renderXkCart();
         } else {
-            xkProducts.push({
-                id: id,
-                name: name,
-                sku: sku,
-                variant: variant,
-                price: price,
-                stock: stock,
-                image: image,
-                qty: 1
-            });
+            // Load available locations for this variant
+            fetch(`${appUrl}/admin/ton-kho/api/vi-tri/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    xkProducts.push({
+                        id: id,
+                        name: name,
+                        sku: sku,
+                        variant: variant,
+                        price: price,
+                        stock: stock,
+                        image: image,
+                        don_vi_tinh: don_vi_tinh,
+                        qty: 1,
+                        locations: data.success ? data.data : [],
+                        id_vi_tri: ''
+                    });
+                    searchInput.value = '';
+                    searchResults.classList.add('hidden');
+                    renderXkCart();
+                });
         }
-        
-        searchInput.value = '';
-        searchResults.classList.add('hidden');
-        renderXkCart();
     }
 
     function removeXkProduct(id) {
-        xkProducts = xkProducts.filter(p => p.id !== id);
+        xkProducts = xkProducts.filter(p => String(p.id) !== String(id));
         renderXkCart();
     }
 
     function updateXkQty(id, qty) {
-        const p = xkProducts.find(p => p.id === id);
+        const p = xkProducts.find(p => String(p.id) === String(id));
         if (p) {
             qty = parseInt(qty) || 1;
             if (qty > p.stock) {
-                alert('Số lượng xuất vượt quá tồn kho!');
+                showToast('Số lượng xuất vượt quá tồn kho!', 'error');
                 qty = p.stock;
             }
             p.qty = qty;
@@ -150,10 +161,10 @@
         }
     }
 
-    function updateXkPrice(id, price) {
-        const p = xkProducts.find(p => p.id === id);
+    function updateXkField(id, field, value) {
+        const p = xkProducts.find(p => String(p.id) === String(id));
         if (p) {
-            p.price = parseInt(price) || 0;
+            p[field] = value;
             renderXkCart();
         }
     }
@@ -186,18 +197,27 @@
                             </div>
                         </div>
                     </td>
+                    <td class="py-3 px-4">
+                        <select onchange="updateXkField('${p.id}', 'id_vi_tri', this.value)" class="w-full px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:border-[#6B0D18]">
+                            <option value="">-- Chọn vị trí --</option>
+                            ${(p.locations || []).map(loc => `<option value="${loc.id_vi_tri}" ${String(p.id_vi_tri) === String(loc.id_vi_tri) ? 'selected' : ''}>${loc.ten_kho} > ${loc.ten_vi_tri} (Sẵn: ${loc.so_luong})</option>`).join('')}
+                        </select>
+                    </td>
                     <td class="py-3 px-4 text-center">
-                        <span class="font-bold text-gray-900">${p.stock}</span>
+                        <span class="font-bold text-gray-900">${p.stock}</span> <span class="text-xs text-gray-500">${p.don_vi_tinh || ''}</span>
                     </td>
                     <td class="py-3 px-4">
-                        <input type="number" min="1" max="${p.stock}" value="${p.qty}" onchange="updateXkQty(${p.id}, this.value)" class="w-full text-center font-bold px-2 py-1.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-[#6B0D18]">
+                        <div class="flex items-center gap-1">
+                            <input type="number" min="1" max="${p.stock}" value="${p.qty}" onchange="updateXkQty('${p.id}', this.value)" class="w-full text-center font-bold px-2 py-1.5 bg-white border border-gray-300 rounded text-sm focus:outline-none focus:border-[#6B0D18]">
+                            <span class="text-xs text-gray-500 whitespace-nowrap">${p.don_vi_tinh || ''}</span>
+                        </div>
                     </td>
                     <td class="py-3 px-4 text-right">
-                        <input type="number" min="0" value="${p.price}" onchange="updateXkPrice(${p.id}, this.value)" class="w-24 text-right px-2 py-1 text-xs border border-gray-300 rounded mb-1 focus:border-[#6B0D18]">
+                        <input type="number" min="0" value="${p.price}" onchange="updateXkField('${p.id}', 'price', this.value)" class="w-24 text-right px-2 py-1 text-xs border border-gray-300 rounded mb-1 focus:border-[#6B0D18]">
                         <div class="font-bold text-[#6B0D18] text-sm">${total.toLocaleString('vi-VN')}đ</div>
                     </td>
                     <td class="py-3 px-4 text-right">
-                        <button type="button" onclick="removeXkProduct(${p.id})" class="p-1.5 text-gray-400 hover:text-rose-600 rounded transition-colors focus:outline-none">
+                        <button type="button" onclick="removeXkProduct('${p.id}')" class="p-1.5 text-gray-400 hover:text-rose-600 rounded transition-colors focus:outline-none">
                             <span class="iconify text-lg" data-icon="mdi:trash-can-outline"></span>
                         </button>
                     </td>

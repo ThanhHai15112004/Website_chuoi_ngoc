@@ -24,7 +24,8 @@
                 <tr class="bg-gray-100 border-b border-gray-200 text-[11px] uppercase text-gray-500 tracking-wider">
                     <th class="py-3 px-4 font-semibold w-72">Sản phẩm / SKU</th>
                     <th class="py-3 px-4 font-semibold text-center w-24">Dự kiến</th>
-                    <th class="py-3 px-4 font-semibold text-center w-32">Thực nhận</th>
+                    <th class="py-3 px-4 font-semibold text-center w-24">Thực nhận</th>
+                    <th class="py-3 px-4 font-semibold min-w-[200px]">Vị trí lưu</th>
                     <th class="py-3 px-4 font-semibold text-center w-24">Hàng lỗi</th>
                     <th class="py-3 px-4 font-semibold w-48">Lý do lỗi / Ghi chú</th>
                 </tr>
@@ -59,6 +60,18 @@
                         <div class="flex items-center justify-center gap-1">
                             <input type="number" min="0" value="<?= $sp['so_luong_nhan'] ?? $sp['so_luong'] ?>" class="qty-received w-16 px-2 py-1 text-center border-gray-300 rounded shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-sm font-bold text-[#6B0D18]">
                         </div>
+                    </td>
+
+                    <!-- Vị trí lưu -->
+                    <td class="py-3 px-4">
+                        <select class="location-select block w-full px-2 py-1.5 border-gray-300 rounded-md shadow-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] sm:text-xs">
+                            <option value="">-- Chọn vị trí --</option>
+                            <?php foreach ($dsViTri as $vt): ?>
+                                <option value="<?= $vt['id'] ?>" <?= ($sp['id_vi_tri'] ?? '') == $vt['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($vt['ten_kho'] . ' > ' . $vt['ten_vi_tri']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
 
                     <!-- Hàng lỗi -->
@@ -104,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     this.value = ''; // Reset input
                 } else {
-                    alert(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`);
+                    showToast(`Không tìm thấy SKU: ${sku} trong phiếu nhập!`, 'error');
                 }
             }
         });
