@@ -60,7 +60,7 @@ function resetList() {
 function addSP() {
     const kho = document.getElementById('khoKiemKe').value;
     if (!kho) {
-        alert('Vui lòng chọn Kho kiểm kê trước.');
+        showToast('Vui lòng chọn Kho kiểm kê trước.', 'warning');
         return;
     }
 
@@ -71,7 +71,7 @@ function addSP() {
     const id = select.value;
     
     if(listSP.find(item => item.id === id)) {
-        alert('Sản phẩm này đã có trong danh sách!');
+        showToast('Sản phẩm này đã có trong danh sách!', 'warning');
         return;
     }
 
@@ -89,7 +89,7 @@ function addSP() {
 function loadAllSP() {
     const kho = document.getElementById('khoKiemKe').value;
     if (!kho) {
-        alert('Vui lòng chọn Kho kiểm kê trước khi tải toàn bộ.');
+        showToast('Vui lòng chọn Kho kiểm kê trước khi tải toàn bộ.', 'warning');
         return;
     }
 
@@ -113,10 +113,10 @@ function loadAllSP() {
                 }));
                 renderTable();
             } else {
-                alert('Không tìm thấy sản phẩm nào.');
+                showToast('Không tìm thấy sản phẩm nào.', 'warning');
             }
         })
-        .catch(err => alert('Lỗi: ' + err.message));
+        .catch(err => showToast('Lỗi: ' + err.message, 'error'));
 }
 
 function removeSP(id) {
@@ -181,11 +181,11 @@ function renderTable() {
 function submitKiemKe(trangThai) {
     const kho = document.getElementById('khoKiemKe')?.value;
     if (!kho) {
-        alert('Vui lòng chọn Kho kiểm kê.');
+        showToast('Vui lòng chọn Kho kiểm kê.', 'warning');
         return;
     }
     if (listSP.length === 0) {
-        alert('Vui lòng chọn ít nhất 1 sản phẩm.');
+        showToast('Vui lòng chọn ít nhất 1 sản phẩm.', 'warning');
         return;
     }
 
@@ -227,16 +227,18 @@ function submitKiemKe(trangThai) {
     .then(r => r.json())
     .then(result => {
         if (result.success) {
-            alert(result.message);
-            if (result.id && trangThai === 1) {
-                window.location.href = `${APP_URL}/admin/kiem-ke/chi-tiet/${result.id}`;
-            } else {
-                window.location.href = `${APP_URL}/admin/kiem-ke`;
-            }
+            showToast(result.message, 'success');
+            setTimeout(() => {
+                if (result.id && trangThai === 1) {
+                    window.location.href = `${APP_URL}/admin/kiem-ke/chi-tiet/${result.id}`;
+                } else {
+                    window.location.href = `${APP_URL}/admin/kiem-ke`;
+                }
+            }, 1000);
         } else {
-            alert('Lỗi: ' + result.message);
+            showToast('Lỗi: ' + result.message, 'error');
         }
     })
-    .catch(err => alert('Có lỗi xảy ra: ' + err.message));
+    .catch(err => showToast('Có lỗi xảy ra: ' + err.message, 'error'));
 }
 </script>

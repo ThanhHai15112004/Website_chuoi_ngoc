@@ -162,15 +162,19 @@ class KhachHangController extends Controller
             ] : [],
             'don_hang' => array_map(function($d) {
                 $status = 'Đang xử lý';
+                if ($d['trang_thai_don_hang'] == 1) $status = 'Đang chuẩn bị';
+                if ($d['trang_thai_don_hang'] == 2) $status = 'Đang giao';
                 if ($d['trang_thai_don_hang'] == 3) $status = 'Thành công';
                 if ($d['trang_thai_don_hang'] == 4) $status = 'Đã hủy';
                 return [
                     'id' => $d['id'],
                     'ma' => $d['ma_don_hang'] ?? $d['ma'] ?? '',
                     'ngay_dat' => date('d/m/Y', strtotime($d['ngay_tao'])),
-                    'san_pham' => 'Sản phẩm trong đơn',
-                    'tong_tien' => $d['tong_tien'],
-                    'trang_thai' => $status
+                    'san_pham' => $d['ten_san_pham'] ?? 'Sản phẩm trong đơn',
+                    'hinh_anh' => $d['hinh_anh'] ?? '',
+                    'tong_tien' => $d['thanh_tien'] ?? 0,
+                    'trang_thai' => $status,
+                    'trang_thai_don_hang' => $d['trang_thai_don_hang'] // truyền ra view để xử lý màu
                 ];
             }, $don_hangs),
             'voucher' => array_map(function($v) {
@@ -773,6 +777,96 @@ class KhachHangController extends Controller
             ]);
             $logModel->log('Gửi thông báo', 'Khách hàng', $id, "Gửi thông báo cá nhân: $title");
             echo json_encode(['success' => true, 'message' => 'Gửi thông báo thành công']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    public function apiSearch()
+    {
+        header('Content-Type: application/json');
+        $keyword = trim($_GET['keyword'] ?? '');
+        
+        if (empty($keyword)) {
+            echo json_encode([]);
+            return;
+        }
+
+        $model = new \App\Models\KhachHangModel();
+        $results = $model->timKiemNhanh($keyword);
+        
+        echo json_encode($results);
+    }
+
+    public function apiThemNhanh()
+    {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        $ho_ten = trim($input['ho_ten'] ?? '');
+        $so_dien_thoai = trim($input['sdt'] ?? '');
+
+        if (empty($ho_ten) || empty($so_dien_thoai)) {
+            echo json_encode(['success' => false, 'message' => 'Họ tên và số điện thoại là bắt buộc.']);
+            return;
+        }
+
+        // Kiem tra SĐT ton tai
+        $model = new \App\Models\KhachHangModel();
+        $existing = $model->timKiemNhanh($so_dien_thoai, 1);
+        if (!empty($existing)) {
+            echo json_encode(['success' => false, 'message' => 'Số điện thoại này đã tồn tại trong hệ thống.']);
+            return;
+        }
+
+        $id = uniqid('kh_');
+        $ma_nd = 'KH' . strtoupper(substr(uniqid(), -4));
+        
+        $rankModel = new \App\Models\HangThanhVienModel();
+        $ranks = $rankModel->layTatCa();
+        $id_hang_thanh_vien = null;
+        $phan_tram_giam = 0;
+        $ten_hang = 'Khách vãng lai';
+        
+        foreach ($ranks as $r) {
+            if ($r['ten_hang'] === \App\Constants\HangThanhVienConstants::HANG_BRONZE) {
+                $id_hang_thanh_vien = $r['id'];
+                $phan_tram_giam = $r['phan_tram_giam'];
+                $ten_hang = $r['ten_hang'];
+                break;
+            }
+        }
+
+        $data = [
+            'id' => $id,
+            'ma_nd' => $ma_nd,
+            'ho_ten' => $ho_ten,
+            'so_dien_thoai' => $so_dien_thoai,
+            'email' => "$ma_nd@noemail.com",
+            'mat_khau' => password_hash('123456', PASSWORD_DEFAULT),
+            'id_hang_thanh_vien' => $id_hang_thanh_vien,
+            'trang_thai' => 1
+        ];
+
+        try {
+            $model->themMoi($data);
+            
+            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel->log('Thêm mới', 'Khách hàng', $id, "Thêm nhanh khách hàng: $ho_ten qua trang POS");
+
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'id' => $id,
+                    'ho_ten' => $ho_ten,
+                    'sdt' => $so_dien_thoai,
+                    'diem_tich_luy' => 0,
+                    'tong_chi_tieu' => 0,
+                    'ten_hang' => $ten_hang,
+                    'phan_tram_giam' => $phan_tram_giam
+                ],
+                'message' => 'Thêm khách hàng thành công.'
+            ]);
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }

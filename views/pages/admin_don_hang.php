@@ -9,11 +9,15 @@
             <p class="text-gray-500 text-sm mt-1">Theo dõi, xác nhận và cập nhật trạng thái các đơn hàng của khách.</p>
         </div>
         <div class="flex items-center gap-3">
+            <a href="<?= APP_URL ?>/admin/don-hang/them" class="px-4 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#590a13] font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+                <span class="iconify text-lg" data-icon="mdi:plus"></span>
+                Tạo đơn hàng
+            </a>
             <button onclick="showToast('Đang xuất danh sách đơn hàng ra file Excel...')" class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
                 <span class="iconify text-lg" data-icon="mdi:file-excel-outline"></span>
                 Xuất danh sách
             </button>
-            <button onclick="showToast('Đã làm mới dữ liệu đơn hàng')" class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+            <button onclick="window.location.reload()" class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
                 <span class="iconify text-lg" data-icon="mdi:refresh"></span>
                 Làm mới
             </button>
@@ -78,23 +82,32 @@
         <div class="p-4 border-t border-gray-100 flex items-center justify-between shrink-0 bg-white rounded-b-2xl">
             <div class="flex items-center gap-3">
                 <span class="text-sm text-gray-500">Hiển thị</span>
-                <select class="px-2 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm text-gray-700">
-                    <option>10</option>
-                    <option selected>20</option>
-                    <option>50</option>
-                    <option>100</option>
+                <select onchange="window.location.href='?limit='+this.value+'&page=1'" class="px-2 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm text-gray-700">
+                    <option <?= $pagination['limit'] == 10 ? 'selected' : '' ?>>10</option>
+                    <option <?= $pagination['limit'] == 20 ? 'selected' : '' ?>>20</option>
+                    <option <?= $pagination['limit'] == 50 ? 'selected' : '' ?>>50</option>
+                    <option <?= $pagination['limit'] == 100 ? 'selected' : '' ?>>100</option>
                 </select>
-                <span class="text-sm text-gray-500">trong tổng số <?= number_format($stats['tong_don'], 0, ',', '.') ?> đơn</span>
+                <span class="text-sm text-gray-500">trong tổng số <?= number_format($pagination['total_records'], 0, ',', '.') ?> đơn</span>
             </div>
+            
+            <?php if ($pagination['total_pages'] > 1): ?>
             <div class="flex items-center gap-1">
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-medium text-sm shadow-sm">1</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">2</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">3</button>
-                <span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">63</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php $prevPage = max(1, $pagination['current'] - 1); ?>
+                <a href="?page=<?= $prevPage ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors <?= $pagination['current'] <= 1 ? 'pointer-events-none opacity-50' : '' ?>"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+                
+                <?php for($i = 1; $i <= $pagination['total_pages']; $i++): ?>
+                    <?php if($i == $pagination['current']): ?>
+                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-medium text-sm shadow-sm"><?= $i ?></span>
+                    <?php else: ?>
+                        <a href="?page=<?= $i ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors"><?= $i ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+
+                <?php $nextPage = min($pagination['total_pages'], $pagination['current'] + 1); ?>
+                <a href="?page=<?= $nextPage ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors <?= $pagination['current'] >= $pagination['total_pages'] ? 'pointer-events-none opacity-50' : '' ?>"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -235,10 +235,13 @@ class KhachHangModel
 
     public function getOrdersByUser($userId)
     {
-        $sql = "SELECT id, ma_don_hang as ma, tong_tien, pt_thanh_toan as phuong_thuc_thanh_toan, trang_thai_don_hang, trang_thai_thanh_toan, ngay_tao 
-                FROM don_hang 
-                WHERE id_nguoi_dung = ? 
-                ORDER BY ngay_tao DESC";
+        $sql = "SELECT dh.id, dh.ma_don_hang as ma, dh.thanh_tien, dh.pt_thanh_toan as phuong_thuc_thanh_toan, 
+                       dh.trang_thai_don_hang, dh.trang_thai_thanh_toan, dh.ngay_tao,
+                       (SELECT sp.ten_sp FROM chi_tiet_don_hang ct JOIN san_pham_bien_the spbt ON ct.id_bien_the = spbt.id JOIN san_pham sp ON spbt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as ten_san_pham,
+                       (SELECT sp.hinh_anh_chinh FROM chi_tiet_don_hang ct JOIN san_pham_bien_the spbt ON ct.id_bien_the = spbt.id JOIN san_pham sp ON spbt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as hinh_anh
+                FROM don_hang dh
+                WHERE dh.id_nguoi_dung = ? 
+                ORDER BY dh.ngay_tao DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -345,6 +348,25 @@ class KhachHangModel
                 ORDER BY dg.ngay_tao DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function timKiemNhanh($keyword, $limit = 10)
+    {
+        $sql = "SELECT nd.id, nd.ho_ten, nd.so_dien_thoai as sdt, nd.email, nd.tong_chi_tieu, nd.diem_tich_luy, nd.dia_chi,
+                       htv.ten_hang, htv.phan_tram_giam
+                FROM nguoi_dung nd
+                LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
+                WHERE nd.id_vai_tro IS NULL AND nd.deleted_at IS NULL
+                AND (nd.ho_ten LIKE :kw1 OR nd.so_dien_thoai LIKE :kw2)
+                LIMIT :limit";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':kw1', "%$keyword%");
+        $stmt->bindValue(':kw2', "%$keyword%");
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

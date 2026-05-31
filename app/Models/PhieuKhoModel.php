@@ -24,7 +24,12 @@ class PhieuKhoModel
                        (SELECT COUNT(*) FROM chi_tiet_phieu_kho WHERE id_phieu_kho = pk.id) as tong_sp,
                        (SELECT SUM(so_luong) FROM chi_tiet_phieu_kho WHERE id_phieu_kho = pk.id) as tong_so_luong,
                        (SELECT SUM(so_luong_nhan) FROM chi_tiet_phieu_kho WHERE id_phieu_kho = pk.id) as tong_so_luong_nhan,
-                       (SELECT SUM(so_luong_loi) FROM chi_tiet_phieu_kho WHERE id_phieu_kho = pk.id) as tong_loi_thieu
+                       (SELECT SUM(so_luong_loi) FROM chi_tiet_phieu_kho WHERE id_phieu_kho = pk.id) as tong_loi_thieu,
+                       (SELECT GROUP_CONCAT(DISTINCT k.ten_kho SEPARATOR ', ') 
+                        FROM chi_tiet_phieu_kho ct 
+                        JOIN khu_vuc_kho kv ON ct.id_vi_tri = kv.id 
+                        JOIN kho_hang k ON kv.id_kho = k.id 
+                        WHERE ct.id_phieu_kho = pk.id) as danh_sach_kho
                 FROM phieu_kho pk
                 LEFT JOIN nha_cung_cap ncc ON pk.id_nha_cung_cap = ncc.id
                 LEFT JOIN nguoi_dung nd1 ON pk.id_nguoi_tao = nd1.id

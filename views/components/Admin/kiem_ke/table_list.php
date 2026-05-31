@@ -314,8 +314,8 @@
         fetch(`<?= APP_URL ?>/admin/kiem-ke/huy/${id}`, { method: 'POST' })
             .then(r => r.json())
             .then(result => {
-                alert(result.message);
-                if (result.success) window.location.reload();
+                showToast(result.message, result.success ? 'success' : 'error');
+                if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
             });
     }
 </script>

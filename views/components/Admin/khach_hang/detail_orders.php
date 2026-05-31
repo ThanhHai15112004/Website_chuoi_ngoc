@@ -186,10 +186,15 @@
                                     <td class="p-4">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
-                                                <span class="iconify text-gray-400" data-icon="mdi:image-outline"></span>
+                                                <?php if(!empty($dh['hinh_anh'])): ?>
+                                                    <?php $imgSrc = strpos($dh['hinh_anh'], 'http') === 0 ? $dh['hinh_anh'] : (strpos($dh['hinh_anh'], '/') === 0 ? APP_URL . $dh['hinh_anh'] : APP_URL . '/' . $dh['hinh_anh']); ?>
+                                                    <img src="<?= $imgSrc ?>" alt="<?= htmlspecialchars($dh['san_pham']) ?>" class="w-full h-full object-cover">
+                                                <?php else: ?>
+                                                    <span class="iconify text-gray-400" data-icon="mdi:image-outline"></span>
+                                                <?php endif; ?>
                                             </div>
                                             <div class="truncate max-w-[200px]">
-                                                <p class="font-medium text-gray-800 truncate" title="<?= $dh['san_pham'] ?>"><?= $dh['san_pham'] ?></p>
+                                                <p class="font-medium text-gray-800 truncate" title="<?= htmlspecialchars($dh['san_pham']) ?>"><?= htmlspecialchars($dh['san_pham']) ?></p>
                                                 <p class="text-[10px] text-gray-400 mt-0.5">+ các sản phẩm khác</p>
                                             </div>
                                         </div>

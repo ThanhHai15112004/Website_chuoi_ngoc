@@ -269,8 +269,8 @@ function luuKetQua() {
     })
     .then(r => r.json())
     .then(result => {
-        alert(result.message);
-        if (result.success) window.location.reload();
+        showToast(result.message, result.success ? 'success' : 'error');
+        if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
     });
 }
 
@@ -292,7 +292,7 @@ function guiDuyet() {
     .then(r => r.json())
     .then(result => {
         if (!result.success) {
-            alert('Lỗi lưu kết quả: ' + result.message);
+            showToast('Lỗi lưu kết quả: ' + result.message, 'error');
             return;
         }
         // Sau đó gửi duyệt
@@ -301,8 +301,8 @@ function guiDuyet() {
     .then(r => r ? r.json() : null)
     .then(result => {
         if (result) {
-            alert(result.message);
-            if (result.success) window.location.reload();
+            showToast(result.message, result.success ? 'success' : 'error');
+            if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
         }
     });
 }
@@ -313,8 +313,8 @@ function duyetVaDieuChinh() {
     fetch(`${APP_URL}/admin/kiem-ke/duyet/${PHIEU_ID}`, { method: 'POST' })
         .then(r => r.json())
         .then(result => {
-            alert(result.message);
-            if (result.success) window.location.reload();
+            showToast(result.message, result.success ? 'success' : 'error');
+            if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
         });
 }
 
@@ -324,8 +324,8 @@ function huyPhieu() {
     fetch(`${APP_URL}/admin/kiem-ke/huy/${PHIEU_ID}`, { method: 'POST' })
         .then(r => r.json())
         .then(result => {
-            alert(result.message);
-            if (result.success) window.location.href = `${APP_URL}/admin/kiem-ke`;
+            showToast(result.message, result.success ? 'success' : 'error');
+            if (result.success) setTimeout(() => { window.location.href = `${APP_URL}/admin/kiem-ke`; }, 1000);
         });
 }
 </script>

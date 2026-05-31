@@ -255,10 +255,76 @@
             }
         });
         
-        // Cập nhật Pagination count text
         const paginationText = document.querySelector('.bg-white.rounded-b-2xl .flex.items-center.gap-3 span:last-child');
         if(paginationText) {
             paginationText.textContent = `trong tổng số ${count} đơn`;
         }
+    }
+
+    // AJAX Functions
+    function capNhatTrangThai(id, trang_thai) {
+        if(!confirm('Bạn có chắc chắn muốn cập nhật trạng thái đơn hàng này?')) return;
+        
+        fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-trang-thai/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trang_thai: trang_thai })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.message || 'Cập nhật thành công!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(data.error || data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(err => {
+            showToast('Lỗi kết nối!', 'error');
+        });
+    }
+
+    function huyDonHang(id) {
+        if(!confirm('Bạn có chắc chắn muốn hủy đơn hàng này? Thao tác này không thể hoàn tác!')) return;
+        
+        fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-trang-thai/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trang_thai: 4, ly_do: 'Hủy bởi Quản trị viên' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.message || 'Đã hủy đơn hàng!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(data.error || data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(err => {
+            showToast('Lỗi kết nối!', 'error');
+        });
+    }
+
+    function capNhatThanhToan(id, trang_thai) {
+        if(!confirm('Xác nhận đã thu tiền đơn hàng này?')) return;
+        
+        fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-thanh-toan/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trang_thai: trang_thai })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.message || 'Cập nhật thanh toán thành công!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(data.error || data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(err => {
+            showToast('Lỗi kết nối!', 'error');
+        });
     }
 </script>

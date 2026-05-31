@@ -22,10 +22,15 @@ $router->post('/admin/danh-muc/xoa/([a-zA-Z0-9_-]+)', 'Admin\DanhMucController@x
 $router->post('/admin/danh-muc/an-hien/([a-zA-Z0-9_-]+)', 'Admin\DanhMucController@doiTrangThai');
 
 $router->get('/admin/don-hang', 'Admin\DonHangController@index');
+$router->get('/admin/don-hang/them', 'Admin\DonHangController@taoMoi');
+$router->post('/admin/don-hang/luu', 'Admin\DonHangController@luuMoi');
 $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@chiTiet');
+$router->post('/admin/don-hang/api/cap-nhat-trang-thai/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatTrangThai');
+$router->post('/admin/don-hang/api/cap-nhat-thanh-toan/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatThanhToan');
 $router->get('/admin/voucher', 'Admin\VoucherController@index');
 $router->get('/admin/voucher/them', 'Admin\VoucherController@taoMoi');
 $router->get('/admin/voucher/sua', 'Admin\VoucherController@trangCapNhat');
+$router->post('/admin/voucher/api/check', 'Admin\VoucherController@apiCheckVoucher');
 $router->get('/admin/khuyen-mai', 'Admin\KhuyenMaiController@index');
 $router->get('/admin/khuyen-mai/them', 'Admin\KhuyenMaiController@taoMoi');
 $router->get('/admin/khuyen-mai/sua', 'Admin\KhuyenMaiController@trangCapNhat');
@@ -49,6 +54,8 @@ $router->post('/admin/binh-luan/delete', 'Admin\BinhLuanController@xoa');
 $router->post('/admin/binh-luan/save-settings', 'Admin\BinhLuanController@saveSettings');
 
 $router->get('/admin/khach-hang', 'Admin\KhachHangController@index');
+$router->get('/admin/khach-hang/api/search', 'Admin\KhachHangController@apiSearch');
+$router->post('/admin/khach-hang/api/them-nhanh', 'Admin\KhachHangController@apiThemNhanh');
 $router->get('/admin/khach-hang/them', 'Admin\KhachHangController@taoMoi');
 $router->post('/admin/khach-hang/luu', 'Admin\KhachHangController@luuMoi');
 $router->get('/admin/khach-hang/sua/([a-zA-Z0-9_-]+)', 'Admin\KhachHangController@trangCapNhat');

@@ -42,19 +42,19 @@
                     <td class="py-3 px-4 text-center">
                         <?php if ($p['status'] === 'Còn hàng'): ?>
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md text-xs font-medium">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Còn hàng
+                                Còn hàng
                             </span>
                         <?php elseif ($p['status'] === 'Sắp hết hàng'): ?>
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-amber-50 text-amber-700 rounded-md text-xs font-medium">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Sắp hết
+                                Sắp hết
                             </span>
                         <?php elseif ($p['status'] === 'Hết hàng'): ?>
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-red-50 text-red-700 rounded-md text-xs font-medium">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Hết hàng
+                                Hết hàng
                             </span>
                         <?php elseif ($p['status'] === 'Tồn kho cao'): ?>
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-purple-50 text-purple-700 rounded-md text-xs font-medium">
-                                <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> Tồn kho cao
+                                Tồn kho cao
                             </span>
                         <?php elseif ($p['status'] === 'Lỗi kho'): ?>
                             <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-red-100 text-red-800 rounded-md text-xs font-bold border border-red-200">

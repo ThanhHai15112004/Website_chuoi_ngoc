@@ -36,7 +36,9 @@
 
                     <!-- Nhà cung cấp -->
                     <td class="py-3 px-4">
-                        <?php if(!empty($phieu['id_nha_cung_cap'])): ?>
+                        <?php if(!empty($phieu['ncc'])): ?>
+                            <div class="font-semibold text-gray-900 text-sm truncate w-52"><?= htmlspecialchars($phieu['ncc']) ?></div>
+                        <?php elseif(!empty($phieu['id_nha_cung_cap'])): ?>
                             <div class="font-semibold text-gray-900 text-sm truncate w-52">NCC ID: <?= $phieu['id_nha_cung_cap'] ?></div>
                         <?php else: ?>
                             <div class="font-semibold text-gray-900 text-sm truncate w-52 text-gray-400 italic">Khác</div>
@@ -46,9 +48,15 @@
 
                     <!-- Kho nhập -->
                     <td class="py-3 px-4">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                            Chưa phân kho
-                        </span>
+                        <?php if(!empty($phieu['danh_sach_kho'])): ?>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200" title="<?= htmlspecialchars($phieu['danh_sach_kho']) ?>">
+                                <?= htmlspecialchars(mb_strlen($phieu['danh_sach_kho']) > 20 ? mb_substr($phieu['danh_sach_kho'], 0, 20) . '...' : $phieu['danh_sach_kho']) ?>
+                            </span>
+                        <?php else: ?>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                                Chưa phân kho
+                            </span>
+                        <?php endif; ?>
                     </td>
 
                     <!-- Tổng giá trị -->

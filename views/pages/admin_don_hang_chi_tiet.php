@@ -1,5 +1,14 @@
 <?php
 // views/pages/admin_don_hang_chi_tiet.php
+    $statusMap = [
+        0 => 'Chờ xác nhận',
+        1 => 'Đang chuẩn bị',
+        2 => 'Đang giao',
+        3 => 'Thành công',
+        4 => 'Đã hủy'
+    ];
+    $ttText = $statusMap[$don_hang['trang_thai_don_hang']] ?? 'Không xác định';
+    $paymentStatus = $don_hang['trang_thai_thanh_toan'] == 1 ? 'Đã thanh toán' : 'Chưa thanh toán';
 ?>
 <div class="max-w-7xl mx-auto space-y-6">
     
@@ -20,12 +29,11 @@
         <div>
             <h1 class="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
                 Chi tiết đơn hàng 
-                <span class="text-[#6B0D18]">#<?= $don_hang['ma_don'] ?></span>
+                <span class="text-[#6B0D18]">#<?= $don_hang['ma_don_hang'] ?></span>
             </h1>
             <div class="text-sm text-gray-500 mt-1 flex items-center gap-4">
-                <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:calendar-outline"></span> Ngày đặt: <?= $don_hang['ngay_dat'] ?></span>
-                <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:web"></span> Nguồn: <?= $don_hang['nguon_don'] ?></span>
-                <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:account-outline"></span> Xử lý: <?= $don_hang['nhan_vien'] ?></span>
+                <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:calendar-outline"></span> Ngày đặt: <?= date('d/m/Y H:i', strtotime($don_hang['ngay_tao'])) ?></span>
+                <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:web"></span> Nguồn: Website</span>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -33,7 +41,13 @@
                 <span class="iconify" data-icon="mdi:printer-outline"></span>
                 In hóa đơn
             </button>
-            <button onclick="openStatusModal()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+            <?php if($don_hang['trang_thai_don_hang'] == 0): ?>
+                <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', 1)" class="px-4 py-2 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+                    <span class="iconify" data-icon="mdi:check-circle-outline"></span>
+                    Xác nhận đơn
+                </button>
+            <?php endif; ?>
+            <button onclick="openStatusModal()" class="px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-900 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
                 <span class="iconify" data-icon="mdi:refresh"></span>
                 Cập nhật trạng thái
             </button>
@@ -48,34 +62,34 @@
                 <div class="text-sm text-gray-500 mb-1">Trạng thái hiện tại</div>
                 <div class="flex items-center gap-3">
                     <?php 
-                        // Logic badge cho trang thai hien tai
-                        $badgeClasses = 'bg-yellow-50 text-yellow-700'; // Default cho Chờ xác nhận
+                        $badgeClasses = 'bg-gray-50 text-gray-600';
                         $icon = 'mdi:clock-outline';
-                        if($don_hang['trang_thai'] == 'Xác nhận đơn hàng') { $badgeClasses = 'bg-blue-50 text-blue-700'; $icon = 'mdi:check-circle-outline'; }
-                        if($don_hang['trang_thai'] == 'Đang giao') { $badgeClasses = 'bg-teal-50 text-teal-700'; $icon = 'mdi:truck-delivery-outline'; }
-                        if($don_hang['trang_thai'] == 'Đã giao' || $don_hang['trang_thai'] == 'Thành công') { $badgeClasses = 'bg-emerald-50 text-emerald-700'; $icon = 'mdi:check-all'; }
-                        if($don_hang['trang_thai'] == 'Đã hủy') { $badgeClasses = 'bg-gray-100 text-gray-600'; $icon = 'mdi:cancel'; }
+                        if($don_hang['trang_thai_don_hang'] == 0) { $badgeClasses = 'bg-red-50 text-[#6B0D18] border border-red-200 font-bold'; }
+                        elseif($don_hang['trang_thai_don_hang'] == 1) { $badgeClasses = 'bg-blue-50 text-blue-700 border border-blue-200'; $icon = 'mdi:check-circle-outline'; }
+                        elseif($don_hang['trang_thai_don_hang'] == 2) { $badgeClasses = 'bg-teal-50 text-teal-700 border border-teal-200'; $icon = 'mdi:truck-delivery-outline'; }
+                        elseif($don_hang['trang_thai_don_hang'] == 3) { $badgeClasses = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold'; $icon = 'mdi:check-all'; }
+                        elseif($don_hang['trang_thai_don_hang'] == 4) { $badgeClasses = 'bg-gray-100 text-gray-600 border border-gray-200'; $icon = 'mdi:cancel'; }
                     ?>
-                    <span class="px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 <?= $badgeClasses ?>">
+                    <span class="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 <?= $badgeClasses ?>">
                         <span class="iconify text-lg" data-icon="<?= $icon ?>"></span>
-                        <?= $don_hang['trang_thai'] ?>
+                        <?= $ttText ?>
                     </span>
-                    <span class="text-xs text-gray-400">Cập nhật: <?= $don_hang['thoi_gian_cap_nhat'] ?></span>
+                    <span class="text-xs text-gray-400">Cập nhật: <?= !empty($don_hang['lich_su']) ? date('d/m/Y H:i', strtotime($don_hang['lich_su'][0]['ngay_tao'])) : 'Chưa có' ?></span>
                 </div>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 flex-1 md:border-l border-gray-100 md:pl-6">
                 <div>
                     <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Thanh toán</div>
-                    <div class="font-medium text-sm text-gray-900"><?= $don_hang['thanh_toan']['trang_thai'] ?></div>
+                    <div class="font-medium text-sm text-gray-900"><?= $paymentStatus ?></div>
                 </div>
                 <div>
                     <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Tổng tiền</div>
-                    <div class="font-bold text-[#6B0D18] text-base"><?= number_format($don_hang['chi_tiet_tien']['tong_thanh_toan'], 0, ',', '.') ?>đ</div>
+                    <div class="font-bold text-[#6B0D18] text-base"><?= number_format($don_hang['thanh_tien'], 0, ',', '.') ?>đ</div>
                 </div>
                 <div>
                     <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Vận chuyển</div>
-                    <div class="font-medium text-sm text-gray-900 truncate" title="<?= $don_hang['giao_hang']['phuong_thuc'] ?>"><?= $don_hang['giao_hang']['phuong_thuc'] ?></div>
+                    <div class="font-medium text-sm text-gray-900 truncate" title="Giao hàng tiêu chuẩn">Giao hàng tiêu chuẩn</div>
                 </div>
                 <div>
                     <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Sản phẩm</div>
@@ -89,14 +103,20 @@
 
     <!-- Quick Actions Bar -->
     <div class="flex items-center gap-3">
-        <?php if($don_hang['trang_thai'] == 'Chờ xác nhận'): ?>
-            <button onclick="openStatusModal('Xác nhận')" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">Xác nhận đơn</button>
-            <button onclick="openCancelModal()" class="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">Hủy đơn</button>
+        <?php if(in_array($don_hang['trang_thai_don_hang'], [0, 1])): ?>
+            <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', <?= $don_hang['trang_thai_don_hang'] + 1 ?>)" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">
+                <?= $don_hang['trang_thai_don_hang'] == 0 ? 'Xác nhận đơn' : 'Giao hàng' ?>
+            </button>
+            <button onclick="huyDonHang('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">Hủy đơn</button>
+        <?php endif; ?>
+        <?php if($don_hang['trang_thai_don_hang'] == 2): ?>
+            <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', 3)" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors shadow-sm">Hoàn tất (Thành công)</button>
+            <button onclick="huyDonHang('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">Thất bại (Hủy)</button>
         <?php endif; ?>
         
-        <button class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
-            <span class="iconify" data-icon="mdi:message-outline"></span> Liên hệ khách
-        </button>
+        <a href="tel:<?= $don_hang['sdt_nguoi_nhan'] ?>" class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+            <span class="iconify" data-icon="mdi:phone-outline"></span> Liên hệ khách
+        </a>
     </div>
 
     <!-- 2 Column Layout -->

@@ -182,4 +182,46 @@ class VoucherController extends Controller {
         ];
         $this->view('admin_voucher_form', $data, 'admin');
     }
+
+    public function apiCheckVoucher() {
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ma = trim($input['ma_voucher'] ?? '');
+        $tongTien = (float)($input['tong_tien'] ?? 0);
+
+        // Vouchers mock data for checking
+        $vouchers = [
+            'GIAM50K' => ['loai_giam' => 'giam_tien', 'gia_tri' => 50000, 'don_toi_thieu' => 500000],
+            'NEW10' => ['loai_giam' => 'phan_tram', 'gia_tri' => 10, 'giam_toi_da' => 100000, 'don_toi_thieu' => 0],
+            'TET2026' => ['loai_giam' => 'giam_tien', 'gia_tri' => 100000, 'don_toi_thieu' => 800000]
+        ];
+
+        if (!array_key_exists($ma, $vouchers)) {
+            echo json_encode(['success' => false, 'message' => 'Mã voucher không tồn tại hoặc đã hết hạn.']);
+            return;
+        }
+
+        $v = $vouchers[$ma];
+        if ($tongTien < $v['don_toi_thieu']) {
+            echo json_encode(['success' => false, 'message' => 'Đơn hàng chưa đạt giá trị tối thiểu ' . number_format($v['don_toi_thieu'], 0, ',', '.') . 'đ.']);
+            return;
+        }
+
+        $giam_gia = 0;
+        if ($v['loai_giam'] === 'giam_tien') {
+            $giam_gia = $v['gia_tri'];
+        } elseif ($v['loai_giam'] === 'phan_tram') {
+            $giam_gia = $tongTien * ($v['gia_tri'] / 100);
+            if (isset($v['giam_toi_da']) && $giam_gia > $v['giam_toi_da']) {
+                $giam_gia = $v['giam_toi_da'];
+            }
+        }
+
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Áp dụng mã giảm giá thành công!',
+            'giam_gia' => $giam_gia,
+            'ma_voucher' => $ma
+        ]);
+    }
 }

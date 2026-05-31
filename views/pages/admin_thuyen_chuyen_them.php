@@ -254,7 +254,7 @@ function addProduct(item) {
     document.getElementById('searchProduct').value = '';
     
     if (selectedProducts.find(p => p.id === item.id)) {
-        alert('Sản phẩm này đã có trong danh sách!');
+        showToast('Sản phẩm này đã có trong danh sách!', 'warning');
         return;
     }
     
@@ -303,7 +303,7 @@ function updateQuantity(id, value) {
     
     let qty = parseInt(value) || 0;
     if (qty > product.stock) {
-        alert(`Số lượng chuyển không được vượt quá tồn kho (${product.stock})!`);
+        showToast(`Số lượng chuyển không được vượt quá tồn kho (${product.stock})!`, 'warning');
         qty = product.stock;
     }
     if (qty < 0) qty = 0;
@@ -397,22 +397,22 @@ function submitForm(trangThai) {
     const khoNhan = document.getElementById('kho_nhan').value;
     
     if (!khoGui || !khoNhan) {
-        alert('Vui lòng chọn kho gửi và kho nhận.');
+        showToast('Vui lòng chọn kho gửi và kho nhận.', 'warning');
         return;
     }
     if (khoGui === khoNhan) {
-        alert('Kho gửi và kho nhận không được trùng nhau!');
+        showToast('Kho gửi và kho nhận không được trùng nhau!', 'warning');
         return;
     }
     if (selectedProducts.length === 0) {
-        alert('Vui lòng chọn ít nhất 1 sản phẩm.');
+        showToast('Vui lòng chọn ít nhất 1 sản phẩm.', 'warning');
         return;
     }
     
     // Validate locations
     const missingLoc = selectedProducts.filter(p => (p.locations || []).length > 0 && !p.id_vi_tri);
     if (missingLoc.length > 0) {
-        alert('Vui lòng chọn Vị trí xuất (Kho/Kệ) cho tất cả sản phẩm.');
+        showToast('Vui lòng chọn Vị trí xuất (Kho/Kệ) cho tất cả sản phẩm.', 'warning');
         return;
     }
     
@@ -438,13 +438,13 @@ function submitForm(trangThai) {
     .then(r => r.json())
     .then(result => {
         if (result.success) {
-            alert(result.message);
-            window.location.href = `${APP_URL}/admin/thuyen-chuyen-kho`;
+            showToast(result.message, 'success');
+            setTimeout(() => { window.location.href = `${APP_URL}/admin/thuyen-chuyen-kho`; }, 1000);
         } else {
-            alert('Lỗi: ' + result.message);
+            showToast('Lỗi: ' + result.message, 'error');
         }
     })
-    .catch(err => alert('Có lỗi xảy ra: ' + err.message));
+    .catch(err => showToast('Có lỗi xảy ra: ' + err.message, 'error'));
 }
 
 // Close search results when clicking outside

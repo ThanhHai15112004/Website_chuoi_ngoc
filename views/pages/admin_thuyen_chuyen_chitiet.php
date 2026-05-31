@@ -278,8 +278,8 @@ function actionDuyet() {
     fetch(`${APP_URL}/admin/thuyen-chuyen-kho/duyet/${PHIEU_ID}`, { method: 'POST' })
         .then(r => r.json())
         .then(result => {
-            alert(result.message);
-            if (result.success) window.location.reload();
+            showToast(result.message, result.success ? 'success' : 'error');
+            if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
         });
 }
 
@@ -289,8 +289,8 @@ function actionBatDauChuyen() {
     fetch(`${APP_URL}/admin/thuyen-chuyen-kho/bat-dau-chuyen/${PHIEU_ID}`, { method: 'POST' })
         .then(r => r.json())
         .then(result => {
-            alert(result.message);
-            if (result.success) window.location.reload();
+            showToast(result.message, result.success ? 'success' : 'error');
+            if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
         });
 }
 
@@ -377,7 +377,7 @@ function confirmNhanHang() {
     });
     
     if (hasMissingLoc) {
-        alert('Vui lòng chọn Vị trí lưu cho các sản phẩm có số lượng thực nhận > 0.');
+        showToast('Vui lòng chọn Vị trí lưu cho các sản phẩm có số lượng thực nhận > 0.', 'warning');
         return;
     }
     
@@ -388,8 +388,8 @@ function confirmNhanHang() {
     })
     .then(r => r.json())
     .then(result => {
-        alert(result.message);
-        if (result.success) window.location.reload();
+        showToast(result.message, result.success ? 'success' : 'error');
+        if (result.success) setTimeout(() => { window.location.reload(); }, 1000);
     });
 }
 
@@ -404,8 +404,8 @@ function actionHuy() {
     })
     .then(r => r.json())
     .then(result => {
-        alert(result.message);
-        if (result.success) window.location.href = `${APP_URL}/admin/thuyen-chuyen-kho`;
+        showToast(result.message, result.success ? 'success' : 'error');
+        if (result.success) setTimeout(() => { window.location.href = `${APP_URL}/admin/thuyen-chuyen-kho`; }, 1000);
     });
 }
 </script>
