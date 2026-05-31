@@ -36,7 +36,7 @@
                 <select id="khoKiemKe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6B0D18]/20 focus:border-[#6B0D18] text-sm" required onchange="resetList()">
                     <option value="">-- Chọn kho --</option>
                     <?php foreach ($danhSachKho as $kho): ?>
-                        <option value="<?= $kho['id'] ?>"><?= $kho['ten'] ?></option>
+                        <option value="<?= $kho['id'] ?>"><?= htmlspecialchars($kho['ten_kho']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

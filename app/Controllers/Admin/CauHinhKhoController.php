@@ -177,6 +177,22 @@ class CauHinhKhoController extends Controller
     }
 
     /**
+     * API: Lấy danh sách vị trí hợp lệ cho 1 kho cụ thể (để nhận hàng thuyên chuyển)
+     */
+    public function apiDanhSachViTriTheoKho($idKho)
+    {
+        $db = \App\Core\Database::getInstance()->getConnection();
+        $sql = "SELECT id, ten_vi_tri, cap_do
+                FROM khu_vuc_kho 
+                WHERE id_kho = ? AND cap_do IN ('ke', 'ngan')
+                ORDER BY ten_vi_tri";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$idKho]);
+        $danhSach = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        echo json_encode(['success' => true, 'data' => $danhSach]);
+    }
+
+    /**
      * API: Lưu vị trí khu vực (POST JSON)
      */
     public function luuViTri()

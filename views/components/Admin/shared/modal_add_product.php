@@ -135,7 +135,15 @@
         listContainer.innerHTML = '<div class="text-center py-8 text-gray-500"><span class="iconify text-3xl mx-auto mb-2 text-gray-300 animate-spin" data-icon="mdi:loading"></span>Đang tải dữ liệu...</div>';
         
         try {
-            const res = await fetch(`<?= APP_URL ?>/admin/ton-kho/api/search-variants?keyword=${encodeURIComponent(keyword)}`);
+            let apiUrl = `<?= APP_URL ?>/admin/ton-kho/api/search-variants?keyword=${encodeURIComponent(keyword)}`;
+            
+            // Nếu đang ở form Kiểm Kê, gọi API của Kiem Ke để lấy vị trí
+            const khoKiemKe = document.getElementById('khoKiemKe');
+            if (khoKiemKe && khoKiemKe.value) {
+                apiUrl = `<?= APP_URL ?>/admin/kiem-ke/api/search-variants?id_kho=${khoKiemKe.value}&keyword=${encodeURIComponent(keyword)}`;
+            }
+
+            const res = await fetch(apiUrl);
             const data = await res.json();
             
             if (!data || data.length === 0) {
@@ -170,7 +178,8 @@
                             <div class="font-bold text-gray-900">${item.product_name || item.name}</div>
                             <div class="text-xs text-gray-500 mt-1 flex items-center gap-3">
                                 <span>SKU: ${item.sku}</span>
-                                <span>${item.variant_name || item.variant}</span>
+                                <span>${item.variant_name || item.variant || 'Mặc định'}</span>
+                                ${item.ten_vi_tri ? `<span class="text-[#6B0D18]">${item.ten_vi_tri}</span>` : ''}
                                 <span class="${isOutOfStock ? 'text-gray-500 font-bold' : 'text-emerald-600 font-medium'}">Tồn kho: ${stock}</span>
                             </div>
                         </div>
@@ -205,6 +214,12 @@
         } else if (typeof addToXkCart === 'function') {
             // Xuat kho
             addToXkCart(item.id, item.product_name || item.name, item.sku, item.variant_name || item.variant, item.price, item.stock || 0, item.image);
+        } else if (typeof addProductKK === 'function') {
+            // Kiem ke
+            addProductKK(item);
+        } else if (typeof addProduct === 'function' && document.getElementById('formThuyenChuyen')) {
+            // Thuyen chuyen
+            addProduct(item);
         }
         
         // Show success animation or toast

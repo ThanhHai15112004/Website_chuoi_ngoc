@@ -1,169 +1,202 @@
 <?php
-// app/Controllers/Admin/KiemKeController.php
 
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Services\Admin\KiemKeService;
 
 class KiemKeController extends Controller
 {
-    private function getMockKho()
+    private $service;
+
+    public function __construct()
     {
-        return [
-            ['id' => 'KHO001', 'ten' => 'Kho Tổng - Hà Nội'],
-            ['id' => 'KHO002', 'ten' => 'Kho Online - TP.HCM'],
-            ['id' => 'KHO003', 'ten' => 'Kho Cửa Hàng - Cầu Giấy'],
-        ];
+        $this->service = new KiemKeService();
     }
 
-    private function getMockDanhSachKiemKe()
-    {
-        return [
-            [
-                'id' => 'KK202600123',
-                'kho' => 'Kho Tổng - Hà Nội',
-                'loai' => 'Toàn kho',
-                'ngay_tao' => '26/05/2026',
-                'gio_tao' => '09:30',
-                'han_hoan_tat' => '30/05/2026',
-                'nguoi_tao' => 'Admin (Quản trị)',
-                'nguoi_kiem_ke' => 'Trần Văn A +2',
-                'nguoi_duyet' => 'Chưa duyệt',
-                'so_sp' => 120,
-                'so_sai_lech' => 0,
-                'trang_thai' => 'Nháp'
-            ],
-            [
-                'id' => 'KK202600122',
-                'kho' => 'Kho Online - TP.HCM',
-                'loai' => 'Danh mục',
-                'ngay_tao' => '25/05/2026',
-                'gio_tao' => '14:20',
-                'han_hoan_tat' => '25/05/2026',
-                'nguoi_tao' => 'Lê Thị B',
-                'nguoi_kiem_ke' => 'Trần Văn A',
-                'nguoi_duyet' => 'Chưa duyệt',
-                'so_sp' => 45,
-                'so_sai_lech' => 0,
-                'trang_thai' => 'Đang kiểm kê'
-            ],
-            [
-                'id' => 'KK202600121',
-                'kho' => 'Kho Cửa Hàng - Cầu Giấy',
-                'loai' => 'Sản phẩm',
-                'ngay_tao' => '23/05/2026',
-                'gio_tao' => '10:00',
-                'han_hoan_tat' => '24/05/2026',
-                'nguoi_tao' => 'Nguyễn Văn C',
-                'nguoi_kiem_ke' => 'Lê Thị B',
-                'nguoi_duyet' => 'Chưa duyệt',
-                'so_sp' => 15,
-                'so_sai_lech' => -3, // Có lệch thiếu
-                'trang_thai' => 'Chờ duyệt'
-            ],
-            [
-                'id' => 'KK202600120',
-                'kho' => 'Kho Cửa Hàng - Cầu Giấy',
-                'loai' => 'Định kỳ',
-                'ngay_tao' => '20/05/2026',
-                'gio_tao' => '08:00',
-                'han_hoan_tat' => '20/05/2026',
-                'nguoi_tao' => 'Admin (Quản trị)',
-                'nguoi_kiem_ke' => 'Nguyễn Văn C',
-                'nguoi_duyet' => 'Admin (Quản trị)',
-                'so_sp' => 50,
-                'so_sai_lech' => 2, // Thừa
-                'trang_thai' => 'Hoàn tất'
-            ],
-            [
-                'id' => 'KK202600119',
-                'kho' => 'Kho Tổng - Hà Nội',
-                'loai' => 'Loại đá',
-                'ngay_tao' => '15/05/2026',
-                'gio_tao' => '11:15',
-                'han_hoan_tat' => '16/05/2026',
-                'nguoi_tao' => 'Admin (Quản trị)',
-                'nguoi_kiem_ke' => 'Chưa gán',
-                'nguoi_duyet' => 'Chưa duyệt',
-                'so_sp' => 12,
-                'so_sai_lech' => 0,
-                'trang_thai' => 'Đã hủy'
-            ]
-        ];
-    }
-
+    /**
+     * Danh sách phiếu kiểm kê
+     */
     public function index()
     {
-        $danhSachKK = $this->getMockDanhSachKiemKe();
-        
-        $stats = [
-            'tat_ca' => 86,
-            'dang_kiem_ke' => 4,
-            'cho_duyet' => 3,
-            'da_hoan_tat' => 72,
-            'co_chenh_lech' => 12,
-            'san_pham_lech' => 38,
-            'gia_tri_lech' => -6500000 // Âm là thất thoát
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $filters = [
+            'keyword' => $_GET['keyword'] ?? '',
+            'trang_thai' => $_GET['trang_thai'] ?? ''
         ];
+
+        $dataResponse = $this->service->layDanhSach($filters, $page, 20);
+        $stats = $this->service->layThongKe();
 
         $this->view('admin_kiem_ke', [
             'current_page' => 'kiem_ke',
-            'danhSachKK' => $danhSachKK,
+            'danhSachKK' => $dataResponse['list'],
+            'pagination' => $dataResponse['pagination'],
             'stats' => $stats
         ], 'admin');
     }
 
+    /**
+     * Form tạo phiếu kiểm kê mới
+     */
     public function taoMoi()
     {
-        $danhSachKho = $this->getMockKho();
-        
-        $sanPhamList = [
-            ['id' => 'SP001', 'ten' => 'Chuỗi Tỳ Hưu Thạch Anh Tóc Vàng', 'ton_he_thong' => 150],
-            ['id' => 'SP002', 'ten' => 'Vòng Ngọc Bích Tự Nhiên', 'ton_he_thong' => 85],
-            ['id' => 'SP003', 'ten' => 'Mặt Dây Chuyền Hồ Ly Cửu Vĩ', 'ton_he_thong' => 30],
-            ['id' => 'SP004', 'ten' => 'Vòng Trầm Hương 108 Hạt', 'ton_he_thong' => 42],
-            ['id' => 'SP005', 'ten' => 'Nhẫn Tỳ Hưu Mắt Hổ', 'ton_he_thong' => 18],
-        ];
+        $danhSachKho = $this->service->layDanhSachKho();
 
         $this->view('admin_kiem_ke_them', [
             'current_page' => 'kiem_ke',
-            'danhSachKho' => $danhSachKho,
-            'sanPhamList' => $sanPhamList
+            'danhSachKho' => $danhSachKho
         ], 'admin');
     }
 
+    /**
+     * API: Lưu phiếu kiểm kê mới
+     */
+    public function luuMoi()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (!$input) $input = $_POST;
+
+            $input['user_id'] = $_SESSION['user']['id'] ?? null;
+
+            $result = $this->service->luuPhieu($input);
+
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    /**
+     * Chi tiết phiếu kiểm kê
+     */
     public function chiTiet($id)
     {
-        $phieu = [
-            'id' => $id,
-            'ten_dot' => 'Kiểm kê kho tổng tháng 5',
-            'kho' => 'Kho Tổng - Hà Nội',
-            'loai' => 'Toàn kho',
-            'nguoi_tao' => 'Admin (Quản trị)',
-            'nguoi_kiem_ke' => 'Trần Văn A, Lê Thị B',
-            'nguoi_duyet' => 'Chưa duyệt',
-            'ngay_tao' => '26/05/2026',
-            'gio_tao' => '09:30',
-            'han_hoan_tat' => '30/05/2026',
-            'trang_thai' => 'Đang kiểm kê', // Nháp, Đang kiểm kê, Chờ duyệt, Đã duyệt, Đã điều chỉnh kho, Hoàn tất, Đã hủy
-            'ghi_chu' => 'Ưu tiên kiểm tra khu vực vòng ngọc bích.',
-            'tong_sp' => 120,
-            'da_kiem' => 45,
-            'tong_chenh_lech' => -3,
-            'gia_tri_lech' => -4500000
-        ];
-
-        $chiTiet = [
-            ['ma_sp' => 'SP001', 'ten_sp' => 'Chuỗi Tỳ Hưu Thạch Anh Tóc Vàng', 'ton_he_thong' => 150, 'ton_thuc_te' => 148, 'chenh_lech' => -2, 'gia_von' => 1500000, 'thanh_tien_lech' => -3000000, 'ly_do' => 'Mất hàng', 'ghi_chu' => 'Tìm không thấy ở kệ B', 'trang_thai_kiem' => 'Có chênh lệch'],
-            ['ma_sp' => 'SP002', 'ten_sp' => 'Vòng Ngọc Bích Tự Nhiên', 'ton_he_thong' => 85, 'ton_thuc_te' => 85, 'chenh_lech' => 0, 'gia_von' => 2200000, 'thanh_tien_lech' => 0, 'ly_do' => '', 'ghi_chu' => '', 'trang_thai_kiem' => 'Đã kiểm'],
-            ['ma_sp' => 'SP003', 'ten_sp' => 'Mặt Dây Chuyền Hồ Ly Cửu Vĩ', 'ton_he_thong' => 30, 'ton_thuc_te' => 32, 'chenh_lech' => 2, 'gia_von' => 800000, 'thanh_tien_lech' => 1600000, 'ly_do' => 'Khách trả hàng chưa nhập kho', 'ghi_chu' => 'Để trên bàn thu ngân', 'trang_thai_kiem' => 'Có chênh lệch'],
-            ['ma_sp' => 'SP004', 'ten_sp' => 'Vòng Trầm Hương 108 Hạt', 'ton_he_thong' => 42, 'ton_thuc_te' => null, 'chenh_lech' => null, 'gia_von' => 4500000, 'thanh_tien_lech' => 0, 'ly_do' => '', 'ghi_chu' => '', 'trang_thai_kiem' => 'Chưa kiểm'],
-        ];
+        $data = $this->service->chiTiet($id);
+        if (!$data) {
+            die('Phiếu kiểm kê không tồn tại');
+        }
 
         $this->view('admin_kiem_ke_chitiet', [
             'current_page' => 'kiem_ke',
-            'phieu' => $phieu,
-            'chiTiet' => $chiTiet
+            'phieu' => $data['phieu'],
+            'chiTiet' => $data['chi_tiet']
         ], 'admin');
+    }
+
+    /**
+     * API: Lưu kết quả kiểm đếm
+     */
+    public function luuKetQua($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $dataKiem = $input['chi_tiet'] ?? [];
+
+            $result = $this->service->luuKetQua($id, $dataKiem);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    /**
+     * API: Gửi duyệt kết quả
+     */
+    public function guiDuyet($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->service->guiDuyet($id);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    /**
+     * API: Duyệt + Điều chỉnh kho
+     */
+    public function duyet($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_SESSION['user']['id'] ?? null;
+            $result = $this->service->duyetVaDieuChinh($id, $userId);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    /**
+     * API: Hủy phiếu
+     */
+    public function huy($id)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $this->service->huyPhieu($id);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            exit;
+        }
+    }
+
+    /**
+     * API: Lấy danh sách biến thể theo kho (cho form tạo phiếu)
+     */
+    public function apiBienTheTheoKho()
+    {
+        $idKho = $_GET['id_kho'] ?? null;
+        if (!$idKho) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Thiếu ID kho.']);
+            exit;
+        }
+
+        $list = $this->service->layBienTheTheoKho($idKho);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'data' => $list]);
+        exit;
+    }
+
+    /**
+     * API: Tìm kiếm biến thể theo kho (cho search box)
+     */
+    public function apiSearchVariants()
+    {
+        $idKho = $_GET['id_kho'] ?? null;
+        $keyword = $_GET['keyword'] ?? '';
+        
+        if (!$idKho) {
+            header('Content-Type: application/json');
+            echo json_encode([]);
+            exit;
+        }
+
+        // Tái sử dụng layBienTheTheoKho và filter bằng PHP cho nhanh
+        $list = $this->service->layBienTheTheoKho($idKho);
+        
+        $result = [];
+        $kw = mb_strtolower($keyword, 'UTF-8');
+        foreach ($list as $item) {
+            $name = mb_strtolower($item['ten_sp'], 'UTF-8');
+            $sku = mb_strtolower($item['sku'] ?? '', 'UTF-8');
+            if (empty($kw) || strpos($name, $kw) !== false || strpos($sku, $kw) !== false) {
+                $result[] = [
+                    'id' => $item['id_bien_the'],
+                    'name' => $item['ten_sp'],
+                    'variant' => $item['variant_name'],
+                    'sku' => $item['sku'],
+                    'image' => $item['image'],
+                    'stock' => $item['so_luong_ton'],
+                    'id_vi_tri' => $item['id_vi_tri'],
+                    'ten_vi_tri' => $item['ten_vi_tri']
+                ];
+            }
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode(array_slice($result, 0, 20));
+        exit;
     }
 }
