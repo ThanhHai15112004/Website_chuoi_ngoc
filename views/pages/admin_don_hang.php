@@ -79,35 +79,80 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-4 border-t border-gray-100 flex items-center justify-between shrink-0 bg-white rounded-b-2xl">
-            <div class="flex items-center gap-3">
-                <span class="text-sm text-gray-500">Hiển thị</span>
-                <select onchange="window.location.href='?limit='+this.value+'&page=1'" class="px-2 py-1.5 bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6B0D18] text-sm text-gray-700">
-                    <option <?= $pagination['limit'] == 10 ? 'selected' : '' ?>>10</option>
-                    <option <?= $pagination['limit'] == 20 ? 'selected' : '' ?>>20</option>
-                    <option <?= $pagination['limit'] == 50 ? 'selected' : '' ?>>50</option>
-                    <option <?= $pagination['limit'] == 100 ? 'selected' : '' ?>>100</option>
+        <div class="px-4 py-3 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 shrink-0 bg-white rounded-b-2xl">
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+                Hiển thị 
+                <select onchange="window.location.href='?limit='+this.value+'&<?= http_build_query(array_diff_key($_GET, ['limit'=>'', 'page'=>''])) ?>'" class="px-2 py-1 border border-gray-200 rounded-md bg-white focus:outline-none focus:border-[#6B0D18]">
+                    <option value="10" <?= $pagination['limit'] == 10 ? 'selected' : '' ?>>10</option>
+                    <option value="20" <?= $pagination['limit'] == 20 ? 'selected' : '' ?>>20</option>
+                    <option value="50" <?= $pagination['limit'] == 50 ? 'selected' : '' ?>>50</option>
+                    <option value="100" <?= $pagination['limit'] == 100 ? 'selected' : '' ?>>100</option>
                 </select>
-                <span class="text-sm text-gray-500">trong tổng số <?= number_format($pagination['total_records'], 0, ',', '.') ?> đơn</span>
+                trong tổng số <?= number_format($pagination['total_records'], 0, ',', '.') ?> đơn
             </div>
             
-            <?php if ($pagination['total_pages'] > 1): ?>
             <div class="flex items-center gap-1">
-                <?php $prevPage = max(1, $pagination['current'] - 1); ?>
-                <a href="?page=<?= $prevPage ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors <?= $pagination['current'] <= 1 ? 'pointer-events-none opacity-50' : '' ?>"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+                <?php
+                $queryParams = $_GET;
+                unset($queryParams['page']);
+                $queryString = http_build_query($queryParams);
+                $baseUrl = '?' . ($queryString ? $queryString . '&' : '');
                 
-                <?php for($i = 1; $i <= $pagination['total_pages']; $i++): ?>
-                    <?php if($i == $pagination['current']): ?>
-                        <span class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#6B0D18] text-white font-medium text-sm shadow-sm"><?= $i ?></span>
-                    <?php else: ?>
-                        <a href="?page=<?= $i ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors"><?= $i ?></a>
-                    <?php endif; ?>
-                <?php endfor; ?>
+                $currentPage = $pagination['current'];
+                $totalPages = $pagination['total_pages'];
+                ?>
 
-                <?php $nextPage = min($pagination['total_pages'], $pagination['current'] + 1); ?>
-                <a href="?page=<?= $nextPage ?>&limit=<?= $pagination['limit'] ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors <?= $pagination['current'] >= $pagination['total_pages'] ? 'pointer-events-none opacity-50' : '' ?>"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+                <!-- Prev Button -->
+                <?php if ($currentPage > 1): ?>
+                    <a href="<?= $baseUrl . 'page=' . ($currentPage - 1) ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <span class="iconify" data-icon="mdi:chevron-left"></span>
+                    </a>
+                <?php else: ?>
+                    <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">
+                        <span class="iconify" data-icon="mdi:chevron-left"></span>
+                    </button>
+                <?php endif; ?>
+
+                <?php 
+                $startPage = max(1, $currentPage - 1);
+                $endPage = min($totalPages, $currentPage + 1);
+                
+                if ($startPage > 1) {
+                    echo '<a href="' . $baseUrl . 'page=1" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#6B0D18] hover:border-gray-300 transition-colors font-medium text-sm">1</a>';
+                    if ($startPage > 2) {
+                        echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>';
+                    }
+                }
+
+                for ($i = $startPage; $i <= $endPage; $i++): 
+                    if ($i == $currentPage):
+                ?>
+                    <button class="w-8 h-8 flex items-center justify-center rounded-lg border border-[#6B0D18] bg-[#6B0D18] text-white transition-colors font-medium text-sm shadow-sm"><?= $i ?></button>
+                <?php else: ?>
+                    <a href="<?= $baseUrl . 'page=' . $i ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#6B0D18] hover:border-gray-300 transition-colors font-medium text-sm"><?= $i ?></a>
+                <?php 
+                    endif;
+                endfor; 
+
+                if ($endPage < $totalPages) {
+                    if ($endPage < $totalPages - 1) {
+                        echo '<span class="w-8 h-8 flex items-center justify-center text-gray-400">...</span>';
+                    }
+                    echo '<a href="' . $baseUrl . 'page=' . $totalPages . '" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-[#6B0D18] hover:border-gray-300 transition-colors font-medium text-sm">' . $totalPages . '</a>';
+                }
+                ?>
+
+                <!-- Next Button -->
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="<?= $baseUrl . 'page=' . ($currentPage + 1) ?>" class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+                        <span class="iconify" data-icon="mdi:chevron-right"></span>
+                    </a>
+                <?php else: ?>
+                    <button disabled class="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 text-gray-400 cursor-not-allowed">
+                        <span class="iconify" data-icon="mdi:chevron-right"></span>
+                    </button>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>

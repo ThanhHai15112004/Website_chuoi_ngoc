@@ -5,6 +5,9 @@
 
 define('APP_NAME', 'Web Ban Hang Chuoi Ngoc');
 
+// Thiết lập múi giờ Việt Nam
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
 // Tự động xác định đường dẫn gốc của ứng dụng (APP_URL)
 $giao_thuc = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 $may_chu = $_SERVER['HTTP_HOST'] ?? 'localhost';

@@ -99,6 +99,8 @@ class TonKhoController extends Controller
                 'don_vi_tinh' => $item['don_vi_tinh'],
                 'image' => $item['image'],
                 'price' => $item['price'] ?? 0,
+                'original_price' => $item['original_price'] ?? 0,
+                'is_on_sale' => $item['is_on_sale'] ?? 0,
                 'stock' => $item['stock_current'] ?? 0
             ];
         }, $result['list'] ?? []);

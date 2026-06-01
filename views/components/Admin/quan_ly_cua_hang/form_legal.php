@@ -16,20 +16,21 @@
         <div class="p-5 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-1">
                 <label class="block text-sm font-medium text-gray-700">Tên Doanh nghiệp / Hộ kinh doanh</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Nhập tên ĐKKD...">
+                <input type="text" name="ten_doanh_nghiep" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" value="<?= htmlspecialchars($storeConfig['ten_doanh_nghiep'] ?? '', ENT_QUOTES) ?>" placeholder="Nhập tên ĐKKD...">
             </div>
             <div class="space-y-1">
                 <label class="block text-sm font-medium text-gray-700">Mã số thuế / Mã DKKD</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Nhập mã số thuế...">
+                <input type="text" name="ma_so_thue" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" value="<?= htmlspecialchars($storeConfig['ma_so_thue'] ?? '', ENT_QUOTES) ?>" placeholder="Nhập mã số thuế...">
             </div>
             <div class="space-y-1 md:col-span-2">
                 <label class="block text-sm font-medium text-gray-700">Địa chỉ đăng ký kinh doanh</label>
-                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Địa chỉ ghi trên giấy tờ...">
+                <input type="text" name="dia_chi_dkkd" class="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18]" value="<?= htmlspecialchars($storeConfig['dia_chi_dkkd'] ?? '', ENT_QUOTES) ?>" placeholder="Địa chỉ ghi trên giấy tờ...">
             </div>
             
             <div class="space-y-1 md:col-span-2">
                 <label class="flex items-center gap-2 cursor-pointer mt-2">
-                    <input type="checkbox" class="w-4 h-4 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18]">
+                    <input type="hidden" name="hien_thi_phap_ly" value="0">
+                    <input type="checkbox" name="hien_thi_phap_ly" value="1" class="w-4 h-4 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18]" <?= ($storeConfig['hien_thi_phap_ly'] ?? '0') === '1' ? 'checked' : '' ?>>
                     <span class="text-sm font-medium text-gray-700">Hiển thị thông tin pháp lý công khai trên Footer website</span>
                 </label>
                 <p class="text-xs text-gray-500 ml-6">Giúp tăng độ uy tín với khách hàng, hoặc phục vụ khai báo Bộ Công Thương.</p>

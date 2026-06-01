@@ -8,15 +8,30 @@ $dt_sel = $filters['doi_tuong'] ?? '';
     <!-- Tabs & Filters Container -->
     <form method="GET" action="" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-4">
         
+        <?php
+        $current_tab = $_GET['tab'] ?? 'all';
+        function getTabClass($tabName, $current_tab) {
+            if ($tabName === $current_tab) {
+                return 'tab-btn px-4 py-2 border-b-2 border-[#6B0D18] text-[#6B0D18] font-medium text-sm whitespace-nowrap';
+            }
+            return 'tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap';
+        }
+        function getTabUrl($tabName) {
+            $q = $_GET;
+            $q['tab'] = $tabName;
+            if (isset($q['page'])) unset($q['page']);
+            return '?' . http_build_query($q);
+        }
+        ?>
         <!-- Tabs -->
         <div class="flex space-x-1 border-b border-gray-100 overflow-x-auto hide-scrollbar" id="voucher-tabs">
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-[#6B0D18] text-[#6B0D18] font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Tất cả (<?= $stats['tong_voucher'] ?? 0 ?>)</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đang hoạt động (<?= $stats['dang_hoat_dong'] ?? 0 ?>)</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Sắp hết hạn (<?= $stats['sap_het_han'] ?? 0 ?>)</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết hạn (<?= $stats['het_han'] ?? 0 ?>)</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Chưa bắt đầu</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết lượt</button>
-            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đã tắt</button>
+            <a href="<?= getTabUrl('all') ?>" class="<?= getTabClass('all', $current_tab) ?>">Tất cả (<?= $thong_ke['tong_voucher'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('active') ?>" class="<?= getTabClass('active', $current_tab) ?>">Đang hoạt động (<?= $thong_ke['dang_hoat_dong'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('expiring') ?>" class="<?= getTabClass('expiring', $current_tab) ?>">Sắp hết hạn (<?= $thong_ke['sap_het_han'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('expired') ?>" class="<?= getTabClass('expired', $current_tab) ?>">Hết hạn (<?= $thong_ke['het_han'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('upcoming') ?>" class="<?= getTabClass('upcoming', $current_tab) ?>">Chưa bắt đầu (<?= $thong_ke['chua_bat_dau'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('out_of_stock') ?>" class="<?= getTabClass('out_of_stock', $current_tab) ?>">Hết lượt (<?= $thong_ke['het_luot'] ?? 0 ?>)</a>
+            <a href="<?= getTabUrl('disabled') ?>" class="<?= getTabClass('disabled', $current_tab) ?>">Đã tắt (<?= $thong_ke['da_tat'] ?? 0 ?>)</a>
         </div>
 
         <!-- Search & Filters -->

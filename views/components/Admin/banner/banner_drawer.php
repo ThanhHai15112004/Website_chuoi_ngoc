@@ -21,10 +21,13 @@
         <div class="space-y-2">
             <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Ảnh Desktop</label>
-                <span class="text-xs text-gray-400">1920x600</span>
             </div>
             <div class="aspect-[21/9] bg-gray-100 rounded-lg border border-gray-200 overflow-hidden relative">
-                <img src="<?= APP_URL ?>/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg" alt="Desktop Preview" class="w-full h-full object-cover">
+                <img id="drawer_anh_desktop" src="" alt="Desktop Preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex-col items-center justify-center text-gray-400 bg-gray-100 hidden" style="display: none;">
+                    <span class="iconify text-3xl block mx-auto mb-1 opacity-50" data-icon="mdi:image-broken-variant"></span>
+                    <span class="text-xs">Lỗi ảnh</span>
+                </div>
             </div>
         </div>
 
@@ -32,10 +35,13 @@
         <div class="space-y-2">
             <div class="flex items-center justify-between">
                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Ảnh Mobile</label>
-                <span class="text-xs text-gray-400">750x900</span>
             </div>
             <div class="aspect-[4/5] w-1/2 mx-auto bg-gray-100 rounded-lg border border-gray-200 overflow-hidden relative shadow-md">
-                <img src="<?= APP_URL ?>/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-2.jpg" alt="Mobile Preview" class="w-full h-full object-cover">
+                <img id="drawer_anh_mobile" src="" alt="Mobile Preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover">
+                <div class="absolute inset-0 flex-col items-center justify-center text-gray-400 bg-gray-100 hidden" style="display: none;">
+                    <span class="iconify text-3xl block mx-auto mb-1 opacity-50" data-icon="mdi:image-broken-variant"></span>
+                    <span class="text-xs">Lỗi ảnh</span>
+                </div>
             </div>
         </div>
 
@@ -43,49 +49,45 @@
         <div class="bg-gray-50/50 rounded-xl border border-gray-100 p-4 space-y-4">
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Tên banner</label>
-                <div class="font-semibold text-gray-800">Flash Sale Vòng Ngọc Tháng 5</div>
+                <div id="drawer_ten" class="font-semibold text-gray-800"></div>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Trạng thái</label>
-                    <span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded border border-green-100 inline-flex">Đang hiển thị</span>
+                    <div id="drawer_trang_thai"></div>
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Thứ tự</label>
-                    <div class="text-sm font-medium text-gray-800">1</div>
+                    <div id="drawer_thu_tu" class="text-sm font-medium text-gray-800"></div>
                 </div>
             </div>
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Vị trí hiển thị</label>
-                <div class="text-sm text-gray-800 bg-white border border-gray-200 px-3 py-1.5 rounded-md inline-block">Trang chủ · Slider chính</div>
+                <div id="drawer_vi_tri" class="text-sm text-gray-800 bg-white border border-gray-200 px-3 py-1.5 rounded-md inline-block"></div>
             </div>
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Thiết bị</label>
-                <div class="flex items-center gap-2">
-                    <span class="flex items-center gap-1.5 text-xs bg-white border border-gray-200 px-2 py-1 rounded"><span class="iconify text-gray-500" data-icon="mdi:monitor"></span> Desktop</span>
-                    <span class="flex items-center gap-1.5 text-xs bg-white border border-gray-200 px-2 py-1 rounded"><span class="iconify text-gray-500" data-icon="mdi:cellphone"></span> Mobile</span>
-                </div>
+                <div id="drawer_thiet_bi" class="flex items-center gap-2"></div>
             </div>
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Link liên kết</label>
-                <a href="#" class="text-sm text-[#6B0D18] hover:underline flex items-center gap-1">
-                    /san-pham/khuyen-mai <span class="iconify text-xs" data-icon="mdi:open-in-new"></span>
+                <a id="drawer_link" href="#" target="_blank" class="text-sm text-[#6B0D18] hover:underline flex items-center gap-1">
+                    <span id="drawer_link_text"></span> <span class="iconify text-xs" data-icon="mdi:open-in-new"></span>
                 </a>
             </div>
             <div>
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block mb-1">Thời gian hiển thị</label>
                 <div class="text-sm text-gray-800 flex items-center gap-2">
                     <span class="iconify text-gray-400" data-icon="mdi:calendar-clock"></span>
-                    01/05/2026 00:00 - 31/05/2026 23:59
+                    <span id="drawer_thoi_gian"></span>
                 </div>
-                <div class="text-xs text-green-600 mt-1 font-medium italic">Còn 5 ngày</div>
             </div>
         </div>
 
         <!-- Audit log -->
         <div class="text-xs text-gray-400 space-y-1 px-1">
-            <div class="flex justify-between"><span>Người tạo:</span> <span class="text-gray-600 font-medium">Admin (01/04/2026)</span></div>
-            <div class="flex justify-between"><span>Cập nhật cuối:</span> <span class="text-gray-600 font-medium">Nguyễn Văn A (15/05/2026)</span></div>
+            <div class="flex justify-between"><span>Ngày tạo:</span> <span id="drawer_ngay_tao" class="text-gray-600 font-medium"></span></div>
+            <div class="flex justify-between"><span>Cập nhật cuối:</span> <span id="drawer_ngay_cap_nhat" class="text-gray-600 font-medium"></span></div>
         </div>
     </div>
 
@@ -100,7 +102,7 @@
             </button>
         </div>
         <div class="flex items-center gap-2">
-            <a href="<?= APP_URL ?>/admin/banner/sua" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A1120] transition-colors text-sm font-medium shadow-sm">
+            <a id="drawer_btn_edit" href="#" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A1120] transition-colors text-sm font-medium shadow-sm">
                 Chỉnh sửa
             </a>
         </div>

@@ -158,6 +158,7 @@
                             <input type="text" id="ma_voucher_input" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500 text-sm uppercase" placeholder="Nhập mã...">
                             <button type="button" onclick="applyVoucher()" class="px-4 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition-colors shrink-0">Áp dụng</button>
                         </div>
+                        <input type="hidden" id="applied_voucher_id" value="">
                         <input type="hidden" id="applied_voucher_code" value="">
                         <input type="hidden" id="applied_voucher_discount" value="0">
                         <div id="voucher-msg" class="text-xs mt-1 hidden"></div>
@@ -176,9 +177,24 @@
                         <span class="font-medium text-red-500" id="summary-discount">-0đ</span>
                     </div>
                     
+                    <!-- Phương thức vận chuyển -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1.5">Phương thức vận chuyển</label>
+                        <select id="phuong_thuc_van_chuyen" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500 text-sm" onchange="onShippingChange()">
+                            <option value="" data-fee="0">-- Không giao (Nhận tại cửa hàng) --</option>
+                            <?php
+                            $active_ships = array_filter($shipping_methods, fn($s) => $s['trang_thai'] == 1);
+                            foreach($active_ships as $sm): ?>
+                            <option value="<?= $sm['id'] ?>" data-fee="<?= $sm['phi_mac_dinh'] ?>">
+                                <?= htmlspecialchars($sm['ten']) ?> (<?= $sm['phi_mac_dinh'] == 0 ? 'Miễn phí' : number_format($sm['phi_mac_dinh'],0,',','.') . 'đ' ?>)
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="text-gray-600">Phí giao hàng:</span>
-                        <input type="text" id="phi_van_chuyen" value="0" class="w-24 text-right px-2 py-1 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-emerald-500 text-sm font-medium" oninput="formatCurrencyInput(this); calculateTotals()">
+                        <span class="font-medium text-gray-900" id="summary-shipping">0đ</span>
+                        <input type="hidden" id="phi_van_chuyen" value="0">
                     </div>
 
                     <div class="h-px bg-gray-100 my-1"></div>
@@ -192,18 +208,20 @@
                     <div class="mt-2">
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Phương thức thanh toán</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <label class="flex items-center gap-2 p-2.5 border border-emerald-500 bg-emerald-50 rounded-lg cursor-pointer transition-colors relative payment-method-label">
-                                <input type="radio" name="pt_thanh_toan" value="Tiền mặt" class="hidden" checked onchange="updatePaymentUI(this)">
-                                <span class="iconify text-emerald-600 text-xl" data-icon="mdi:cash"></span>
-                                <span class="text-sm font-medium text-emerald-800">Tiền mặt</span>
+                            <?php
+                            $active_payments = array_filter($payments, fn($p) => $p['trang_thai'] == 1);
+                            $first = true;
+                            foreach($active_payments as $pay): 
+                                $iconMap = ['mdi:cash' => 'mdi:cash', 'mdi:bank-transfer' => 'mdi:bank-transfer', 'mdi:qrcode' => 'mdi:qrcode', 'mdi:wallet' => 'mdi:wallet'];
+                                $icon = $pay['icon'] ?? 'mdi:wallet';
+                            ?>
+                            <label class="flex items-center gap-2 p-2.5 border <?= $first ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 bg-white hover:bg-gray-50' ?> rounded-lg cursor-pointer transition-colors relative payment-method-label">
+                                <input type="radio" name="pt_thanh_toan" value="<?= htmlspecialchars($pay['ten']) ?>" class="hidden" <?= $first ? 'checked' : '' ?> onchange="updatePaymentUI(this)">
+                                <span class="iconify text-xl <?= $first ? 'text-emerald-600' : 'text-gray-600' ?>" data-icon="<?= htmlspecialchars($icon) ?>"></span>
+                                <span class="text-sm font-medium <?= $first ? 'text-emerald-800' : 'text-gray-700' ?>"><?= htmlspecialchars($pay['ten']) ?></span>
                                 <div class="absolute inset-0 border-2 border-emerald-500 rounded-lg pointer-events-none hidden check-ring"></div>
                             </label>
-                            <label class="flex items-center gap-2 p-2.5 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-gray-50 transition-colors relative payment-method-label">
-                                <input type="radio" name="pt_thanh_toan" value="Chuyển khoản" class="hidden" onchange="updatePaymentUI(this)">
-                                <span class="iconify text-blue-600 text-xl" data-icon="mdi:bank-transfer"></span>
-                                <span class="text-sm font-medium text-gray-700">Chuyển khoản</span>
-                                <div class="absolute inset-0 border-2 border-emerald-500 rounded-lg pointer-events-none hidden check-ring"></div>
-                            </label>
+                            <?php $first = false; endforeach; ?>
                         </div>
                     </div>
 

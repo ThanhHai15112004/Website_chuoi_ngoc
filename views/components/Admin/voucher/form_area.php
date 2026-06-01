@@ -117,11 +117,58 @@
 
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-gray-700">Phạm vi sản phẩm</label>
-                        <select id="input_pham_vi" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] text-sm bg-white transition-colors">
-                            <option value="all" <?= ($is_edit && $voucher['pham_vi_san_pham'] == 'all') ? 'selected' : '' ?>>Toàn bộ cửa hàng</option>
+                        <select id="input_pham_vi" onchange="toggleScopeUI()" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] text-sm bg-white transition-colors">
+                            <option value="all" <?= (!$is_edit || $voucher['pham_vi_san_pham'] == 'all') ? 'selected' : '' ?>>Toàn bộ cửa hàng</option>
                             <option value="category" <?= ($is_edit && $voucher['pham_vi_san_pham'] == 'category') ? 'selected' : '' ?>>Danh mục cụ thể</option>
                             <option value="product" <?= ($is_edit && $voucher['pham_vi_san_pham'] == 'product') ? 'selected' : '' ?>>Sản phẩm cụ thể</option>
                         </select>
+                    </div>
+
+                    <!-- Dynamic Category Selector -->
+                    <div id="scope_category_box" class="space-y-2 mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg <?= ($is_edit && $voucher['pham_vi_san_pham'] == 'category') ? '' : 'hidden' ?> col-span-1 md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Chọn các danh mục áp dụng</label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 max-h-48 overflow-y-auto custom-scrollbar">
+                            <?php foreach($danh_muc_list as $dm): ?>
+                            <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-white rounded border border-transparent hover:border-gray-200">
+                                <input type="checkbox" name="danh_muc_ids[]" value="<?= $dm['id'] ?>" class="w-4 h-4 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18] category-checkbox" <?= in_array($dm['id'], $voucher_danh_muc) ? 'checked' : '' ?>>
+                                <span class="text-sm text-gray-700"><?= $dm['ten_danh_muc'] ?></span>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Product Selector -->
+                    <div id="scope_product_box" class="space-y-3 mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg <?= ($is_edit && $voucher['pham_vi_san_pham'] == 'product') ? '' : 'hidden' ?> col-span-1 md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Chọn sản phẩm áp dụng</label>
+                        <div class="relative">
+                            <span class="iconify absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" data-icon="mdi:magnify"></span>
+                            <input type="text" id="search_product_input" placeholder="Nhập tên hoặc mã sản phẩm..." oninput="searchProductDebounce(this.value)" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] text-sm">
+                            <!-- Search Results Dropdown -->
+                            <div id="search_product_results" class="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto custom-scrollbar">
+                            </div>
+                        </div>
+                        
+                        <!-- Selected Products List -->
+                        <div class="mt-3">
+                            <span class="text-xs font-bold text-gray-500 uppercase">Sản phẩm đã chọn (<span id="selected_products_count"><?= count($voucher_san_pham) ?></span>)</span>
+                            <div id="selected_products_list" class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                <!-- Rendered via JS mostly, but initial load: -->
+                                <?php foreach($voucher_san_pham as $sp): ?>
+                                <div class="flex items-center justify-between bg-white p-2 border border-gray-200 rounded" id="selected_prod_<?= $sp['id_san_pham'] ?>">
+                                    <div class="flex items-center gap-2">
+                                        <img src="<?= $sp['anh_chinh'] ?>" class="w-8 h-8 rounded object-cover border border-gray-100">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800 line-clamp-1"><?= $sp['ten_sp'] ?></p>
+                                            <p class="text-xs text-gray-500"><?= $sp['ma_sp'] ?></p>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="removeProduct('<?= $sp['id_san_pham'] ?>')" class="text-red-500 hover:text-red-700 p-1">
+                                        <span class="iconify" data-icon="mdi:close"></span>
+                                    </button>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -187,19 +234,21 @@
                         
                         <?php 
                             $htv = $is_edit ? json_decode($voucher['hang_thanh_vien'], true) ?: [] : [];
+                            $badgeColors = [
+                                'Silver' => 'text-slate-600 bg-slate-50 border-slate-200', 
+                                'Gold' => 'text-yellow-700 bg-yellow-50 border-yellow-200', 
+                                'Diamond' => 'text-[#6B0D18] bg-red-50 border-red-200'
+                            ];
+                        ?>
+                        <?php foreach($hang_thanh_vien_list as $hang): 
+                            $colorClass = $badgeColors[$hang['ten_hang']] ?? 'text-gray-600 bg-gray-50 border-gray-200';
+                            $checked = in_array($hang['ten_hang'], $htv) ? 'checked' : '';
                         ?>
                         <label class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200">
-                            <input type="checkbox" name="hang_thanh_vien[]" value="Silver" <?= in_array('Silver', $htv) ? 'checked' : '' ?> class="w-5 h-5 text-slate-500 rounded border-gray-300 focus:ring-slate-500">
-                            <span class="px-2.5 py-1 rounded text-xs font-bold bg-slate-50 border border-slate-200 text-slate-600">Silver</span>
+                            <input type="checkbox" name="hang_thanh_vien[]" value="<?= $hang['ten_hang'] ?>" <?= $checked ?> class="w-5 h-5 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18]">
+                            <span class="px-2.5 py-1 rounded text-xs font-bold border <?= $colorClass ?>"><?= $hang['ten_hang'] ?></span>
                         </label>
-                        <label class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200">
-                            <input type="checkbox" name="hang_thanh_vien[]" value="Gold" <?= in_array('Gold', $htv) ? 'checked' : '' ?> class="w-5 h-5 text-yellow-600 rounded border-gray-300 focus:ring-yellow-600">
-                            <span class="px-2.5 py-1 rounded text-xs font-bold bg-yellow-50 border border-yellow-200 text-yellow-700">Gold</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200">
-                            <input type="checkbox" name="hang_thanh_vien[]" value="Diamond" <?= in_array('Diamond', $htv) ? 'checked' : '' ?> class="w-5 h-5 text-[#6B0D18] rounded border-gray-300 focus:ring-[#6B0D18]">
-                            <span class="px-2.5 py-1 rounded text-xs font-bold bg-red-50 border border-red-200 text-[#6B0D18]">Diamond</span>
-                        </label>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

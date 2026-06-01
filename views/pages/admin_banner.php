@@ -52,8 +52,68 @@ $banners = $banners ?? [];
 <?php require_once __DIR__ . '/../components/Admin/banner/banner_sort_modal.php'; ?>
 
 <script>
-    // Logic để mở các Modal và Drawer (mock)
+    const bannersData = <?= json_encode($banners, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    let currentBannerId = null;
+    let targetStatus = '';
+
+    function getStatusBadge(status) {
+        switch (status) {
+            case 'dang_hien_thi':
+                return '<span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs font-medium rounded border border-green-100 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Đang hiển thị</span>';
+            case 'dang_an':
+                return '<span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded border border-gray-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Đang ẩn</span>';
+            case 'sap_hien_thi':
+                return '<span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-xs font-medium rounded border border-blue-100 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Sắp hiển thị</span>';
+            case 'het_han':
+                return '<span class="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs font-medium rounded border border-gray-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span> Hết hạn</span>';
+            case 'thieu_cau_hinh':
+                return '<span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 text-xs font-medium rounded border border-yellow-100 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span> Thiếu cấu hình</span>';
+            default:
+                return '<span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs font-medium rounded border border-gray-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span> Bản nháp</span>';
+        }
+    }
+
     function openBannerDrawer(id) {
+        const banner = bannersData.find(b => b.id === id);
+        if (banner) {
+            const imgDesktop = document.getElementById('drawer_anh_desktop');
+            const imgMobile = document.getElementById('drawer_anh_mobile');
+            
+            imgDesktop.style.display = 'block';
+            imgDesktop.nextElementSibling.style.display = 'none';
+            imgDesktop.src = banner.anh_desktop ? (banner.anh_desktop.startsWith('http') ? banner.anh_desktop : '<?= APP_URL ?>' + banner.anh_desktop) : '';
+            
+            imgMobile.style.display = 'block';
+            imgMobile.nextElementSibling.style.display = 'none';
+            imgMobile.src = banner.anh_mobile ? (banner.anh_mobile.startsWith('http') ? banner.anh_mobile : '<?= APP_URL ?>' + banner.anh_mobile) : '';
+            
+            document.getElementById('drawer_ten').textContent = banner.ten;
+            document.getElementById('drawer_trang_thai').innerHTML = getStatusBadge(banner.trang_thai_hien_thi || banner.trang_thai);
+            document.getElementById('drawer_thu_tu').textContent = banner.thu_tu;
+            document.getElementById('drawer_vi_tri').textContent = banner.vi_tri.toUpperCase();
+            
+            let devices = '';
+            if (banner.thiet_bi.includes('desktop')) devices += '<span class="flex items-center gap-1.5 text-xs bg-white border border-gray-200 px-2 py-1 rounded"><span class="iconify text-gray-500" data-icon="mdi:monitor"></span> Desktop</span>';
+            if (banner.thiet_bi.includes('mobile')) devices += '<span class="flex items-center gap-1.5 text-xs bg-white border border-gray-200 px-2 py-1 rounded"><span class="iconify text-gray-500" data-icon="mdi:cellphone"></span> Mobile</span>';
+            document.getElementById('drawer_thiet_bi').innerHTML = devices;
+
+            document.getElementById('drawer_link').href = banner.link || '#';
+            document.getElementById('drawer_link_text').textContent = banner.link || 'Chưa cấu hình';
+            
+            let timeStr = '';
+            if (banner.khong_gioi_han == 1 || (!banner.bat_dau && !banner.ket_thuc)) {
+                timeStr = 'Không giới hạn thời gian';
+            } else {
+                timeStr = (banner.bat_dau ? new Date(banner.bat_dau).toLocaleString() : '---') + ' đến ' + (banner.ket_thuc ? new Date(banner.ket_thuc).toLocaleString() : '---');
+            }
+            document.getElementById('drawer_thoi_gian').textContent = timeStr;
+            
+            document.getElementById('drawer_ngay_tao').textContent = new Date(banner.ngay_tao).toLocaleString();
+            document.getElementById('drawer_ngay_cap_nhat').textContent = new Date(banner.ngay_cap_nhat).toLocaleString();
+            
+            document.getElementById('drawer_btn_edit').href = '<?= APP_URL ?>/admin/banner/sua/' + banner.id;
+        }
+
         document.getElementById('bannerDrawer').classList.remove('translate-x-full');
         document.getElementById('drawerOverlay').classList.remove('hidden');
         document.body.classList.add('overflow-hidden');
@@ -66,6 +126,8 @@ $banners = $banners ?? [];
     }
 
     function openToggleModal(id, currentStatus) {
+        currentBannerId = id;
+        targetStatus = (currentStatus === 'dang_hien_thi') ? 'nhap' : 'dang_hien_thi';
         document.getElementById('toggleBannerModal').classList.remove('hidden');
     }
 
@@ -73,12 +135,55 @@ $banners = $banners ?? [];
         document.getElementById('toggleBannerModal').classList.add('hidden');
     }
 
+    async function confirmToggleStatus() {
+        if (!currentBannerId) return;
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/banner/api/trang-thai', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: currentBannerId, trang_thai: targetStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (e) {
+            showToast('Lỗi máy chủ', 'error');
+        }
+        closeToggleModal();
+    }
+
     function openDeleteModal(id) {
+        currentBannerId = id;
         document.getElementById('deleteBannerModal').classList.remove('hidden');
     }
 
     function closeDeleteModal() {
         document.getElementById('deleteBannerModal').classList.add('hidden');
+    }
+
+    async function confirmDeleteBanner() {
+        if (!currentBannerId) return;
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/banner/api/xoa', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: currentBannerId })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                showToast(data.message, 'error');
+            }
+        } catch (e) {
+            showToast('Lỗi máy chủ', 'error');
+        }
+        closeDeleteModal();
     }
 
     function openSortModal() {

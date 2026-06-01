@@ -58,14 +58,19 @@ $loai_link = $banner['loai_link'] ?? 'san_pham';
                 Link liên kết <span class="text-red-500">*</span>
             </label>
             <div class="flex gap-2">
-                <select name="loai_link" class="w-1/3 border border-gray-300 rounded-lg shadow-sm py-2 px-2 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] bg-white">
+                <select name="loai_link" id="loai_link" class="w-1/3 border border-gray-300 rounded-lg shadow-sm py-2 px-2 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] bg-white">
                     <option value="san_pham" <?= $loai_link === 'san_pham' ? 'selected' : '' ?>>Sản phẩm</option>
                     <option value="danh_muc" <?= $loai_link === 'danh_muc' ? 'selected' : '' ?>>Danh mục</option>
                     <option value="khuyen_mai" <?= $loai_link === 'khuyen_mai' ? 'selected' : '' ?>>Khuyến mãi</option>
                     <option value="bai_viet" <?= $loai_link === 'bai_viet' ? 'selected' : '' ?>>Bài viết</option>
                     <option value="tuy_chinh" <?= $loai_link === 'tuy_chinh' ? 'selected' : '' ?>>Link tùy chỉnh</option>
                 </select>
-                <input type="text" name="link" value="<?= $banner['link'] ?? '' ?>" class="w-2/3 border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Tìm sản phẩm..." required>
+                <div class="w-2/3 relative flex">
+                    <input type="text" id="link_input" name="link" value="<?= $banner['link'] ?? '' ?>" class="w-full border border-gray-300 rounded-l-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Nhập link hoặc tìm kiếm..." required>
+                    <button type="button" onclick="openLinkSearchModal()" id="btnSearchLink" class="px-3 bg-gray-100 border border-l-0 border-gray-300 rounded-r-lg text-gray-600 hover:bg-gray-200 transition-colors flex items-center justify-center">
+                        <span class="iconify" data-icon="mdi:magnify"></span>
+                    </button>
+                </div>
             </div>
         </div>
 

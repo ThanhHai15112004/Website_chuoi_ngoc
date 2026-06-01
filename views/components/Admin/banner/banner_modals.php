@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="button" onclick="closeToggleModal()" class="inline-flex w-full justify-center rounded-lg bg-[#6B0D18] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8A1120] sm:ml-3 sm:w-auto">Xác nhận</button>
+                    <button type="button" onclick="confirmToggleStatus()" class="inline-flex w-full justify-center rounded-lg bg-[#6B0D18] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8A1120] sm:ml-3 sm:w-auto">Xác nhận</button>
                     <button type="button" onclick="closeToggleModal()" class="mt-3 inline-flex w-full justify-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Hủy</button>
                 </div>
             </div>
@@ -59,8 +59,8 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="button" onclick="closeDeleteModal()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Xóa banner</button>
-                    <button type="button" onclick="closeDeleteModal()" class="mt-3 inline-flex w-full justify-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Tắt thay vì xóa</button>
+                    <button type="button" onclick="confirmDeleteBanner()" class="inline-flex w-full justify-center rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Xóa banner</button>
+                    <button type="button" onclick="targetStatus='nhap'; confirmToggleStatus();" class="mt-3 inline-flex w-full justify-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Tắt thay vì xóa</button>
                     <button type="button" onclick="closeDeleteModal()" class="mt-3 sm:mt-0 mr-auto text-sm text-gray-500 hover:text-gray-800 hover:underline">Hủy</button>
                 </div>
             </div>

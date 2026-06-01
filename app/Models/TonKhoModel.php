@@ -28,7 +28,21 @@ class TonKhoModel
                 dm.ten_danh_muc as category,
                 ld.ten_loai_da as gemstone,
                 sp.hinh_anh_chinh as image,
-                sp.gia_nhap as price,
+                sp.gia_ban as original_price,
+                sp.gia_nhap as cost_price,
+                -- Giá bán thực tế: ưu tiên gia_khuyen_mai (nếu có KM đang chạy), rồi gia_ban
+                CASE 
+                    WHEN km_active.id IS NOT NULL THEN
+                        CASE 
+                            WHEN km_sp.gia_tri_giam_tuy_chinh IS NOT NULL AND km_sp.gia_tri_giam_tuy_chinh > 0 THEN km_sp.gia_tri_giam_tuy_chinh
+                            WHEN km_active.kieu_giam = 'phan_tram' THEN ROUND(sp.gia_ban * (1 - km_active.gia_tri_giam / 100))
+                            WHEN km_active.kieu_giam = 'so_tien' THEN GREATEST(0, sp.gia_ban - km_active.gia_tri_giam)
+                            ELSE sp.gia_ban
+                        END
+                    WHEN sp.gia_khuyen_mai IS NOT NULL AND sp.gia_khuyen_mai > 0 AND sp.gia_khuyen_mai < sp.gia_ban THEN sp.gia_khuyen_mai
+                    ELSE sp.gia_ban
+                END as price,
+                CASE WHEN km_active.id IS NOT NULL OR (sp.gia_khuyen_mai IS NOT NULL AND sp.gia_khuyen_mai > 0 AND sp.gia_khuyen_mai < sp.gia_ban) THEN 1 ELSE 0 END as is_on_sale,
                 (
                     SELECT COALESCE(SUM(ctdh.so_luong), 0)
                     FROM chi_tiet_don_hang ctdh
@@ -41,6 +55,12 @@ class TonKhoModel
             JOIN san_pham sp ON bt.id_san_pham = sp.id
             LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
             LEFT JOIN loai_da ld ON sp.id_loai_da = ld.id
+            -- LEFT JOIN chương trình khuyến mãi đang hoạt động
+            LEFT JOIN chuong_trinh_khuyen_mai_san_pham km_sp ON km_sp.id_san_pham = sp.id
+            LEFT JOIN chuong_trinh_khuyen_mai km_active ON km_active.id = km_sp.id_khuyen_mai
+                AND km_active.trang_thai = 1 
+                AND km_active.ngay_bat_dau <= NOW() 
+                AND km_active.ngay_ket_thuc >= NOW()
             WHERE sp.da_xoa = 0";
 
         $params = [];
@@ -88,7 +108,7 @@ class TonKhoModel
             }
         }
 
-        $sql .= " ORDER BY sp.ngay_tao DESC, bt.thuoc_tinh ASC LIMIT :limit OFFSET :offset";
+        $sql .= " GROUP BY bt.id ORDER BY sp.ngay_tao DESC, bt.thuoc_tinh ASC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($sql);
         foreach ($params as $key => $val) {

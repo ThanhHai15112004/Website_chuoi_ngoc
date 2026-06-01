@@ -16,15 +16,15 @@ $mock = $mock_data ?? [];
         </div>
         <div class="flex items-center gap-3">
             <a href="<?= APP_URL ?>/admin/khuyen-mai" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Hủy bỏ</a>
-            <button class="px-4 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 transition-colors font-medium text-sm">Lưu nháp</button>
-            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md" onclick="showFormToast()">
+            <button class="px-4 py-2 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 transition-colors font-medium text-sm" onclick="submitPromotionForm(true)">Lưu nháp</button>
+            <button class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md" onclick="submitPromotionForm(false)">
                 <?= $is_edit ? 'Cập nhật khuyến mãi' : 'Tạo & Kích hoạt ngay' ?>
             </button>
         </div>
     </div>
 
     <!-- Alert if Editing Active Promo -->
-    <?php if ($is_edit): ?>
+    <?php if ($is_edit && $mock['trang_thai'] == 1): ?>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
         <span class="iconify text-amber-500 text-xl mt-0.5" data-icon="mdi:alert-circle-outline"></span>
         <div>
@@ -41,3 +41,6 @@ $mock = $mock_data ?? [];
     <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_preview.php'; ?>
     <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_modals.php'; ?>
     <?php include __DIR__ . '/../components/Admin/khuyen_mai/form_scripts.php'; ?>
+
+    </div>
+</div>

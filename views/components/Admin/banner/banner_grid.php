@@ -26,7 +26,15 @@ function getStatusBadge($status) {
         <span class="text-sm font-medium text-gray-600 group-hover:text-gray-900 transition-colors">Chọn tất cả</span>
     </label>
     <div class="text-sm text-gray-500">
-        Hiển thị 1 - 5 trong số 32 banner
+        <?php
+        $start = ($current_page_num - 1) * $limit + 1;
+        $end = min($current_page_num * $limit, $total_filtered);
+        if ($total_filtered == 0) {
+            echo "Không tìm thấy banner nào";
+        } else {
+            echo "Hiển thị {$start} - {$end} trong số {$total_filtered} banner";
+        }
+        ?>
     </div>
 </div>
 
@@ -40,13 +48,18 @@ function getStatusBadge($status) {
         </div>
 
         <!-- Ảnh Preview -->
-        <div class="aspect-[16/7] bg-gray-50 relative border-b border-gray-100 overflow-hidden flex items-center justify-center cursor-pointer" onclick="openBannerDrawer(<?= $banner['id'] ?>)">
+        <div class="aspect-[16/7] bg-gray-50 relative border-b border-gray-100 overflow-hidden flex items-center justify-center cursor-pointer group" onclick="openBannerDrawer('<?= $banner['id'] ?>')">
             <?php if (!empty($banner['anh_desktop'])): ?>
-                <img src="<?= $banner['anh_desktop'] ?>" alt="<?= $banner['ten'] ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <?php $img_src = strpos($banner['anh_desktop'], 'http') === 0 ? $banner['anh_desktop'] : APP_URL . $banner['anh_desktop']; ?>
+                <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($banner['ten']) ?>" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 flex-col items-center justify-center text-gray-400 bg-gray-50 hidden" style="display: none;">
+                    <span class="iconify text-3xl block mx-auto mb-1 opacity-50" data-icon="mdi:image-broken-variant"></span>
+                    <span class="text-xs">Lỗi ảnh</span>
+                </div>
             <?php else: ?>
-                <div class="text-center text-gray-400">
+                <div class="text-center text-gray-400 flex flex-col items-center justify-center">
                     <span class="iconify text-3xl block mx-auto mb-1 opacity-50" data-icon="mdi:image-off-outline"></span>
-                    <span class="text-xs">Chưa có ảnh Desktop</span>
+                    <span class="text-xs">Chưa có ảnh</span>
                 </div>
             <?php endif; ?>
             
@@ -77,8 +90,8 @@ function getStatusBadge($status) {
             </div>
 
             <!-- Tên banner -->
-            <h3 class="font-bold text-gray-800 text-base line-clamp-2 leading-tight mb-2 hover:text-[#6B0D18] cursor-pointer" onclick="openBannerDrawer(<?= $banner['id'] ?>)">
-                <?= $banner['ten'] ?>
+            <h3 class="font-bold text-gray-800 text-base line-clamp-2 leading-tight mb-2 hover:text-[#6B0D18] cursor-pointer" onclick="openBannerDrawer('<?= $banner['id'] ?>')">
+                <?= htmlspecialchars($banner['ten']) ?>
             </h3>
 
             <!-- Thông tin phụ -->
@@ -91,14 +104,17 @@ function getStatusBadge($status) {
                         <span class="text-orange-500 italic text-xs">Chưa gắn link</span>
                     <?php endif; ?>
                 </div>
-                <div class="flex items-center gap-2 text-sm text-gray-500">
-                    <span class="iconify text-gray-400 shrink-0" data-icon="mdi:calendar-range"></span>
-                    <span class="text-xs font-medium">
-                        <?= date('d/m/Y', strtotime($banner['bat_dau'])) ?> 
-                        <?= $banner['ket_thuc'] ? ' - ' . date('d/m/Y', strtotime($banner['ket_thuc'])) : ' - Không giới hạn' ?>
-                    </span>
-                </div>
-                <div class="flex items-center gap-2 text-sm text-gray-500">
+                <div class="text-sm text-gray-500 mb-1 flex items-center gap-1.5" title="Thời gian hiển thị">
+                <span class="iconify text-gray-400 shrink-0" data-icon="mdi:calendar-clock"></span>
+                <span class="truncate">
+                    <?php if (isset($banner['khong_gioi_han']) && $banner['khong_gioi_han'] || (empty($banner['bat_dau']) && empty($banner['ket_thuc']))): ?>
+                        Không giới hạn
+                    <?php else: ?>
+                        <?= !empty($banner['bat_dau']) ? date('d/m/Y', strtotime($banner['bat_dau'])) : '---' ?> - <?= !empty($banner['ket_thuc']) ? date('d/m/Y', strtotime($banner['ket_thuc'])) : '---' ?>
+                    <?php endif; ?>
+                </span>
+            </div>    
+            <div class="flex items-center gap-2 text-sm text-gray-500">
                     <span class="iconify text-gray-400 shrink-0" data-icon="mdi:sort-numeric-ascending"></span>
                     <span class="text-xs">Thứ tự: <strong><?= $banner['thu_tu'] ?></strong></span>
                 </div>
@@ -106,19 +122,19 @@ function getStatusBadge($status) {
             
             <!-- Nút thao tác thẻ -->
             <div class="flex items-center gap-2 pt-4 mt-4 border-t border-gray-100">
-                <a href="<?= APP_URL ?>/admin/banner/sua" class="flex-1 text-center py-1.5 bg-gray-50 hover:bg-[#6B0D18] hover:text-white text-gray-700 text-sm font-medium rounded border border-gray-200 hover:border-[#6B0D18] transition-colors">
+                <a href="<?= APP_URL ?>/admin/banner/sua/<?= $banner['id'] ?>" class="flex-1 text-center py-1.5 bg-gray-50 hover:bg-[#6B0D18] hover:text-white text-gray-700 text-sm font-medium rounded border border-gray-200 hover:border-[#6B0D18] transition-colors">
                     Chỉnh sửa
                 </a>
                 <?php if ($banner['trang_thai'] === 'dang_hien_thi'): ?>
-                    <button onclick="openToggleModal(<?= $banner['id'] ?>, 'dang_hien_thi')" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded transition-colors" title="Tắt banner">
+                    <button onclick="openToggleModal('<?= $banner['id'] ?>', 'dang_hien_thi')" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded transition-colors" title="Tắt banner">
                         <span class="iconify block" data-icon="mdi:toggle-switch-outline text-xl text-green-600"></span>
                     </button>
                 <?php else: ?>
-                    <button onclick="openToggleModal(<?= $banner['id'] ?>, 'dang_an')" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded transition-colors" title="Bật banner">
+                    <button onclick="openToggleModal('<?= $banner['id'] ?>', 'dang_an')" class="px-3 py-1.5 bg-white hover:bg-gray-50 text-gray-600 border border-gray-200 rounded transition-colors" title="Bật banner">
                         <span class="iconify block" data-icon="mdi:toggle-switch-off-outline text-xl text-gray-400"></span>
                     </button>
                 <?php endif; ?>
-                <button onclick="openDeleteModal(<?= $banner['id'] ?>)" class="px-2 py-1.5 bg-white hover:bg-red-50 text-gray-400 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded transition-colors" title="Xóa">
+                <button onclick="openDeleteModal('<?= $banner['id'] ?>')" class="px-2 py-1.5 bg-white hover:bg-red-50 text-gray-400 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded transition-colors" title="Xóa">
                     <span class="iconify block text-lg" data-icon="mdi:trash-can-outline"></span>
                 </button>
             </div>
@@ -127,22 +143,40 @@ function getStatusBadge($status) {
     <?php endforeach; ?>
 </div>
 
-<!-- Phân trang (Mock) -->
+<!-- Phân trang -->
+<?php if ($total_pages > 1): ?>
 <div class="flex items-center justify-between mt-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
     <div class="text-sm text-gray-500">
-        Hiển thị <strong>1</strong> đến <strong>5</strong> của <strong>32</strong> banner
+        Hiển thị <strong><?= $start ?></strong> đến <strong><?= $end ?></strong> của <strong><?= $total_filtered ?></strong> banner
     </div>
     <div class="flex items-center gap-1">
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-400 bg-gray-50 cursor-not-allowed" disabled>
+        <?php 
+        $query_string = http_build_query(array_merge($_GET, ['page' => $current_page_num - 1]));
+        $prev_url = "?$query_string";
+        ?>
+        <a href="<?= $current_page_num > 1 ? $prev_url : '#' ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 <?= $current_page_num > 1 ? 'text-gray-600 hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed' ?>">
             <span class="iconify" data-icon="mdi:chevron-left"></span>
-        </button>
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-[#6B0D18] text-white bg-[#6B0D18] font-medium text-sm">1</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">2</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">3</button>
-        <span class="text-gray-400 mx-1">...</span>
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors">7</button>
-        <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
+        </a>
+        
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <?php 
+            $query_string = http_build_query(array_merge($_GET, ['page' => $i]));
+            $page_url = "?$query_string";
+            if ($i == $current_page_num):
+            ?>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-[#6B0D18] text-white bg-[#6B0D18] font-medium text-sm"><?= $i ?></button>
+            <?php else: ?>
+                <a href="<?= $page_url ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium text-sm transition-colors"><?= $i ?></a>
+            <?php endif; ?>
+        <?php endfor; ?>
+        
+        <?php 
+        $query_string = http_build_query(array_merge($_GET, ['page' => $current_page_num + 1]));
+        $next_url = "?$query_string";
+        ?>
+        <a href="<?= $current_page_num < $total_pages ? $next_url : '#' ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-200 <?= $current_page_num < $total_pages ? 'text-gray-600 hover:bg-gray-50' : 'text-gray-400 bg-gray-50 cursor-not-allowed' ?>">
             <span class="iconify" data-icon="mdi:chevron-right"></span>
-        </button>
+        </a>
     </div>
 </div>
+<?php endif; ?>

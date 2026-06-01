@@ -2,11 +2,11 @@
 // views/components/Admin/quan_ly_cua_hang/form_contact_channels.php
 
 $channels = [
-    ['id' => 'zalo', 'name' => 'Zalo OA', 'icon' => 'mdi:chat-processing', 'color' => 'text-blue-500', 'placeholder' => 'Số điện thoại Zalo hoặc Link Zalo OA', 'value' => $storeConfig['zalo'] ?? '', 'active' => true],
-    ['id' => 'facebook', 'name' => 'Facebook Fanpage', 'icon' => 'mdi:facebook', 'color' => 'text-blue-600', 'placeholder' => 'https://facebook.com/...', 'value' => $storeConfig['facebook'] ?? '', 'active' => true],
-    ['id' => 'tiktok', 'name' => 'TikTok', 'icon' => 'mdi:music-note', 'color' => 'text-gray-900', 'placeholder' => 'https://tiktok.com/@...', 'value' => $storeConfig['tiktok'] ?? '', 'active' => true],
-    ['id' => 'shopee', 'name' => 'Shopee Mall', 'icon' => 'mdi:shopping', 'color' => 'text-orange-500', 'placeholder' => 'Link gian hàng Shopee', 'value' => $storeConfig['shopee'] ?? '', 'active' => false],
-    ['id' => 'youtube', 'name' => 'YouTube', 'icon' => 'mdi:youtube', 'color' => 'text-red-600', 'placeholder' => 'Link kênh YouTube', 'value' => '', 'active' => false],
+    ['id' => 'zalo', 'name' => 'Zalo OA', 'icon' => 'mdi:chat-processing', 'color' => 'text-blue-500', 'placeholder' => 'Số điện thoại Zalo hoặc Link Zalo OA', 'value' => $storeConfig['zalo'] ?? '', 'active' => ($storeConfig['zalo_active'] ?? '0') === '1'],
+    ['id' => 'facebook', 'name' => 'Facebook Fanpage', 'icon' => 'mdi:facebook', 'color' => 'text-blue-600', 'placeholder' => 'https://facebook.com/...', 'value' => $storeConfig['facebook'] ?? '', 'active' => ($storeConfig['facebook_active'] ?? '0') === '1'],
+    ['id' => 'tiktok', 'name' => 'TikTok', 'icon' => 'mdi:music-note', 'color' => 'text-gray-900', 'placeholder' => 'https://tiktok.com/@...', 'value' => $storeConfig['tiktok'] ?? '', 'active' => ($storeConfig['tiktok_active'] ?? '0') === '1'],
+    ['id' => 'shopee', 'name' => 'Shopee Mall', 'icon' => 'mdi:shopping', 'color' => 'text-orange-500', 'placeholder' => 'Link gian hàng Shopee', 'value' => $storeConfig['shopee'] ?? '', 'active' => ($storeConfig['shopee_active'] ?? '0') === '1'],
+    ['id' => 'youtube', 'name' => 'YouTube', 'icon' => 'mdi:youtube', 'color' => 'text-red-600', 'placeholder' => 'Link kênh YouTube', 'value' => $storeConfig['youtube'] ?? '', 'active' => ($storeConfig['youtube_active'] ?? '0') === '1'],
 ];
 ?>
 <div class="bg-white rounded-[20px] border border-gray-200 shadow-sm overflow-hidden" id="section-channels">
@@ -26,7 +26,7 @@ $channels = [
             </div>
             
             <div class="flex-1 relative">
-                <input type="text" class="w-full px-3 py-2 border <?= $ch['value'] ? 'border-gray-300' : 'border-gray-200 bg-gray-50' ?> rounded-lg focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" placeholder="<?= $ch['placeholder'] ?>" value="<?= $ch['value'] ?>">
+                <input type="text" name="<?= $ch['id'] ?>" class="w-full px-3 py-2 border <?= $ch['value'] ? 'border-gray-300' : 'border-gray-200 bg-gray-50' ?> rounded-lg focus:outline-none focus:ring-1 focus:ring-[#6B0D18] focus:border-[#6B0D18] text-sm" placeholder="<?= $ch['placeholder'] ?>" value="<?= htmlspecialchars($ch['value'], ENT_QUOTES) ?>">
                 <?php if($ch['value']): ?>
                     <span class="iconify absolute right-3 top-2.5 text-emerald-500 text-lg" data-icon="mdi:check-circle"></span>
                 <?php endif; ?>
@@ -35,7 +35,9 @@ $channels = [
             <div class="flex items-center gap-3 shrink-0">
                 <label class="flex items-center cursor-pointer">
                     <div class="relative">
-                        <input type="checkbox" class="sr-only toggle-channel" <?= $ch['active'] ? 'checked' : '' ?>>
+                        <!-- Hidden input để gửi giá trị 0 khi toggle tắt -->
+                        <input type="hidden" name="<?= $ch['id'] ?>_active" value="0">
+                        <input type="checkbox" name="<?= $ch['id'] ?>_active" value="1" class="sr-only toggle-channel" <?= $ch['active'] ? 'checked' : '' ?>>
                         <div class="block bg-gray-200 w-10 h-6 rounded-full transition-colors toggle-bg"></div>
                         <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform toggle-dot"></div>
                     </div>

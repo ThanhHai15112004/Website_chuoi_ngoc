@@ -23,7 +23,8 @@ class VoucherController extends Controller {
             'trang_thai' => isset($_GET['trang_thai']) && $_GET['trang_thai'] !== '' ? (int)$_GET['trang_thai'] : '',
             'loai_giam' => $_GET['loai_giam'] ?? '',
             'thoi_gian' => $_GET['thoi_gian'] ?? '',
-            'doi_tuong' => $_GET['doi_tuong'] ?? ''
+            'doi_tuong' => $_GET['doi_tuong'] ?? '',
+            'tab' => $_GET['tab'] ?? 'all'
         ];
 
         $voucher_list = $this->voucherModel->getAllVouchers($filters, $limit, $offset);
@@ -122,7 +123,11 @@ class VoucherController extends Controller {
             'tieu_de' => 'Thêm mới Voucher',
             'current_page' => 'voucher',
             'is_edit' => false,
-            'voucher' => null
+            'voucher' => null,
+            'hang_thanh_vien_list' => (new \App\Models\HangThanhVienModel())->layTatCa(),
+            'danh_muc_list' => (new \App\Models\DanhMucModel())->layTatCa(),
+            'voucher_danh_muc' => [],
+            'voucher_san_pham' => []
         ];
         $this->view('admin_voucher_form', $data, 'admin');
     }
@@ -135,11 +140,22 @@ class VoucherController extends Controller {
             exit;
         }
 
+        $san_pham_list = $this->voucherModel->getVoucherProducts($id);
+        foreach ($san_pham_list as &$sp) {
+            if (strpos($sp['anh_chinh'], 'http') !== 0) {
+                $sp['anh_chinh'] = APP_URL . '/public' . $sp['anh_chinh'];
+            }
+        }
+
         $data = [
             'tieu_de' => 'Chỉnh sửa Voucher: ' . $voucher['ma_voucher'],
             'current_page' => 'voucher',
             'is_edit' => true,
-            'voucher' => $voucher
+            'voucher' => $voucher,
+            'hang_thanh_vien_list' => (new \App\Models\HangThanhVienModel())->layTatCa(),
+            'danh_muc_list' => (new \App\Models\DanhMucModel())->layTatCa(),
+            'voucher_danh_muc' => $this->voucherModel->getVoucherCategories($id),
+            'voucher_san_pham' => $san_pham_list
         ];
         $this->view('admin_voucher_form', $data, 'admin');
     }
@@ -169,7 +185,9 @@ class VoucherController extends Controller {
                 'so_luong' => $input['is_unlimited_usage'] ? -1 : (int)($input['so_luong'] ?? -1),
                 'ngay_bat_dau' => $input['ngay_bat_dau'],
                 'ngay_ket_thuc' => $input['ngay_ket_thuc'],
-                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0
+                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0,
+                'danh_muc_ids' => $input['danh_muc_ids'] ?? [],
+                'san_pham_ids' => $input['san_pham_ids'] ?? []
             ];
 
             $this->voucherModel->createVoucher($data);
@@ -204,7 +222,9 @@ class VoucherController extends Controller {
                 'so_luong' => $input['is_unlimited_usage'] ? -1 : (int)($input['so_luong'] ?? -1),
                 'ngay_bat_dau' => $input['ngay_bat_dau'],
                 'ngay_ket_thuc' => $input['ngay_ket_thuc'],
-                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0
+                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0,
+                'danh_muc_ids' => $input['danh_muc_ids'] ?? [],
+                'san_pham_ids' => $input['san_pham_ids'] ?? []
             ];
 
             $this->voucherModel->updateVoucher($id, $data);
@@ -243,6 +263,31 @@ class VoucherController extends Controller {
             echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công!']);
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * API: Kiểm tra mã voucher và tính giảm giá
+     * POST /admin/voucher/api/check
+     * Body: { ma_voucher, tong_tien }
+     */
+    public function apiCheckVoucher()
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $ma = $input['ma_voucher'] ?? '';
+            $tongTien = (float)($input['tong_tien'] ?? 0);
+
+            if (empty($ma)) {
+                echo json_encode(['success' => false, 'message' => 'Vui lòng nhập mã voucher.'], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $result = $this->voucherModel->checkVoucherByCode($ma, $tongTien);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()], JSON_UNESCAPED_UNICODE);
         }
     }
 }

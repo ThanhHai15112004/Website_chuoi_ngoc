@@ -169,4 +169,27 @@ class SanPhamController extends Controller {
             exit;
         }
     }
+
+    public function apiSearch()
+    {
+        header('Content-Type: application/json');
+        try {
+            $keyword = $_GET['q'] ?? '';
+            $sanPhamModel = new \App\Models\SanPhamModel();
+            $products = $sanPhamModel->layDanhSach(['keyword' => $keyword], 20, 0);
+            
+            $results = array_map(function($p) {
+                return [
+                    'id' => $p['id'],
+                    'ma_sp' => $p['ma_sp'],
+                    'ten_sp' => $p['ten_sp'],
+                    'anh_chinh' => strpos($p['hinh_anh_chinh'], 'http') === 0 ? $p['hinh_anh_chinh'] : APP_URL . '/public' . $p['hinh_anh_chinh']
+                ];
+            }, $products);
+
+            echo json_encode(['success' => true, 'data' => $results]);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }

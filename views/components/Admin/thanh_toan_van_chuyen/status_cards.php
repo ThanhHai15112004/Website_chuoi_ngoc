@@ -1,9 +1,17 @@
 <?php
 // views/components/Admin/thanh_toan_van_chuyen/status_cards.php
 
-$active_payments = array_filter($payments, fn($p) => $p['status'] == true);
-$active_banks = array_filter($banks, fn($b) => $b['status'] == true);
-$active_shipping = array_filter($shipping_methods, fn($s) => $s['status'] == true);
+$active_payments = array_filter($payments, fn($p) => $p['trang_thai'] == 1);
+$active_banks = array_filter($banks, fn($b) => $b['trang_thai'] == 1);
+$active_shipping = array_filter($shipping_methods, fn($s) => $s['trang_thai'] == 1);
+$active_freeship = array_filter($freeship_rules, fn($f) => $f['trang_thai'] == 1);
+$zone_count = count($shipping_zones);
+
+// Đếm cấu hình cần kiểm tra
+$warnings = 0;
+if (empty($banks)) $warnings++;
+if (count($active_payments) === 0) $warnings++;
+if (count($active_shipping) === 0) $warnings++;
 ?>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
     
@@ -50,8 +58,8 @@ $active_shipping = array_filter($shipping_methods, fn($s) => $s['status'] == tru
             <span class="iconify text-[#6B0D18] bg-red-50 p-1 rounded-md" data-icon="mdi:gift-outline"></span>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-xl font-bold text-[#6B0D18]">500K</span>
-            <span class="text-xs text-gray-500 mb-1">Đơn tối thiểu</span>
+            <span class="text-xl font-bold text-[#6B0D18]"><?= count($active_freeship) ?></span>
+            <span class="text-xs text-gray-500 mb-1">quy tắc bật</span>
         </div>
     </div>
 
@@ -62,7 +70,8 @@ $active_shipping = array_filter($shipping_methods, fn($s) => $s['status'] == tru
             <span class="iconify text-purple-500 bg-purple-50 p-1 rounded-md" data-icon="mdi:map-marker-radius-outline"></span>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-xl font-bold text-gray-900">Toàn quốc</span>
+            <span class="text-xl font-bold text-gray-900"><?= $zone_count ?></span>
+            <span class="text-xs text-gray-500 mb-1">khu vực</span>
         </div>
     </div>
 
@@ -73,7 +82,7 @@ $active_shipping = array_filter($shipping_methods, fn($s) => $s['status'] == tru
             <span class="iconify text-amber-500 bg-white p-1 rounded-md" data-icon="mdi:alert-outline"></span>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-xl font-bold text-amber-600">1</span>
+            <span class="text-xl font-bold text-amber-600"><?= $warnings ?></span>
             <span class="text-xs text-amber-600 mb-1">cấu hình</span>
         </div>
     </div>

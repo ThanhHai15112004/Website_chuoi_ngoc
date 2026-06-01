@@ -125,7 +125,7 @@
                         </td>
                         <td class="px-4 py-4 align-top text-right relative">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="<?= APP_URL ?>/admin/khuyen-mai/sua" class="p-1.5 text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 rounded transition-colors" title="Sửa">
+                                <a href="<?= APP_URL ?>/admin/khuyen-mai/sua/<?= $km['id'] ?>" class="p-1.5 text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 rounded transition-colors" title="Sửa">
                                     <span class="iconify text-lg" data-icon="mdi:pencil-outline"></span>
                                 </a>
                                 <div class="relative inline-block text-left menu-dropdown-container">
@@ -134,14 +134,18 @@
                                     </button>
                                     <div class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-100 hidden z-20 dropdown-menu text-left">
                                         <div class="py-1">
-                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="viewPromoDetails('<?= $km['ma_km'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:eye-outline"></span> Xem chi tiết</a>
-                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="duplicatePromo('<?= $km['ma_km'] ?>', this)"><span class="iconify text-gray-400" data-icon="mdi:content-copy"></span> Nhân bản</a>
-                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="showPromoToast('Đang mở báo cáo hiệu quả...')"><span class="iconify text-gray-400" data-icon="mdi:chart-line"></span> Xem hiệu quả</a>
+                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="viewPromoDetails('<?= $km['id'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:eye-outline"></span> Xem chi tiết</a>
+                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="duplicatePromo('<?= $km['id'] ?>', '<?= $km['ma_km'] ?>', this)"><span class="iconify text-gray-400" data-icon="mdi:content-copy"></span> Nhân bản</a>
+                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="viewPromoStats('<?= $km['id'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:chart-line"></span> Xem hiệu quả</a>
                                             <hr class="my-1 border-gray-100">
-                                            <?php if ($km['trang_thai'] !== 'Đã kết thúc' && $km['trang_thai'] !== 'Đã tắt'): ?>
-                                                <a href="#" class="btn-pause flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50" onclick="pausePromo('<?= $km['ma_km'] ?>', this)"><span class="iconify" data-icon="mdi:pause-circle-outline"></span> Tạm tắt</a>
+                                            <?php if ($km['trang_thai'] !== 'Đã kết thúc'): ?>
+                                                <?php if ($km['trang_thai'] !== 'Đã tắt'): ?>
+                                                    <a href="#" class="btn-pause flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50" onclick="togglePromoStatus('<?= $km['id'] ?>', '<?= $km['ma_km'] ?>', 0, this)"><span class="iconify" data-icon="mdi:pause-circle-outline"></span> Tạm tắt</a>
+                                                <?php else: ?>
+                                                    <a href="#" class="btn-pause flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50" onclick="togglePromoStatus('<?= $km['id'] ?>', '<?= $km['ma_km'] ?>', 1, this)"><span class="iconify" data-icon="mdi:play-circle-outline"></span> Bật lại</a>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50" onclick="confirmDeletePromo('<?= $km['ma_km'] ?>', this, <?= $km['so_luong']['da_ban'] ?>)"><span class="iconify" data-icon="mdi:trash-can-outline"></span> Xóa</a>
+                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50" onclick="confirmDeletePromo('<?= $km['id'] ?>', '<?= $km['ma_km'] ?>', this, <?= $km['so_luong']['da_ban'] ?>)"><span class="iconify" data-icon="mdi:trash-can-outline"></span> Xóa</a>
                                         </div>
                                     </div>
                                 </div>
@@ -153,18 +157,68 @@
             </table>
         </div>
 
+        <?php
+            $p_current = $pagination['current'] ?? 1;
+            $total_pages = $pagination['total_pages'] ?? 1;
+            $limit = $pagination['limit'] ?? 10;
+            $total_records = $pagination['total_records'] ?? 0;
+            $start = ($p_current - 1) * $limit + 1;
+            $end = min($p_current * $limit, $total_records);
+            
+            $url_params = $_GET;
+            unset($url_params['url']);
+            $build_url = function($page) use ($url_params) {
+                $url_params['page'] = $page;
+                return '?' . http_build_query($url_params);
+            };
+        ?>
+        <?php if ($total_records > 0): ?>
         <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-white">
             <div class="text-sm text-gray-500">
-                Hiển thị <span class="font-medium text-gray-800">1</span> - <span class="font-medium text-gray-800">3</span> trong <span class="font-medium text-gray-800">24</span> chương trình
+                Hiển thị <span class="font-medium text-gray-800"><?= $start ?></span> - <span class="font-medium text-gray-800"><?= $end ?></span> trong <span class="font-medium text-gray-800"><?= $total_records ?></span> chương trình
             </div>
             <div class="flex items-center gap-1">
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded-md text-sm font-medium shadow-sm">1</button>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">2</button>
-                <span class="px-2 text-gray-400">...</span>
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php if ($p_current > 1): ?>
+                    <a href="<?= $build_url($p_current - 1) ?>" class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+                <?php else: ?>
+                    <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+                <?php endif; ?>
+                
+                <?php
+                    $start_page = max(1, $p_current - 2);
+                    $end_page = min($total_pages, $p_current + 2);
+                    
+                    if ($start_page > 1) {
+                        echo '<a href="' . $build_url(1) . '" class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">1</a>';
+                        if ($start_page > 2) echo '<span class="px-2 text-gray-400">...</span>';
+                    }
+                    
+                    for ($i = $start_page; $i <= $end_page; $i++) {
+                        if ($i == $p_current) {
+                            echo '<button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded-md text-sm font-medium shadow-sm">' . $i . '</button>';
+                        } else {
+                            echo '<a href="' . $build_url($i) . '" class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">' . $i . '</a>';
+                        }
+                    }
+                    
+                    if ($end_page < $total_pages) {
+                        if ($end_page < $total_pages - 1) echo '<span class="px-2 text-gray-400">...</span>';
+                        echo '<a href="' . $build_url($total_pages) . '" class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">' . $total_pages . '</a>';
+                    }
+                ?>
+                
+                <?php if ($p_current < $total_pages): ?>
+                    <a href="<?= $build_url($p_current + 1) ?>" class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+                <?php else: ?>
+                    <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php endif; ?>
             </div>
         </div>
+        <?php else: ?>
+        <div class="p-8 text-center text-gray-500">
+            Không có chương trình khuyến mãi nào.
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 

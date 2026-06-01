@@ -17,7 +17,7 @@
 
         <div class="flex gap-3 w-full justify-end mt-2 pt-4 border-t border-gray-100">
             <button onclick="closePublishModal()" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm">Quay lại chỉnh sửa</button>
-            <button onclick="closePublishModal(); alert('Đăng thành công!')" class="px-6 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] font-medium text-sm shadow-md">Vẫn đăng bài</button>
+            <button type="button" onclick="closePublishModal(); savePost(1)" class="px-6 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] font-medium text-sm shadow-md">Vẫn đăng bài</button>
         </div>
     </div>
 </div>

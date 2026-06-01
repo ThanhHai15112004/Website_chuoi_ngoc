@@ -61,6 +61,10 @@
                     <span class="font-medium text-gray-800 text-sm text-right" id="detail-condition">Đơn từ 0đ</span>
                 </div>
                 <div class="flex justify-between border-b border-gray-50 pb-2">
+                    <span class="text-gray-500 text-sm">Phạm vi</span>
+                    <span class="font-medium text-gray-800 text-sm text-right" id="detail-pham-vi">Toàn bộ cửa hàng</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-50 pb-2">
                     <span class="text-gray-500 text-sm">Đối tượng</span>
                     <span class="font-medium text-gray-800 text-sm text-right" id="detail-target">Tất cả khách hàng</span>
                 </div>
@@ -81,7 +85,7 @@
         
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
             <button onclick="closeDetailsModal()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm">Đóng</button>
-            <a href="<?= APP_URL ?>/admin/voucher/sua" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md">Chỉnh sửa</a>
+            <a href="#" id="detail-edit-link" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A111F] transition-colors font-medium text-sm shadow-md">Chỉnh sửa</a>
         </div>
     </div>
 </div>

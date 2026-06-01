@@ -71,7 +71,7 @@
                 </div>
             </div>
             
-            <div>
+            <div id="det-products-container">
                 <div class="text-sm font-bold text-gray-800 mb-3 border-b border-gray-100 pb-2">Sản phẩm áp dụng (1)</div>
                 <div class="flex items-center gap-3 p-3 border border-gray-100 rounded-lg">
                     <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg" class="w-12 h-12 rounded object-cover">
@@ -82,14 +82,13 @@
                 </div>
             </div>
             
-            <div class="text-xs text-gray-400 mt-4">
+            <div class="text-xs text-gray-400 mt-4" id="det-creator">
                 Người tạo: Hải Admin - 01/05/2026 09:00
             </div>
         </div>
         
         <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex gap-3">
             <a href="<?= APP_URL ?>/admin/khuyen-mai/sua" class="flex-1 text-center px-4 py-2.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded-lg hover:bg-red-50 transition-colors font-medium text-sm">Chỉnh sửa</a>
-            <button class="flex-1 px-4 py-2.5 bg-gray-100 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm">Xem chi tiết B/C</button>
         </div>
     </div>
 </div>

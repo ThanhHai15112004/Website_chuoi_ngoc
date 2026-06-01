@@ -1,35 +1,8 @@
 <script>
-    // Tab switching with visual filtering
-    function switchPromoTab(btn) {
-        document.querySelectorAll('#promo-tabs .tab-btn').forEach(tab => {
-            tab.classList.remove('border-[#6B0D18]', 'text-[#6B0D18]');
-            tab.classList.add('border-transparent', 'text-gray-500');
-        });
-        btn.classList.remove('border-transparent', 'text-gray-500');
-        btn.classList.add('border-[#6B0D18]', 'text-[#6B0D18]');
-        
-        const tabName = btn.textContent.split('(')[0].trim().toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
-        let count = 0;
-        
-        rows.forEach(row => {
-            const statusEl = row.querySelector('.status-badge');
-            const typeEl = row.querySelector('td:nth-child(3) span');
-            if (!statusEl) return;
-            
-            const statusText = statusEl.textContent.trim().toLowerCase();
-            const typeText = typeEl ? typeEl.textContent.trim().toLowerCase() : '';
-            
-            if (tabName === 'tất cả' || statusText.includes(tabName) || (tabName === 'flash sale' && typeText.includes('flash sale'))) {
-                row.style.display = '';
-                count++;
-            } else {
-                row.style.display = 'none';
-            }
-        });
-        
-        const pagText = document.querySelector('.p-4.border-t .text-gray-500');
-        if(pagText) pagText.innerHTML = `Hiển thị <span class="font-medium text-gray-800">${count>0?1:0}</span> - <span class="font-medium text-gray-800">${count}</span> trong <span class="font-medium text-gray-800">${count}</span> chương trình`;
+    // Tab switching (Backend filtering)
+    function switchPromoTab(tabId) {
+        document.getElementById('current-tab').value = tabId;
+        document.getElementById('filterForm').submit();
     }
 
     // Dropdown management
@@ -37,64 +10,85 @@
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
             if(menu !== btn.nextElementSibling) menu.classList.add('hidden');
         });
-        btn.nextElementSibling.classList.toggle('hidden');
+        
+        const menu = btn.nextElementSibling;
+        const isHidden = menu.classList.contains('hidden');
+        
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            const rect = btn.getBoundingClientRect();
+            menu.style.position = 'fixed';
+            menu.style.top = (rect.bottom + 4) + 'px';
+            menu.style.left = (rect.right - 192) + 'px'; // 192px is w-48 width
+        } else {
+            menu.classList.add('hidden');
+        }
     }
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.menu-dropdown-container')) {
             document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
         }
     });
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
+    }, true);
 
-    // Pause Action
-    let rowToPause = null;
-    function pausePromo(code, btn) {
+    // Toggle Action
+    function togglePromoStatus(id, code, status, btn) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
-        const row = btn.closest('tr');
-        executePause(row, code);
-    }
-    
-    function executePause(row, code) {
-        const badge = row.querySelector('.status-badge');
-        if(badge) {
-            badge.className = "inline-flex px-2 py-1 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 border border-gray-200 status-badge uppercase tracking-wider";
-            badge.textContent = "Đã tắt";
-        }
-        const btnPause = row.querySelector('.btn-pause');
-        if(btnPause) btnPause.classList.add('hidden');
         
-        showPromoToast("Đã tắt chương trình " + code);
+        fetch('<?= APP_URL ?>/admin/khuyen-mai/trang-thai/' + id, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({status: status})
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                showPromoToast(status === 1 ? "Đã bật lại chương trình" : "Đã tắt chương trình");
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                alert(res.message || "Lỗi");
+            }
+        }).catch(err => {
+            alert('Lỗi kết nối');
+        });
     }
 
     // Duplicate Action
-    function duplicatePromo(code, btn) {
+    function duplicatePromo(id, code, btn) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
-        const row = btn.closest('tr');
         showPromoToast("Đang nhân bản...");
-        setTimeout(() => {
-            const newRow = row.cloneNode(true);
-            const codeEl = newRow.querySelector('.font-mono');
-            if(codeEl) codeEl.textContent = code + '_COPY';
-            
-            const badge = newRow.querySelector('.status-badge');
-            if(badge) {
-                badge.className = "inline-flex px-2 py-1 rounded-md text-[11px] font-bold bg-gray-100 text-gray-600 border border-gray-200 status-badge uppercase tracking-wider";
-                badge.textContent = "Bản nháp";
+        
+        fetch('<?= APP_URL ?>/admin/khuyen-mai/nhan-ban/' + id, {
+            method: 'POST',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.success) {
+                showPromoToast("Nhân bản thành công!");
+                setTimeout(() => window.location.reload(), 800);
+            } else {
+                alert(res.message || "Lỗi");
             }
-            
-            row.parentNode.insertBefore(newRow, row);
-            newRow.classList.add('bg-amber-50/50');
-            setTimeout(() => newRow.classList.remove('bg-amber-50/50'), 2000);
-            showPromoToast("Đã tạo bản sao " + code + "_COPY");
-        }, 500);
+        }).catch(err => {
+            alert('Lỗi kết nối');
+        });
     }
 
     // Delete Modal
     const delModal = document.getElementById('deletePromoModal');
     let rowToDelete = null;
-    function confirmDeletePromo(code, btn, uses) {
+    let idToDelete = null;
+    function confirmDeletePromo(id, code, btn, uses) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
         document.getElementById('del-promo-code').textContent = code;
         rowToDelete = btn.closest('tr');
+        idToDelete = id;
         
         const warning = document.getElementById('promo-delete-warning');
         const btnPause = document.getElementById('btn-pause-instead');
@@ -121,33 +115,114 @@
     
     function executeDeletePromo() {
         closeDeletePromoModal();
-        if(rowToDelete) {
-            rowToDelete.remove();
-            rowToDelete = null;
+        if(rowToDelete && idToDelete) {
+            fetch('<?= APP_URL ?>/admin/khuyen-mai/xoa/' + idToDelete, {
+                method: 'POST',
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                    showPromoToast("Đã xóa vĩnh viễn chương trình");
+                } else {
+                    alert(res.message || "Lỗi");
+                }
+            }).catch(err => {
+                alert('Lỗi kết nối');
+            });
         }
-        showPromoToast("Đã xóa vĩnh viễn chương trình");
     }
     
     function pauseInstead() {
         closeDeletePromoModal();
-        if(rowToDelete) {
-            const code = document.getElementById('del-promo-code').textContent;
-            executePause(rowToDelete, code);
+        if(rowToDelete && idToDelete) {
+            fetch('<?= APP_URL ?>/admin/khuyen-mai/trang-thai/' + idToDelete, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({status: 0})
+            }).then(res=>res.json()).then(res=>{
+                if(res.success) window.location.reload();
+            });
             rowToDelete = null;
         }
     }
 
     // Details Drawer
     const drawer = document.getElementById('detailsPromoDrawer');
-    function viewPromoDetails(code) {
+    
+    function viewPromoStats(id) {
+        viewPromoDetails(id);
+    }
+
+    function viewPromoDetails(id) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
-        document.getElementById('det-code').textContent = code;
         
-        drawer.classList.remove('hidden');
-        setTimeout(() => {
-            drawer.children[0].classList.remove('opacity-0'); // overlay
-            drawer.children[1].classList.remove('translate-x-full'); // panel
-        }, 10);
+        fetch('<?= APP_URL ?>/admin/khuyen-mai/api/chi-tiet/' + id)
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    const data = res.data;
+                    document.getElementById('det-name').textContent = data.ten_chuong_trinh;
+                    document.getElementById('det-code').textContent = data.ma_km;
+                    
+                    const statusEl = document.getElementById('det-status');
+                    statusEl.className = `inline-flex px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider ${data.trang_thai_class}`;
+                    statusEl.textContent = data.trang_thai_text;
+                    
+                    document.getElementById('det-type').textContent = data.loai_km;
+                    document.getElementById('det-time').textContent = data.thoi_gian;
+                    
+                    document.querySelector('#detailsPromoDrawer .space-y-3').innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Đã bán</span>
+                            <span class="font-bold text-gray-800">${data.so_luong_da_ban} / ${data.gioi_han_tong > 0 ? data.gioi_han_tong : '∞'} <span class="text-xs font-normal text-gray-500">sp</span></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Doanh thu mang lại</span>
+                            <span class="font-bold text-[#6B0D18]">${data.doanh_thu}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Tổng tiền đã giảm</span>
+                            <span class="font-bold text-amber-600">${data.tong_tien_da_giam}</span>
+                        </div>
+                    `;
+                    
+                    document.getElementById('det-creator').textContent = `Người tạo: ${data.nguoi_tao} - ${data.ngay_tao}`;
+                    
+                    document.querySelector('#detailsPromoDrawer a').href = `<?= APP_URL ?>/admin/khuyen-mai/sua/${data.id}`;
+                    
+                    // Render sản phẩm
+                    const spContainer = document.getElementById('det-products-container');
+                    spContainer.innerHTML = `<div class="text-sm font-bold text-gray-800 mb-3 border-b border-gray-100 pb-2">Sản phẩm áp dụng (${data.san_pham.length})</div>`;
+                    
+                    data.san_pham.forEach(sp => {
+                        const div = document.createElement('div');
+                        div.className = 'flex items-center gap-3 p-3 border border-gray-100 rounded-lg mb-2';
+                        div.innerHTML = `
+                            <img src="${sp.hinh_anh_chinh}" class="w-12 h-12 rounded object-cover">
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-800 text-sm line-clamp-1">${sp.ten_sp}</div>
+                                <div class="text-xs text-gray-500 mt-1">${parseInt(sp.gia_ban).toLocaleString('vi-VN')}đ <span class="iconify inline text-[10px]" data-icon="mdi:arrow-right"></span> <strong class="text-[#6B0D18]">${parseInt(sp.gia_sau_giam).toLocaleString('vi-VN')}đ</strong></div>
+                            </div>
+                        `;
+                        spContainer.appendChild(div);
+                    });
+                    
+                    drawer.classList.remove('hidden');
+                    setTimeout(() => {
+                        drawer.children[0].classList.remove('opacity-0'); // overlay
+                        drawer.children[1].classList.remove('translate-x-full'); // panel
+                    }, 10);
+                } else {
+                    alert(res.message);
+                }
+            })
+            .catch(err => alert("Lỗi tải chi tiết: " + err));
     }
     
     function closePromoDetails() {

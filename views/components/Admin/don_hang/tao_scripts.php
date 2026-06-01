@@ -78,7 +78,12 @@
                         <div class="text-xs text-gray-500 flex gap-2"><span>${p.sku}</span> | <span>${p.variant}</span></div>
                     </div>
                     <div class="text-right">
-                        <div class="font-bold text-[#6B0D18] text-sm">${formatMoney(p.price)}</div>
+                        ${p.is_on_sale && p.original_price > p.price ? `
+                            <div class="text-[10px] text-gray-400 line-through">${formatMoney(p.original_price)}</div>
+                            <div class="font-bold text-[#6B0D18] text-sm flex items-center gap-1 justify-end">${formatMoney(p.price)} <span class="bg-red-100 text-red-700 text-[9px] px-1 rounded font-bold">KM</span></div>
+                        ` : `
+                            <div class="font-bold text-[#6B0D18] text-sm">${formatMoney(p.price)}</div>
+                        `}
                         <div class="text-[10px] ${p.stock > 0 ? 'text-emerald-600' : 'text-red-500'} font-medium">Tồn: ${p.stock}</div>
                     </div>
                 `;
@@ -189,7 +194,10 @@
                         </div>
                     </div>
                 </td>
-                <td class="p-4 text-right font-medium text-gray-700">${formatMoney(item.price)}</td>
+                <td class="p-4 text-right">
+                    ${item.is_on_sale && item.original_price > item.price ? `<div class="text-[10px] text-gray-400 line-through">${formatMoney(item.original_price)}</div>` : ''}
+                    <div class="font-medium text-gray-700">${formatMoney(item.price)}</div>
+                </td>
                 <td class="p-4">
                     <div class="flex items-center justify-center">
                         <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -368,6 +376,7 @@
         if (!ma) {
             msgEl.textContent = 'Vui lòng nhập mã giảm giá!';
             msgEl.className = 'text-xs mt-1 text-red-500 block';
+            document.getElementById('applied_voucher_id').value = '';
             document.getElementById('applied_voucher_code').value = '';
             document.getElementById('applied_voucher_discount').value = 0;
             calculateTotals();
@@ -385,11 +394,19 @@
         .then(res => res.json())
         .then(res => {
             if (res.success) {
+                document.getElementById('applied_voucher_id').value = res.id_voucher;
                 document.getElementById('applied_voucher_code').value = res.ma_voucher;
                 document.getElementById('applied_voucher_discount').value = res.giam_gia;
-                msgEl.textContent = res.message + ' (-' + formatMoney(res.giam_gia) + ')';
+                msgEl.textContent = res.message + (res.giam_gia > 0 ? ' (-' + formatMoney(res.giam_gia) + ')' : '');
                 msgEl.className = 'text-xs mt-1 text-emerald-600 font-medium block';
+
+                // Freeship: tự động set phí ship = 0
+                if (res.is_freeship) {
+                    document.getElementById('phi_van_chuyen').value = 0;
+                    document.getElementById('summary-shipping').textContent = '0đ (Freeship)';
+                }
             } else {
+                document.getElementById('applied_voucher_id').value = '';
                 document.getElementById('applied_voucher_code').value = '';
                 document.getElementById('applied_voucher_discount').value = 0;
                 msgEl.textContent = res.message;
@@ -425,12 +442,23 @@
         const totalDiscount = rankDiscount + voucherDiscount;
         document.getElementById('summary-discount').textContent = '-' + formatMoney(totalDiscount);
 
-        const shipping = getNumberFromInput(document.getElementById('phi_van_chuyen').value);
+        const shipping = parseInt(document.getElementById('phi_van_chuyen').value) || 0;
         
         let total = subtotal - totalDiscount + shipping;
         if (total < 0) total = 0;
 
         document.getElementById('summary-total').textContent = formatMoney(total);
+    }
+
+    // Xử lý khi chọn phương thức vận chuyển
+    function onShippingChange() {
+        const select = document.getElementById('phuong_thuc_van_chuyen');
+        const selectedOption = select.options[select.selectedIndex];
+        const fee = parseInt(selectedOption.getAttribute('data-fee')) || 0;
+        
+        document.getElementById('phi_van_chuyen').value = fee;
+        document.getElementById('summary-shipping').textContent = fee === 0 ? '0đ' : formatMoney(fee);
+        calculateTotals();
     }
 
     function submitOrder() {
@@ -469,6 +497,7 @@
             tong_tien: total,
             phi_van_chuyen: shipping,
             giam_gia: totalDiscount,
+            id_voucher: document.getElementById('applied_voucher_id').value || null,
             trang_thai_thanh_toan: isPaid ? 1 : 0,
             hoan_thanh_ngay: isPaid, // Flag for model to set status = 3
             products: cart.map(i => ({ id: i.id, quantity: i.quantity, price: i.price }))

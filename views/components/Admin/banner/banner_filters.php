@@ -4,10 +4,14 @@
 <div class="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row gap-3">
     <!-- Ô tìm kiếm -->
     <div class="relative flex-1">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="iconify text-gray-400 text-lg" data-icon="mdi:magnify"></span>
-        </div>
-        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] bg-white transition-colors" placeholder="Tìm theo tên banner, vị trí, liên kết...">
+        <form action="" method="GET" class="w-full relative">
+            <input type="hidden" name="vi_tri" value="<?= htmlspecialchars($vi_tri) ?>">
+            <input type="hidden" name="trang_thai" value="<?= htmlspecialchars($trang_thai) ?>">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="iconify text-gray-400 text-lg" data-icon="mdi:magnify"></span>
+            </div>
+            <input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18] bg-white transition-colors" placeholder="Tìm theo tên banner, liên kết...">
+        </form>
     </div>
 
     <!-- Nút Lọc -->

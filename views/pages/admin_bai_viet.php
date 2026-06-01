@@ -28,3 +28,4 @@
     <?php include __DIR__ . '/../components/Admin/bai_viet/list_main_content.php'; ?>
     <?php include __DIR__ . '/../components/Admin/bai_viet/list_modals.php'; ?>
     <?php include __DIR__ . '/../components/Admin/bai_viet/list_scripts.php'; ?>
+    <?php include __DIR__ . '/../components/common/toast.php'; ?>

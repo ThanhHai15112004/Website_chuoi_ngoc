@@ -44,7 +44,11 @@ $title = $mode === 'create' ? 'Thêm banner mới' : 'Chỉnh sửa banner';
     </div>
 
     <!-- Form chia 2 cột -->
-    <form action="" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-12 gap-6" onsubmit="return validateForm(event)">
+    <form id="bannerForm" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-12 gap-6" onsubmit="submitForm(event)">
+        <input type="hidden" name="id" value="<?= $banner['id'] ?? '' ?>">
+        <input type="hidden" name="old_anh_desktop" value="<?= $banner['anh_desktop'] ?? '' ?>">
+        <input type="hidden" name="old_anh_mobile" value="<?= $banner['anh_mobile'] ?? '' ?>">
+        <input type="hidden" id="submit_status" name="trang_thai" value="<?= $banner['trang_thai'] ?? 'nhap' ?>">
         
         <!-- Cột trái: Thông tin & Hình ảnh (Chiếm 8 cột) -->
         <div class="lg:col-span-8 space-y-6">
@@ -60,14 +64,15 @@ $title = $mode === 'create' ? 'Thêm banner mới' : 'Chỉnh sửa banner';
         <!-- Thanh Nút lưu (Cố định dưới đáy màn hình) -->
         <div class="fixed bottom-0 right-0 left-0 md:left-64 bg-white border-t border-gray-200 p-4 px-6 flex items-center justify-between z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
             <div class="text-sm text-gray-500">
-                <?= $mode === 'edit' ? 'Lần cập nhật cuối: Hôm nay 10:30' : 'Mọi thay đổi chưa được lưu.' ?>
+                <?= $mode === 'edit' ? 'Lần cập nhật cuối: Hôm nay' : 'Mọi thay đổi chưa được lưu.' ?>
             </div>
             <div class="flex items-center gap-3">
                 <a href="<?= APP_URL ?>/admin/banner" class="px-5 py-2.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">Hủy</a>
-                <button type="submit" name="status" value="nhap" class="px-5 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                <button type="button" onclick="document.getElementById('submit_status').value='nhap'; document.getElementById('bannerForm').dispatchEvent(new Event('submit'));" class="px-5 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
                     Lưu nháp
                 </button>
-                <button type="submit" name="status" value="hien_thi" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A1120] transition-colors text-sm font-medium shadow-md">
+                <button type="submit" onclick="document.getElementById('submit_status').value='dang_hien_thi';" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-lg hover:bg-[#8A1120] transition-colors text-sm font-medium shadow-md flex items-center gap-2">
+                    <span class="iconify" data-icon="mdi:check"></span>
                     <?= $mode === 'create' ? 'Lưu & Hiển thị ngay' : 'Cập nhật banner' ?>
                 </button>
             </div>
@@ -76,9 +81,36 @@ $title = $mode === 'create' ? 'Thêm banner mới' : 'Chỉnh sửa banner';
 
 </div>
 
+<!-- Modal Tìm kiếm liên kết -->
+<?php require_once __DIR__ . '/../components/Admin/banner/banner_link_modal.php'; ?>
+
 <script>
-    function validateForm(e) {
-        // e.preventDefault(); // Uncomment để test giao diện lỗi
+    // Image upload preview logic
+    function setupImagePreview(inputId, previewContainerId, previewImgId, promptId) {
+        const input = document.getElementById(inputId);
+        const container = document.getElementById(previewContainerId);
+        const img = document.getElementById(previewImgId);
+        const prompt = document.getElementById(promptId);
+
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    container.classList.remove('hidden');
+                    prompt.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    setupImagePreview('anh_desktop', 'preview_container_desktop', 'preview_img_desktop', 'upload_prompt_desktop');
+    setupImagePreview('anh_mobile', 'preview_container_mobile', 'preview_img_mobile', 'upload_prompt_mobile');
+
+    async function submitForm(e) {
+        e.preventDefault();
         const alertBox = document.getElementById('formAlert');
         const alertList = document.getElementById('formAlertList');
         alertList.innerHTML = '';
@@ -97,7 +129,8 @@ $title = $mode === 'create' ? 'Thêm banner mới' : 'Chỉnh sửa banner';
 
         // Validate Desktop Image
         const previewDesktop = document.getElementById('preview_img_desktop');
-        if (!previewDesktop.src && !document.getElementById('anh_desktop').value && '<?= $mode ?>' === 'create') {
+        const fileDesktop = document.getElementById('anh_desktop').files[0];
+        if (!previewDesktop.src && !fileDesktop && '<?= $mode ?>' === 'create') {
              hasError = true;
              const li = document.createElement('li');
              li.textContent = 'Vui lòng tải ảnh banner cho Desktop.';
@@ -111,6 +144,26 @@ $title = $mode === 'create' ? 'Thêm banner mới' : 'Chỉnh sửa banner';
         }
 
         alertBox.classList.add('hidden');
-        return true;
+        
+        try {
+            const formData = new FormData(document.getElementById('bannerForm'));
+            const res = await fetch('<?= APP_URL ?>/admin/banner/api/luu', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = '<?= APP_URL ?>/admin/banner';
+                }, 1000);
+            } else {
+                showToast(data.message || 'Có lỗi xảy ra', 'error');
+            }
+        } catch (error) {
+            showToast('Lỗi kết nối máy chủ', 'error');
+            console.error(error);
+        }
     }
 </script>

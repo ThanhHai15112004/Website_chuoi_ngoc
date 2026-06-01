@@ -74,7 +74,7 @@
                 
                 <div class="mt-4 pt-4 border-t border-gray-100">
                     <div class="flex items-center gap-2 mb-2">
-                        <span class="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-700">Giao hàng tiêu chuẩn</span>
+                        <span class="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-700"><?= htmlspecialchars($don_hang['pt_thanh_toan']) ?></span>
                     </div>
                     <div class="text-sm text-orange-600 flex items-center gap-1.5 mt-2 bg-orange-50 p-2 rounded-lg border border-orange-100">
                         <span class="iconify" data-icon="mdi:alert-circle-outline"></span> Chưa có mã vận đơn
@@ -117,7 +117,7 @@
 
                 <div class="bg-gray-50 rounded-xl p-3 border border-gray-100">
                     <div class="text-xs text-gray-500 mb-1">Phương thức</div>
-                    <div class="font-bold text-gray-900 text-sm mb-2"><?= $don_hang['pt_thanh_toan'] ?></div>
+                    <div class="font-medium text-sm text-gray-900 truncate" title="<?= htmlspecialchars($don_hang['pt_thanh_toan']) ?>"><?= htmlspecialchars($don_hang['pt_thanh_toan']) ?></div>
                     
                     <div class="flex items-center justify-between">
                         <?php if($don_hang['trang_thai_thanh_toan'] == 1): ?>

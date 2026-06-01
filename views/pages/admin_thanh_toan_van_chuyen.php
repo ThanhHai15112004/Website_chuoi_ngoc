@@ -19,19 +19,16 @@
             <p class="text-gray-500 mt-1 text-sm">Cấu hình phương thức thanh toán, tài khoản nhận tiền, phí vận chuyển và khu vực giao hàng.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm tooltip" title="Làm mới dữ liệu">
+            <button onclick="location.reload()" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm" title="Làm mới dữ liệu">
                 <span class="iconify" data-icon="mdi:refresh"></span> <span class="hidden md:inline">Làm mới</span>
             </button>
             <button onclick="switchTab('preview')" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm">
                 <span class="iconify" data-icon="mdi:eye-outline"></span> Xem trang thanh toán
             </button>
-            <button onclick="saveAllConfigs()" class="px-4 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 transition-colors text-sm font-medium flex items-center gap-2 shadow-sm">
-                <span class="iconify" data-icon="mdi:content-save-outline"></span> Lưu thay đổi
-            </button>
         </div>
     </div>
 
-    <!-- Cảnh báo cấu hình (Nếu có) -->
+    <!-- Cảnh báo cấu hình -->
     <?php if(empty($banks)): ?>
     <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 shadow-sm">
         <div class="text-red-600 mt-0.5"><span class="iconify text-xl" data-icon="mdi:alert-circle"></span></div>
@@ -92,48 +89,30 @@
         </div>
     </div>
 
-    <!-- Thanh Lưu Thay Đổi Sticky (ẩn mặc định, hiện khi có thay đổi) -->
-    <div id="stickySaveBar" class="fixed bottom-0 left-0 md:left-64 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 transform translate-y-full transition-transform duration-300 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                <span class="iconify text-xl" data-icon="mdi:content-save-edit-outline"></span>
-            </div>
-            <div>
-                <p class="font-bold text-gray-900">Bạn có thay đổi chưa lưu</p>
-                <p class="text-xs text-gray-500">Hãy lưu lại để cập nhật hiển thị ngoài website.</p>
-            </div>
-        </div>
-        <div class="flex gap-3">
-            <button onclick="cancelChanges()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">Hủy thay đổi</button>
-            <button onclick="saveAllConfigs()" class="px-6 py-2 bg-[#6B0D18] text-white rounded-lg hover:bg-red-900 transition-colors text-sm font-medium shadow-md hover:shadow-lg">Lưu thay đổi</button>
-        </div>
-    </div>
-
 </div>
 
 <!-- Modals & Drawers -->
 <?php require_once __DIR__ . '/../components/Admin/thanh_toan_van_chuyen/modals_and_drawers.php'; ?>
 
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed top-6 right-6 z-[100] flex flex-col gap-3"></div>
+
 <script>
-    // JS Handle Tabs
+    // Tab switching
     function switchTab(tabId) {
-        // Reset all tabs
         document.querySelectorAll('.setting-tab').forEach(el => {
             el.classList.remove('bg-[#6B0D18]', 'text-white', 'shadow-sm', 'active');
             el.classList.add('bg-white', 'border', 'border-gray-200', 'text-gray-700', 'hover:bg-gray-50');
-            // Reset icon color
             let icon = el.querySelector('.iconify');
             if(icon) icon.classList.add('text-gray-500');
         });
         
-        // Active selected tab
         const activeBtn = document.getElementById('btn-tab-' + tabId);
         activeBtn.classList.add('bg-[#6B0D18]', 'text-white', 'shadow-sm', 'active');
         activeBtn.classList.remove('bg-white', 'border', 'border-gray-200', 'text-gray-700', 'hover:bg-gray-50');
         let activeIcon = activeBtn.querySelector('.iconify');
         if(activeIcon) activeIcon.classList.remove('text-gray-500');
 
-        // Show Content
         document.querySelectorAll('.tab-content').forEach(el => {
             el.classList.add('hidden');
             el.classList.remove('block');
@@ -142,32 +121,21 @@
         document.getElementById('tab-' + tabId).classList.add('block');
     }
 
-    // JS Tracking unsaved changes
-    let hasUnsavedChanges = false;
-    function markUnsaved() {
-        if(!hasUnsavedChanges) {
-            hasUnsavedChanges = true;
-            document.getElementById('stickySaveBar').classList.remove('translate-y-full');
-        }
-    }
-
-    // Attach to inputs
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.addEventListener('change', markUnsaved);
-        });
-    });
-
-    function saveAllConfigs() {
-        // In real app, submit form via AJAX
-        document.getElementById('stickySaveBar').classList.add('translate-y-full');
-        hasUnsavedChanges = false;
-        alert("Đã lưu các thay đổi cấu hình Thanh toán & Vận chuyển thành công!");
-    }
-
-    function cancelChanges() {
-        if(confirm("Bạn có chắc muốn hủy tất cả các thay đổi chưa lưu?")) {
-            location.reload();
-        }
+    // Toast notification
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const bgClass = type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+        const icon = type === 'success' ? 'mdi:check-circle' : type === 'error' ? 'mdi:alert-circle' : 'mdi:information';
+        
+        toast.className = `${bgClass} text-white px-5 py-3 rounded-xl shadow-lg flex items-center gap-3 min-w-[300px] transform translate-x-full transition-transform duration-300`;
+        toast.innerHTML = `<span class="iconify text-xl shrink-0" data-icon="${icon}"></span><span class="text-sm font-medium">${message}</span>`;
+        container.appendChild(toast);
+        
+        requestAnimationFrame(() => toast.classList.remove('translate-x-full'));
+        setTimeout(() => {
+            toast.classList.add('translate-x-full');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 </script>

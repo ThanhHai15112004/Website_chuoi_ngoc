@@ -88,8 +88,8 @@
                     <div class="font-bold text-[#6B0D18] text-base"><?= number_format($don_hang['thanh_tien'], 0, ',', '.') ?>đ</div>
                 </div>
                 <div>
-                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Vận chuyển</div>
-                    <div class="font-medium text-sm text-gray-900 truncate" title="Giao hàng tiêu chuẩn">Giao hàng tiêu chuẩn</div>
+                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Thanh toán</div>
+                    <div class="font-medium text-sm text-gray-900 truncate" title="<?= htmlspecialchars($don_hang['pt_thanh_toan']) ?>"><?= htmlspecialchars($don_hang['pt_thanh_toan']) ?></div>
                 </div>
                 <div>
                     <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1">Sản phẩm</div>

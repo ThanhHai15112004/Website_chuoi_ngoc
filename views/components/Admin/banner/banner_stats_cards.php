@@ -10,7 +10,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Tổng banner</p>
-                <h3 class="text-xl font-bold text-gray-800">32</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['total'] ?? 0 ?></h3>
             </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Đang hiển thị</p>
-                <h3 class="text-xl font-bold text-gray-800">12</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['dang_hien_thi'] ?? 0 ?></h3>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Đang ẩn</p>
-                <h3 class="text-xl font-bold text-gray-800">8</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['nhap'] ?? 0 ?></h3>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Sắp hiển thị</p>
-                <h3 class="text-xl font-bold text-gray-800">4</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['sap_hien_thi'] ?? 0 ?></h3>
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Hết hạn</p>
-                <h3 class="text-xl font-bold text-gray-800">6</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['het_han'] ?? 0 ?></h3>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
             </div>
             <div>
                 <p class="text-xs text-gray-500 font-medium">Thiếu cấu hình</p>
-                <h3 class="text-xl font-bold text-gray-800">2</h3>
+                <h3 class="text-xl font-bold text-gray-800"><?= $stats['thieu_cau_hinh'] ?? 0 ?></h3>
             </div>
         </div>
     </div>

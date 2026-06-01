@@ -115,9 +115,14 @@ class DonHangController extends Controller
 
     public function taoMoi()
     {
+        $paymentModel = new \App\Models\PhuongThucThanhToanModel();
+        $shippingModel = new \App\Models\PhuongThucVanChuyenModel();
+
         $data = [
             'tieu_de' => 'Tạo đơn hàng mới (POS)',
-            'current_page' => 'don_hang'
+            'current_page' => 'don_hang',
+            'payments' => $paymentModel->getAll(),
+            'shipping_methods' => $shippingModel->getAll()
         ];
         $this->view('admin_don_hang_tao', $data, 'admin');
     }

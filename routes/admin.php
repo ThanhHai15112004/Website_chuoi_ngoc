@@ -15,6 +15,7 @@ $router->post('/admin/san-pham/sua/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@c
 $router->post('/admin/san-pham/an-hien/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@doiTrangThai');
 $router->post('/admin/san-pham/xoa/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@xoa');
 $router->post('/admin/san-pham/nhan-ban/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@duplicate');
+$router->get('/admin/san-pham/api/search', 'Admin\SanPhamController@apiSearch');
 
 $router->get('/admin/danh-muc', 'Admin\DanhMucController@index');
 $router->post('/admin/danh-muc/luu', 'Admin\DanhMucController@luuMoi');
@@ -28,12 +29,23 @@ $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangControll
 $router->post('/admin/don-hang/api/cap-nhat-trang-thai/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatTrangThai');
 $router->post('/admin/don-hang/api/cap-nhat-thanh-toan/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatThanhToan');
 $router->get('/admin/voucher', 'Admin\VoucherController@index');
-$router->get('/admin/voucher/them', 'Admin\VoucherController@taoMoi');
-$router->get('/admin/voucher/sua', 'Admin\VoucherController@trangCapNhat');
+$router->get('/admin/voucher/them', 'Admin\VoucherController@them');
+$router->post('/admin/voucher/store', 'Admin\VoucherController@store');
+$router->get('/admin/voucher/sua/([a-zA-Z0-9_-]+)', 'Admin\VoucherController@sua');
+$router->post('/admin/voucher/update/([a-zA-Z0-9_-]+)', 'Admin\VoucherController@update');
+$router->post('/admin/voucher/xoa', 'Admin\VoucherController@xoa');
+$router->post('/admin/voucher/toggle_status', 'Admin\VoucherController@toggle_status');
 $router->post('/admin/voucher/api/check', 'Admin\VoucherController@apiCheckVoucher');
 $router->get('/admin/khuyen-mai', 'Admin\KhuyenMaiController@index');
 $router->get('/admin/khuyen-mai/them', 'Admin\KhuyenMaiController@taoMoi');
-$router->get('/admin/khuyen-mai/sua', 'Admin\KhuyenMaiController@trangCapNhat');
+$router->post('/admin/khuyen-mai/luu', 'Admin\KhuyenMaiController@luu');
+$router->get('/admin/khuyen-mai/sua/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@trangCapNhat');
+$router->post('/admin/khuyen-mai/cap-nhat/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@capNhat');
+$router->post('/admin/khuyen-mai/xoa/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@xoa');
+$router->post('/admin/khuyen-mai/trang-thai/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@thayDoiTrangThai');
+$router->post('/admin/khuyen-mai/nhan-ban/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@nhanBan');
+$router->get('/admin/khuyen-mai/api/search', 'Admin\KhuyenMaiController@searchProducts');
+$router->get('/admin/khuyen-mai/api/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\KhuyenMaiController@apiChiTiet');
 $router->get('/admin/loai-da', 'Admin\LoaiDaController@index');
 $router->post('/admin/loai-da/luu', 'Admin\LoaiDaController@luuMoi');
 $router->post('/admin/loai-da/xoa/([a-zA-Z0-9_-]+)', 'Admin\LoaiDaController@xoa');
@@ -86,11 +98,20 @@ $router->post('/admin/notification/read-all', 'Admin\ThongBaoController@markAllA
 
 $router->get('/admin/post', 'Admin\BaiVietController@index');
 $router->get('/admin/post/them', 'Admin\BaiVietController@taoMoi');
-$router->get('/admin/post/sua', 'Admin\BaiVietController@trangCapNhat');
+$router->get('/admin/post/sua/([a-zA-Z0-9_-]+)', 'Admin\BaiVietController@trangCapNhat');
+$router->post('/admin/post/api/luu', 'Admin\BaiVietController@apiLuuBaiViet');
+$router->post('/admin/post/api/xoa', 'Admin\BaiVietController@apiXoa');
+$router->post('/admin/post/api/trang-thai', 'Admin\BaiVietController@apiThayDoiTrangThai');
+$router->post('/admin/post/api/nhan-ban', 'Admin\BaiVietController@apiNhanBan');
+$router->get('/admin/post/api/search-products', 'Admin\BaiVietController@apiTimKiemSanPham');
+$router->post('/admin/post/api/upload-image', 'Admin\BaiVietController@apiUploadImage');
 
 $router->get('/admin/banner', 'Admin\BannerController@index');
 $router->get('/admin/banner/them', 'Admin\BannerController@taoMoi');
-$router->get('/admin/banner/sua', 'Admin\BannerController@trangCapNhat');
+$router->get('/admin/banner/sua/([a-zA-Z0-9_-]+)', 'Admin\BannerController@trangCapNhat');
+$router->post('/admin/banner/api/luu', 'Admin\BannerController@apiLuuBanner');
+$router->post('/admin/banner/api/xoa', 'Admin\BannerController@apiXoa');
+$router->post('/admin/banner/api/trang-thai', 'Admin\BannerController@apiTrangThai');
 
 $router->get('/admin/bao-cao-doanh-thu', 'Admin\BaoCaoDoanhThuController@index');
 $router->get('/admin/bao-cao-san-pham', 'Admin\BaoCaoSanPhamController@index');
@@ -163,7 +184,32 @@ $router->post('/admin/cau-hinh-kho/lich-kiem-ke/xoa/([0-9]+)', 'Admin\CauHinhKho
 $router->post('/admin/cau-hinh-kho/lich-kiem-ke/trang-thai/([0-9]+)', 'Admin\CauHinhKhoController@doiTrangThaiLich');
 
 $router->get('/admin/quan-ly-cua-hang', 'Admin\QuanLyCuaHangController@index');
+$router->post('/admin/quan-ly-cua-hang/api/luu', 'Admin\QuanLyCuaHangController@apiLuu');
+$router->post('/admin/quan-ly-cua-hang/api/upload-image', 'Admin\QuanLyCuaHangController@apiUploadImage');
+$router->post('/admin/quan-ly-cua-hang/api/remove-image', 'Admin\QuanLyCuaHangController@apiRemoveImage');
+$router->get('/admin/quan-ly-cua-hang/api/load', 'Admin\QuanLyCuaHangController@apiLoad');
 $router->get('/admin/cai-dat/thanh-toan', 'Admin\ThanhToanVanChuyenController@index');
+$router->get('/admin/cai-dat/thanh-toan/api/load', 'Admin\ThanhToanVanChuyenController@apiLoad');
+// Payment APIs
+$router->post('/admin/cai-dat/thanh-toan/api/payment/save', 'Admin\ThanhToanVanChuyenController@apiSavePayment');
+$router->post('/admin/cai-dat/thanh-toan/api/payment/toggle', 'Admin\ThanhToanVanChuyenController@apiTogglePayment');
+$router->post('/admin/cai-dat/thanh-toan/api/payment/delete', 'Admin\ThanhToanVanChuyenController@apiDeletePayment');
+// Bank APIs
+$router->post('/admin/cai-dat/thanh-toan/api/bank/save', 'Admin\ThanhToanVanChuyenController@apiSaveBank');
+$router->post('/admin/cai-dat/thanh-toan/api/bank/delete', 'Admin\ThanhToanVanChuyenController@apiDeleteBank');
+$router->post('/admin/cai-dat/thanh-toan/api/bank/set-default', 'Admin\ThanhToanVanChuyenController@apiSetDefaultBank');
+$router->post('/admin/cai-dat/thanh-toan/api/bank/toggle', 'Admin\ThanhToanVanChuyenController@apiToggleBank');
+// Shipping APIs
+$router->post('/admin/cai-dat/thanh-toan/api/shipping/save', 'Admin\ThanhToanVanChuyenController@apiSaveShipping');
+$router->post('/admin/cai-dat/thanh-toan/api/shipping/toggle', 'Admin\ThanhToanVanChuyenController@apiToggleShipping');
+$router->post('/admin/cai-dat/thanh-toan/api/shipping/delete', 'Admin\ThanhToanVanChuyenController@apiDeleteShipping');
+// Zone APIs
+$router->post('/admin/cai-dat/thanh-toan/api/zone/save', 'Admin\ThanhToanVanChuyenController@apiSaveZone');
+$router->post('/admin/cai-dat/thanh-toan/api/zone/delete', 'Admin\ThanhToanVanChuyenController@apiDeleteZone');
+// Freeship APIs
+$router->post('/admin/cai-dat/thanh-toan/api/freeship/save', 'Admin\ThanhToanVanChuyenController@apiSaveFreeship');
+$router->post('/admin/cai-dat/thanh-toan/api/freeship/delete', 'Admin\ThanhToanVanChuyenController@apiDeleteFreeship');
+$router->post('/admin/cai-dat/thanh-toan/api/freeship/toggle', 'Admin\ThanhToanVanChuyenController@apiToggleFreeship');
 $router->get('/admin/chinh-sach', 'Admin\ChinhSachController@index');
 $router->get('/admin/chinh-sach/them', 'Admin\ChinhSachController@taoMoi');
 $router->get('/admin/chinh-sach/sua/(\d+)', 'Admin\ChinhSachController@trangCapNhat');

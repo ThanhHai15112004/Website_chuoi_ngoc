@@ -81,10 +81,64 @@
         closeDeleteModal();
     }
 
-    function showToast(text) {
-        const toast = document.getElementById('toastMsg');
-        document.getElementById('toast-text').textContent = text;
-        toast.classList.remove('translate-y-20', 'opacity-0');
-        setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
+
+
+    let currentPostId = null;
+
+    function duplicatePost(id) {
+        if (!confirm('Bạn có chắc muốn nhân bản bài viết này?')) return;
+        
+        fetch('<?= APP_URL ?>/admin/post/api/nhan-ban', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    }
+
+    function toggleStatus(id, status) {
+        if (!confirm(status == 2 ? 'Bạn có chắc muốn ẩn bài viết này?' : 'Bạn muốn hiện bài viết này?')) return;
+        
+        fetch('<?= APP_URL ?>/admin/post/api/trang-thai', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id, trang_thai: status})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    }
+
+    function deletePost(id) {
+        if (!confirm('Bạn có chắc muốn xóa vĩnh viễn bài viết này? Thao tác không thể hoàn tác!')) return;
+        
+        fetch('<?= APP_URL ?>/admin/post/api/xoa', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: id})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 500);
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
     }
 </script>

@@ -19,7 +19,7 @@
 
                         <!-- Image -->
                         <div class="aspect-square bg-gray-50 relative overflow-hidden">
-                            <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img id="prev-img" src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Mã Não Hồng Bưởi/ma-nao-hong-buoi-1.jpg" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             
                             <!-- Countdown Overlay -->
                             <div id="prev-countdown" class="absolute bottom-0 left-0 w-full bg-black/60 backdrop-blur-sm text-white text-[10px] py-1.5 flex justify-center items-center gap-1.5 transition-opacity">
@@ -34,11 +34,11 @@
 
                         <!-- Content -->
                         <div class="p-3">
-                            <h4 class="text-[13px] font-medium text-gray-800 line-clamp-2 leading-tight mb-2 hover:text-[#6B0D18] transition-colors cursor-pointer">Vòng Ngọc Bích Tài Lộc Hảo Hạng Tự Nhiên</h4>
+                            <h4 id="prev-name" class="text-[13px] font-medium text-gray-800 line-clamp-2 leading-tight mb-2 hover:text-[#6B0D18] transition-colors cursor-pointer">Vòng Ngọc Bích Tài Lộc Hảo Hạng Tự Nhiên</h4>
                             
                             <div class="flex items-center gap-1.5 mb-2">
                                 <span class="text-sm font-bold text-[#6B0D18]" id="prev-price-sale">680.000đ</span>
-                                <span class="text-[11px] text-gray-400 line-through">850.000đ</span>
+                                <span class="text-[11px] text-gray-400 line-through" id="prev-price-original">1.000.000đ</span>
                             </div>
 
                             <!-- Progress Bar -->

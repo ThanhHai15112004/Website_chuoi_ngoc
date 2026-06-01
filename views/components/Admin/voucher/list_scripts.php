@@ -234,13 +234,44 @@
 
     // Details Modal
     const detailsModal = document.getElementById('detailsModal');
-    function openDetailsModal(code) {
-        // Mock data loading based on code
-        document.getElementById('detail-code').textContent = code;
-        document.getElementById('detail-name').textContent = code === 'THANG3' ? 'Khuyến mãi tháng 3' : 'Chương trình ưu đãi';
-        document.getElementById('detail-value').textContent = code.includes('50') ? 'Giảm 50%' : 'Giảm 50.000đ';
-        document.getElementById('detail-used').textContent = Math.floor(Math.random() * 50);
-        document.getElementById('detail-total').textContent = 100;
+    function openDetailsModal(btn) {
+        const voucher = JSON.parse(btn.getAttribute('data-voucher'));
+        
+        document.getElementById('detail-code').textContent = voucher.ma_voucher;
+        document.getElementById('detail-name').textContent = voucher.ten_chuong_trinh;
+        document.getElementById('detail-value').textContent = voucher.gia_tri_giam + (voucher.giam_toi_da_str ? ' (' + voucher.giam_toi_da_str + ')' : '');
+        document.getElementById('detail-condition').textContent = voucher.dieu_kien;
+        document.getElementById('detail-target').innerHTML = voucher.doi_tuong_arr.join('<br>');
+        document.getElementById('detail-time').textContent = voucher.ngay_bat_dau_str + ' - ' + voucher.ngay_ket_thuc_str;
+        document.getElementById('detail-used').textContent = voucher.da_dung;
+        document.getElementById('detail-total').textContent = voucher.so_luong == -1 ? 'Không giới hạn' : voucher.so_luong;
+        
+        const statusEl = document.getElementById('detail-status');
+        statusEl.textContent = voucher.trang_thai_str;
+        
+        // Đổi màu badge trạng thái cho khớp
+        statusEl.className = 'inline-flex px-2 py-0.5 rounded text-xs font-medium';
+        if (voucher.trang_thai_str === 'Đang hoạt động') {
+            statusEl.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+        } else if (voucher.trang_thai_str === 'Sắp hết hạn') {
+            statusEl.classList.add('bg-amber-50', 'text-amber-700', 'border', 'border-amber-200');
+        } else {
+            statusEl.classList.add('bg-gray-100', 'text-gray-600', 'border', 'border-gray-200');
+        }
+
+        const phamViEl = document.getElementById('detail-pham-vi');
+        if (phamViEl) {
+            let pham_vi_str = '';
+            if (voucher.pham_vi_san_pham === 'category') pham_vi_str = 'Danh mục cụ thể';
+            else if (voucher.pham_vi_san_pham === 'product') pham_vi_str = 'Sản phẩm cụ thể';
+            else pham_vi_str = 'Toàn bộ cửa hàng';
+            phamViEl.textContent = pham_vi_str;
+        }
+
+        const editLink = document.getElementById('detail-edit-link');
+        if (editLink) {
+            editLink.href = '<?= APP_URL ?>/admin/voucher/sua/' + voucher.id;
+        }
         
         document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
 
