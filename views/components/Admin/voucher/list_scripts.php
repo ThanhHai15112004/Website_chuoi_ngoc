@@ -31,66 +31,23 @@
         }
     }
 
-    // Trigger Toggle from Dropdown Menu
-    function triggerToggleFromMenu(btn) {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
-        const row = btn.closest('tr');
-        const switchEl = row.querySelector('.toggle-switch');
-        if (switchEl) {
-            toggleVoucherStatus(switchEl);
-        }
-    }
-
-    // Toggle Status (Switch & Logic Unified)
-    function toggleVoucherStatus(el) {
-        const thumb = el.querySelector('div > div');
-        const bg = el.querySelector('div');
-        const row = el.closest('tr');
-        
-        // Elements to update
-        const statusSpan = row.querySelector('td:nth-child(7) > span.inline-flex');
-        const actionBtn = row.querySelector('.action-toggle-btn');
-        
-        if (thumb.classList.contains('translate-x-4')) {
-            // Action: Turn off
-            thumb.classList.remove('translate-x-4');
-            thumb.classList.add('translate-x-0');
-            bg.classList.remove('bg-[#6B0D18]');
-            bg.classList.add('bg-gray-300');
-            
-            // Update Pill
-            if (statusSpan) {
-                statusSpan.className = "inline-flex px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200";
-                statusSpan.textContent = "Đã tắt";
+    // Toggle Status (API call)
+    async function toggleVoucherStatus(id, status) {
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/voucher/toggle_status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status })
+            });
+            const data = await res.json();
+            if(data.success) {
+                showToast(data.message);
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.message);
             }
-            
-            // Update Dropdown Button to "Bật lại"
-            if (actionBtn) {
-                actionBtn.className = "action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50";
-                actionBtn.innerHTML = `<span class="iconify" data-icon="mdi:play-circle-outline"></span> <span>Bật lại</span>`;
-            }
-            
-            showToast("Đã tạm tắt voucher.");
-        } else {
-            // Action: Turn on
-            thumb.classList.remove('translate-x-0');
-            thumb.classList.add('translate-x-4');
-            bg.classList.remove('bg-gray-300');
-            bg.classList.add('bg-[#6B0D18]');
-            
-            // Update Pill
-            if (statusSpan) {
-                statusSpan.className = "inline-flex px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200";
-                statusSpan.textContent = "Đang hoạt động";
-            }
-            
-            // Update Dropdown Button to "Tạm tắt"
-            if (actionBtn) {
-                actionBtn.className = "action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50";
-                actionBtn.innerHTML = `<span class="iconify" data-icon="mdi:pause-circle-outline"></span> <span>Tạm tắt</span>`;
-            }
-            
-            showToast("Đã bật lại voucher.");
+        } catch (e) {
+            alert('Lỗi kết nối!');
         }
     }
 
@@ -198,11 +155,13 @@
     // Delete Modal
     const delModal = document.getElementById('deleteModal');
     let rowToDelete = null;
+    let voucherIdToDelete = null;
 
-    function confirmDeleteVoucher(code, uses, btn) {
+    function confirmDeleteVoucher(id, code, uses, btn) {
         document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.add('hidden'));
         document.getElementById('del-voucher-code').textContent = code;
         rowToDelete = btn.closest('tr');
+        voucherIdToDelete = id;
         
         const warning = document.getElementById('delete-warning');
         const btnDisable = document.getElementById('btn-disable-alt');
@@ -230,13 +189,28 @@
         }, 300);
     }
 
-    function executeDelete() {
-        closeDeleteModal();
-        if (rowToDelete) {
-            rowToDelete.remove();
-            rowToDelete = null;
+    async function executeDelete() {
+        if (!voucherIdToDelete) return;
+        
+        try {
+            const res = await fetch('<?= APP_URL ?>/admin/voucher/xoa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: voucherIdToDelete })
+            });
+            const data = await res.json();
+            if(data.success) {
+                showToast(data.message);
+                closeDeleteModal();
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                alert(data.message);
+                closeDeleteModal();
+            }
+        } catch (e) {
+            alert('Lỗi kết nối!');
+            closeDeleteModal();
         }
-        showToast("Đã xóa voucher thành công.");
     }
 
     // Toast functionality

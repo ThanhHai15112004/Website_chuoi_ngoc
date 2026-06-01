@@ -5,223 +5,244 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 
 class VoucherController extends Controller {
-    public function index() {
-        // Mock data for Admin Voucher Management
+    private $voucherModel;
+
+    public function __construct()
+    {
+        $this->voucherModel = new \App\Models\VoucherModel();
+    }
+
+    public function index()
+    {
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+        $offset = ($page - 1) * $limit;
+
+        $filters = [
+            'keyword' => $_GET['keyword'] ?? '',
+            'trang_thai' => isset($_GET['trang_thai']) && $_GET['trang_thai'] !== '' ? (int)$_GET['trang_thai'] : '',
+            'loai_giam' => $_GET['loai_giam'] ?? '',
+            'thoi_gian' => $_GET['thoi_gian'] ?? '',
+            'doi_tuong' => $_GET['doi_tuong'] ?? ''
+        ];
+
+        $voucher_list = $this->voucherModel->getAllVouchers($filters, $limit, $offset);
+        
+        // Format data for view
+        foreach ($voucher_list as &$v) {
+            // Giá trị giảm
+            if ($v['loai_giam'] == 1) {
+                $v['loai_giam_str'] = 'Giảm phần trăm';
+                $v['gia_tri_giam'] = $v['gia_tri'] . '%';
+                $v['giam_toi_da_str'] = $v['giam_toi_da'] > 0 ? 'Tối đa ' . number_format($v['giam_toi_da'], 0, ',', '.') . 'đ' : null;
+            } elseif ($v['loai_giam'] == 2) {
+                $v['loai_giam_str'] = 'Giảm số tiền';
+                $v['gia_tri_giam'] = number_format($v['gia_tri'], 0, ',', '.') . 'đ';
+                $v['giam_toi_da_str'] = null;
+            } elseif ($v['loai_giam'] == 3) {
+                $v['loai_giam_str'] = 'Freeship';
+                $v['gia_tri_giam'] = 'Miễn phí vận chuyển';
+                $v['giam_toi_da_str'] = $v['giam_toi_da'] > 0 ? 'Tối đa ' . number_format($v['giam_toi_da'], 0, ',', '.') . 'đ' : null;
+            } else {
+                $v['loai_giam_str'] = 'Quà tặng';
+                $v['gia_tri_giam'] = 'Quà tặng';
+                $v['giam_toi_da_str'] = null;
+            }
+
+            // Điều kiện
+            $v['dieu_kien'] = $v['don_toi_thieu'] > 0 ? 'Đơn từ ' . number_format($v['don_toi_thieu'], 0, ',', '.') . 'đ' : 'Không yêu cầu';
+
+            // Đối tượng
+            $doi_tuong_arr = [];
+            if ($v['doi_tuong'] === 'all') $doi_tuong_arr[] = 'Tất cả khách hàng';
+            elseif ($v['doi_tuong'] === 'new') $doi_tuong_arr[] = 'Khách hàng mới';
+            else {
+                $htv = json_decode($v['hang_thanh_vien'], true) ?: [];
+                $doi_tuong_arr = array_merge($doi_tuong_arr, $htv);
+            }
+            $v['doi_tuong_arr'] = empty($doi_tuong_arr) ? ['Tất cả khách hàng'] : $doi_tuong_arr;
+
+            // Thời gian
+            $v['ngay_bat_dau_str'] = date('d/m/Y H:i', strtotime($v['ngay_bat_dau']));
+            $v['ngay_ket_thuc_str'] = date('d/m/Y H:i', strtotime($v['ngay_ket_thuc']));
+
+            // Trạng thái thời gian
+            $now = time();
+            $start = strtotime($v['ngay_bat_dau']);
+            $end = strtotime($v['ngay_ket_thuc']);
+            
+            if ($v['trang_thai'] == 0) {
+                $v['trang_thai_thoi_gian'] = 'Đã tắt';
+                $v['trang_thai_str'] = 'Đã tắt';
+            } elseif ($now < $start) {
+                $days = floor(($start - $now) / 86400);
+                $v['trang_thai_thoi_gian'] = "Bắt đầu sau $days ngày";
+                $v['trang_thai_str'] = 'Chưa bắt đầu';
+            } elseif ($now > $end) {
+                $v['trang_thai_thoi_gian'] = 'Đã qua';
+                $v['trang_thai_str'] = 'Hết hạn';
+            } else {
+                $days = floor(($end - $now) / 86400);
+                if ($days <= 7) {
+                    $v['trang_thai_thoi_gian'] = "Sắp hết hạn ($days ngày)";
+                    $v['trang_thai_str'] = 'Sắp hết hạn';
+                } else {
+                    $v['trang_thai_thoi_gian'] = "Còn $days ngày";
+                    $v['trang_thai_str'] = 'Đang hoạt động';
+                }
+            }
+
+            if ($v['so_luong'] != -1 && $v['da_dung'] >= $v['so_luong']) {
+                $v['trang_thai_str'] = 'Hết lượt dùng';
+            }
+        }
+
+        $total = $this->voucherModel->countAllVouchers($filters);
+        $stats = $this->voucherModel->getThongKe();
+
         $data = [
             'tieu_de' => 'Quản lý voucher - Chuỗi Ngọc Phong Thủy',
             'current_page' => 'voucher',
-            'thong_ke' => [
-                'tong_voucher' => 48,
-                'dang_hoat_dong' => 12,
-                'sap_het_han' => 5,
-                'het_han' => 18,
-                'da_dung' => 326,
-                'tong_giam_gia' => 18500000,
-            ],
-            'voucher_list' => [
-                [
-                    'ma_voucher' => 'GIAM50K',
-                    'ten_chuong_trinh' => 'Giảm 50K cho đơn từ 500K',
-                    'mo_ta' => 'Áp dụng cho vòng ngọc và chuỗi đá phong thủy.',
-                    'loai_giam' => 'Giảm số tiền',
-                    'gia_tri_giam' => '50.000đ',
-                    'dieu_kien' => 'Đơn từ 500.000đ',
-                    'doi_tuong' => ['Tất cả khách hàng'],
-                    'ngay_bat_dau' => '01/05/2026',
-                    'ngay_ket_thuc' => '31/05/2026',
-                    'trang_thai_thoi_gian' => 'Còn 11 ngày',
-                    'da_dung' => 32,
-                    'tong_luot' => 100,
-                    'trang_thai' => 'Đang hoạt động',
-                    'ngay_tao' => '01/05/2026',
-                    'ngay_cap_nhat' => '10/05/2026'
-                ],
-                [
-                    'ma_voucher' => 'FREESHIP',
-                    'ten_chuong_trinh' => 'Freeship tháng 5',
-                    'mo_ta' => 'Miễn phí vận chuyển cho đơn từ 300K.',
-                    'loai_giam' => 'Freeship',
-                    'gia_tri_giam' => 'Miễn phí vận chuyển',
-                    'dieu_kien' => 'Đơn từ 300.000đ',
-                    'doi_tuong' => ['Khách hàng mới'],
-                    'ngay_bat_dau' => '01/05/2026',
-                    'ngay_ket_thuc' => '31/05/2026',
-                    'trang_thai_thoi_gian' => 'Còn 11 ngày',
-                    'da_dung' => 150,
-                    'tong_luot' => -1, // Không giới hạn
-                    'trang_thai' => 'Đang hoạt động',
-                    'ngay_tao' => '25/04/2026',
-                    'ngay_cap_nhat' => '25/04/2026'
-                ],
-                [
-                    'ma_voucher' => 'NEW10',
-                    'ten_chuong_trinh' => 'Ưu đãi khách hàng mới',
-                    'mo_ta' => 'Giảm 10% tối đa 100K.',
-                    'loai_giam' => 'Giảm phần trăm',
-                    'gia_tri_giam' => '10%',
-                    'giam_toi_da' => 'Tối đa 100.000đ',
-                    'dieu_kien' => 'Không yêu cầu',
-                    'doi_tuong' => ['Khách hàng mới'],
-                    'ngay_bat_dau' => '10/05/2026',
-                    'ngay_ket_thuc' => '20/05/2026',
-                    'trang_thai_thoi_gian' => 'Hết hạn sau 12 giờ',
-                    'da_dung' => 88,
-                    'tong_luot' => 100,
-                    'trang_thai' => 'Sắp hết hạn',
-                    'ngay_tao' => '08/05/2026',
-                    'ngay_cap_nhat' => '08/05/2026'
-                ],
-                [
-                    'ma_voucher' => 'GOLD5',
-                    'ten_chuong_trinh' => 'Giảm thêm cho thành viên Gold',
-                    'mo_ta' => 'Chỉ áp dụng cho hạng thành viên Gold.',
-                    'loai_giam' => 'Ưu đãi thành viên',
-                    'gia_tri_giam' => '5%',
-                    'giam_toi_da' => 'Không giới hạn',
-                    'dieu_kien' => 'Đơn từ 1.000.000đ',
-                    'doi_tuong' => ['Gold', 'Diamond'],
-                    'ngay_bat_dau' => '01/01/2026',
-                    'ngay_ket_thuc' => '31/12/2026',
-                    'trang_thai_thoi_gian' => 'Còn 225 ngày',
-                    'da_dung' => 45,
-                    'tong_luot' => -1,
-                    'trang_thai' => 'Đang hoạt động',
-                    'ngay_tao' => '01/01/2026',
-                    'ngay_cap_nhat' => '01/01/2026'
-                ],
-                [
-                    'ma_voucher' => 'QUATANG1',
-                    'ten_chuong_trinh' => 'Tặng hộp quà gỗ',
-                    'mo_ta' => 'Tặng hộp quà gỗ sồi cao cấp cho đơn hàng lớn.',
-                    'loai_giam' => 'Quà tặng',
-                    'gia_tri_giam' => 'Tặng hộp quà',
-                    'dieu_kien' => 'Đơn từ 2.000.000đ',
-                    'doi_tuong' => ['Tất cả khách hàng'],
-                    'ngay_bat_dau' => '25/05/2026',
-                    'ngay_ket_thuc' => '05/06/2026',
-                    'trang_thai_thoi_gian' => 'Bắt đầu sau 5 ngày',
-                    'da_dung' => 0,
-                    'tong_luot' => 50,
-                    'trang_thai' => 'Chưa bắt đầu',
-                    'ngay_tao' => '19/05/2026',
-                    'ngay_cap_nhat' => '19/05/2026'
-                ],
-                [
-                    'ma_voucher' => 'TET2026',
-                    'ten_chuong_trinh' => 'Lì xì đầu năm',
-                    'mo_ta' => 'Mã giảm giá dịp Tết Nguyên Đán.',
-                    'loai_giam' => 'Giảm số tiền',
-                    'gia_tri_giam' => '100.000đ',
-                    'dieu_kien' => 'Đơn từ 800.000đ',
-                    'doi_tuong' => ['Tất cả khách hàng'],
-                    'ngay_bat_dau' => '01/02/2026',
-                    'ngay_ket_thuc' => '28/02/2026',
-                    'trang_thai_thoi_gian' => 'Đã qua 81 ngày',
-                    'da_dung' => 500,
-                    'tong_luot' => 500,
-                    'trang_thai' => 'Hết lượt dùng', // Cả hết hạn và hết lượt
-                    'ngay_tao' => '15/01/2026',
-                    'ngay_cap_nhat' => '28/02/2026'
-                ],
-                [
-                    'ma_voucher' => 'THANG3',
-                    'ten_chuong_trinh' => 'Khuyến mãi tháng 3',
-                    'mo_ta' => 'Dành cho ngày 8/3.',
-                    'loai_giam' => 'Giảm phần trăm',
-                    'gia_tri_giam' => '8%',
-                    'giam_toi_da' => 'Tối đa 83.000đ',
-                    'dieu_kien' => 'Không yêu cầu',
-                    'doi_tuong' => ['Tất cả khách hàng'],
-                    'ngay_bat_dau' => '01/03/2026',
-                    'ngay_ket_thuc' => '10/03/2026',
-                    'trang_thai_thoi_gian' => 'Đã qua 71 ngày',
-                    'da_dung' => 120,
-                    'tong_luot' => -1,
-                    'trang_thai' => 'Hết hạn',
-                    'ngay_tao' => '25/02/2026',
-                    'ngay_cap_nhat' => '25/02/2026'
-                ],
-                [
-                    'ma_voucher' => 'FLASH50',
-                    'ten_chuong_trinh' => 'Flash sale giảm 50%',
-                    'mo_ta' => 'Chương trình đã bị tạm dừng do lỗi hệ thống.',
-                    'loai_giam' => 'Giảm phần trăm',
-                    'gia_tri_giam' => '50%',
-                    'giam_toi_da' => 'Tối đa 500.000đ',
-                    'dieu_kien' => 'Không yêu cầu',
-                    'doi_tuong' => ['Tất cả khách hàng'],
-                    'ngay_bat_dau' => '15/05/2026',
-                    'ngay_ket_thuc' => '16/05/2026',
-                    'trang_thai_thoi_gian' => 'Đã tắt',
-                    'da_dung' => 5,
-                    'tong_luot' => 10,
-                    'trang_thai' => 'Đã tắt',
-                    'ngay_tao' => '14/05/2026',
-                    'ngay_cap_nhat' => '15/05/2026'
-                ]
+            'thong_ke' => $stats,
+            'voucher_list' => $voucher_list,
+            'pagination' => [
+                'current' => $page,
+                'limit' => $limit,
+                'total_records' => $total,
+                'total_pages' => ceil($total / $limit)
             ]
         ];
 
         $this->view('admin_voucher', $data, 'admin');
     }
 
-    public function taoMoi() {
+    public function them()
+    {
         $data = [
-            'tieu_de' => 'Thêm voucher mới - Chuỗi Ngọc Phong Thủy',
+            'tieu_de' => 'Thêm mới Voucher',
             'current_page' => 'voucher',
             'is_edit' => false,
+            'voucher' => null
         ];
         $this->view('admin_voucher_form', $data, 'admin');
     }
 
-    public function trangCapNhat() {
+    public function sua($id)
+    {
+        $voucher = $this->voucherModel->getVoucherById($id);
+        if (!$voucher) {
+            header('Location: ' . APP_URL . '/admin/voucher');
+            exit;
+        }
+
         $data = [
-            'tieu_de' => 'Chỉnh sửa voucher - Chuỗi Ngọc Phong Thủy',
+            'tieu_de' => 'Chỉnh sửa Voucher: ' . $voucher['ma_voucher'],
             'current_page' => 'voucher',
             'is_edit' => true,
+            'voucher' => $voucher
         ];
         $this->view('admin_voucher_form', $data, 'admin');
     }
 
-    public function apiCheckVoucher() {
+    public function store()
+    {
         header('Content-Type: application/json');
-        $input = json_decode(file_get_contents('php://input'), true);
-        $ma = trim($input['ma_voucher'] ?? '');
-        $tongTien = (float)($input['tong_tien'] ?? 0);
+        try {
+            $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+            
+            // Map types to integer
+            $typeMap = ['percent' => 1, 'fixed' => 2, 'freeship' => 3, 'gift' => 4];
+            $loai_giam = $typeMap[$input['loai_giam']] ?? 1;
 
-        // Vouchers mock data for checking
-        $vouchers = [
-            'GIAM50K' => ['loai_giam' => 'giam_tien', 'gia_tri' => 50000, 'don_toi_thieu' => 500000],
-            'NEW10' => ['loai_giam' => 'phan_tram', 'gia_tri' => 10, 'giam_toi_da' => 100000, 'don_toi_thieu' => 0],
-            'TET2026' => ['loai_giam' => 'giam_tien', 'gia_tri' => 100000, 'don_toi_thieu' => 800000]
-        ];
+            $data = [
+                'ma_voucher' => strtoupper(trim($input['ma_voucher'])),
+                'ten_chuong_trinh' => trim($input['ten_chuong_trinh']),
+                'mo_ta' => trim($input['mo_ta'] ?? ''),
+                'pham_vi_san_pham' => $input['pham_vi_san_pham'] ?? 'all',
+                'doi_tuong' => $input['doi_tuong'] ?? 'all',
+                'hang_thanh_vien' => !empty($input['hang_thanh_vien']) ? json_encode($input['hang_thanh_vien']) : null,
+                'is_combine' => !empty($input['is_combine']) ? 1 : 0,
+                'loai_giam' => $loai_giam,
+                'gia_tri' => (float)($input['gia_tri'] ?? 0),
+                'don_toi_thieu' => (float)($input['don_toi_thieu'] ?? 0),
+                'giam_toi_da' => (float)($input['giam_toi_da'] ?? 0),
+                'so_luong' => $input['is_unlimited_usage'] ? -1 : (int)($input['so_luong'] ?? -1),
+                'ngay_bat_dau' => $input['ngay_bat_dau'],
+                'ngay_ket_thuc' => $input['ngay_ket_thuc'],
+                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0
+            ];
 
-        if (!array_key_exists($ma, $vouchers)) {
-            echo json_encode(['success' => false, 'message' => 'Mã voucher không tồn tại hoặc đã hết hạn.']);
-            return;
+            $this->voucherModel->createVoucher($data);
+
+            echo json_encode(['success' => true, 'message' => 'Tạo voucher thành công!']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+    }
 
-        $v = $vouchers[$ma];
-        if ($tongTien < $v['don_toi_thieu']) {
-            echo json_encode(['success' => false, 'message' => 'Đơn hàng chưa đạt giá trị tối thiểu ' . number_format($v['don_toi_thieu'], 0, ',', '.') . 'đ.']);
-            return;
+    public function update($id)
+    {
+        header('Content-Type: application/json');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+            
+            $typeMap = ['percent' => 1, 'fixed' => 2, 'freeship' => 3, 'gift' => 4];
+            $loai_giam = $typeMap[$input['loai_giam']] ?? 1;
+
+            $data = [
+                'ma_voucher' => strtoupper(trim($input['ma_voucher'])),
+                'ten_chuong_trinh' => trim($input['ten_chuong_trinh']),
+                'mo_ta' => trim($input['mo_ta'] ?? ''),
+                'pham_vi_san_pham' => $input['pham_vi_san_pham'] ?? 'all',
+                'doi_tuong' => $input['doi_tuong'] ?? 'all',
+                'hang_thanh_vien' => !empty($input['hang_thanh_vien']) ? json_encode($input['hang_thanh_vien']) : null,
+                'is_combine' => !empty($input['is_combine']) ? 1 : 0,
+                'loai_giam' => $loai_giam,
+                'gia_tri' => (float)($input['gia_tri'] ?? 0),
+                'don_toi_thieu' => (float)($input['don_toi_thieu'] ?? 0),
+                'giam_toi_da' => (float)($input['giam_toi_da'] ?? 0),
+                'so_luong' => $input['is_unlimited_usage'] ? -1 : (int)($input['so_luong'] ?? -1),
+                'ngay_bat_dau' => $input['ngay_bat_dau'],
+                'ngay_ket_thuc' => $input['ngay_ket_thuc'],
+                'trang_thai' => !empty($input['trang_thai']) ? 1 : 0
+            ];
+
+            $this->voucherModel->updateVoucher($id, $data);
+
+            echo json_encode(['success' => true, 'message' => 'Cập nhật voucher thành công!']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+    }
 
-        $giam_gia = 0;
-        if ($v['loai_giam'] === 'giam_tien') {
-            $giam_gia = $v['gia_tri'];
-        } elseif ($v['loai_giam'] === 'phan_tram') {
-            $giam_gia = $tongTien * ($v['gia_tri'] / 100);
-            if (isset($v['giam_toi_da']) && $giam_gia > $v['giam_toi_da']) {
-                $giam_gia = $v['giam_toi_da'];
-            }
+    public function xoa()
+    {
+        header('Content-Type: application/json');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $id = $input['id'] ?? null;
+            if (!$id) throw new \Exception('Thiếu ID voucher');
+
+            $this->voucherModel->deleteVoucher($id);
+            echo json_encode(['success' => true, 'message' => 'Xóa voucher thành công!']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
         }
+    }
 
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Áp dụng mã giảm giá thành công!',
-            'giam_gia' => $giam_gia,
-            'ma_voucher' => $ma
-        ]);
+    public function toggle_status()
+    {
+        header('Content-Type: application/json');
+        try {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $id = $input['id'] ?? null;
+            $status = $input['status'] ?? 0;
+            if (!$id) throw new \Exception('Thiếu ID voucher');
+
+            $this->voucherModel->toggleStatus($id, $status);
+            echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công!']);
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);
+        }
     }
 }

@@ -238,7 +238,10 @@
         const activeBadge = clickedBtn.querySelector('span');
         if(activeBadge) {
             if(status === 'Chờ xác nhận') activeBadge.className = 'bg-red-50 text-red-600 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
+            else if(status === 'Đang chuẩn bị') activeBadge.className = 'bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
+            else if(status === 'Đang giao') activeBadge.className = 'bg-teal-50 text-teal-600 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
             else if(status === 'Thành công') activeBadge.className = 'bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
+            else if(status === 'Đã hủy') activeBadge.className = 'bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
             else activeBadge.className = 'bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold';
         }
 

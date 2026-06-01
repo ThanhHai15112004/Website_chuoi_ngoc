@@ -1,53 +1,60 @@
+<?php 
+$filters = $_GET ?? []; 
+$kw = $filters['keyword'] ?? '';
+$loai_sel = $filters['loai_giam'] ?? '';
+$time_sel = $filters['thoi_gian'] ?? '';
+$dt_sel = $filters['doi_tuong'] ?? '';
+?>
     <!-- Tabs & Filters Container -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-4">
+    <form method="GET" action="" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-4">
         
         <!-- Tabs -->
         <div class="flex space-x-1 border-b border-gray-100 overflow-x-auto hide-scrollbar" id="voucher-tabs">
-            <button class="tab-btn px-4 py-2 border-b-2 border-[#6B0D18] text-[#6B0D18] font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Tất cả (48)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đang hoạt động (12)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Sắp hết hạn (5)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết hạn (18)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Chưa bắt đầu (8)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết lượt (3)</button>
-            <button class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đã tắt (2)</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-[#6B0D18] text-[#6B0D18] font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Tất cả (<?= $stats['tong_voucher'] ?? 0 ?>)</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đang hoạt động (<?= $stats['dang_hoat_dong'] ?? 0 ?>)</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Sắp hết hạn (<?= $stats['sap_het_han'] ?? 0 ?>)</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết hạn (<?= $stats['het_han'] ?? 0 ?>)</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Chưa bắt đầu</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Hết lượt</button>
+            <button type="button" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm whitespace-nowrap" onclick="switchTab(this)">Đã tắt</button>
         </div>
 
         <!-- Search & Filters -->
         <div class="flex flex-col lg:flex-row gap-3">
             <div class="relative flex-1">
                 <span class="iconify absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" data-icon="mdi:magnify"></span>
-                <input type="text" placeholder="Tìm theo mã voucher, tên chương trình..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all">
+                <input type="text" name="keyword" value="<?= htmlspecialchars($kw) ?>" placeholder="Tìm theo mã voucher, tên chương trình..." class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#6B0D18] focus:ring-1 focus:ring-[#6B0D18] transition-all">
             </div>
             
             <div class="flex flex-wrap gap-2">
                 <!-- Bộ lọc Loại -->
-                <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
+                <select name="loai_giam" onchange="this.form.submit()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
                     <option value="">Loại giảm giá</option>
-                    <option value="percent">Giảm phần trăm</option>
-                    <option value="fixed">Giảm số tiền cố định</option>
-                    <option value="freeship">Miễn phí vận chuyển</option>
-                    <option value="gift">Quà tặng</option>
+                    <option value="percent" <?= $loai_sel === 'percent' ? 'selected' : '' ?>>Giảm phần trăm</option>
+                    <option value="fixed" <?= $loai_sel === 'fixed' ? 'selected' : '' ?>>Giảm số tiền cố định</option>
+                    <option value="freeship" <?= $loai_sel === 'freeship' ? 'selected' : '' ?>>Miễn phí vận chuyển</option>
+                    <option value="gift" <?= $loai_sel === 'gift' ? 'selected' : '' ?>>Quà tặng</option>
                 </select>
 
                 <!-- Bộ lọc Thời gian -->
-                <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
+                <select name="thoi_gian" onchange="this.form.submit()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
                     <option value="">Thời gian</option>
-                    <option value="active">Đang hiệu lực</option>
-                    <option value="upcoming">Sắp diễn ra</option>
-                    <option value="expired">Đã hết hạn</option>
+                    <option value="active" <?= $time_sel === 'active' ? 'selected' : '' ?>>Đang hiệu lực</option>
+                    <option value="upcoming" <?= $time_sel === 'upcoming' ? 'selected' : '' ?>>Sắp diễn ra</option>
+                    <option value="expired" <?= $time_sel === 'expired' ? 'selected' : '' ?>>Đã hết hạn</option>
                 </select>
                 
                 <!-- Bộ lọc Đối tượng -->
-                <select class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
+                <select name="doi_tuong" onchange="this.form.submit()" class="px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 focus:outline-none focus:border-[#6B0D18] bg-white">
                     <option value="">Đối tượng</option>
-                    <option value="all">Tất cả khách hàng</option>
-                    <option value="new">Khách hàng mới</option>
-                    <option value="silver">Hạng Silver</option>
-                    <option value="gold">Hạng Gold</option>
-                    <option value="diamond">Hạng Diamond</option>
+                    <option value="all" <?= $dt_sel === 'all' ? 'selected' : '' ?>>Tất cả khách hàng</option>
+                    <option value="new" <?= $dt_sel === 'new' ? 'selected' : '' ?>>Khách hàng mới</option>
+                    <option value="silver" <?= $dt_sel === 'silver' ? 'selected' : '' ?>>Hạng Silver</option>
+                    <option value="gold" <?= $dt_sel === 'gold' ? 'selected' : '' ?>>Hạng Gold</option>
+                    <option value="diamond" <?= $dt_sel === 'diamond' ? 'selected' : '' ?>>Hạng Diamond</option>
                 </select>
 
-                <button class="px-3 py-2 bg-gray-50 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm flex items-center gap-1">
+                <button type="submit" class="px-3 py-2 bg-gray-50 border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors font-medium text-sm flex items-center gap-1">
                     <span class="iconify" data-icon="mdi:filter-variant"></span>
                     Lọc thêm
                 </button>
@@ -55,16 +62,52 @@
         </div>
 
         <!-- Active Filters Chips -->
+        <?php
+        $activeFilters = [];
+        if (!empty($kw)) {
+            $activeFilters['keyword'] = 'Từ khóa: ' . $kw;
+        }
+        if (!empty($loai_sel)) {
+            $l_labels = ['percent' => 'Giảm %', 'fixed' => 'Giảm số tiền', 'freeship' => 'Freeship', 'gift' => 'Quà tặng'];
+            $activeFilters['loai_giam'] = 'Loại: ' . ($l_labels[$loai_sel] ?? $loai_sel);
+        }
+        if (!empty($time_sel)) {
+            $t_labels = ['active' => 'Đang hiệu lực', 'upcoming' => 'Sắp diễn ra', 'expired' => 'Đã hết hạn'];
+            $activeFilters['thoi_gian'] = 'Thời gian: ' . ($t_labels[$time_sel] ?? $time_sel);
+        }
+        if (!empty($dt_sel)) {
+            $d_labels = ['all' => 'Tất cả khách', 'new' => 'Khách mới', 'silver' => 'Hạng Silver', 'gold' => 'Hạng Gold', 'diamond' => 'Hạng Diamond'];
+            $activeFilters['doi_tuong'] = 'Đối tượng: ' . ($d_labels[$dt_sel] ?? $dt_sel);
+        }
+        
+        if (!empty($activeFilters) || isset($_GET['trang_thai'])):
+        ?>
         <div class="flex flex-wrap gap-2 pt-2">
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-red-50 text-[#6B0D18] text-xs font-medium">
-                Đang hoạt động
-                <button class="hover:text-red-900"><span class="iconify" data-icon="mdi:close"></span></button>
-            </span>
-            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium">
-                Loại: Giảm số tiền
-                <button class="hover:text-gray-900"><span class="iconify" data-icon="mdi:close"></span></button>
-            </span>
-            <button class="text-xs text-gray-500 hover:text-[#6B0D18] underline font-medium">Xóa bộ lọc</button>
+            
+            <?php if (isset($_GET['trang_thai']) && $_GET['trang_thai'] !== ''): 
+                $tt_labels = [0 => 'Đã tắt', 1 => 'Đang bật'];
+                $q = $_GET; unset($q['trang_thai']); if(isset($q['page'])) unset($q['page']);
+            ?>
+            <a href="?<?= http_build_query($q) ?>" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium hover:bg-red-50 hover:text-red-600 group">
+                Trạng thái: <?= $tt_labels[$_GET['trang_thai']] ?? $_GET['trang_thai'] ?>
+                <span class="iconify text-gray-400 group-hover:text-red-500" data-icon="mdi:close"></span>
+            </a>
+            <?php endif; ?>
+
+            <?php foreach ($activeFilters as $key => $label): 
+                $queryParams = $_GET;
+                unset($queryParams[$key]);
+                if (isset($queryParams['page'])) unset($queryParams['page']);
+                $removeUrl = '?' . http_build_query($queryParams);
+            ?>
+            <a href="<?= $removeUrl ?>" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-600 text-xs font-medium hover:bg-red-50 hover:text-red-600 group">
+                <?= htmlspecialchars($label) ?>
+                <span class="iconify text-gray-400 group-hover:text-red-500" data-icon="mdi:close"></span>
+            </a>
+            <?php endforeach; ?>
+            
+            <a href="?" class="text-xs text-gray-500 hover:text-[#6B0D18] underline font-medium ml-1">Xóa bộ lọc</a>
         </div>
-    </div>
+        <?php endif; ?>
+    </form>
 

@@ -45,13 +45,20 @@
         const type = document.querySelector('input[name="loai_giam"]:checked').value;
         const divPercent = document.getElementById('discountFieldsPercent');
         const divFixed = document.getElementById('discountFieldsFixed');
+        const fieldPercent = document.getElementById('field_percent');
         
         if (type === 'percent') {
             divPercent.classList.remove('hidden');
             divFixed.classList.add('hidden');
+            if(fieldPercent) fieldPercent.style.display = 'block';
         } else if (type === 'fixed') {
             divPercent.classList.add('hidden');
             divFixed.classList.remove('hidden');
+            if(fieldPercent) fieldPercent.style.display = 'block';
+        } else if (type === 'freeship') {
+            divPercent.classList.remove('hidden');
+            divFixed.classList.add('hidden');
+            if(fieldPercent) fieldPercent.style.display = 'none';
         } else {
             divPercent.classList.add('hidden');
             divFixed.classList.add('hidden');
@@ -71,20 +78,74 @@
         updatePreview();
     }
 
-    // Save button mock
-    function saveVoucher(btn) {
+    // Save button logic
+    async function saveVoucher(btn) {
+        const id = document.getElementById('voucher_id').value;
+        const ma_voucher = document.getElementById('input_ma').value.trim();
+        const ten_chuong_trinh = document.getElementById('input_ten').value.trim();
+        const mo_ta = document.getElementById('input_mo_ta').value.trim();
+        
+        const loai_giam = document.querySelector('input[name="loai_giam"]:checked').value;
+        let gia_tri = 0;
+        if (loai_giam === 'percent') gia_tri = document.getElementById('input_gia_tri').value;
+        if (loai_giam === 'fixed') gia_tri = document.getElementById('input_gia_tri_fixed').value;
+        
+        const giam_toi_da = document.getElementById('input_giam_toi_da') ? document.getElementById('input_giam_toi_da').value : 0;
+        const don_toi_thieu = document.getElementById('input_dieu_kien').value;
+        const pham_vi_san_pham = document.getElementById('input_pham_vi').value;
+        const is_combine = document.getElementById('input_is_combine').checked;
+        
+        const ngay_bat_dau = document.getElementById('input_ngay_bat_dau').value;
+        const ngay_ket_thuc = document.getElementById('input_date').value;
+        
+        const is_unlimited_usage = document.getElementById('input_unlimited').checked;
+        const so_luong = is_unlimited_usage ? -1 : document.getElementById('input_so_luong').value;
+        
+        const doi_tuong = document.querySelector('input[name="doi_tuong"]:checked').value;
+        const htvNodes = document.querySelectorAll('input[name="hang_thanh_vien[]"]:checked');
+        const hang_thanh_vien = Array.from(htvNodes).map(n => n.value);
+        
+        const trang_thai = document.getElementById('input_trang_thai').checked;
+
+        if (!ma_voucher || !ten_chuong_trinh || !ngay_bat_dau || !ngay_ket_thuc) {
+            alert('Vui lòng điền đầy đủ các trường bắt buộc!');
+            return;
+        }
+
+        const payload = {
+            ma_voucher, ten_chuong_trinh, mo_ta, loai_giam, gia_tri, giam_toi_da,
+            don_toi_thieu, pham_vi_san_pham, is_combine, ngay_bat_dau, ngay_ket_thuc,
+            is_unlimited_usage, so_luong, doi_tuong, hang_thanh_vien, trang_thai
+        };
+
         const originalContent = btn.innerHTML;
         btn.innerHTML = `<span class="iconify animate-spin text-xl" data-icon="mdi:loading"></span> Đang xử lý...`;
         btn.disabled = true;
         
-        setTimeout(() => {
+        try {
+            const url = id ? `<?= APP_URL ?>/admin/voucher/update/${id}` : `<?= APP_URL ?>/admin/voucher/store`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                showToast(data.message);
+                setTimeout(() => {
+                    window.location.href = '<?= APP_URL ?>/admin/voucher';
+                }, 1500);
+            } else {
+                alert(data.message || 'Có lỗi xảy ra!');
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        } catch (e) {
+            alert('Lỗi kết nối!');
             btn.innerHTML = originalContent;
             btn.disabled = false;
-            showToast("Đã lưu voucher thành công!");
-            setTimeout(() => {
-                window.location.href = '<?= APP_URL ?>/admin/voucher';
-            }, 1500);
-        }, 1000);
+        }
     }
 
     // Toast functionality
@@ -106,18 +167,5 @@
         toast.classList.add('translate-y-20', 'opacity-0');
     }
 
-    // Mock population for Edit Mode
-    <?php if ($is_edit): ?>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('input_ma').value = 'GIAM50K';
-        document.getElementById('input_ten').value = 'Giảm 50K cho đơn từ 500K';
-        document.getElementById('input_dieu_kien').value = 500000;
-        document.querySelector('input[name="loai_giam"][value="fixed"]').checked = true;
-        toggleDiscountType();
-        document.getElementById('input_gia_tri_fixed').value = 50000;
-        updatePreview();
-    });
-    <?php else: ?>
     document.addEventListener('DOMContentLoaded', updatePreview);
-    <?php endif; ?>
 </script>

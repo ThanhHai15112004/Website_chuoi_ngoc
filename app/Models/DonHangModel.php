@@ -43,19 +43,33 @@ class DonHangModel
             $params[] = $filters['trang_thai_don_hang'];
         }
 
-        if (isset($filters['trang_thai_thanh_toan']) && $filters['trang_thai_thanh_toan'] !== '') {
+        if (isset($filters['thanh_toan']) && $filters['thanh_toan'] !== '') {
             $sql .= " AND dh.trang_thai_thanh_toan = ?";
-            $params[] = $filters['trang_thai_thanh_toan'];
+            $params[] = $filters['thanh_toan'];
         }
-        
-        if (!empty($filters['tu_ngay'])) {
-            $sql .= " AND DATE(dh.ngay_tao) >= ?";
-            $params[] = $filters['tu_ngay'];
+
+        if (!empty($filters['hinh_thuc'])) {
+            $ht = $filters['hinh_thuc'];
+            if ($ht === 'cod') {
+                $sql .= " AND (dh.pt_thanh_toan LIKE '%COD%' OR dh.pt_thanh_toan LIKE '%Tiền mặt%' OR dh.pt_thanh_toan LIKE '%Thanh toán khi nhận hàng%')";
+            } elseif ($ht === 'ck') {
+                $sql .= " AND (dh.pt_thanh_toan LIKE '%Chuyển khoản%' OR dh.pt_thanh_toan LIKE '%CK%')";
+            } elseif ($ht === 'vnpay') {
+                $sql .= " AND dh.pt_thanh_toan LIKE '%VNPay%'";
+            }
         }
-        
-        if (!empty($filters['den_ngay'])) {
-            $sql .= " AND DATE(dh.ngay_tao) <= ?";
-            $params[] = $filters['den_ngay'];
+
+        if (!empty($filters['thoi_gian'])) {
+            $tg = $filters['thoi_gian'];
+            if ($tg === 'today') {
+                $sql .= " AND DATE(dh.ngay_tao) = CURDATE()";
+            } elseif ($tg === '7days') {
+                $sql .= " AND DATE(dh.ngay_tao) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+            } elseif ($tg === '30days') {
+                $sql .= " AND DATE(dh.ngay_tao) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+            } elseif ($tg === 'month') {
+                $sql .= " AND MONTH(dh.ngay_tao) = MONTH(CURDATE()) AND YEAR(dh.ngay_tao) = YEAR(CURDATE())";
+            }
         }
 
         $sql .= " ORDER BY dh.ngay_tao DESC LIMIT ? OFFSET ?";
@@ -91,19 +105,33 @@ class DonHangModel
             $params[] = $filters['trang_thai_don_hang'];
         }
 
-        if (isset($filters['trang_thai_thanh_toan']) && $filters['trang_thai_thanh_toan'] !== '') {
+        if (isset($filters['thanh_toan']) && $filters['thanh_toan'] !== '') {
             $sql .= " AND dh.trang_thai_thanh_toan = ?";
-            $params[] = $filters['trang_thai_thanh_toan'];
+            $params[] = $filters['thanh_toan'];
         }
-        
-        if (!empty($filters['tu_ngay'])) {
-            $sql .= " AND DATE(dh.ngay_tao) >= ?";
-            $params[] = $filters['tu_ngay'];
+
+        if (!empty($filters['hinh_thuc'])) {
+            $ht = $filters['hinh_thuc'];
+            if ($ht === 'cod') {
+                $sql .= " AND (dh.pt_thanh_toan LIKE '%COD%' OR dh.pt_thanh_toan LIKE '%Tiền mặt%' OR dh.pt_thanh_toan LIKE '%Thanh toán khi nhận hàng%')";
+            } elseif ($ht === 'ck') {
+                $sql .= " AND (dh.pt_thanh_toan LIKE '%Chuyển khoản%' OR dh.pt_thanh_toan LIKE '%CK%')";
+            } elseif ($ht === 'vnpay') {
+                $sql .= " AND dh.pt_thanh_toan LIKE '%VNPay%'";
+            }
         }
-        
-        if (!empty($filters['den_ngay'])) {
-            $sql .= " AND DATE(dh.ngay_tao) <= ?";
-            $params[] = $filters['den_ngay'];
+
+        if (!empty($filters['thoi_gian'])) {
+            $tg = $filters['thoi_gian'];
+            if ($tg === 'today') {
+                $sql .= " AND DATE(dh.ngay_tao) = CURDATE()";
+            } elseif ($tg === '7days') {
+                $sql .= " AND DATE(dh.ngay_tao) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+            } elseif ($tg === '30days') {
+                $sql .= " AND DATE(dh.ngay_tao) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)";
+            } elseif ($tg === 'month') {
+                $sql .= " AND MONTH(dh.ngay_tao) = MONTH(CURDATE()) AND YEAR(dh.ngay_tao) = YEAR(CURDATE())";
+            }
         }
 
         $stmt = $this->db->prepare($sql);
@@ -117,6 +145,7 @@ class DonHangModel
         $sql = "SELECT 
                     COUNT(*) as tong_don,
                     SUM(CASE WHEN trang_thai_don_hang = 0 THEN 1 ELSE 0 END) as cho_xac_nhan,
+                    SUM(CASE WHEN trang_thai_don_hang = 1 THEN 1 ELSE 0 END) as dang_chuan_bi,
                     SUM(CASE WHEN trang_thai_don_hang = 2 THEN 1 ELSE 0 END) as dang_giao,
                     SUM(CASE WHEN trang_thai_don_hang = 3 THEN 1 ELSE 0 END) as thanh_cong,
                     SUM(CASE WHEN trang_thai_don_hang = 4 THEN 1 ELSE 0 END) as da_huy,
@@ -129,6 +158,7 @@ class DonHangModel
         return [
             'tong_don' => (int)($row['tong_don'] ?? 0),
             'cho_xac_nhan' => (int)($row['cho_xac_nhan'] ?? 0),
+            'dang_chuan_bi' => (int)($row['dang_chuan_bi'] ?? 0),
             'dang_giao' => (int)($row['dang_giao'] ?? 0),
             'thanh_cong' => (int)($row['thanh_cong'] ?? 0),
             'da_huy' => (int)($row['da_huy'] ?? 0),
@@ -239,6 +269,12 @@ class DonHangModel
                             $upd->execute([$item['so_luong'], $item['id_bien_the']]);
                         }
                     }
+                }
+                
+                // Trả lại lượt dùng voucher
+                if ($dh['id_voucher']) {
+                    $updVc = $this->db->prepare("UPDATE voucher SET da_dung = GREATEST(0, da_dung - 1) WHERE id = ?");
+                    $updVc->execute([$dh['id_voucher']]);
                 }
             }
 
@@ -358,9 +394,26 @@ class DonHangModel
                 throw new Exception("Không tìm thấy khách hàng");
             }
 
+            // Kích hoạt voucher nếu có
+            $id_voucher = $data['id_voucher'] ?? null;
+            if ($id_voucher) {
+                // Kiểm tra voucher hợp lệ
+                $stmtVc = $this->db->prepare("SELECT id, so_luong, da_dung FROM voucher WHERE id = ? AND trang_thai = 1");
+                $stmtVc->execute([$id_voucher]);
+                $vc = $stmtVc->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$vc) {
+                    throw new Exception("Voucher không hợp lệ hoặc đã bị tắt");
+                }
+                
+                if ($vc['so_luong'] != -1 && $vc['da_dung'] >= $vc['so_luong']) {
+                    throw new Exception("Voucher đã hết lượt sử dụng");
+                }
+            }
+
             // Insert don_hang
             $sqlDH = "INSERT INTO don_hang (id, ma_don_hang, id_nguoi_dung, ten_nguoi_nhan, sdt_nguoi_nhan, dia_chi_giao_hang, pt_thanh_toan, tong_tien, thanh_tien, tien_giam_gia, phi_ship, id_voucher, ghi_chu, trang_thai_don_hang, trang_thai_thanh_toan, ngay_tao)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, 0, ?, NOW())";
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, NOW())";
             $stmtDH = $this->db->prepare($sqlDH);
             
             $tongTienHang = $data['tong_tien_hang'] ?? 0;
@@ -377,9 +430,16 @@ class DonHangModel
                 $data['tong_tien'],
                 $data['giam_gia'] ?? 0,
                 $data['phi_van_chuyen'] ?? 0,
+                $id_voucher,
                 $data['ghi_chu'] ?? '',
                 $data['trang_thai_thanh_toan'] ?? 0
             ]);
+
+            // Cập nhật lượt dùng voucher
+            if ($id_voucher) {
+                $updVc = $this->db->prepare("UPDATE voucher SET da_dung = da_dung + 1 WHERE id = ?");
+                $updVc->execute([$id_voucher]);
+            }
 
             // Insert chi_tiet_don_hang & Cập nhật số lượng tạm giữ
             $sqlCT = "INSERT INTO chi_tiet_don_hang (id, id_don_hang, id_bien_the, so_luong, don_gia) VALUES (?, ?, ?, ?, ?)";

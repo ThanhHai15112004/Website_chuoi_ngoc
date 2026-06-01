@@ -45,19 +45,18 @@
                         <td class="px-4 py-4 align-top">
                             <div class="flex flex-col gap-1">
                                 <div class="font-bold text-[#6B0D18] text-base"><?= $voucher['gia_tri_giam'] ?></div>
-                                <?php if (isset($voucher['giam_toi_da'])): ?>
-                                    <div class="text-xs text-gray-500"><?= $voucher['giam_toi_da'] ?></div>
+                                <?php if (!empty($voucher['giam_toi_da_str'])): ?>
+                                    <div class="text-xs text-gray-500"><?= $voucher['giam_toi_da_str'] ?></div>
                                 <?php endif; ?>
                                 <div>
                                     <?php
                                         $loai_bg = 'bg-gray-100 text-gray-600';
-                                        if ($voucher['loai_giam'] === 'Giảm phần trăm') $loai_bg = 'bg-rose-50 text-rose-700';
-                                        if ($voucher['loai_giam'] === 'Giảm số tiền') $loai_bg = 'bg-amber-50 text-amber-700';
-                                        if ($voucher['loai_giam'] === 'Freeship') $loai_bg = 'bg-teal-50 text-teal-700';
-                                        if ($voucher['loai_giam'] === 'Quà tặng') $loai_bg = 'bg-purple-50 text-purple-700';
-                                        if ($voucher['loai_giam'] === 'Ưu đãi thành viên') $loai_bg = 'bg-yellow-50 text-yellow-700';
+                                        if ($voucher['loai_giam_str'] === 'Giảm phần trăm') $loai_bg = 'bg-rose-50 text-rose-700';
+                                        if ($voucher['loai_giam_str'] === 'Giảm số tiền') $loai_bg = 'bg-amber-50 text-amber-700';
+                                        if ($voucher['loai_giam_str'] === 'Freeship') $loai_bg = 'bg-teal-50 text-teal-700';
+                                        if ($voucher['loai_giam_str'] === 'Quà tặng') $loai_bg = 'bg-purple-50 text-purple-700';
                                     ?>
-                                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-medium <?= $loai_bg ?>"><?= $voucher['loai_giam'] ?></span>
+                                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-medium <?= $loai_bg ?>"><?= $voucher['loai_giam_str'] ?></span>
                                 </div>
                             </div>
                         </td>
@@ -68,7 +67,7 @@
                                     <?= $voucher['dieu_kien'] ?>
                                 </div>
                                 <div class="flex flex-wrap gap-1">
-                                    <?php foreach ($voucher['doi_tuong'] as $dt): ?>
+                                    <?php foreach ($voucher['doi_tuong_arr'] as $dt): ?>
                                         <?php
                                             $dt_bg = 'bg-gray-100 text-gray-600 border border-gray-200';
                                             if ($dt === 'Gold') $dt_bg = 'bg-yellow-50 border-yellow-200 text-yellow-700';
@@ -84,7 +83,7 @@
                         </td>
                         <td class="px-4 py-4 align-top">
                             <div class="flex flex-col gap-1">
-                                <div class="text-xs text-gray-600"><?= $voucher['ngay_bat_dau'] ?> - <?= $voucher['ngay_ket_thuc'] ?></div>
+                                <div class="text-xs text-gray-600"><?= $voucher['ngay_bat_dau_str'] ?> - <?= $voucher['ngay_ket_thuc_str'] ?></div>
                                 <?php
                                     $time_color = 'text-gray-500';
                                     if (strpos($voucher['trang_thai_thoi_gian'], 'Còn') !== false) $time_color = 'text-emerald-600 font-medium';
@@ -99,16 +98,16 @@
                         <td class="px-4 py-4 align-top">
                             <div class="flex flex-col gap-1.5 w-32">
                                 <?php
-                                    $luot = $voucher['tong_luot'] == -1 ? '∞' : $voucher['tong_luot'];
+                                    $luot = $voucher['so_luong'] == -1 ? '∞' : $voucher['so_luong'];
                                     $percent = 0;
-                                    if ($voucher['tong_luot'] > 0) {
-                                        $percent = min(100, round(($voucher['da_dung'] / $voucher['tong_luot']) * 100));
+                                    if ($voucher['so_luong'] > 0) {
+                                        $percent = min(100, round(($voucher['da_dung'] / $voucher['so_luong']) * 100));
                                     }
                                     
                                     $progress_color = 'bg-[#6B0D18]';
                                     if ($percent > 80) $progress_color = 'bg-amber-500';
                                     if ($percent >= 100) $progress_color = 'bg-red-500';
-                                    if ($voucher['tong_luot'] == -1) {
+                                    if ($voucher['so_luong'] == -1) {
                                         $percent = 100;
                                         $progress_color = 'bg-emerald-500';
                                     }
@@ -116,7 +115,7 @@
                                 <div class="text-sm font-medium text-gray-800">
                                     <?= number_format($voucher['da_dung']) ?> / <span class="text-gray-500 text-xs font-normal"><?= $luot ?></span>
                                 </div>
-                                <?php if ($voucher['tong_luot'] != -1): ?>
+                                <?php if ($voucher['so_luong'] != -1): ?>
                                 <div class="w-full bg-gray-100 rounded-full h-1.5">
                                     <div class="<?= $progress_color ?> h-1.5 rounded-full" style="width: <?= $percent ?>%"></div>
                                 </div>
@@ -129,23 +128,23 @@
                         <td class="px-4 py-4 align-top">
                             <?php
                                 $status_classes = 'bg-emerald-50 text-emerald-700 border border-emerald-200'; // Đang hoạt động
-                                if ($voucher['trang_thai'] === 'Sắp hết hạn') $status_classes = 'bg-amber-50 text-amber-700 border border-amber-200';
-                                if ($voucher['trang_thai'] === 'Hết hạn' || $voucher['trang_thai'] === 'Đã tắt') $status_classes = 'bg-gray-100 text-gray-600 border border-gray-200';
-                                if ($voucher['trang_thai'] === 'Chưa bắt đầu') $status_classes = 'bg-blue-50 text-blue-700 border border-blue-200';
-                                if ($voucher['trang_thai'] === 'Hết lượt dùng') $status_classes = 'bg-red-50 text-red-700 border border-red-200';
+                                if ($voucher['trang_thai_str'] === 'Sắp hết hạn') $status_classes = 'bg-amber-50 text-amber-700 border border-amber-200';
+                                if ($voucher['trang_thai_str'] === 'Hết hạn' || $voucher['trang_thai_str'] === 'Đã tắt') $status_classes = 'bg-gray-100 text-gray-600 border border-gray-200';
+                                if ($voucher['trang_thai_str'] === 'Chưa bắt đầu') $status_classes = 'bg-blue-50 text-blue-700 border border-blue-200';
+                                if ($voucher['trang_thai_str'] === 'Hết lượt dùng') $status_classes = 'bg-red-50 text-red-700 border border-red-200';
                             ?>
                             <span class="inline-flex px-2 py-1 rounded-md text-xs font-medium <?= $status_classes ?>">
-                                <?= $voucher['trang_thai'] ?>
+                                <?= $voucher['trang_thai_str'] ?>
                             </span>
                             
-                            <?php if ($voucher['trang_thai'] === 'Đang hoạt động' || $voucher['trang_thai'] === 'Sắp hết hạn' || $voucher['trang_thai'] === 'Chưa bắt đầu'): ?>
-                                <div class="mt-2 flex items-center w-max cursor-pointer toggle-switch" onclick="toggleVoucherStatus(this)">
+                            <?php if ($voucher['trang_thai'] == 1): ?>
+                                <div class="mt-2 flex items-center w-max cursor-pointer toggle-switch" onclick="toggleVoucherStatus('<?= $voucher['id'] ?>', 0)">
                                     <div class="relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ease-in-out bg-[#6B0D18]">
                                         <div class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out translate-x-4 shadow"></div>
                                     </div>
                                 </div>
-                            <?php elseif ($voucher['trang_thai'] === 'Đã tắt'): ?>
-                                <div class="mt-2 flex items-center w-max cursor-pointer toggle-switch" onclick="toggleVoucherStatus(this)">
+                            <?php else: ?>
+                                <div class="mt-2 flex items-center w-max cursor-pointer toggle-switch" onclick="toggleVoucherStatus('<?= $voucher['id'] ?>', 1)">
                                     <div class="relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ease-in-out bg-gray-300">
                                         <div class="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out translate-x-0 shadow"></div>
                                     </div>
@@ -154,7 +153,7 @@
                         </td>
                         <td class="px-4 py-4 align-top text-right relative">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="<?= APP_URL ?>/admin/voucher/sua" class="p-1.5 text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 rounded transition-colors" title="Sửa">
+                                <a href="<?= APP_URL ?>/admin/voucher/sua/<?= $voucher['id'] ?>" class="p-1.5 text-gray-500 hover:text-[#6B0D18] hover:bg-red-50 rounded transition-colors" title="Sửa">
                                     <span class="iconify text-lg" data-icon="mdi:pencil-outline"></span>
                                 </a>
                                 <div class="relative inline-block text-left menu-dropdown-container">
@@ -167,14 +166,12 @@
                                             <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="duplicateVoucher('<?= $voucher['ma_voucher'] ?>', this)"><span class="iconify text-gray-400" data-icon="mdi:content-copy"></span> Nhân bản</a>
                                             <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onclick="openHistoryModal('<?= $voucher['ma_voucher'] ?>')"><span class="iconify text-gray-400" data-icon="mdi:receipt-text-outline"></span> Lịch sử sử dụng</a>
                                             <hr class="my-1 border-gray-100">
-                                            <?php if ($voucher['trang_thai'] !== 'Hết hạn' && $voucher['trang_thai'] !== 'Hết lượt dùng'): ?>
-                                                <?php if ($voucher['trang_thai'] === 'Đã tắt'): ?>
-                                                    <a href="#" class="action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50" onclick="triggerToggleFromMenu(this)"><span class="iconify" data-icon="mdi:play-circle-outline"></span> <span>Bật lại</span></a>
-                                                <?php else: ?>
-                                                    <a href="#" class="action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50" onclick="triggerToggleFromMenu(this)"><span class="iconify" data-icon="mdi:pause-circle-outline"></span> <span>Tạm tắt</span></a>
-                                                <?php endif; ?>
+                                            <?php if ($voucher['trang_thai'] == 0): ?>
+                                                <a href="#" class="action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-emerald-600 hover:bg-emerald-50" onclick="toggleVoucherStatus('<?= $voucher['id'] ?>', 1)"><span class="iconify" data-icon="mdi:play-circle-outline"></span> <span>Bật lại</span></a>
+                                            <?php else: ?>
+                                                <a href="#" class="action-toggle-btn flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50" onclick="toggleVoucherStatus('<?= $voucher['id'] ?>', 0)"><span class="iconify" data-icon="mdi:pause-circle-outline"></span> <span>Tạm tắt</span></a>
                                             <?php endif; ?>
-                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50" onclick="confirmDeleteVoucher('<?= $voucher['ma_voucher'] ?>', <?= $voucher['da_dung'] ?>, this)"><span class="iconify" data-icon="mdi:trash-can-outline"></span> Xóa voucher</a>
+                                            <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50" onclick="confirmDeleteVoucher('<?= $voucher['id'] ?>', '<?= $voucher['ma_voucher'] ?>', <?= $voucher['da_dung'] ?>, this)"><span class="iconify" data-icon="mdi:trash-can-outline"></span> Xóa voucher</a>
                                         </div>
                                     </div>
                                 </div>
@@ -189,16 +186,30 @@
         <!-- Pagination -->
         <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-white">
             <div class="text-sm text-gray-500">
-                Hiển thị <span class="font-medium text-gray-800">1</span> - <span class="font-medium text-gray-800">8</span> trong <span class="font-medium text-gray-800">48</span> voucher
+                Hiển thị <span class="font-medium text-gray-800"><?= min(($pagination['current'] - 1) * $pagination['limit'] + 1, $pagination['total_records']) ?></span> - 
+                <span class="font-medium text-gray-800"><?= min($pagination['current'] * $pagination['limit'], $pagination['total_records']) ?></span> 
+                trong <span class="font-medium text-gray-800"><?= $pagination['total_records'] ?></span> voucher
             </div>
             <div class="flex items-center gap-1">
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded-md text-sm font-medium shadow-sm">1</button>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">2</button>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">3</button>
-                <span class="px-2 text-gray-400">...</span>
-                <button class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors">6</button>
-                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php if($pagination['current'] > 1): ?>
+                <a href="?page=<?= $pagination['current'] - 1 ?>" class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+                <?php else: ?>
+                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 opacity-50 cursor-not-allowed" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+                <?php endif; ?>
+
+                <?php for($i = 1; $i <= $pagination['total_pages']; $i++): ?>
+                    <?php if($i == $pagination['current']): ?>
+                        <button class="px-3 py-1.5 bg-[#6B0D18] text-white rounded-md text-sm font-medium shadow-sm"><?= $i ?></button>
+                    <?php else: ?>
+                        <a href="?page=<?= $i ?>" class="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium transition-colors"><?= $i ?></a>
+                    <?php endif; ?>
+                <?php endfor; ?>
+
+                <?php if($pagination['current'] < $pagination['total_pages']): ?>
+                <a href="?page=<?= $pagination['current'] + 1 ?>" class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+                <?php else: ?>
+                <button class="px-2.5 py-1.5 border border-gray-200 rounded-md text-gray-500 opacity-50 cursor-not-allowed" disabled><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php endif; ?>
             </div>
         </div>
     </div>

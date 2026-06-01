@@ -51,7 +51,10 @@ function isGroupActive($pages, $current) {
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
                     <a href="<?= APP_URL ?>/admin/don-hang" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'don_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'don_hang' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:receipt-text-outline"></span> Đơn hàng</span>
-                        <span class="<?= $current_page === 'don_hang' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">12</span>
+                        <?php $so_don_cho_xac_nhan = (new \App\Models\DonHangModel())->layThongKe()['cho_xac_nhan'] ?? 0; ?>
+                        <?php if($so_don_cho_xac_nhan > 0): ?>
+                        <span class="<?= $current_page === 'don_hang' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full"><?= $so_don_cho_xac_nhan ?></span>
+                        <?php endif; ?>
                     </a>
 
                     <a href="<?= APP_URL ?>/admin/voucher" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'voucher' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
@@ -160,7 +163,14 @@ function isGroupActive($pages, $current) {
                     </a>
                     <a href="<?= APP_URL ?>/admin/notification" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'hop_thu' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'hop_thu' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:email-outline"></span> Hộp thư / thông báo</span>
-                        <span class="<?= $current_page === 'hop_thu' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
+                        <?php 
+                            $db_tb = \App\Core\Database::getInstance()->getConnection();
+                            $stmt_tb = $db_tb->query("SELECT COUNT(*) FROM thong_bao WHERE id_nguoi_dung IS NULL AND da_doc = 0");
+                            $so_thong_bao_moi = $stmt_tb->fetchColumn() ?: 0;
+                        ?>
+                        <?php if($so_thong_bao_moi > 0): ?>
+                        <span class="<?= $current_page === 'hop_thu' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full"><?= $so_thong_bao_moi ?></span>
+                        <?php endif; ?>
                     </a>
                 </div>
             </div>
@@ -214,7 +224,13 @@ function isGroupActive($pages, $current) {
                     </a>
                     <a href="<?= APP_URL ?>/admin/nhat-ky-hoat-dong" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'nhat_ky' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'nhat_ky' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:history"></span> Nhật ký hoạt động</span>
-                        <span class="<?= $current_page === 'nhat_ky' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+                        <?php
+                            $stmt_nk = $db_tb->query("SELECT COUNT(*) FROM nhat_ky_hoat_dong WHERE DATE(ngay_tao) = CURDATE()");
+                            $so_nhat_ky_hom_nay = $stmt_nk->fetchColumn() ?: 0;
+                        ?>
+                        <?php if($so_nhat_ky_hom_nay > 0): ?>
+                        <span class="<?= $current_page === 'nhat_ky' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full"><?= $so_nhat_ky_hom_nay ?></span>
+                        <?php endif; ?>
                     </a>
                 </div>
             </div>

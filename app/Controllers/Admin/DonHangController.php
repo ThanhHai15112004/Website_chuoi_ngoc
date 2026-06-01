@@ -21,8 +21,9 @@ class DonHangController extends Controller
         $filters = [
             'keyword' => $_GET['keyword'] ?? '',
             'trang_thai_don_hang' => isset($_GET['trang_thai']) && $_GET['trang_thai'] !== '' ? (int)$_GET['trang_thai'] : '',
-            'tu_ngay' => $_GET['tu_ngay'] ?? '',
-            'den_ngay' => $_GET['den_ngay'] ?? '',
+            'thoi_gian' => $_GET['thoi_gian'] ?? '',
+            'thanh_toan' => isset($_GET['thanh_toan']) && $_GET['thanh_toan'] !== '' ? (int)$_GET['thanh_toan'] : '',
+            'hinh_thuc' => $_GET['hinh_thuc'] ?? '',
         ];
 
         $don_hang_list = $this->donHangModel->layDanhSach($filters, $limit, $offset);
