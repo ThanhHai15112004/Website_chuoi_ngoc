@@ -239,6 +239,7 @@ $router->get('/admin/nhan-su/api/chi-tiet/(\d+)', 'Admin\NhanSuController@apiChi
 $router->post('/admin/nhan-su/api/cap-nhat-quyen', 'Admin\NhanSuController@apiCapNhatQuyen');
 
 $router->get('/admin/nhat-ky-hoat-dong', 'Admin\NhatKyHoatDongController@index');
+$router->get('/admin/nhat-ky-hoat-dong/api/chi-tiet/(\d+)', 'Admin\NhatKyHoatDongController@apiChiTiet');
 
 $router->get('/admin/tai-khoan', 'Admin\TaiKhoanController@index');
 $router->post('/admin/tai-khoan/cap-nhat', 'Admin\TaiKhoanController@capNhatThongTin');

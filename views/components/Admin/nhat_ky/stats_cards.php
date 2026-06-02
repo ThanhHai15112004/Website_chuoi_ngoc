@@ -10,7 +10,7 @@
                 <span class="iconify" data-icon="mdi:list-status"></span>
             </div>
             <p class="text-xs font-medium text-gray-500 mb-1">Hoạt động hôm nay</p>
-            <p class="text-xl font-bold text-gray-900">128 <span class="text-[10px] font-normal text-gray-500">thao tác</span></p>
+            <p class="text-xl font-bold text-gray-900"><?= number_format($stats['tong']) ?> <span class="text-[10px] font-normal text-gray-500">thao tác</span></p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
                 <span class="iconify" data-icon="mdi:login"></span>
             </div>
             <p class="text-xs font-medium text-gray-500 mb-1">Đăng nhập Admin</p>
-            <p class="text-xl font-bold text-gray-900">24 <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
+            <p class="text-xl font-bold text-gray-900"><?= number_format($stats['dang_nhap']) ?> <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
         </div>
     </div>
 
@@ -34,7 +34,7 @@
                 <span class="iconify" data-icon="mdi:star-circle-outline"></span>
             </div>
             <p class="text-xs font-medium text-gray-500 mb-1">Thao tác quan trọng</p>
-            <p class="text-xl font-bold text-gray-900">18 <span class="text-[10px] font-normal text-gray-500">thao tác</span></p>
+            <p class="text-xl font-bold text-gray-900"><?= number_format($stats['quan_trong']) ?> <span class="text-[10px] font-normal text-gray-500">thao tác</span></p>
         </div>
     </div>
 
@@ -46,7 +46,7 @@
                 <span class="iconify" data-icon="mdi:alert-rhombus-outline"></span>
             </div>
             <p class="text-xs font-bold text-red-800 mb-1">Thao tác nguy hiểm</p>
-            <p class="text-xl font-bold text-red-700">3 <span class="text-[10px] font-normal text-red-600/70">thao tác</span></p>
+            <p class="text-xl font-bold text-red-700"><?= number_format($stats['nguy_hiem']) ?> <span class="text-[10px] font-normal text-red-600/70">thao tác</span></p>
         </div>
     </div>
 
@@ -58,7 +58,7 @@
                 <span class="iconify" data-icon="mdi:database-export-outline"></span>
             </div>
             <p class="text-xs font-medium text-gray-500 mb-1">Xuất dữ liệu</p>
-            <p class="text-xl font-bold text-gray-900">5 <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
+            <p class="text-xl font-bold text-gray-900"><?= number_format($stats['xuat_du_lieu']) ?> <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
         </div>
     </div>
 
@@ -70,7 +70,7 @@
                 <span class="iconify" data-icon="mdi:shield-lock-outline"></span>
             </div>
             <p class="text-xs font-medium text-red-600 mb-1">Đăng nhập thất bại</p>
-            <p class="text-xl font-bold text-gray-900">2 <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
+            <p class="text-xl font-bold text-gray-900"><?= number_format($stats['dang_nhap_that_bai']) ?> <span class="text-[10px] font-normal text-gray-500">lượt</span></p>
         </div>
     </div>
 
@@ -82,7 +82,7 @@
                 <span class="iconify" data-icon="mdi:chart-pie"></span>
             </div>
             <p class="text-xs font-medium text-gray-500 mb-1">Module nhiều nhất</p>
-            <p class="text-base font-bold text-gray-900 mt-1 truncate">Đơn hàng</p>
+            <p class="text-base font-bold text-gray-900 mt-1 truncate"><?= htmlspecialchars($stats['module_nhieu_nhat']) ?></p>
         </div>
     </div>
 </div>

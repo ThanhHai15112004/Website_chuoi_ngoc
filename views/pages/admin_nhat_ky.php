@@ -47,17 +47,41 @@
             <?php require_once __DIR__ . '/../components/Admin/nhat_ky/table_list.php'; ?>
             
             <!-- Pagination -->
+            <?php if ($total > 0): 
+                $start = ($page - 1) * $limit + 1;
+                $end = min($start + $limit - 1, $total);
+                
+                // Build query string for pagination links
+                $queryParams = $_GET;
+                unset($queryParams['page']);
+                $queryString = http_build_query($queryParams);
+                $queryPrefix = $queryString ? '&' . $queryString : '';
+            ?>
             <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <span class="text-sm text-gray-500">Hiển thị <span class="font-bold text-gray-900">1</span> đến <span class="font-bold text-gray-900">7</span> của <span class="font-bold text-gray-900">128</span> nhật ký</span>
+                <span class="text-sm text-gray-500">Hiển thị <span class="font-bold text-gray-900"><?= $start ?></span> đến <span class="font-bold text-gray-900"><?= $end ?></span> của <span class="font-bold text-gray-900"><?= number_format($total) ?></span> nhật ký</span>
                 <div class="flex gap-1">
-                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded border border-[#6B0D18] bg-[#6B0D18] text-white font-medium text-sm shadow-sm">1</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors">2</button>
-                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors">3</button>
-                    <span class="w-8 h-8 flex items-center justify-center text-gray-500">...</span>
-                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                    <?php if ($page > 1): ?>
+                        <a href="?page=<?= $page - 1 ?><?= $queryPrefix ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-left"></span></a>
+                    <?php else: ?>
+                        <button disabled class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-300"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+                    <?php endif; ?>
+                    
+                    <?php for ($i = max(1, $page - 2); $i <= min($totalPages, $page + 2); $i++): ?>
+                        <?php if ($i == $page): ?>
+                            <button class="w-8 h-8 flex items-center justify-center rounded border border-[#6B0D18] bg-[#6B0D18] text-white font-medium text-sm shadow-sm"><?= $i ?></button>
+                        <?php else: ?>
+                            <a href="?page=<?= $i ?><?= $queryPrefix ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm transition-colors"><?= $i ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+                    
+                    <?php if ($page < $totalPages): ?>
+                        <a href="?page=<?= $page + 1 ?><?= $queryPrefix ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition-colors"><span class="iconify" data-icon="mdi:chevron-right"></span></a>
+                    <?php else: ?>
+                        <button disabled class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-300"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                    <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
