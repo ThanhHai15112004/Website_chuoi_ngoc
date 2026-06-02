@@ -2,6 +2,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class KhachHangController extends Controller
 {
@@ -588,6 +590,24 @@ class KhachHangController extends Controller
             foreach ($ids as $id) {
                 $model->doiTrangThai($id);
             }
+
+            // Gửi email thông báo khóa/mở khóa cho từng khách hàng
+            try {
+                $notif = new NotificationService();
+                foreach ($ids as $id) {
+                    $kh = $model->timTheoId($id);
+                    if ($kh) {
+                        $isLocked = (int)$kh['trang_thai'] === 0;
+                        if (!empty($kh['email'])) {
+                            MailService::sendAccountLocked($kh['email'], $kh['ho_ten'], $isLocked);
+                        }
+                        $notif->accountStatusChanged($id, $kh['ho_ten'], $isLocked);
+                    }
+                }
+            } catch (\Exception $ex) {
+                error_log('[KhachHang] Lỗi gửi mail khóa/mở: ' . $ex->getMessage());
+            }
+
             $logModel->log('Khóa/Mở khóa tài khoản', 'Khách hàng', 'Bulk', "Thay đổi trạng thái " . count($ids) . " khách hàng");
             echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công']);
         } catch (\Exception $e) {
@@ -645,6 +665,39 @@ class KhachHangController extends Controller
             }
             $db->commit();
             
+            // Gửi email + thông báo voucher cho từng khách hàng
+            try {
+                $notif = new NotificationService();
+                $voucherModel = new \App\Models\Admin\VoucherModel();
+                $voucherInfos = [];
+                foreach ($voucher_ids as $vid) {
+                    $v = $voucherModel->getVoucherById($vid);
+                    if ($v) {
+                        $giaTriText = '';
+                        if ($v['loai_giam'] == 1) $giaTriText = 'Giảm ' . $v['gia_tri'] . '%';
+                        elseif ($v['loai_giam'] == 2) $giaTriText = 'Giảm ' . number_format($v['gia_tri'], 0, ',', '.') . 'đ';
+                        elseif ($v['loai_giam'] == 3) $giaTriText = 'Miễn phí vận chuyển';
+                        else $giaTriText = 'Quà tặng';
+                        $voucherInfos[] = [
+                            'ma_voucher' => $v['ma_voucher'],
+                            'gia_tri_text' => $giaTriText,
+                            'han_dung' => date('d/m/Y', strtotime($v['ngay_ket_thuc']))
+                        ];
+                    }
+                }
+                foreach ($ids as $userId) {
+                    $kh = $model->timTheoId($userId);
+                    if ($kh && !empty($kh['email'])) {
+                        MailService::sendVoucherGift($kh['email'], $kh['ho_ten'], $voucherInfos);
+                    }
+                    foreach ($voucherInfos as $vi) {
+                        $notif->voucherAssigned($userId, $vi);
+                    }
+                }
+            } catch (\Exception $ex) {
+                error_log('[KhachHang] Lỗi gửi mail voucher: ' . $ex->getMessage());
+            }
+
             $logModel->log('Gán voucher', 'Khách hàng', 'Bulk', "Gán " . count($voucher_ids) . " voucher cho " . count($ids) . " khách hàng");
             echo json_encode(['success' => true, 'message' => 'Gán voucher thành công']);
         } catch (\Exception $e) {
@@ -671,6 +724,17 @@ class KhachHangController extends Controller
             $newPassword = password_hash('123456', PASSWORD_DEFAULT);
             $model->capNhat($id, ['mat_khau' => $newPassword]);
             $logModel->log('Reset mật khẩu', 'Khách hàng', $id, "Mật khẩu đã được reset về mặc định");
+
+            // Gửi email thông báo reset mật khẩu
+            try {
+                $kh = $model->timTheoId($id);
+                if ($kh && !empty($kh['email'])) {
+                    MailService::sendPasswordReset($kh['email'], $kh['ho_ten'], '123456');
+                }
+            } catch (\Exception $ex) {
+                error_log('[KhachHang] Lỗi gửi mail reset MK: ' . $ex->getMessage());
+            }
+
             echo json_encode(['success' => true, 'message' => 'Mật khẩu đã được khôi phục về mặc định (123456)']);
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi: ' . $e->getMessage()]);

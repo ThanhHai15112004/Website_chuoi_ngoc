@@ -40,13 +40,7 @@ class XuatKhoService
                 'total_records' => $total,
                 'total_pages' => ceil($total / $limit)
             ],
-            'stats' => [
-                'tat_ca' => $total,
-                // These should ideally be separate queries, but for now we mock them or just use total
-                'cho_duyet' => 0, 
-                'dang_xuat' => 0,
-                'hoan_thanh' => 0
-            ]
+            'stats' => $this->phieuKhoModel->layThongKe(2)
         ];
     }
 

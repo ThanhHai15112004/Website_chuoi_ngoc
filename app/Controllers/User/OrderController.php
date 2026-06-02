@@ -4,6 +4,8 @@ namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Models\Admin\Order;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class OrderController extends Controller
 {
@@ -102,6 +104,18 @@ class OrderController extends Controller
                 $orderModel = new Order();
                 $success = $orderModel->updateOrderStatus($orderId, 'cancelled', $reason);
                 if ($success) {
+                    // Gửi email + thông báo hủy đơn
+                    try {
+                        $donHangModel = new \App\Models\Admin\DonHangModel();
+                        $don_hang = $donHangModel->layChiTiet($orderId);
+                        if ($don_hang) {
+                            $notif = new NotificationService();
+                            $notif->orderStatusChanged($don_hang, 4, $reason);
+                            MailService::sendOrderCancelled($don_hang, $reason);
+                        }
+                    } catch (\Exception $ex) {
+                        error_log('[Order] Lỗi gửi mail hủy đơn: ' . $ex->getMessage());
+                    }
                     // Flash message success...
                     header("Location: " . APP_URL . "/chi-tiet-don-hang?id=" . $orderId);
                     exit;

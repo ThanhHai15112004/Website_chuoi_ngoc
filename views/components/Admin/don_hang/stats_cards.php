@@ -58,7 +58,7 @@
                 <span class="text-[10px] font-medium text-gray-500 uppercase tracking-wider">Doanh thu (Thành công)</span>
             </div>
             <div class="relative z-10">
-                <span class="text-xl font-bold text-[#6B0D18] tracking-tight"><?= number_format($stats['doanh_thu'], 0, ',', '.') ?>đ</span>
+                <span class="text-xl font-bold text-[#6B0D18] tracking-tight"><?= format_currency_short($stats['doanh_thu']) ?></span>
             </div>
         </div>
     </div>

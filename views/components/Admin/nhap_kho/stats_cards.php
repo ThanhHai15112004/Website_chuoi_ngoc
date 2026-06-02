@@ -85,7 +85,7 @@
             <p class="text-[11px] font-medium text-[#6B0D18]/70 uppercase tracking-wide">Tổng giá trị nhập</p>
         </div>
         <div>
-            <h3 class="text-xl font-bold text-[#6B0D18]"><?= number_format($stats['tong_tien'] ?? 0, 0, ',', '.') ?>đ</h3>
+            <h3 class="text-xl font-bold text-[#6B0D18]"><?= format_currency_short($stats['tong_tien'] ?? 0) ?></h3>
             <p class="text-xs text-gray-500 mt-1">Toàn thời gian</p>
         </div>
     </div>
@@ -99,7 +99,7 @@
             <p class="text-[11px] font-medium text-orange-700 uppercase tracking-wide">Công nợ nhập hàng</p>
         </div>
         <div>
-            <h3 class="text-xl font-bold text-orange-600"><?= number_format($stats['cong_no'] ?? 0, 0, ',', '.') ?>đ</h3>
+            <h3 class="text-xl font-bold text-orange-600"><?= format_currency_short($stats['cong_no'] ?? 0) ?></h3>
             <p class="text-xs text-gray-500 mt-1">Cần thanh toán</p>
         </div>
     </div>

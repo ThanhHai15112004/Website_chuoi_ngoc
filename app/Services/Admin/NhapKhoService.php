@@ -54,15 +54,7 @@ class NhapKhoService
                 'total_records' => $total,
                 'total_pages' => ceil($total / $limit)
             ],
-            'stats' => [
-                'tat_ca' => $total,
-                'cho_kiem' => 0,
-                'dang_kiem' => 0,
-                'da_nhap' => 0,
-                'loi_thieu' => 0,
-                'tong_tien' => 0,
-                'cong_no' => 0
-            ]
+            'stats' => $this->phieuKhoModel->layThongKe(1)
         ];
     }
 

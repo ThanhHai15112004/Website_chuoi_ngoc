@@ -2,7 +2,7 @@
     <?php if(!empty($notifications)): ?>
         <?php foreach($notifications as $item): ?>
             <!-- Lớp phủ (bg-gray-50) nếu đã đọc, nền trắng nếu chưa đọc -->
-            <div class="group relative flex items-start gap-3 sm:gap-4 p-3 sm:p-4 hover:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] hover:z-10 transition-all cursor-pointer border-l-2 <?= $item['da_doc'] ? 'border-transparent bg-white' : 'border-red-600 bg-red-50/20' ?>" onclick="openNotificationDetail(<?= $item['id'] ?>)">
+            <div class="group relative flex items-start gap-3 sm:gap-4 p-3 sm:p-4 hover:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.1)] hover:z-10 transition-all cursor-pointer border-l-2 <?= $item['da_doc'] ? 'border-transparent bg-white' : 'border-red-600 bg-red-50/20' ?>" onclick="window.location.href='<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/chi-tiet/<?= $item['id'] ?>'">
                 
                 <!-- Checkbox (Ngăn chặn sực kiện click lan ra ngoài để không mở drawer) -->
                 <div class="pt-1 shrink-0" onclick="event.stopPropagation()">
@@ -48,15 +48,15 @@
 
                 <!-- Hover Actions -->
                 <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 backdrop-blur px-2 py-1.5 rounded-lg shadow-sm border border-gray-100" onclick="event.stopPropagation()">
-                    <button class="p-1.5 text-gray-400 hover:text-red-600 rounded transition-colors tooltip" title="Xóa" onclick="deleteItem('<?= $item['id'] ?>')">
+                    <button class="p-1.5 text-gray-400 hover:text-red-600 rounded transition-colors tooltip" title="Xóa" onclick="event.stopPropagation(); deleteItem('<?= $item['id'] ?>')">
                         <span class="iconify text-lg" data-icon="mdi:delete-outline"></span>
                     </button>
                     <?php if(!$item['da_doc']): ?>
-                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu đã đọc" onclick="toggleRead('<?= $item['id'] ?>', 1)">
+                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu đã đọc" onclick="event.stopPropagation(); toggleRead('<?= $item['id'] ?>', 1)">
                             <span class="iconify text-lg" data-icon="mdi:email-open-outline"></span>
                         </button>
                     <?php else: ?>
-                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu chưa đọc" onclick="toggleRead('<?= $item['id'] ?>', 0)">
+                        <button class="p-1.5 text-gray-400 hover:text-blue-600 rounded transition-colors tooltip" title="Đánh dấu chưa đọc" onclick="event.stopPropagation(); toggleRead('<?= $item['id'] ?>', 0)">
                             <span class="iconify text-lg" data-icon="mdi:email-outline"></span>
                         </button>
                     <?php endif; ?>
@@ -71,7 +71,14 @@
                 data-noidung="<?= htmlspecialchars($item['noi_dung']) ?>"
                 data-icon="<?= $item['icon'] ?>"
                 data-color="<?= $item['color_class'] ?>"
-                data-link="<?= $item['link'] ?>"
+                <?php 
+                    $link = $item['link'] ?? '#';
+                    if ($link !== '#' && !empty($link) && strpos($link, 'http') !== 0) {
+                        $base = defined('APP_URL') ? APP_URL : '';
+                        $link = $base . '/' . ltrim($link, '/');
+                    }
+                ?>
+                data-link="<?= htmlspecialchars($link) ?>"
             ></div>
         <?php endforeach; ?>
     <?php else: ?>

@@ -23,7 +23,8 @@ class DonHangModel
         $sql = "SELECT dh.*, 
                        nd.ho_ten as ten_khach_hang_nd, nd.anh_dai_dien,
                        (SELECT COUNT(*) FROM chi_tiet_don_hang WHERE id_don_hang = dh.id) as tong_so_luong_sp,
-                       (SELECT ten_sp FROM chi_tiet_don_hang ct JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id JOIN san_pham sp ON bt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as san_pham_chinh
+                       (SELECT ten_sp FROM chi_tiet_don_hang ct JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id JOIN san_pham sp ON bt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as san_pham_chinh,
+                       (SELECT hinh_anh_chinh FROM chi_tiet_don_hang ct JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id JOIN san_pham sp ON bt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as hinh_anh_chinh
                 FROM don_hang dh
                 LEFT JOIN nguoi_dung nd ON dh.id_nguoi_dung = nd.id
                 WHERE 1=1";
@@ -236,6 +237,7 @@ class DonHangModel
             // 0: Chờ xử lý (lúc này đã giữ kho: so_luong_tam_giu += số lượng)
             // 1: Đang chuẩn bị (Trừ kho thật)
             if ($oldStatus == 0 && $newStatus >= 1 && $newStatus <= 3) {
+                $lowStockProducts = [];
                 foreach ($items as $item) {
                     if ($item['id_bien_the']) {
                         $upd = $this->db->prepare("UPDATE san_pham_bien_the 
@@ -243,6 +245,38 @@ class DonHangModel
                                                        so_luong_tam_giu = GREATEST(0, so_luong_tam_giu - ?) 
                                                    WHERE id = ?");
                         $upd->execute([$item['so_luong'], $item['so_luong'], $item['id_bien_the']]);
+
+                        // Kiểm tra tồn kho thấp
+                        $checkStmt = $this->db->prepare("SELECT bt.so_luong_ton, bt.nguong_canh_bao, bt.thuoc_tinh, sp.ten_sp 
+                                                         FROM san_pham_bien_the bt 
+                                                         JOIN san_pham sp ON bt.id_san_pham = sp.id 
+                                                         WHERE bt.id = ? AND bt.so_luong_ton <= bt.nguong_canh_bao");
+                        $checkStmt->execute([$item['id_bien_the']]);
+                        $lowStock = $checkStmt->fetch(PDO::FETCH_ASSOC);
+                        if ($lowStock) {
+                            $lowStockProducts[] = [
+                                'ten_sp' => $lowStock['ten_sp'],
+                                'bien_the' => $lowStock['thuoc_tinh'],
+                                'ton_kho' => $lowStock['so_luong_ton'],
+                                'nguong' => $lowStock['nguong_canh_bao']
+                            ];
+                        }
+                    }
+                }
+
+                // Gửi cảnh báo tồn kho thấp
+                if (!empty($lowStockProducts)) {
+                    try {
+                        $notif = new \App\Services\NotificationService();
+                        foreach ($lowStockProducts as $lsp) {
+                            $notif->lowStockWarning($lsp['ten_sp'], $lsp['bien_the'], $lsp['ton_kho']);
+                        }
+                        $adminEmail = $_ENV['EMAIL_FROM'] ?? '';
+                        if (!empty($adminEmail)) {
+                            \App\Services\MailService::sendLowStockAlert($adminEmail, $lowStockProducts);
+                        }
+                    } catch (\Exception $ex) {
+                        error_log('[DonHang] Lỗi gửi cảnh báo tồn kho: ' . $ex->getMessage());
                     }
                 }
             }
@@ -334,7 +368,7 @@ class DonHangModel
     private function kiemTraVaCapNhatHangThanhVien($id_nguoi_dung)
     {
         // Lấy thông tin user
-        $stmt = $this->db->prepare("SELECT tong_chi_tieu, id_hang_thanh_vien FROM nguoi_dung WHERE id = ?");
+        $stmt = $this->db->prepare("SELECT ho_ten, email, tong_chi_tieu, id_hang_thanh_vien FROM nguoi_dung WHERE id = ?");
         $stmt->execute([$id_nguoi_dung]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -349,19 +383,42 @@ class DonHangModel
         
         $newRankId = null;
         $newRankName = '';
+        $newRankDiscount = 0;
         foreach ($ranks as $rank) {
             if ($chiTieu >= $rank['chi_tieu_toi_thieu']) {
                 $newRankId = $rank['id'];
                 $newRankName = $rank['ten_hang'];
+                $newRankDiscount = $rank['phan_tram_giam'] ?? 0;
                 break;
             }
         }
         
         if ($newRankId && $newRankId != $user['id_hang_thanh_vien']) {
+            // Lấy tên hạng cũ
+            $oldRankName = 'Đồng';
+            if ($user['id_hang_thanh_vien']) {
+                $stmtOld = $this->db->prepare("SELECT ten_hang FROM hang_thanh_vien WHERE id = ?");
+                $stmtOld->execute([$user['id_hang_thanh_vien']]);
+                $oldRank = $stmtOld->fetch(PDO::FETCH_ASSOC);
+                if ($oldRank) $oldRankName = $oldRank['ten_hang'];
+            }
+
             $upd = $this->db->prepare("UPDATE nguoi_dung SET id_hang_thanh_vien = ? WHERE id = ?");
             $upd->execute([$newRankId, $id_nguoi_dung]);
             
             $this->logger->log("Nâng hạng", "Khách hàng", $id_nguoi_dung, "Lên hạng: " . $newRankName);
+
+            // Gửi email + thông báo nâng hạng
+            try {
+                $notif = new \App\Services\NotificationService();
+                $notif->rankUpgraded($id_nguoi_dung, $user['ho_ten'], $newRankName, $newRankDiscount);
+
+                if (!empty($user['email'])) {
+                    \App\Services\MailService::sendRankUpgrade($user['email'], $user['ho_ten'], $oldRankName, $newRankName, $newRankDiscount);
+                }
+            } catch (\Exception $ex) {
+                error_log('[DonHang] Lỗi gửi mail nâng hạng: ' . $ex->getMessage());
+            }
         }
     }
 

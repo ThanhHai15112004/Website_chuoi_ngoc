@@ -12,7 +12,7 @@
             <p class="text-sm text-gray-500 ml-8">Soạn và gửi thông báo, voucher, hoặc tin nhắn đến khách hàng.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm flex items-center gap-2">
+            <button onclick="openTemplateModal()" class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm flex items-center gap-2">
                 <span class="iconify" data-icon="mdi:format-list-bulleted-type"></span>
                 Mẫu thông báo
             </button>

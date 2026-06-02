@@ -45,7 +45,7 @@
                 <span class="iconify" data-icon="mdi:currency-usd"></span>
                 <span class="text-[11px] font-medium uppercase tracking-wider">Doanh thu K.Mãi</span>
             </div>
-            <div class="text-lg font-bold text-[#6B0D18] truncate" title="<?= number_format($thong_ke['doanh_thu_km'], 0, ',', '.') ?>đ"><?= number_format($thong_ke['doanh_thu_km'], 0, ',', '.') ?>đ</div>
+            <div class="text-lg font-bold text-[#6B0D18] truncate" title="<?= number_format($thong_ke['doanh_thu_km'], 0, ',', '.') ?>đ"><?= format_currency_short($thong_ke['doanh_thu_km']) ?></div>
         </div>
     </div>
 

@@ -102,7 +102,7 @@
             </div>
             <div>
                 <h3 class="text-lg font-bold <?= ($stats['gia_tri_lech'] ?? 0) < 0 ? 'text-[#6B0D18]' : 'text-emerald-700' ?>">
-                    <?= number_format($stats['gia_tri_lech'] ?? 0, 0, ',', '.') ?>đ
+                    <?= format_currency_short($stats['gia_tri_lech'] ?? 0) ?>
                 </h3>
                 <p class="text-[10px] text-gray-400 mt-1">tổng ước tính</p>
             </div>

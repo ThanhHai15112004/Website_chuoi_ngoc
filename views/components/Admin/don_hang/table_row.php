@@ -27,8 +27,12 @@
                             </td>
                             <td class="p-3">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xs <?= $iconMau ?> shadow-sm shrink-0">
-                                        <?= $iconChu ?>
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xs shadow-sm shrink-0 overflow-hidden <?= empty($dh['hinh_anh_chinh']) ? $iconMau : 'bg-white border border-gray-100' ?>">
+                                        <?php if (!empty($dh['hinh_anh_chinh'])): ?>
+                                            <img src="<?= APP_URL ?>/<?= $dh['hinh_anh_chinh'] ?>" alt="Product" class="w-full h-full object-cover">
+                                        <?php else: ?>
+                                            <?= $iconChu ?>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="flex flex-col">
                                         <span class="text-sm text-gray-900 truncate max-w-[180px]" title="<?= htmlspecialchars($dh['san_pham_chinh'] ?? 'Sản phẩm') ?>"><?= htmlspecialchars($dh['san_pham_chinh'] ?? 'Sản phẩm') ?></span>

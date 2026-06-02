@@ -33,6 +33,14 @@ class MailHelper
     }
 
     /**
+     * Gửi email HTML tùy ý (public wrapper cho sendSmtp)
+     */
+    public static function sendGeneral(string $email, string $subject, string $htmlBody): bool
+    {
+        return self::sendSmtp($email, $subject, $htmlBody);
+    }
+
+    /**
      * Tạo mã OTP 6 chữ số
      */
     public static function taoOTP(): string

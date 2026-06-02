@@ -5,7 +5,8 @@
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
     <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center">
         <h3 class="text-lg font-bold text-gray-800">Đơn hàng mới nhất</h3>
-        <a href="#" class="text-sm text-red-900 font-medium hover:underline">Xem tất cả</a>
+        <?php $base = defined('APP_URL') ? APP_URL : ''; ?>
+        <a href="<?= $base ?>/admin/don-hang" class="text-sm text-red-900 font-medium hover:underline">Xem tất cả</a>
     </div>
     <div class="overflow-x-auto">
         <table class="w-full text-left text-sm text-gray-600">
@@ -23,7 +24,7 @@
                 <tr class="hover:bg-gray-50/50 transition-colors">
                     <td class="px-5 py-3 font-medium text-gray-900">#<?= $don['ma_don'] ?></td>
                     <td class="px-5 py-3"><?= $don['khach_hang'] ?></td>
-                    <td class="px-5 py-3 font-medium text-red-900"><?= number_format($don['tong_tien'], 0, ',', '.') ?>đ</td>
+                    <td class="px-5 py-3 font-medium text-red-900"><?= format_currency_short($don['tong_tien']) ?></td>
                     <td class="px-5 py-3">
                         <?php
                             $badgeClass = '';
@@ -41,7 +42,9 @@
                         </span>
                     </td>
                     <td class="px-5 py-3 text-right">
-                        <button class="text-gray-400 hover:text-red-900 transition-colors"><span class="iconify text-lg" data-icon="mdi:eye-outline"></span></button>
+                        <a href="<?= defined('APP_URL') ? APP_URL : '' ?>/admin/don-hang/chi-tiet/<?= $don['id'] ?>" class="text-gray-400 hover:text-red-900 transition-colors inline-block" title="Xem chi tiết">
+                            <span class="iconify text-lg" data-icon="mdi:eye-outline"></span>
+                        </a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

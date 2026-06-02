@@ -41,3 +41,23 @@ if (!function_exists('loadEnv')) {
         }
     }
 }
+
+if (!function_exists('format_currency_short')) {
+    function format_currency_short($amount) {
+        $amount = (float)$amount;
+        $isNegative = $amount < 0;
+        $absAmount = abs($amount);
+        
+        if ($absAmount >= 1000000000) {
+            $formatted = rtrim(rtrim(number_format($absAmount / 1000000000, 2, ',', '.'), '0'), ',') . ' tỷ';
+        } elseif ($absAmount >= 1000000) {
+            $formatted = rtrim(rtrim(number_format($absAmount / 1000000, 2, ',', '.'), '0'), ',') . 'tr';
+        } elseif ($absAmount >= 1000) {
+            $formatted = rtrim(rtrim(number_format($absAmount / 1000, 2, ',', '.'), '0'), ',') . 'k';
+        } else {
+            $formatted = number_format($absAmount, 0, ',', '.') . 'đ';
+        }
+        
+        return ($isNegative ? '-' : '') . $formatted;
+    }
+}

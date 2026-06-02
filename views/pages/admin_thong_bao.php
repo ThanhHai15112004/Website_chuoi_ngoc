@@ -10,7 +10,7 @@
                 <span class="iconify text-lg" data-icon="mdi:check-all"></span>
                 Đánh dấu tất cả đã đọc
             </button>
-            <a href="<?= APP_URL ?>/admin/notification/them" class="px-4 py-2 bg-[#8B0000] text-white rounded-lg text-sm font-medium hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
+            <a href="<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/them" class="px-4 py-2 bg-[#8B0000] text-white rounded-lg text-sm font-medium hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
                 <span class="iconify text-lg" data-icon="mdi:plus"></span>
                 Gửi thông báo mới
             </a>
@@ -138,27 +138,27 @@
     }
 
     function bulkMarkRead() {
-        processAction('<?= APP_URL ?>/admin/notification/read', getSelectedIds(), { status: 1 });
+        processAction('<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/read', getSelectedIds(), { status: 1 });
     }
 
     function bulkDelete() {
         if(confirm('Bạn có chắc chắn muốn xóa các thông báo đã chọn?')) {
-            processAction('<?= APP_URL ?>/admin/notification/delete', getSelectedIds());
+            processAction('<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/delete', getSelectedIds());
         }
     }
 
     function toggleRead(id, status) {
-        processAction('<?= APP_URL ?>/admin/notification/read', [id], { status });
+        processAction('<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/read', [id], { status });
     }
 
     function deleteItem(id) {
         if(confirm('Bạn có chắc chắn muốn xóa thông báo này?')) {
-            processAction('<?= APP_URL ?>/admin/notification/delete', [id]);
+            processAction('<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/delete', [id]);
         }
     }
 
     function markAllAsRead() {
-        fetch('<?= APP_URL ?>/admin/notification/read-all', { method: 'POST' })
+        fetch('<?= defined('APP_URL') ? APP_URL : '' ?>/admin/notification/read-all', { method: 'POST' })
         .then(res => res.json())
         .then(data => {
             if(data.success) window.location.reload();

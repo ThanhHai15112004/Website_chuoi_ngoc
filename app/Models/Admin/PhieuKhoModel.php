@@ -381,4 +381,43 @@ class PhieuKhoModel
         $stmt = $this->db->prepare("UPDATE phieu_kho SET trang_thai = ? WHERE id = ?");
         return $stmt->execute([$trangThai, $id]);
     }
+
+    public function layThongKe($loai_phieu)
+    {
+        $sql = "SELECT 
+                    COUNT(*) as tat_ca,
+                    SUM(CASE WHEN trang_thai = 1 THEN 1 ELSE 0 END) as cho_duyet,
+                    SUM(CASE WHEN trang_thai = 2 THEN 1 ELSE 0 END) as dang_kiem,
+                    SUM(CASE WHEN trang_thai = 3 THEN 1 ELSE 0 END) as hoan_thanh,
+                    SUM(CASE WHEN trang_thai = 4 THEN 1 ELSE 0 END) as da_huy,
+                    SUM(tong_tien) as tong_tien,
+                    SUM(GREATEST(0, tong_tien - tien_da_tra)) as cong_no
+                FROM phieu_kho 
+                WHERE loai_phieu = :loai_phieu";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':loai_phieu' => $loai_phieu]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $sqlLoi = "SELECT SUM(ct.so_luong_loi) as loi_thieu 
+                   FROM chi_tiet_phieu_kho ct 
+                   JOIN phieu_kho pk ON ct.id_phieu_kho = pk.id 
+                   WHERE pk.loai_phieu = :loai_phieu";
+        $stmtLoi = $this->db->prepare($sqlLoi);
+        $stmtLoi->execute([':loai_phieu' => $loai_phieu]);
+        $loiThieu = $stmtLoi->fetchColumn();
+
+        return [
+            'tat_ca' => (int)($row['tat_ca'] ?? 0),
+            'cho_kiem' => (int)($row['cho_duyet'] ?? 0),
+            'dang_kiem' => (int)($row['dang_kiem'] ?? 0),
+            'da_nhap' => (int)($row['hoan_thanh'] ?? 0),
+            'loi_thieu' => (int)($loiThieu ?? 0),
+            'tong_tien' => (float)($row['tong_tien'] ?? 0),
+            'cong_no' => (float)($row['cong_no'] ?? 0),
+            
+            'cho_duyet' => (int)($row['cho_duyet'] ?? 0),
+            'dang_xuat' => (int)($row['dang_kiem'] ?? 0),
+            'hoan_thanh' => (int)($row['hoan_thanh'] ?? 0)
+        ];
+    }
 }

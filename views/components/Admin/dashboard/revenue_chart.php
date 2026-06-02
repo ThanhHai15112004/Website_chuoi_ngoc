@@ -5,10 +5,10 @@
 <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
     <div class="flex justify-between items-center mb-6">
         <h3 class="text-lg font-bold text-gray-800">Biểu đồ doanh thu</h3>
-        <select class="text-sm border-gray-200 rounded-lg text-gray-600 bg-gray-50 focus:ring-red-900 focus:border-red-900">
-            <option>7 ngày qua</option>
-            <option>Tháng này</option>
-            <option>Năm nay</option>
+        <select id="chartFilter" class="text-sm border-gray-200 rounded-lg text-gray-600 bg-gray-50 focus:ring-red-900 focus:border-red-900">
+            <option value="7_ngay">7 ngày qua</option>
+            <option value="thang_nay">Tháng này</option>
+            <option value="nam_nay">Năm nay</option>
         </select>
     </div>
     <div class="h-72 w-full">
@@ -20,6 +20,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('revenueChart').getContext('2d');
+        const chartData = <?= json_encode($bieu_do_doanh_thu) ?>;
         
         // Gradient for chart
         let gradient = ctx.createLinearGradient(0, 0, 0, 300);
@@ -29,10 +30,10 @@
         const revenueChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                labels: chartData['7_ngay'].labels,
                 datasets: [{
                     label: 'Doanh thu (Triệu VNĐ)',
-                    data: [12, 19, 15, 25, 22, 30, 28],
+                    data: chartData['7_ngay'].data,
                     borderColor: '#6B0D18',
                     backgroundColor: gradient,
                     borderWidth: 2,
@@ -93,6 +94,13 @@
                     mode: 'index',
                 },
             }
+        });
+
+        document.getElementById('chartFilter').addEventListener('change', function() {
+            const val = this.value;
+            revenueChart.data.labels = chartData[val].labels;
+            revenueChart.data.datasets[0].data = chartData[val].data;
+            revenueChart.update();
         });
     });
 </script>

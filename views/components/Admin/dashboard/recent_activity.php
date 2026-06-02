@@ -13,4 +13,11 @@
         </div>
         <?php endforeach; ?>
     </div>
+    <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+        <?php $base = defined('APP_URL') ? APP_URL : ''; ?>
+        <a href="<?= $base ?>/admin/nhat-ky-hoat-dong" class="text-sm font-medium text-red-900 hover:text-red-700 hover:underline inline-flex items-center gap-1">
+            Xem tất cả
+            <span class="iconify" data-icon="mdi:arrow-right"></span>
+        </a>
+    </div>
 </div>

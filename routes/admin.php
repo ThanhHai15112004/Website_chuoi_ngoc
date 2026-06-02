@@ -94,9 +94,13 @@ $router->post('/admin/khach-hang/send-notification', 'Admin\KhachHangController@
 $router->get('/admin/notification', 'Admin\ThongBaoController@index');
 $router->get('/admin/notification/them', 'Admin\ThongBaoController@taoMoi');
 $router->post('/admin/notification/luu', 'Admin\ThongBaoController@luuMoi');
+$router->get('/admin/notification/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\ThongBaoController@chiTiet');
 $router->post('/admin/notification/read', 'Admin\ThongBaoController@markAsRead');
 $router->post('/admin/notification/delete', 'Admin\ThongBaoController@xoa');
 $router->post('/admin/notification/read-all', 'Admin\ThongBaoController@markAllAsRead');
+$router->post('/admin/notification/nhac-voucher', 'Admin\ThongBaoController@guiNhacVoucher');
+$router->post('/admin/notification/nhac-danh-gia', 'Admin\ThongBaoController@guiNhacDanhGia');
+$router->get('/admin/notification/api/search-khach-hang', 'Admin\ThongBaoController@apiSearchKhachHang');
 
 $router->get('/admin/post', 'Admin\BaiVietController@index');
 $router->get('/admin/post/them', 'Admin\BaiVietController@taoMoi');

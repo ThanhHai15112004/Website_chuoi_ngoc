@@ -14,6 +14,7 @@ $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
 $router->get('/bai-viet', 'User\ArticleController@index');
 $router->get('/chi-tiet-bai-viet', 'User\ArticleController@detail');
 $router->get('/lien-he', 'User\ContactController@index');
+$router->post('/lien-he/gui', 'User\ContactController@submit');
 $router->get('/chi-tiet-don-hang', 'User\DonHangController@detail');
 $router->post('/chi-tiet-don-hang/huy', 'User\DonHangController@cancel');
 $router->get('/tai-khoan', 'User\AccountController@index');

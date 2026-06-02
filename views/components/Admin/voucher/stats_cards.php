@@ -47,11 +47,10 @@
 
         <!-- Tổng giảm giá -->
         <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
-            <div class="flex items-center gap-2 text-[#6B0D18] mb-2">
-                <span class="iconify" data-icon="mdi:currency-usd"></span>
-                <span class="text-xs font-medium uppercase tracking-wider">Tổng giảm giá</span>
+            <div class="flex items-center gap-2 mb-2">
+                <span class="iconify text-lg text-emerald-500" data-icon="mdi:cash-check"></span>
+                <span class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">Tổng đã giảm</span>
             </div>
-            <div class="text-xl font-bold text-[#6B0D18] truncate" title="<?= number_format($thong_ke['tong_giam_gia'], 0, ',', '.') ?>đ"><?= number_format($thong_ke['tong_giam_gia'], 0, ',', '.') ?>đ</div>
+            <div class="text-xl font-bold text-emerald-700 truncate" title="<?= number_format($thong_ke['tong_giam_gia'], 0, ',', '.') ?>đ"><?= format_currency_short($thong_ke['tong_giam_gia']) ?></div>
         </div>
     </div>
-

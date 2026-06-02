@@ -65,7 +65,7 @@
             <span class="iconify text-4xl text-[#6B0D18]" data-icon="mdi:currency-usd"></span>
         </div>
         <div class="text-sm text-gray-500 font-medium mb-1">Giá trị tồn kho</div>
-        <div class="text-2xl font-bold text-[#6B0D18]"><?= number_format($stats['inventory_value'] / 1000000, 0, ',', '.') ?> Tr</div>
+        <div class="text-2xl font-bold text-[#6B0D18]"><?= format_currency_short($stats['inventory_value'] ?? 0) ?></div>
         <div class="text-xs text-gray-400 mt-1">Ước tính theo giá vốn</div>
     </div>
 </div>

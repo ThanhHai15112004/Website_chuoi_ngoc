@@ -31,7 +31,7 @@
         <div class="flex justify-between items-start relative z-10">
             <div>
                 <p class="text-sm font-medium text-gray-500">Doanh thu sản phẩm</p>
-                <h3 class="text-3xl font-bold text-[#6B0D18] mt-2"><?= number_format($overview['doanh_thu_san_pham']['gia_tri'], 0, ',', '.') ?>đ</h3>
+                <h3 class="text-3xl font-bold text-[#6B0D18] mt-2"><?= format_currency_short($overview['doanh_thu_san_pham']['gia_tri']) ?></h3>
             </div>
             <div class="w-10 h-10 rounded-lg bg-red-50 text-[#6B0D18] flex items-center justify-center shrink-0">
                 <span class="iconify text-2xl" data-icon="mdi:cash-multiple"></span>

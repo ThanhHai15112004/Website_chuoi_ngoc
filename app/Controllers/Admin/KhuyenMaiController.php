@@ -3,6 +3,8 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Models\Admin\KhuyenMaiModel;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class KhuyenMaiController extends Controller {
     private $khuyenMaiModel;
@@ -180,6 +182,36 @@ class KhuyenMaiController extends Controller {
 
                 $_SESSION['flash_message'] = "Thêm chương trình khuyến mãi thành công!";
                 $_SESSION['flash_type'] = "success";
+
+                // Gửi email + thông báo khuyến mãi mới cho tất cả khách hàng (nếu không phải nháp)
+                if (!isset($_POST['draft'])) {
+                    try {
+                        $userModel = new \App\Models\Admin\KhachHangModel();
+                        $users = $userModel->layTatCa();
+                        $userIds = array_column($users, 'id');
+
+                        $promoData = [
+                            'ten_chuong_trinh' => $data['ten_chuong_trinh'],
+                            'gia_tri_giam' => $data['gia_tri_giam'],
+                            'kieu_giam' => $data['kieu_giam'],
+                            'ngay_bat_dau' => date('d/m/Y', strtotime($data['ngay_bat_dau'])),
+                            'ngay_ket_thuc' => date('d/m/Y', strtotime($data['ngay_ket_thuc'])),
+                        ];
+
+                        // Gửi thông báo in-app
+                        $notif = new NotificationService();
+                        $notif->promotionCreated($userIds, $promoData);
+
+                        // Gửi email cho từng khách hàng
+                        foreach ($users as $u) {
+                            if (!empty($u['email']) && strpos($u['email'], '@noemail.com') === false) {
+                                MailService::sendPromotionAlert($u['email'], $u['ho_ten'], $promoData);
+                            }
+                        }
+                    } catch (\Exception $ex) {
+                        error_log('[KhuyenMai] Lỗi gửi mail KM: ' . $ex->getMessage());
+                    }
+                }
                 
                 header("Location: " . APP_URL . "/admin/khuyen-mai");
                 exit;

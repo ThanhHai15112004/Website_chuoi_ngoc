@@ -66,7 +66,7 @@
         <div class="flex items-start justify-between relative">
             <div>
                 <p class="text-xs font-semibold text-red-700 uppercase tracking-wider mb-1">Tổng giá trị nhập</p>
-                <h3 class="text-2xl font-bold text-[#6B0D18]"><?= number_format($stats['tong_gia_tri'] / 1000000, 0, ',', '.') ?>Tr</h3>
+                <h3 class="text-2xl font-bold text-[#6B0D18]"><?= format_currency_short($stats['tong_gia_tri'] ?? 0) ?></h3>
             </div>
             <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#6B0D18]">
                 <span class="iconify text-xl" data-icon="mdi:cash-multiple"></span>

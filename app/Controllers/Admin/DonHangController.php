@@ -2,6 +2,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class DonHangController extends Controller
 {
@@ -81,6 +83,22 @@ class DonHangController extends Controller
 
             $success = $this->donHangModel->capNhatTrangThai($id, $trangThai, $lyDo);
             if ($success) {
+                // Gửi email + thông báo tự động
+                try {
+                    $don_hang = $this->donHangModel->layChiTiet($id);
+                    if ($don_hang) {
+                        $notif = new NotificationService();
+                        $notif->orderStatusChanged($don_hang, (int)$trangThai, $lyDo);
+
+                        if ((int)$trangThai === 4) {
+                            MailService::sendOrderCancelled($don_hang, $lyDo);
+                        } else {
+                            MailService::sendOrderStatusUpdate($don_hang, (int)$trangThai);
+                        }
+                    }
+                } catch (\Exception $ex) {
+                    error_log('[DonHang] Lỗi gửi mail/thông báo: ' . $ex->getMessage());
+                }
                 echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thành công']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Có lỗi xảy ra khi cập nhật']);
@@ -104,6 +122,19 @@ class DonHangController extends Controller
 
             $success = $this->donHangModel->capNhatThanhToan($id, $trangThai);
             if ($success) {
+                // Gửi email + thông báo khi xác nhận thanh toán
+                if ((int)$trangThai === 1) {
+                    try {
+                        $don_hang = $this->donHangModel->layChiTiet($id);
+                        if ($don_hang) {
+                            $notif = new NotificationService();
+                            $notif->paymentConfirmed($don_hang);
+                            MailService::sendPaymentConfirmed($don_hang);
+                        }
+                    } catch (\Exception $ex) {
+                        error_log('[DonHang] Lỗi gửi mail thanh toán: ' . $ex->getMessage());
+                    }
+                }
                 echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái thanh toán thành công']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Lỗi khi cập nhật thanh toán']);
@@ -147,6 +178,18 @@ class DonHangController extends Controller
         try {
             $result = $donHangModel->taoDonHang($input);
             if ($result['success']) {
+                // Gửi email + thông báo đơn hàng mới
+                try {
+                    $don_hang = $donHangModel->layChiTiet($result['id_don_hang']);
+                    if ($don_hang) {
+                        $items = $donHangModel->laySanPhamDonHang($result['id_don_hang']);
+                        $notif = new NotificationService();
+                        $notif->orderCreated($don_hang);
+                        MailService::sendOrderConfirmation($don_hang, $items);
+                    }
+                } catch (\Exception $ex) {
+                    error_log('[DonHang] Lỗi gửi mail đơn mới: ' . $ex->getMessage());
+                }
                 echo json_encode(['success' => true, 'message' => 'Tạo đơn hàng thành công!', 'id_don_hang' => $result['id_don_hang']]);
             } else {
                 echo json_encode(['success' => false, 'message' => $result['message']]);

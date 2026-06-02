@@ -3,6 +3,8 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Services\Admin\NhapKhoService;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class NhapKhoController extends Controller {
     private $nhapKhoService;
@@ -123,6 +125,32 @@ class NhapKhoController extends Controller {
     public function duyet($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->nhapKhoService->duyetPhieu($id);
+
+            // Gửi thông báo phiếu nhập hoàn thành
+            if (!empty($result['success']) && $result['success']) {
+                try {
+                    $data = $this->nhapKhoService->chiTiet($id);
+                    if ($data) {
+                        $notif = new NotificationService();
+                        $maPhieu = $data['phieu']['ma_phieu'] ?? '';
+                        $ncc = $data['phieu']['ten_ncc'] ?? 'N/A';
+                        $tongTien = number_format($data['phieu']['tong_tien'] ?? 0, 0, ',', '.') . 'đ';
+                        $notif->importCompleted($maPhieu, $ncc, $tongTien);
+
+                        $adminEmail = $_ENV['EMAIL_FROM'] ?? '';
+                        if (!empty($adminEmail)) {
+                            MailService::sendImportCompleted($adminEmail, [
+                                'ma_phieu' => $maPhieu,
+                                'ten_ncc' => $ncc,
+                                'tong_tien' => $data['phieu']['tong_tien'] ?? 0
+                            ]);
+                        }
+                    }
+                } catch (\Exception $ex) {
+                    error_log('[NhapKho] Lỗi gửi thông báo: ' . $ex->getMessage());
+                }
+            }
+
             header('Content-Type: application/json');
             echo json_encode($result);
             exit;

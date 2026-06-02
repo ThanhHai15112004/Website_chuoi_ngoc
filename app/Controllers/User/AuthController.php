@@ -5,6 +5,8 @@ namespace App\Controllers\User;
 use App\Core\Controller;
 use App\Core\MailHelper;
 use App\Models\Admin\KhachHangModel;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class AuthController extends Controller {
 
@@ -171,6 +173,15 @@ class AuthController extends Controller {
         $user = $model->findByEmail($pending['email']);
         if ($user) {
             $this->setUserSession($user);
+
+            // Gửi email chào mừng + thông báo
+            try {
+                MailService::sendWelcome($user);
+                $notif = new NotificationService();
+                $notif->newUserRegistered($user);
+            } catch (\Exception $ex) {
+                error_log('[Auth] Lỗi gửi welcome email: ' . $ex->getMessage());
+            }
         }
 
         echo json_encode(['success' => true, 'redirect' => APP_URL . '/tai-khoan']);

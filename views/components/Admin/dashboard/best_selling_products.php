@@ -13,7 +13,7 @@
                 <p class="text-xs text-gray-500">Đã bán: <?= $sp['da_ban'] ?> | Tồn: <?= $sp['ton_kho'] ?></p>
             </div>
             <div class="text-right">
-                <p class="text-sm font-bold text-red-900"><?= number_format($sp['doanh_thu']/1000000, 1, ',', '.') ?>M</p>
+                <p class="text-sm font-bold text-red-900"><?= format_currency_short($sp['doanh_thu']) ?></p>
             </div>
         </div>
         <?php endforeach; ?>

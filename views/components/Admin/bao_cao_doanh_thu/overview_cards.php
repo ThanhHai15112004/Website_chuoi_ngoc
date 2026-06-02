@@ -8,7 +8,7 @@
                     Tổng doanh thu
                     <span class="iconify text-gray-400 cursor-help" data-icon="mdi:information" title="Tổng giá trị đơn hàng thành công trong khoảng thời gian đã chọn."></span>
                 </p>
-                <h3 class="text-3xl font-bold text-[#6B0D18] mt-2"><?= number_format($overview['tong_doanh_thu']['gia_tri'], 0, ',', '.') ?>đ</h3>
+                <h3 class="text-3xl font-bold text-[#6B0D18] mt-2"><?= format_currency_short($overview['tong_doanh_thu']['gia_tri']) ?></h3>
             </div>
             <div class="w-10 h-10 rounded-lg bg-red-50 text-[#6B0D18] flex items-center justify-center shrink-0">
                 <span class="iconify text-2xl" data-icon="mdi:cash-multiple"></span>
@@ -62,7 +62,7 @@
         <div class="flex justify-between items-start">
             <div>
                 <p class="text-sm font-medium text-gray-500">Đơn trung bình</p>
-                <h3 class="text-xl font-bold text-gray-800 mt-2"><?= number_format($overview['gia_tri_trung_binh']['gia_tri'], 0, ',', '.') ?>đ</h3>
+                <h3 class="text-xl font-bold text-gray-800 mt-2"><?= format_currency_short($overview['gia_tri_trung_binh']['gia_tri']) ?></h3>
             </div>
         </div>
         <div class="mt-4 flex items-center text-sm">
@@ -107,7 +107,7 @@
                         Tổng giảm giá
                         <span class="iconify text-gray-400 cursor-help" data-icon="mdi:information" title="Tổng giá trị giảm từ voucher và khuyến mãi."></span>
                     </p>
-                    <p class="text-lg font-bold text-orange-600"><?= number_format($overview['tong_giam_gia']['gia_tri'], 0, ',', '.') ?>đ</p>
+                    <p class="text-lg font-bold text-orange-600"><?= format_currency_short($overview['tong_giam_gia']['gia_tri']) ?></p>
                 </div>
             </div>
         </div>

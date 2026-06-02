@@ -221,6 +221,51 @@ class KhachHangModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Lấy tất cả khách hàng (không phải admin/staff)
+     */
+    public function layTatCa()
+    {
+        $sql = "SELECT id, ho_ten, email, so_dien_thoai, id_hang_thanh_vien 
+                FROM nguoi_dung 
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE . "
+                ORDER BY ngay_tao DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Lấy khách hàng theo hạng thành viên
+     */
+    public function layTheoHang(array $hangIds)
+    {
+        if (empty($hangIds)) return [];
+        $placeholders = implode(',', array_fill(0, count($hangIds), '?'));
+        $sql = "SELECT id, ho_ten, email, so_dien_thoai 
+                FROM nguoi_dung 
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL 
+                  AND trang_thai = " . SystemConstants::STATUS_ACTIVE . "
+                  AND id_hang_thanh_vien IN ($placeholders)
+                ORDER BY ngay_tao DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($hangIds);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Đếm tổng số khách hàng active
+     */
+    public function demTongKhachHang()
+    {
+        $sql = "SELECT COUNT(*) as total FROM nguoi_dung 
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($row['total'] ?? 0);
+    }
+
     public function findByMa($ma)
     {
         $sql = "SELECT nd.*, htv.ten_hang, mpt.ten_menh 
