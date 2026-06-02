@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\TonKhoModel;
+use App\Models\Admin\TonKhoModel;
 
 class TonKhoService
 {

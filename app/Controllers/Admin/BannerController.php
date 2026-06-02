@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Models\BannerModel;
+use App\Models\Admin\BannerModel;
 use Exception;
 
 class BannerController extends Controller

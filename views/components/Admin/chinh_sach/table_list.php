@@ -1,6 +1,6 @@
 <?php
 // views/components/Admin/chinh_sach/table_list.php
-use App\Models\ChinhSachModel;
+use App\Models\Admin\ChinhSachModel;
 ?>
 <div class="overflow-x-auto">
     <table class="w-full text-left border-collapse min-w-[1000px]">

@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Models\ChinhSachModel;
+use App\Models\Admin\ChinhSachModel;
 use Exception;
 
 class ChinhSachController extends Controller

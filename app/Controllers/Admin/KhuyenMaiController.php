@@ -2,7 +2,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Models\KhuyenMaiModel;
+use App\Models\Admin\KhuyenMaiModel;
 
 class KhuyenMaiController extends Controller {
     private $khuyenMaiModel;

@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\PhieuKhoModel;
+use App\Models\Admin\PhieuKhoModel;
 
 class XuatKhoService
 {

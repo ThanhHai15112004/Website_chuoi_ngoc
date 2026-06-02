@@ -9,7 +9,7 @@ class VoucherController extends Controller {
 
     public function __construct()
     {
-        $this->voucherModel = new \App\Models\VoucherModel();
+        $this->voucherModel = new \App\Models\Admin\VoucherModel();
     }
 
     public function index()
@@ -124,8 +124,8 @@ class VoucherController extends Controller {
             'current_page' => 'voucher',
             'is_edit' => false,
             'voucher' => null,
-            'hang_thanh_vien_list' => (new \App\Models\HangThanhVienModel())->layTatCa(),
-            'danh_muc_list' => (new \App\Models\DanhMucModel())->layTatCa(),
+            'hang_thanh_vien_list' => (new \App\Models\Admin\HangThanhVienModel())->layTatCa(),
+            'danh_muc_list' => (new \App\Models\Admin\DanhMucModel())->layTatCa(),
             'voucher_danh_muc' => [],
             'voucher_san_pham' => []
         ];
@@ -152,8 +152,8 @@ class VoucherController extends Controller {
             'current_page' => 'voucher',
             'is_edit' => true,
             'voucher' => $voucher,
-            'hang_thanh_vien_list' => (new \App\Models\HangThanhVienModel())->layTatCa(),
-            'danh_muc_list' => (new \App\Models\DanhMucModel())->layTatCa(),
+            'hang_thanh_vien_list' => (new \App\Models\Admin\HangThanhVienModel())->layTatCa(),
+            'danh_muc_list' => (new \App\Models\Admin\DanhMucModel())->layTatCa(),
             'voucher_danh_muc' => $this->voucherModel->getVoucherCategories($id),
             'voucher_san_pham' => $san_pham_list
         ];

@@ -1,6 +1,6 @@
 <?php
 // views/components/Admin/nhan_su/table_list.php
-use App\Models\NhanSuModel;
+use App\Models\Admin\NhanSuModel;
 $staffs = $staffs ?? [];
 ?>
 <div class="overflow-x-auto">

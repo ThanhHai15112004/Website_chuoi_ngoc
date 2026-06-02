@@ -5,7 +5,7 @@ $viTriArr = $p['vi_tri_hien_thi'] ?? [];
 $isVisible = (!$p || $p['trang_thai'] === 'dang_hien_thi');
 $currentStatus = $p['trang_thai'] ?? 'ban_nhap';
 
-use App\Models\ChinhSachModel;
+use App\Models\Admin\ChinhSachModel;
 $trangThaiText = $p ? ChinhSachModel::tenTrangThai($currentStatus) : 'Bản nháp';
 
 // SEO status

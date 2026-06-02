@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\HangThanhVienModel;
+use App\Models\Admin\HangThanhVienModel;
 use App\Core\Database;
 use PDO;
 use App\Constants\SystemConstants;

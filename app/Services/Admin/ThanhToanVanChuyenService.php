@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\PhuongThucThanhToanModel;
-use App\Models\TaiKhoanNganHangModel;
-use App\Models\PhuongThucVanChuyenModel;
-use App\Models\KhuVucGiaoHangModel;
-use App\Models\QuyTacFreeshipModel;
+use App\Models\Admin\PhuongThucThanhToanModel;
+use App\Models\Admin\TaiKhoanNganHangModel;
+use App\Models\Admin\PhuongThucVanChuyenModel;
+use App\Models\Admin\KhuVucGiaoHangModel;
+use App\Models\Admin\QuyTacFreeshipModel;
 use Exception;
 
 class ThanhToanVanChuyenService

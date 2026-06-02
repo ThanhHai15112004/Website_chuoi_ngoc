@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\CauHinhModel;
+use App\Models\Admin\CauHinhModel;
 use Exception;
 
 class CuaHangService

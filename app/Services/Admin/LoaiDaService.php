@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\LoaiDaModel;
+use App\Models\Admin\LoaiDaModel;
 use Exception;
 
 class LoaiDaService

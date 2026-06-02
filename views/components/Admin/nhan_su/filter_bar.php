@@ -1,6 +1,6 @@
 <?php
 // views/components/Admin/nhan_su/filter_bar.php
-use App\Models\NhanSuModel;
+use App\Models\Admin\NhanSuModel;
 
 $currentTab   = $tab ?? 'all';
 $currentSearch = $search ?? '';

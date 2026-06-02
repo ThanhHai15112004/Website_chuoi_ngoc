@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\NhaCungCapModel;
+use App\Models\Admin\NhaCungCapModel;
 use App\Core\Helpers;
 
 class NhaCungCapService

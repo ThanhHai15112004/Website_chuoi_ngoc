@@ -1,6 +1,6 @@
 <?php
 // views/pages/admin_chinh_sach.php
-use App\Models\ChinhSachModel;
+use App\Models\Admin\ChinhSachModel;
 ?>
 <div class="px-4 md:px-6 py-6 max-w-[1400px] mx-auto min-h-screen bg-gray-50/50">
     

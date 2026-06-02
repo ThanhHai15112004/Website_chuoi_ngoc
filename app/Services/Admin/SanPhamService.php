@@ -2,10 +2,10 @@
 
 namespace App\Services\Admin;
 
-use App\Models\SanPhamModel;
-use App\Models\DanhMucModel;
-use App\Models\LoaiDaModel;
-use App\Models\MenhPhongThuyModel;
+use App\Models\Admin\SanPhamModel;
+use App\Models\Admin\DanhMucModel;
+use App\Models\Admin\LoaiDaModel;
+use App\Models\Admin\MenhPhongThuyModel;
 
 class SanPhamService
 {

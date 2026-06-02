@@ -3,7 +3,7 @@
 namespace App\Controllers\User;
 
 use App\Core\Controller;
-use App\Models\KhachHangModel;
+use App\Models\Admin\KhachHangModel;
 
 class AccountController extends Controller
 {

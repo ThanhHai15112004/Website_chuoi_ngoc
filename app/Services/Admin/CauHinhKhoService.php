@@ -1,11 +1,11 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\KhoHangModel;
-use App\Models\KhuVucKhoModel;
-use App\Models\CauHinhKhoConfigModel;
-use App\Models\PhanQuyenKhoModel;
-use App\Models\LichKiemKeModel;
+use App\Models\Admin\KhoHangModel;
+use App\Models\Admin\KhuVucKhoModel;
+use App\Models\Admin\CauHinhKhoConfigModel;
+use App\Models\Admin\PhanQuyenKhoModel;
+use App\Models\Admin\LichKiemKeModel;
 
 class CauHinhKhoService
 {
@@ -177,7 +177,7 @@ class CauHinhKhoService
 
     public function laySanPhamTaiViTri($idViTri)
     {
-        $spvtModel = new \App\Models\SanPhamViTriModel();
+        $spvtModel = new \App\Models\Admin\SanPhamViTriModel();
         return $spvtModel->layDanhSachSanPhamTaiViTri($idViTri);
     }
 

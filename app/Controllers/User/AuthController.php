@@ -4,7 +4,7 @@ namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Core\MailHelper;
-use App\Models\KhachHangModel;
+use App\Models\Admin\KhachHangModel;
 
 class AuthController extends Controller {
 

@@ -2,8 +2,8 @@
 
 namespace App\Services\Admin;
 
-use App\Models\ThuyenChuyenModel;
-use App\Models\KhoHangModel;
+use App\Models\Admin\ThuyenChuyenModel;
+use App\Models\Admin\KhoHangModel;
 
 class ThuyenChuyenService
 {

@@ -1,7 +1,7 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\DanhGiaModel;
+use App\Models\Admin\DanhGiaModel;
 
 class BinhLuanService
 {

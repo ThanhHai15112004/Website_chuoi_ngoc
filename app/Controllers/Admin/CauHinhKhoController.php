@@ -164,7 +164,7 @@ class CauHinhKhoController extends Controller
      */
     public function apiDanhSachViTriHople()
     {
-        $khuVucModel = new \App\Models\KhuVucKhoModel();
+        $khuVucModel = new \App\Models\Admin\KhuVucKhoModel();
         $db = \App\Core\Database::getInstance()->getConnection();
         $sql = "SELECT kv.id, kv.ten_vi_tri, kv.ma_vi_tri, kv.cap_do, k.ten_kho 
                 FROM khu_vuc_kho kv

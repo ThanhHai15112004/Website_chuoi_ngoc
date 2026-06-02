@@ -1,7 +1,7 @@
 <?php
 // views/components/Admin/chinh_sach/stats_cards.php
 // Sử dụng $stats từ Controller thay vì tính từ mock data
-use App\Models\ChinhSachModel;
+use App\Models\Admin\ChinhSachModel;
 ?>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
     <!-- Tổng -->

@@ -1,9 +1,9 @@
 <?php
 namespace App\Services\Admin;
 
-use App\Models\MenhPhongThuyModel;
-use App\Models\LoaiDaModel;
-use App\Models\SanPhamModel;
+use App\Models\Admin\MenhPhongThuyModel;
+use App\Models\Admin\LoaiDaModel;
+use App\Models\Admin\SanPhamModel;
 
 class MenhPhongThuyService
 {

@@ -3,7 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Models\NhanSuModel;
+use App\Models\Admin\NhanSuModel;
 use Exception;
 
 class NhanSuController extends Controller

@@ -2,8 +2,8 @@
 
 namespace App\Services\Admin;
 
-use App\Models\PhieuKiemKeModel;
-use App\Models\KhoHangModel;
+use App\Models\Admin\PhieuKiemKeModel;
+use App\Models\Admin\KhoHangModel;
 
 class KiemKeService
 {

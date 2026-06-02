@@ -4,8 +4,8 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Services\Admin\TonKhoService;
-use App\Models\DanhMucModel;
-use App\Models\LoaiDaModel;
+use App\Models\Admin\DanhMucModel;
+use App\Models\Admin\LoaiDaModel;
 
 class TonKhoController extends Controller
 {
@@ -112,7 +112,7 @@ class TonKhoController extends Controller
 
     public function apiViTriCuaBienThe($idBienThe)
     {
-        $spvtModel = new \App\Models\SanPhamViTriModel();
+        $spvtModel = new \App\Models\Admin\SanPhamViTriModel();
         $locations = $spvtModel->layViTriCuaBienThe($idBienThe);
         header('Content-Type: application/json');
         echo json_encode(['success' => true, 'data' => $locations]);

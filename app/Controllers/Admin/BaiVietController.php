@@ -2,8 +2,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Models\BaiVietModel;
-use App\Models\SanPhamModel;
+use App\Models\Admin\BaiVietModel;
+use App\Models\Admin\SanPhamModel;
 use App\Helpers\StringHelper;
 use App\Core\Database;
 use Exception;

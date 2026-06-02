@@ -15,6 +15,19 @@ $tab = $active_tab ?? 'profile';
     </div>
 
     <!-- Main Card -->
+    <?php if (isset($success)): ?>
+        <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2">
+            <span class="iconify text-xl" data-icon="mdi:check-circle"></span>
+            <?= htmlspecialchars($success) ?>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($error)): ?>
+        <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg flex items-center gap-2">
+            <span class="iconify text-xl" data-icon="mdi:alert-circle"></span>
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <!-- Tabs -->
         <div class="flex items-center border-b border-gray-200 px-6 bg-gray-50/50">
@@ -32,7 +45,7 @@ $tab = $active_tab ?? 'profile';
         <div class="p-6">
             <?php if ($tab === 'profile'): ?>
                 <!-- PROFILE TAB -->
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="<?= APP_URL ?>/admin/tai-khoan/cap-nhat" method="POST" enctype="multipart/form-data">
                     <div class="space-y-8">
                         <!-- Avatar Section -->
                         <div>
@@ -46,11 +59,11 @@ $tab = $active_tab ?? 'profile';
                                                 <span class="iconify" data-icon="mdi:upload-outline"></span>
                                                 Tải ảnh lên
                                             </span>
-                                            <input type="file" class="hidden" accept="image/*">
+                                            <input type="file" name="avatar" class="hidden" accept="image/*">
                                         </label>
-                                        <button type="button" class="px-4 py-2 bg-white border border-gray-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors shadow-sm">
+                                        <a href="<?= APP_URL ?>/admin/tai-khoan/xoa-anh" onclick="return confirm('Bạn có chắc muốn xóa ảnh đại diện?')" class="px-4 py-2 bg-white border border-gray-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors shadow-sm inline-block">
                                             Xóa ảnh
-                                        </button>
+                                        </a>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-2">Định dạng JPEG, PNG, GIF. Kích thước tối đa 2MB.</p>
                                 </div>
@@ -65,15 +78,15 @@ $tab = $active_tab ?? 'profile';
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên <span class="text-red-500">*</span></label>
-                                    <input type="text" value="<?= $user['ho_ten'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
+                                    <input type="text" name="ho_ten" value="<?= $user['ho_ten'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
-                                    <input type="email" value="<?= $user['email'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
+                                    <input type="email" name="email" value="<?= $user['email'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
-                                    <input type="tel" value="<?= $user['sdt'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors">
+                                    <input type="tel" name="sdt" value="<?= $user['sdt'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Vai trò hệ thống</label>
@@ -82,15 +95,15 @@ $tab = $active_tab ?? 'profile';
                                 </div>
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ</label>
-                                    <input type="text" value="<?= $user['dia_chi'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors">
+                                    <input type="text" name="dia_chi" value="<?= $user['dia_chi'] ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Actions -->
                         <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
-                            <button type="button" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">Hủy thay đổi</button>
-                            <button type="button" class="px-5 py-2.5 bg-[#8B0000] text-white font-medium rounded-lg hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
+                            <button type="reset" class="px-5 py-2.5 bg-white border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors">Hủy thay đổi</button>
+                            <button type="submit" class="px-5 py-2.5 bg-[#8B0000] text-white font-medium rounded-lg hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
                                 <span class="iconify" data-icon="mdi:content-save"></span>
                                 Lưu thông tin
                             </button>
@@ -100,7 +113,7 @@ $tab = $active_tab ?? 'profile';
 
             <?php elseif ($tab === 'security'): ?>
                 <!-- SECURITY TAB -->
-                <form action="#" method="POST">
+                <form action="<?= APP_URL ?>/admin/tai-khoan/doi-mat-khau" method="POST">
                     <div class="space-y-8 max-w-2xl">
                         <div>
                             <h3 class="text-sm font-bold text-gray-900 mb-1 uppercase tracking-wide">Đổi mật khẩu</h3>
@@ -110,8 +123,8 @@ $tab = $active_tab ?? 'profile';
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
-                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <input type="password" name="current_password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
+                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password">
                                             <span class="iconify text-xl" data-icon="mdi:eye-outline"></span>
                                         </button>
                                     </div>
@@ -120,8 +133,8 @@ $tab = $active_tab ?? 'profile';
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
-                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <input type="password" name="new_password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required minlength="8">
+                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password">
                                             <span class="iconify text-xl" data-icon="mdi:eye-outline"></span>
                                         </button>
                                     </div>
@@ -131,8 +144,8 @@ $tab = $active_tab ?? 'profile';
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu mới <span class="text-red-500">*</span></label>
                                     <div class="relative">
-                                        <input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required>
-                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                        <input type="password" name="confirm_password" placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors" required minlength="8">
+                                        <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 toggle-password">
                                             <span class="iconify text-xl" data-icon="mdi:eye-outline"></span>
                                         </button>
                                     </div>
@@ -142,7 +155,7 @@ $tab = $active_tab ?? 'profile';
 
                         <!-- Actions -->
                         <div class="flex justify-start gap-3 pt-6 border-t border-gray-100">
-                            <button type="button" class="px-5 py-2.5 bg-[#8B0000] text-white font-medium rounded-lg hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
+                            <button type="submit" class="px-5 py-2.5 bg-[#8B0000] text-white font-medium rounded-lg hover:bg-red-900 transition-colors flex items-center gap-2 shadow-sm">
                                 <span class="iconify" data-icon="mdi:shield-check"></span>
                                 Cập nhật mật khẩu
                             </button>
@@ -153,3 +166,42 @@ $tab = $active_tab ?? 'profile';
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle Password Visibility
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('.iconify');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.setAttribute('data-icon', 'mdi:eye-off-outline');
+                } else {
+                    input.type = 'password';
+                    icon.setAttribute('data-icon', 'mdi:eye-outline');
+                }
+            });
+        });
+
+        // Preview Avatar
+        const avatarInput = document.querySelector('input[name="avatar"]');
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    // Hiển thị preview ngay lập tức
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.querySelector('img[alt="Avatar"]');
+                        if (img) img.src = e.target.result;
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    
+                    // Tự động submit form để lưu ảnh
+                    this.closest('form').submit();
+                }
+            });
+        }
+    });
+</script>
+

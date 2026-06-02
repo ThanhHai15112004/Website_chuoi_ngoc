@@ -6,7 +6,7 @@ use App\Core\Controller;
 
 class ThongBaoController extends Controller {
     public function index() {
-        $model = new \App\Models\ThongBaoModel();
+        $model = new \App\Models\Admin\ThongBaoModel();
         $rawNotifications = $model->getAdminNotifications();
 
         $notifications = [];
@@ -78,7 +78,7 @@ class ThongBaoController extends Controller {
             return;
         }
 
-        $model = new \App\Models\ThongBaoModel();
+        $model = new \App\Models\Admin\ThongBaoModel();
         $targetType = $input['target_type'] ?? 'all';
 
         try {
@@ -93,7 +93,7 @@ class ThongBaoController extends Controller {
                 ]);
             } else {
                 // Fetch users based on target type
-                $userModel = new \App\Models\KhachHangModel();
+                $userModel = new \App\Models\Admin\KhachHangModel();
                 $userIds = [];
 
                 if ($targetType === 'all') {
@@ -136,7 +136,7 @@ class ThongBaoController extends Controller {
             return;
         }
 
-        $model = new \App\Models\ThongBaoModel();
+        $model = new \App\Models\Admin\ThongBaoModel();
         foreach ($ids as $id) {
             if ($status == 1) {
                 $model->markAsRead($id);
@@ -150,7 +150,7 @@ class ThongBaoController extends Controller {
 
     public function markAllAsRead() {
         header('Content-Type: application/json');
-        $model = new \App\Models\ThongBaoModel();
+        $model = new \App\Models\Admin\ThongBaoModel();
         $model->markAllAsRead(true); // true = admin inbox
         echo json_encode(['success' => true]);
     }
@@ -165,7 +165,7 @@ class ThongBaoController extends Controller {
             return;
         }
 
-        $model = new \App\Models\ThongBaoModel();
+        $model = new \App\Models\Admin\ThongBaoModel();
         foreach ($ids as $id) {
             $model->xoa($id);
         }

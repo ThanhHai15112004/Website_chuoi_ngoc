@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\KhachHangModel;
+use App\Models\Admin\KhachHangModel;
 use Exception;
 
 class KhachHangService

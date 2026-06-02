@@ -31,7 +31,7 @@ class NhapKhoController extends Controller {
 
     public function taoMoi() {
         $nhaCungCapList = $this->nhapKhoService->layDanhSachNhaCungCap();
-        $khoModel = new \App\Models\KhoHangModel();
+        $khoModel = new \App\Models\Admin\KhoHangModel();
         $danhSachKho = $khoModel->layDanhSachChoSelect();
         $this->view('admin_nhap_kho_them', [
             'nhaCungCapList' => $nhaCungCapList,

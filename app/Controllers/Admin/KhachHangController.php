@@ -24,8 +24,8 @@ class KhachHangController extends Controller
             'customers' => $dataResponse['list'],
             'pagination' => $dataResponse['pagination'],
             'thong_ke' => $thong_ke,
-            'hang_thanh_viens' => (new \App\Models\HangThanhVienModel())->layTatCa(),
-            'menh_phong_thuys' => (new \App\Models\MenhPhongThuyModel())->layTatCa()
+            'hang_thanh_viens' => (new \App\Models\Admin\HangThanhVienModel())->layTatCa(),
+            'menh_phong_thuys' => (new \App\Models\Admin\MenhPhongThuyModel())->layTatCa()
         ];
 
         $this->view('admin_khach_hang', $data, 'admin');
@@ -34,7 +34,7 @@ class KhachHangController extends Controller
 
     public function taoMoi()
     {
-        $rankModel = new \App\Models\HangThanhVienModel();
+        $rankModel = new \App\Models\Admin\HangThanhVienModel();
         $ranks = $rankModel->layTatCa();
 
         $data = [
@@ -52,7 +52,7 @@ class KhachHangController extends Controller
         $history = $service->layLichSuHang();
         $khach_sap_len_hang = $service->layNguoiDungGanLenHang();
 
-        $voucherModel = new \App\Models\VoucherModel();
+        $voucherModel = new \App\Models\Admin\VoucherModel();
         $vouchers = $voucherModel->getActiveVouchers();
 
         $data = [
@@ -62,7 +62,7 @@ class KhachHangController extends Controller
             'history' => $history,
             'khach_sap_len_hang' => $khach_sap_len_hang,
             'vouchers' => $vouchers,
-            'config' => (new \App\Models\CauHinhModel())->getAll()
+            'config' => (new \App\Models\Admin\CauHinhModel())->getAll()
         ];
         $this->view('admin_hang_thanh_vien', $data, 'admin');
     }
@@ -70,7 +70,7 @@ class KhachHangController extends Controller
     public function apiDetailRank($id)
     {
         header('Content-Type: application/json');
-        $model = new \App\Models\HangThanhVienModel();
+        $model = new \App\Models\Admin\HangThanhVienModel();
         $rank = $model->timTheoId($id);
         
         if ($rank) {
@@ -94,7 +94,7 @@ class KhachHangController extends Controller
 
     public function chiTiet($ma_nd)
     {
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         $kh_db = $model->findByMa($ma_nd);
 
         if (!$kh_db) {
@@ -109,7 +109,7 @@ class KhachHangController extends Controller
         $raw_yeuthich = $model->layYeuThich($kh_db['id']);
         $raw_danhgia  = $model->layDanhGia($kh_db['id']);
 
-        $rankModel = new \App\Models\HangThanhVienModel();
+        $rankModel = new \App\Models\Admin\HangThanhVienModel();
         $ranks = $rankModel->layTatCa();
         $tongChiTieu = (int)($kh_db['tong_chi_tieu'] ?? 0);
         $dieuKienHangHienTai = 0;
@@ -225,7 +225,7 @@ class KhachHangController extends Controller
             'tieu_de' => 'Chi tiết khách hàng - ' . $kh_db['ho_ten'],
             'kh' => $khach_hang,
             'khach_hang' => $khach_hang,
-            'hang_thanh_viens' => (new \App\Models\HangThanhVienModel())->layTatCa()
+            'hang_thanh_viens' => (new \App\Models\Admin\HangThanhVienModel())->layTatCa()
         ];
         
         $this->view('admin_khach_hang_chi_tiet', $data, 'admin');
@@ -233,7 +233,7 @@ class KhachHangController extends Controller
 
     public function trangCapNhat($id)
     {
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         $kh = $model->timTheoId($id);
         
         if (!$kh) {
@@ -241,7 +241,7 @@ class KhachHangController extends Controller
             exit;
         }
 
-        $rankModel = new \App\Models\HangThanhVienModel();
+        $rankModel = new \App\Models\Admin\HangThanhVienModel();
         $ranks = $rankModel->layTatCa();
 
         $data = [
@@ -277,7 +277,7 @@ class KhachHangController extends Controller
         $tenMenh = $menhMap[$menhValue] ?? null;
 
         if ($tenMenh) {
-            $menhModel = new \App\Models\MenhPhongThuyModel();
+            $menhModel = new \App\Models\Admin\MenhPhongThuyModel();
             $menhRecord = $menhModel->timTheoTen($tenMenh);
             if ($menhRecord) return $menhRecord['id'];
         }
@@ -305,7 +305,7 @@ class KhachHangController extends Controller
         }
 
         if (empty($id_hang_thanh_vien)) {
-            $rankModel = new \App\Models\HangThanhVienModel();
+            $rankModel = new \App\Models\Admin\HangThanhVienModel();
             $ranks = $rankModel->layTatCa();
             foreach ($ranks as $r) {
                 if ($r['ten_hang'] === \App\Constants\HangThanhVienConstants::HANG_BRONZE) {
@@ -315,7 +315,7 @@ class KhachHangController extends Controller
             }
         }
 
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         
         $id = uniqid('kh_');
         $ma_nd = 'KH' . strtoupper(substr(uniqid(), -4));
@@ -356,7 +356,7 @@ class KhachHangController extends Controller
         try {
             $model->themMoi($data);
             
-            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
             $logModel->log('Thêm mới', 'Khách hàng', $id, "Thêm mới khách hàng: $ho_ten");
 
             echo json_encode(['success' => true, 'message' => 'Tạo khách hàng thành công']);
@@ -385,7 +385,7 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         
         $id_menh = $this->calculateMenh($nam_sinh);
         
@@ -421,7 +421,7 @@ class KhachHangController extends Controller
         try {
             $model->capNhat($id, $data);
             
-            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
             $logModel->log('Cập nhật', 'Khách hàng', $id, "Cập nhật thông tin khách hàng: $ho_ten");
 
             echo json_encode(['success' => true, 'message' => 'Cập nhật thành công']);
@@ -443,8 +443,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\HangThanhVienModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\HangThanhVienModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
 
         try {
             $model->capNhat($id, [
@@ -479,8 +479,8 @@ class KhachHangController extends Controller
             'dac_quyen' => json_encode($input['dac_quyen'], JSON_UNESCAPED_UNICODE)
         ];
 
-        $model = new \App\Models\HangThanhVienModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\HangThanhVienModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
 
         try {
             if ($isEdit) {
@@ -511,8 +511,8 @@ class KhachHangController extends Controller
     public function deleteRank($id)
     {
         header('Content-Type: application/json');
-        $model = new \App\Models\HangThanhVienModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\HangThanhVienModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $model->xoa($id);
@@ -529,8 +529,8 @@ class KhachHangController extends Controller
         $input = json_decode(file_get_contents('php://input'), true);
         $status = $input['status'] ?? 1;
         
-        $model = new \App\Models\HangThanhVienModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\HangThanhVienModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $model->capNhat($id, ['trang_thai' => $status]);
@@ -554,7 +554,7 @@ class KhachHangController extends Controller
             return;
         }
 
-        $thongBaoModel = new \App\Models\ThongBaoModel();
+        $thongBaoModel = new \App\Models\Admin\ThongBaoModel();
         try {
             $thongBaoModel->insertMultiple($ids, [
                 'tieu_de' => $title,
@@ -562,7 +562,7 @@ class KhachHangController extends Controller
                 'loai_thong_bao' => 'he_thong'
             ]);
             
-            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
             $logModel->log('Gửi thông báo', 'Khách hàng', 'Bulk', "Gửi thông báo cho " . count($ids) . " khách hàng");
             
             echo json_encode(['success' => true, 'message' => 'Gửi thông báo thành công']);
@@ -582,8 +582,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\KhachHangModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         try {
             foreach ($ids as $id) {
                 $model->doiTrangThai($id);
@@ -606,8 +606,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\KhachHangModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         try {
             foreach ($ids as $id) {
                 $model->xoa($id);
@@ -632,7 +632,7 @@ class KhachHangController extends Controller
         }
 
         $db = \App\Core\Database::getInstance()->getConnection();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $db->beginTransaction();
@@ -664,8 +664,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\KhachHangModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $newPassword = password_hash('123456', PASSWORD_DEFAULT);
@@ -689,7 +689,7 @@ class KhachHangController extends Controller
             return;
         }
 
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         $db = \App\Core\Database::getInstance()->getConnection();
         
         try {
@@ -714,8 +714,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $cauHinhModel = new \App\Models\CauHinhModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $cauHinhModel = new \App\Models\Admin\CauHinhModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             foreach ($input as $key => $value) {
@@ -740,8 +740,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $model = new \App\Models\Admin\KhachHangModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $model->capNhat($id, ['id_hang_thanh_vien' => $id_hang]);
@@ -765,8 +765,8 @@ class KhachHangController extends Controller
             return;
         }
 
-        $thongBaoModel = new \App\Models\ThongBaoModel();
-        $logModel = new \App\Models\NhatKyHoatDongModel();
+        $thongBaoModel = new \App\Models\Admin\ThongBaoModel();
+        $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
         
         try {
             $thongBaoModel->themMoi([
@@ -792,7 +792,7 @@ class KhachHangController extends Controller
             return;
         }
 
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         $results = $model->timKiemNhanh($keyword);
         
         echo json_encode($results);
@@ -812,7 +812,7 @@ class KhachHangController extends Controller
         }
 
         // Kiem tra SĐT ton tai
-        $model = new \App\Models\KhachHangModel();
+        $model = new \App\Models\Admin\KhachHangModel();
         $existing = $model->timKiemNhanh($so_dien_thoai, 1);
         if (!empty($existing)) {
             echo json_encode(['success' => false, 'message' => 'Số điện thoại này đã tồn tại trong hệ thống.']);
@@ -822,7 +822,7 @@ class KhachHangController extends Controller
         $id = uniqid('kh_');
         $ma_nd = 'KH' . strtoupper(substr(uniqid(), -4));
         
-        $rankModel = new \App\Models\HangThanhVienModel();
+        $rankModel = new \App\Models\Admin\HangThanhVienModel();
         $ranks = $rankModel->layTatCa();
         $id_hang_thanh_vien = null;
         $phan_tram_giam = 0;
@@ -851,7 +851,7 @@ class KhachHangController extends Controller
         try {
             $model->themMoi($data);
             
-            $logModel = new \App\Models\NhatKyHoatDongModel();
+            $logModel = new \App\Models\Admin\NhatKyHoatDongModel();
             $logModel->log('Thêm mới', 'Khách hàng', $id, "Thêm nhanh khách hàng: $ho_ten qua trang POS");
 
             echo json_encode([

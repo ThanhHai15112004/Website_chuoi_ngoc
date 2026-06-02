@@ -9,7 +9,7 @@ class DonHangController extends Controller
 
     public function __construct()
     {
-        $this->donHangModel = new \App\Models\DonHangModel();
+        $this->donHangModel = new \App\Models\Admin\DonHangModel();
     }
 
     public function index()
@@ -115,8 +115,8 @@ class DonHangController extends Controller
 
     public function taoMoi()
     {
-        $paymentModel = new \App\Models\PhuongThucThanhToanModel();
-        $shippingModel = new \App\Models\PhuongThucVanChuyenModel();
+        $paymentModel = new \App\Models\Admin\PhuongThucThanhToanModel();
+        $shippingModel = new \App\Models\Admin\PhuongThucVanChuyenModel();
 
         $data = [
             'tieu_de' => 'Tạo đơn hàng mới (POS)',
@@ -142,7 +142,7 @@ class DonHangController extends Controller
             return;
         }
 
-        $donHangModel = new \App\Models\DonHangModel();
+        $donHangModel = new \App\Models\Admin\DonHangModel();
         
         try {
             $result = $donHangModel->taoDonHang($input);

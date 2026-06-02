@@ -1,6 +1,6 @@
 <?php
 // views/pages/admin_nhan_su_view.php
-use App\Models\NhanSuModel;
+use App\Models\Admin\NhanSuModel;
 
 $staff           = $staff ?? null;
 $quyen           = $quyen ?? [];

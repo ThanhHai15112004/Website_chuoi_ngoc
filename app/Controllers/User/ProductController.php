@@ -223,7 +223,7 @@ class ProductController extends Controller {
 
         if (!$san_pham_db) {
             // Lấy sản phẩm đầu tiên nếu không có ID (fallback để không bị lỗi)
-            $sanPhamModel = new \App\Models\SanPhamModel();
+            $sanPhamModel = new \App\Models\Admin\SanPhamModel();
             $list = $sanPhamModel->layDanhSach([], 1);
             if (!empty($list)) {
                 $san_pham_db = $service->getProductById($list[0]['id']);
@@ -296,7 +296,7 @@ class ProductController extends Controller {
         }
 
         // Mock related products
-        $sanPhamModel = new \App\Models\SanPhamModel();
+        $sanPhamModel = new \App\Models\Admin\SanPhamModel();
         $related = $sanPhamModel->layDanhSach([], 4);
         $san_pham_lien_quan = [];
         foreach ($related as $r) {

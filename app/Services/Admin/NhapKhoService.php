@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\PhieuKhoModel;
+use App\Models\Admin\PhieuKhoModel;
 
 class NhapKhoService
 {
@@ -85,7 +85,7 @@ class NhapKhoService
         ];
 
         $chiTiet = [];
-        $spvtModel = new \App\Models\SanPhamViTriModel();
+        $spvtModel = new \App\Models\Admin\SanPhamViTriModel();
         
         if (!empty($data['chi_tiet']) && is_array($data['chi_tiet'])) {
             foreach ($data['chi_tiet'] as $item) {

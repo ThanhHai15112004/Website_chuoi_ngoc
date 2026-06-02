@@ -241,5 +241,8 @@ $router->post('/admin/nhan-su/api/cap-nhat-quyen', 'Admin\NhanSuController@apiCa
 $router->get('/admin/nhat-ky-hoat-dong', 'Admin\NhatKyHoatDongController@index');
 
 $router->get('/admin/tai-khoan', 'Admin\TaiKhoanController@index');
+$router->post('/admin/tai-khoan/cap-nhat', 'Admin\TaiKhoanController@capNhatThongTin');
+$router->post('/admin/tai-khoan/doi-mat-khau', 'Admin\TaiKhoanController@doiMatKhau');
+$router->get('/admin/tai-khoan/xoa-anh', 'Admin\TaiKhoanController@xoaAnh');
 
 // Catch-all route cho Admin (để tránh lỗi khi truy cập các route chưa code)

@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Models\DanhMucModel;
+use App\Models\Admin\DanhMucModel;
 
 class DanhMucService
 {

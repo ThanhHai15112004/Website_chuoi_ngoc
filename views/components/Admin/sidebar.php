@@ -51,7 +51,7 @@ function isGroupActive($pages, $current) {
                 <div class="mt-1 ml-4 pl-4 border-l border-gray-100 space-y-1">
                     <a href="<?= APP_URL ?>/admin/don-hang" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'don_hang' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'don_hang' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:receipt-text-outline"></span> Đơn hàng</span>
-                        <?php $so_don_cho_xac_nhan = (new \App\Models\DonHangModel())->layThongKe()['cho_xac_nhan'] ?? 0; ?>
+                        <?php $so_don_cho_xac_nhan = (new \App\Models\Admin\DonHangModel())->layThongKe()['cho_xac_nhan'] ?? 0; ?>
                         <?php if($so_don_cho_xac_nhan > 0): ?>
                         <span class="<?= $current_page === 'don_hang' ? 'bg-white/20 text-white' : 'bg-red-100 text-red-800' ?> text-[10px] font-bold px-2 py-0.5 rounded-full"><?= $so_don_cho_xac_nhan ?></span>
                         <?php endif; ?>

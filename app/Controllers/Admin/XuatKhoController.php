@@ -35,7 +35,7 @@ class XuatKhoController extends Controller
 
     public function taoMoi()
     {
-        $khoModel = new \App\Models\KhoHangModel();
+        $khoModel = new \App\Models\Admin\KhoHangModel();
         $danhSachKho = $khoModel->layDanhSachChoSelect();
         $this->view('admin_xuat_kho_them', [
             'title' => 'Tạo Phiếu Xuất Kho Mới',

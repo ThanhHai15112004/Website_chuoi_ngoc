@@ -175,7 +175,7 @@ class SanPhamController extends Controller {
         header('Content-Type: application/json');
         try {
             $keyword = $_GET['q'] ?? '';
-            $sanPhamModel = new \App\Models\SanPhamModel();
+            $sanPhamModel = new \App\Models\Admin\SanPhamModel();
             $products = $sanPhamModel->layDanhSach(['keyword' => $keyword], 20, 0);
             
             $results = array_map(function($p) {
