@@ -72,3 +72,47 @@
 
 <!-- Right Column: Login Form Component -->
 <?php include __DIR__ . '/../components/Admin/auth/login_form.php'; ?>
+
+<!-- Toast Container for Login Errors -->
+<div id="loginToastContainer" class="fixed top-5 right-5 z-[200] space-y-2"></div>
+
+<?php if (!empty($error)): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messages = {
+        'wrong': {msg: 'Tài khoản hoặc mật khẩu không chính xác.', type: 'error', icon: 'mdi:alert-circle'},
+        'locked': {msg: 'Tài khoản đã bị khóa. Liên hệ quản trị viên.', type: 'error', icon: 'mdi:lock-alert'},
+        'inactive': {msg: 'Tài khoản chưa được kích hoạt. Liên hệ quản trị viên.', type: 'warning', icon: 'mdi:account-clock'},
+        'empty': {msg: 'Vui lòng nhập đầy đủ email và mật khẩu.', type: 'warning', icon: 'mdi:form-textbox'},
+    };
+    const err = '<?= htmlspecialchars($error) ?>';
+    const info = messages[err] || {msg: 'Có lỗi xảy ra, vui lòng thử lại.', type: 'error', icon: 'mdi:alert-circle'};
+
+    const colors = {
+        error: 'bg-red-600',
+        warning: 'bg-amber-600',
+    };
+
+    const container = document.getElementById('loginToastContainer');
+    const toast = document.createElement('div');
+    toast.className = `${colors[info.type]} text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 text-sm font-medium max-w-sm`;
+    toast.style.animation = 'slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+    toast.innerHTML = `
+        <span class="iconify text-lg shrink-0" data-icon="${info.icon}"></span>
+        <span>${info.msg}</span>
+        <button onclick="this.parentElement.remove()" class="ml-auto shrink-0 opacity-70 hover:opacity-100 transition-opacity">
+            <span class="iconify" data-icon="mdi:close"></span>
+        </button>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease-in forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+});
+</script>
+<style>
+    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+</style>
+<?php endif; ?>

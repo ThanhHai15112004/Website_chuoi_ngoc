@@ -591,23 +591,246 @@
         }
     }
 
-    // Validate Register Form
+    // Validate Register Form — submit via AJAX to trigger OTP
     function validateRegister(e) {
+        e.preventDefault();
         const pass = document.getElementById('reg_password').value;
         const passConfirm = document.getElementById('reg_password_confirm').value;
 
         if (pass !== passConfirm) {
             document.getElementById('error-reg-password').classList.remove('hidden');
             document.getElementById('reg_password_confirm').classList.add('border-red-500');
-            e.preventDefault();
             return false;
         } else {
             document.getElementById('error-reg-password').classList.add('hidden');
             document.getElementById('reg_password_confirm').classList.remove('border-red-500');
         }
-        return true;
+
+        // Show loading state
+        const form = document.getElementById('form-register');
+        const btn = form.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'Đang xử lý và gửi OTP...';
+        showUserToast('Hệ thống đang xử lý, vui lòng đợi giây lát...', 'success', 'ph:spinner-gap-bold');
+
+        // Submit via AJAX
+        const formData = new FormData(form);
+
+        fetch(form.action, { method: 'POST', body: formData })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                if (data.success) {
+                    openOtpModal('register');
+                } else {
+                    showUserToast(data.message || 'Có lỗi xảy ra.', 'error', 'ph:warning-circle-fill');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                showUserToast('Lỗi kết nối.', 'error', 'ph:wifi-slash-fill');
+            });
+
+        return false;
     }
+
+    // ===== OTP MODAL SYSTEM =====
+    let otpPurpose = 'register'; // 'register' or 'forgot'
+    let otpCountdown = 60;
+    let otpInterval;
+
+    function openOtpModal(purpose) {
+        otpPurpose = purpose;
+        const modal = document.getElementById('otpModal');
+        modal.classList.remove('hidden');
+
+        if (purpose === 'register') {
+            document.getElementById('otpTitle').textContent = 'Xác nhận đăng ký';
+            document.getElementById('otpDesc').textContent = 'Nhập mã 6 số đã gửi tới email của bạn';
+            document.getElementById('newPasswordGroup').classList.add('hidden');
+        } else {
+            document.getElementById('otpTitle').textContent = 'Đặt lại mật khẩu';
+            document.getElementById('otpDesc').textContent = 'Nhập mã OTP và mật khẩu mới';
+            document.getElementById('newPasswordGroup').classList.remove('hidden');
+        }
+
+        // Clear inputs
+        document.querySelectorAll('.otp-digit').forEach(el => el.value = '');
+        document.getElementById('otpError').classList.add('hidden');
+        startOtpCountdown();
+        setTimeout(() => document.querySelector('.otp-digit').focus(), 300);
+    }
+
+    function closeOtpModal() {
+        document.getElementById('otpModal').classList.add('hidden');
+        clearInterval(otpInterval);
+    }
+
+    // OTP digit auto-focus and auto-submit
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.otp-digit').forEach((box, idx, boxes) => {
+            box.addEventListener('input', (e) => {
+                box.value = box.value.replace(/[^0-9]/g, '');
+                if (box.value.length === 1 && idx < boxes.length - 1) boxes[idx + 1].focus();
+                
+                // Tự động submit nếu nhập đủ 6 số (chỉ áp dụng cho đăng ký)
+                if (getOtpValue().length === 6 && otpPurpose === 'register') {
+                    confirmOtp();
+                }
+            });
+            box.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && box.value.length === 0 && idx > 0) boxes[idx - 1].focus();
+            });
+            box.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+                text.split('').forEach((ch, i) => { if (boxes[i]) boxes[i].value = ch; });
+                if (boxes[text.length - 1]) boxes[text.length - 1].focus();
+                
+                // Tự động submit sau khi dán đủ 6 số (chỉ áp dụng cho đăng ký)
+                if (getOtpValue().length === 6 && otpPurpose === 'register') {
+                    confirmOtp();
+                }
+            });
+        });
+    });
+
+    function getOtpValue() {
+        return Array.from(document.querySelectorAll('.otp-digit')).map(el => el.value).join('');
+    }
+
+    function confirmOtp() {
+        const otp = getOtpValue();
+        if (otp.length !== 6) {
+            document.getElementById('otpError').textContent = 'Vui lòng nhập đủ 6 số.';
+            document.getElementById('otpError').classList.remove('hidden');
+            return;
+        }
+
+        const btn = document.getElementById('otpConfirmBtn');
+        btn.disabled = true;
+        document.getElementById('otpConfirmText').textContent = 'Đang xác nhận...';
+
+        let url, body;
+        if (otpPurpose === 'register') {
+            url = '<?= APP_URL ?>/dang-ky/verify-otp';
+            body = 'otp=' + encodeURIComponent(otp);
+        } else {
+            url = '<?= APP_URL ?>/quen-mat-khau/verify-otp';
+            const newPass = document.getElementById('newPasswordInput').value;
+            body = 'otp=' + encodeURIComponent(otp) + '&new_password=' + encodeURIComponent(newPass);
+        }
+
+        fetch(url, { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: body })
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false;
+                document.getElementById('otpConfirmText').textContent = 'Xác nhận';
+                if (data.success) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        closeOtpModal();
+                        showUserToast(data.message || 'Thành công!', 'success', 'ph:check-circle-fill');
+                    }
+                } else {
+                    document.getElementById('otpError').textContent = data.message;
+                    document.getElementById('otpError').classList.remove('hidden');
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                document.getElementById('otpConfirmText').textContent = 'Xác nhận';
+                showUserToast('Lỗi kết nối.', 'error', 'ph:wifi-slash-fill');
+            });
+    }
+
+    function startOtpCountdown() {
+        otpCountdown = 60;
+        const timerEl = document.getElementById('otpTimer');
+        const btn = document.getElementById('otpResendBtn');
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        clearInterval(otpInterval);
+        otpInterval = setInterval(() => {
+            otpCountdown--;
+            timerEl.textContent = otpCountdown;
+            if (otpCountdown <= 0) {
+                clearInterval(otpInterval);
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                timerEl.textContent = '0';
+            }
+        }, 1000);
+    }
+
+    function resendOtp() {
+        fetch('<?= APP_URL ?>/otp/resend', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'} })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showUserToast('Mã OTP mới đã gửi!', 'success', 'ph:paper-plane-right-fill');
+                    startOtpCountdown();
+                    document.querySelectorAll('.otp-digit').forEach(el => el.value = '');
+                    document.querySelector('.otp-digit').focus();
+                } else {
+                    showUserToast(data.message, 'error', 'ph:warning-circle-fill');
+                }
+            });
+    }
+
+    // ===== FORGOT PASSWORD =====
+    function openForgotModal() {
+        document.getElementById('forgotModal').classList.remove('hidden');
+        document.getElementById('forgotEmailInput').value = '';
+        document.getElementById('forgotError').classList.add('hidden');
+    }
+
+    function closeForgotModal() {
+        document.getElementById('forgotModal').classList.add('hidden');
+    }
+
+    function sendForgotOtp() {
+        const email = document.getElementById('forgotEmailInput').value.trim();
+        if (!email) {
+            document.getElementById('forgotError').textContent = 'Vui lòng nhập email.';
+            document.getElementById('forgotError').classList.remove('hidden');
+            return;
+        }
+
+        const btn = document.getElementById('forgotSendBtn');
+        btn.disabled = true;
+        document.getElementById('forgotSendText').textContent = 'Đang gửi...';
+
+        fetch('<?= APP_URL ?>/quen-mat-khau/send-otp', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'email=' + encodeURIComponent(email)
+        })
+        .then(r => r.json())
+        .then(data => {
+            btn.disabled = false;
+            document.getElementById('forgotSendText').textContent = 'Gửi mã OTP';
+            if (data.success) {
+                closeForgotModal();
+                openOtpModal('forgot');
+            } else {
+                document.getElementById('forgotError').textContent = data.message;
+                document.getElementById('forgotError').classList.remove('hidden');
+            }
+        })
+        .catch(() => {
+            btn.disabled = false;
+            document.getElementById('forgotSendText').textContent = 'Gửi mã OTP';
+        });
+    }
+
 </script>
 
 <!-- Iconify Script for Icons -->
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+

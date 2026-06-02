@@ -6,6 +6,8 @@
 $router->get('/admin', 'Admin\DashboardController@index');
 $router->get('/admin/dashboard', 'Admin\DashboardController@index');
 $router->get('/admin/dang-nhap', 'Admin\AuthController@login');
+$router->post('/admin/dang-nhap/xu-ly', 'Admin\AuthController@xuLyDangNhap');
+$router->get('/admin/dang-xuat', 'Admin\AuthController@dangXuat');
 $router->get('/admin/san-pham', 'Admin\SanPhamController@index');
 $router->get('/admin/san-pham/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@chiTiet');
 $router->get('/admin/san-pham/them', 'Admin\SanPhamController@taoMoi');
@@ -213,12 +215,28 @@ $router->post('/admin/cai-dat/thanh-toan/api/freeship/toggle', 'Admin\ThanhToanV
 $router->get('/admin/chinh-sach', 'Admin\ChinhSachController@index');
 $router->get('/admin/chinh-sach/them', 'Admin\ChinhSachController@taoMoi');
 $router->get('/admin/chinh-sach/sua/(\d+)', 'Admin\ChinhSachController@trangCapNhat');
+$router->post('/admin/chinh-sach/api/luu', 'Admin\ChinhSachController@apiLuu');
+$router->post('/admin/chinh-sach/api/xoa', 'Admin\ChinhSachController@apiXoa');
+$router->post('/admin/chinh-sach/api/xoa-nhieu', 'Admin\ChinhSachController@apiXoaNhieu');
+$router->post('/admin/chinh-sach/api/trang-thai', 'Admin\ChinhSachController@apiTrangThai');
+$router->post('/admin/chinh-sach/api/trang-thai-nhieu', 'Admin\ChinhSachController@apiTrangThaiNhieu');
+$router->post('/admin/chinh-sach/api/nhan-ban', 'Admin\ChinhSachController@apiNhanBan');
+$router->get('/admin/chinh-sach/api/chi-tiet/(\d+)', 'Admin\ChinhSachController@apiChiTiet');
 
 $router->get('/admin/nhan-su', 'Admin\NhanSuController@index');
 $router->get('/admin/nhan-su/them', 'Admin\NhanSuController@taoMoi');
 $router->get('/admin/nhan-su/xem/(\d+)', 'Admin\NhanSuController@chiTiet');
 $router->get('/admin/nhan-su/sua/(\d+)', 'Admin\NhanSuController@trangCapNhat');
 $router->get('/admin/vai-tro', 'Admin\NhanSuController@roles');
+// API nhân sự
+$router->post('/admin/nhan-su/api/luu', 'Admin\NhanSuController@apiLuu');
+$router->post('/admin/nhan-su/api/xoa', 'Admin\NhanSuController@apiXoa');
+$router->post('/admin/nhan-su/api/xoa-nhieu', 'Admin\NhanSuController@apiXoaNhieu');
+$router->post('/admin/nhan-su/api/trang-thai', 'Admin\NhanSuController@apiTrangThai');
+$router->post('/admin/nhan-su/api/trang-thai-nhieu', 'Admin\NhanSuController@apiTrangThaiNhieu');
+$router->post('/admin/nhan-su/api/dat-lai-mat-khau', 'Admin\NhanSuController@apiDatLaiMatKhau');
+$router->get('/admin/nhan-su/api/chi-tiet/(\d+)', 'Admin\NhanSuController@apiChiTiet');
+$router->post('/admin/nhan-su/api/cap-nhat-quyen', 'Admin\NhanSuController@apiCapNhatQuyen');
 
 $router->get('/admin/nhat-ky-hoat-dong', 'Admin\NhatKyHoatDongController@index');
 

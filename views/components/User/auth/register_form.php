@@ -1,6 +1,6 @@
 <!-- ================= SIGN UP PANEL ================= -->
 <div class="form-container sign-up-container pt-16 md:pt-0">
-    <form action="<?= APP_URL ?>/dang-ky/xu-ly" method="POST" class="auth-form flex flex-col items-center justify-center h-full px-8 md:px-12 text-center bg-transparent" onsubmit="return validateRegister(event)">
+    <form id="form-register" action="<?= APP_URL ?>/dang-ky/xu-ly" method="POST" class="auth-form flex flex-col items-center justify-center h-full px-8 md:px-12 text-center bg-transparent" onsubmit="return validateRegister(event)">
         
         <!-- Decorative icon -->
         <div class="w-12 h-12 rounded-2xl icon-bg-register flex items-center justify-center mb-4 auth-icon-bounce">
@@ -26,7 +26,7 @@
 
         <div class="w-full space-y-3 text-left mt-1">
             <?php component('input_text', [
-                'name' => 'fullname',
+                'name' => 'ho_ten',
                 'placeholder' => 'Họ và tên',
                 'required' => true,
                 'icon' => 'ph:user-light',
@@ -34,8 +34,8 @@
             ]); ?>
 
             <?php component('input_text', [
-                'name' => 'identifier',
-                'placeholder' => 'Email / Số điện thoại',
+                'name' => 'email',
+                'placeholder' => 'Email',
                 'required' => true,
                 'icon' => 'ph:envelope-light',
                 'wrapperClass' => 'mb-0'

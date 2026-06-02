@@ -97,11 +97,18 @@
 
             <!-- User Profile Dropdown -->
             <div class="relative" id="accountDropdownContainer">
+                <?php
+                    $avatarUrl = $_SESSION['admin_avatar'] ?? null;
+                    if (!$avatarUrl) {
+                        $avatarName = urlencode($_SESSION['admin_name'] ?? 'Admin');
+                        $avatarUrl = "https://ui-avatars.com/api/?name={$avatarName}&background=8B0000&color=fff&bold=true";
+                    }
+                ?>
                 <div onclick="toggleAccountDropdown()" class="flex items-center gap-3 border-l pl-5 border-gray-200 cursor-pointer group select-none">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=8B0000&color=fff&bold=true" alt="Admin Avatar" class="w-9 h-9 rounded-full object-cover border-2 border-transparent group-hover:border-red-900 transition-all shadow-sm">
+                    <img src="<?= $avatarUrl ?>" alt="Avatar" class="w-9 h-9 rounded-full object-cover border-2 border-transparent group-hover:border-red-900 transition-all shadow-sm">
                     <div class="hidden lg:block">
-                        <p class="text-sm font-bold text-gray-800 leading-none mb-1">Quản trị viên</p>
-                        <p class="text-[11px] text-gray-500 font-medium leading-none">admin@chuoingoc.com</p>
+                        <p class="text-sm font-bold text-gray-800 leading-none mb-1"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></p>
+                        <p class="text-[11px] text-gray-500 font-medium leading-none"><?= htmlspecialchars($_SESSION['admin_email'] ?? '') ?></p>
                     </div>
                     <span class="iconify text-gray-400 group-hover:text-red-900 transition-colors ml-1" data-icon="mdi:chevron-down"></span>
                 </div>
@@ -109,8 +116,8 @@
                 <!-- Account Dropdown Menu -->
                 <div id="accountDropdown" class="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-gray-100 hidden z-50 transform origin-top-right transition-all duration-200 opacity-0 scale-95 overflow-hidden">
                     <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50">
-                        <p class="text-sm font-bold text-gray-900 truncate">Hải Admin</p>
-                        <p class="text-xs text-gray-500 truncate">admin@chuoingoc.com</p>
+                        <p class="text-sm font-bold text-gray-900 truncate"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></p>
+                        <p class="text-xs text-gray-500 truncate"><?= htmlspecialchars($_SESSION['admin_email'] ?? '') ?></p>
                     </div>
                     
                     <div class="py-1">
@@ -125,7 +132,7 @@
                     </div>
                     
                     <div class="border-t border-gray-100 py-1">
-                        <a href="<?= APP_URL ?>/admin/dang-nhap" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+                        <a href="<?= APP_URL ?>/admin/dang-xuat" class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
                             <span class="iconify text-lg" data-icon="mdi:logout"></span>
                             Đăng xuất
                         </a>

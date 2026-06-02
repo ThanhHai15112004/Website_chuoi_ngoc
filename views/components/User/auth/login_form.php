@@ -26,7 +26,7 @@
 
         <div class="w-full space-y-4 text-left mt-1">
             <?php component('input_text', [
-                'name' => 'identifier',
+                'name' => 'email',
                 'placeholder' => 'Email / Số điện thoại',
                 'required' => true,
                 'icon' => 'ph:envelope-light',
@@ -49,7 +49,7 @@
                     'name' => 'remember',
                     'label' => 'Ghi nhớ tôi'
                 ]); ?>
-                <a href="<?= APP_URL ?>/quen-mat-khau" class="text-[11px] font-semibold text-crimson-600 hover:text-crimson-700 hover:underline transition-colors">Quên mật khẩu?</a>
+                <a href="javascript:void(0)" onclick="openForgotModal()" class="text-[11px] font-semibold text-crimson-600 hover:text-crimson-700 hover:underline transition-colors">Quên mật khẩu?</a>
             </div>
         </div>
 

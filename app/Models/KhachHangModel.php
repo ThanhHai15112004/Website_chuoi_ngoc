@@ -369,4 +369,47 @@ class KhachHangModel
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // ========== AUTH METHODS ==========
+
+    /**
+     * Tìm người dùng theo email (cho login)
+     */
+    public function findByEmail(string $email): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM nguoi_dung WHERE email = ? AND deleted_at IS NULL LIMIT 1");
+        $stmt->execute([$email]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Kiểm tra email đã tồn tại chưa
+     */
+    public function emailDaTonTai(string $email): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM nguoi_dung WHERE email = ? AND deleted_at IS NULL");
+        $stmt->execute([$email]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Tạo mã khách hàng tự động: KH0001, KH0002...
+     */
+    public function taoMaKH(): string
+    {
+        $stmt = $this->db->query("SELECT MAX(CAST(SUBSTRING(ma_nd, 3) AS UNSIGNED)) as max_num FROM nguoi_dung WHERE ma_nd LIKE 'KH%'");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $next = ($row['max_num'] ?? 0) + 1;
+        return 'KH' . str_pad($next, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Cập nhật mật khẩu (cho quên mật khẩu)
+     */
+    public function capNhatMatKhau(string $email, string $hashedPassword): bool
+    {
+        $stmt = $this->db->prepare("UPDATE nguoi_dung SET mat_khau = ? WHERE email = ? AND deleted_at IS NULL");
+        return $stmt->execute([$hashedPassword, $email]);
+    }
 }

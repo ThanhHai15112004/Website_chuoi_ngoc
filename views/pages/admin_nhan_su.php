@@ -1,5 +1,28 @@
 <?php
 // views/pages/admin_nhan_su.php
+use App\Models\NhanSuModel;
+
+$staffs     = $staffs ?? [];
+$stats      = $stats ?? [];
+$total      = $total ?? 0;
+$page       = $page ?? 1;
+$totalPages = $totalPages ?? 1;
+$limit      = $limit ?? 10;
+$tab        = $tab ?? 'all';
+$search     = $search ?? '';
+$vai_tro    = $vai_tro ?? '';
+$dang_nhap  = $dang_nhap ?? '';
+
+$from = min(($page - 1) * $limit + 1, $total);
+$to   = min($page * $limit, $total);
+
+// Build current filter query string
+$filterQuery = http_build_query(array_filter([
+    'tab' => $tab !== 'all' ? $tab : null,
+    'search' => $search,
+    'vai_tro' => $vai_tro,
+    'dang_nhap' => $dang_nhap,
+]));
 ?>
 <div class="px-4 md:px-6 py-6 max-w-[1400px] mx-auto min-h-screen">
     
@@ -43,14 +66,14 @@
         <div id="bulkActions" class="hidden bg-red-50 border-b border-red-100 px-6 py-3 flex items-center justify-between">
             <span class="text-sm font-bold text-red-900"><span id="selectedCount">0</span> nhân viên đã chọn</span>
             <div class="flex gap-2">
-                <button class="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 shadow-sm flex items-center gap-1">
-                    <span class="iconify text-gray-400" data-icon="mdi:email-outline"></span> Gửi lời mời
+                <button onclick="handleBulkActivate()" class="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 shadow-sm flex items-center gap-1">
+                    <span class="iconify text-emerald-500" data-icon="mdi:account-check"></span> Kích hoạt
                 </button>
-                <button class="px-3 py-1.5 bg-white border border-gray-200 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50 shadow-sm flex items-center gap-1">
-                    <span class="iconify text-gray-400" data-icon="mdi:shield-account-outline"></span> Gán vai trò
-                </button>
-                <button class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 rounded-md text-xs font-medium hover:bg-red-50 shadow-sm flex items-center gap-1">
+                <button onclick="handleBulkLock()" class="px-3 py-1.5 bg-white border border-gray-200 text-red-600 rounded-md text-xs font-medium hover:bg-red-50 shadow-sm flex items-center gap-1">
                     <span class="iconify text-red-500" data-icon="mdi:lock-outline"></span> Khóa tài khoản
+                </button>
+                <button onclick="handleBulkDelete()" class="px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-medium hover:bg-red-700 shadow-sm flex items-center gap-1">
+                    <span class="iconify" data-icon="mdi:delete-outline"></span> Xóa
                 </button>
             </div>
         </div>
@@ -59,67 +82,119 @@
         <?php require_once __DIR__ . '/../components/Admin/nhan_su/table_list.php'; ?>
         
         <!-- Pagination -->
+        <?php if ($total > 0): ?>
         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-            <span class="text-sm text-gray-500">Hiển thị <span class="font-bold text-gray-900">1</span> đến <span class="font-bold text-gray-900">5</span> của <span class="font-bold text-gray-900">12</span> nhân viên</span>
+            <span class="text-sm text-gray-500">Hiển thị <span class="font-bold text-gray-900"><?= $from ?></span> đến <span class="font-bold text-gray-900"><?= $to ?></span> của <span class="font-bold text-gray-900"><?= $total ?></span> nhân viên</span>
             <div class="flex gap-1">
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"><span class="iconify" data-icon="mdi:chevron-left"></span></button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-[#6B0D18] bg-[#6B0D18] text-white font-medium text-sm">1</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">3</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50"><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php if ($page > 1): ?>
+                    <a href="<?= APP_URL ?>/admin/nhan-su?page=<?= $page - 1 ?><?= $filterQuery ? '&' . $filterQuery : '' ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                        <span class="iconify" data-icon="mdi:chevron-left"></span>
+                    </a>
+                <?php else: ?>
+                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-left"></span></button>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="<?= APP_URL ?>/admin/nhan-su?page=<?= $i ?><?= $filterQuery ? '&' . $filterQuery : '' ?>" class="w-8 h-8 flex items-center justify-center rounded border font-medium text-sm <?= $i == $page ? 'border-[#6B0D18] bg-[#6B0D18] text-white' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="<?= APP_URL ?>/admin/nhan-su?page=<?= $page + 1 ?><?= $filterQuery ? '&' . $filterQuery : '' ?>" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
+                        <span class="iconify" data-icon="mdi:chevron-right"></span>
+                    </a>
+                <?php else: ?>
+                    <button class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white text-gray-500 disabled:opacity-50" disabled><span class="iconify" data-icon="mdi:chevron-right"></span></button>
+                <?php endif; ?>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
+
+<!-- Quick View Drawer -->
+<?php require_once __DIR__ . '/../components/Admin/nhan_su/quick_view_drawer.php'; ?>
 
 <!-- Modals -->
 <?php require_once __DIR__ . '/../components/Admin/nhan_su/modals.php'; ?>
 
 <script>
     function toggleSelectAll(source) {
-        checkboxes = document.querySelectorAll('.staff-checkbox');
-        for (var i = 0, n = checkboxes.length; i < n; i++) {
-            checkboxes[i].checked = source.checked;
-        }
+        document.querySelectorAll('.staff-checkbox').forEach(cb => cb.checked = source.checked);
         updateBulkAction();
     }
 
     function updateBulkAction() {
-        const checkboxes = document.querySelectorAll('.staff-checkbox:checked');
+        const checked = document.querySelectorAll('.staff-checkbox:checked');
         const bulkActions = document.getElementById('bulkActions');
         const selectedCount = document.getElementById('selectedCount');
         
-        if(checkboxes.length > 0) {
+        if(checked.length > 0) {
             bulkActions.classList.remove('hidden');
-            selectedCount.innerText = checkboxes.length;
+            selectedCount.innerText = checked.length;
         } else {
             bulkActions.classList.add('hidden');
             document.getElementById('selectAll').checked = false;
         }
     }
 
+    function getSelectedIds() {
+        return Array.from(document.querySelectorAll('.staff-checkbox:checked')).map(cb => cb.value);
+    }
+
+    function handleBulkLock() {
+        const ids = getSelectedIds();
+        if (!ids.length) return;
+        if (!confirm(`Bạn có chắc muốn khóa ${ids.length} tài khoản?`)) return;
+        fetch(`${APP_URL}/admin/nhan-su/api/trang-thai-nhieu`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ids, trang_thai: 'bi_khoa'})
+        }).then(r => r.json()).then(data => {
+            showToast(data.message, data.success ? 'success' : 'error');
+            if (data.success) setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function handleBulkActivate() {
+        const ids = getSelectedIds();
+        if (!ids.length) return;
+        fetch(`${APP_URL}/admin/nhan-su/api/trang-thai-nhieu`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ids, trang_thai: 'hoat_dong'})
+        }).then(r => r.json()).then(data => {
+            showToast(data.message, data.success ? 'success' : 'error');
+            if (data.success) setTimeout(() => location.reload(), 800);
+        });
+    }
+
+    function handleBulkDelete() {
+        const ids = getSelectedIds();
+        if (!ids.length) return;
+        if (!confirm(`Xóa ${ids.length} nhân viên? Không thể hoàn tác!`)) return;
+        fetch(`${APP_URL}/admin/nhan-su/api/xoa-nhieu`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ids})
+        }).then(r => r.json()).then(data => {
+            showToast(data.message, data.success ? 'success' : 'error');
+            if (data.success) setTimeout(() => location.reload(), 800);
+        });
+    }
+
     // Dropdown Actions Toggle
     function toggleActionMenu(id) {
         document.querySelectorAll('[id^="actionMenu-"]').forEach(menu => {
-            if(menu.id !== 'actionMenu-' + id) {
-                menu.classList.add('hidden');
-            }
+            if(menu.id !== 'actionMenu-' + id) menu.classList.add('hidden');
         });
-        
         const menu = document.getElementById('actionMenu-' + id);
         if(menu) {
             if(menu.classList.contains('hidden')) {
-                // Hiển thị menu
                 menu.classList.remove('hidden');
-                
-                // Lấy vị trí nút
                 const btn = event.currentTarget;
                 const rect = btn.getBoundingClientRect();
-                
-                // Set vị trí fixed cho menu
                 menu.style.top = (rect.bottom + 5) + 'px';
                 menu.style.right = (window.innerWidth - rect.right) + 'px';
-                menu.style.left = 'auto'; // Reset left
+                menu.style.left = 'auto';
             } else {
                 menu.classList.add('hidden');
             }
@@ -128,9 +203,7 @@
 
     document.addEventListener('click', function(event) {
         if (!event.target.closest('.dropdown-container')) {
-            document.querySelectorAll('[id^="actionMenu-"]').forEach(menu => {
-                menu.classList.add('hidden');
-            });
+            document.querySelectorAll('[id^="actionMenu-"]').forEach(menu => menu.classList.add('hidden'));
         }
     });
 </script>

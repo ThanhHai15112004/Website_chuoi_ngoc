@@ -1,10 +1,7 @@
 <?php
 // views/components/Admin/chinh_sach/stats_cards.php
-$total = count($policies);
-$showing = count(array_filter($policies, fn($p) => $p['status'] == 'Đang hiển thị'));
-$hidden = count(array_filter($policies, fn($p) => $p['status'] == 'Đang ẩn'));
-$needUpdate = count(array_filter($policies, fn($p) => $p['status'] == 'Cần cập nhật'));
-$inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['locations'])));
+// Sử dụng $stats từ Controller thay vì tính từ mock data
+use App\Models\ChinhSachModel;
 ?>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
     <!-- Tổng -->
@@ -16,7 +13,7 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-2xl font-bold text-gray-900"><?= $total ?></span>
+            <span class="text-2xl font-bold text-gray-900"><?= $stats['total'] ?? 0 ?></span>
         </div>
     </div>
 
@@ -29,7 +26,7 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-2xl font-bold text-gray-900"><?= $showing ?></span>
+            <span class="text-2xl font-bold text-gray-900"><?= $stats['dang_hien_thi'] ?? 0 ?></span>
         </div>
     </div>
 
@@ -42,7 +39,7 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-2xl font-bold text-gray-900"><?= $hidden ?></span>
+            <span class="text-2xl font-bold text-gray-900"><?= $stats['dang_an'] ?? 0 ?></span>
         </div>
     </div>
 
@@ -55,7 +52,7 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-2xl font-bold text-amber-600"><?= $needUpdate ?></span>
+            <span class="text-2xl font-bold text-amber-600"><?= $stats['can_cap_nhat'] ?? 0 ?></span>
         </div>
     </div>
 
@@ -68,7 +65,7 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex items-end gap-2">
-            <span class="text-2xl font-bold text-gray-900"><?= $inCheckout ?></span>
+            <span class="text-2xl font-bold text-gray-900"><?= $stats['in_checkout'] ?? 0 ?></span>
         </div>
     </div>
 
@@ -81,8 +78,10 @@ $inCheckout = count(array_filter($policies, fn($p) => in_array('Checkout', $p['l
             </div>
         </div>
         <div class="flex flex-col mt-1">
-            <span class="text-lg font-bold text-gray-900 leading-none mb-1">18/05/2026</span>
-            <span class="text-xs text-gray-500">Hải Admin</span>
+            <span class="text-lg font-bold text-gray-900 leading-none mb-1">
+                <?= !empty($stats['last_updated_at']) ? date('d/m/Y', strtotime($stats['last_updated_at'])) : '--' ?>
+            </span>
+            <span class="text-xs text-gray-500"><?= $stats['last_updater'] ?? '--' ?></span>
         </div>
     </div>
 </div>

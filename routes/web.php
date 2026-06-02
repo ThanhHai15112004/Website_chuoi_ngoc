@@ -22,5 +22,9 @@ $router->get('/tai-khoan', 'User\AccountController@index');
 $router->get('/dang-nhap', 'User\AuthController@index');
 $router->post('/dang-nhap/xu-ly', 'User\AuthController@loginProcess');
 $router->post('/dang-ky/xu-ly', 'User\AuthController@registerProcess');
+$router->post('/dang-ky/verify-otp', 'User\AuthController@verifyRegisterOtp');
+$router->post('/quen-mat-khau/send-otp', 'User\AuthController@forgotSendOtp');
+$router->post('/quen-mat-khau/verify-otp', 'User\AuthController@forgotVerifyOtp');
+$router->post('/otp/resend', 'User\AuthController@resendOtp');
 $router->get('/dang-xuat', 'User\AuthController@logout');
 

@@ -83,17 +83,12 @@
         alert('Mã xác thực mới đã được gửi đi!');
     }
 
-    // Submit Loading Logic Demonstration (Testing Mode)
+    // Submit Loading Logic - Real form submission
     const formLogin = document.getElementById('form-login');
     if (formLogin) {
         formLogin.addEventListener('submit', function(e) {
-            e.preventDefault(); // Ngăn form submit thực tế (đang test)
+            // Cho form submit thật (POST tới server)
             setLoginBtnLoading(true);
-            
-            // Giả lập thời gian load và chuyển hướng
-            setTimeout(() => {
-                window.location.href = '<?= APP_URL ?>/admin';
-            }, 800);
         });
     }
 

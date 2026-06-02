@@ -29,6 +29,21 @@ class Router {
                 list($controller, $action) = explode('@', $controllerAction);
                 $controllerClass = "App\\Controllers\\" . $controller;
                 
+                // === Auth middleware: bảo vệ route /admin/* ===
+                $publicRoutes = ['/admin/dang-nhap', '/admin/dang-nhap/xu-ly', '/admin/dang-xuat'];
+                if (strpos($uri, '/admin') === 0 && !in_array($route, $publicRoutes)) {
+                    if (empty($_SESSION['admin_id'])) {
+                        header('Location: ' . (defined('APP_URL') ? APP_URL : '') . '/admin/dang-nhap');
+                        exit;
+                    }
+                }
+
+                // === Auth middleware: bảo vệ route user /tai-khoan ===
+                if ($route === '/tai-khoan' && empty($_SESSION['user_id'])) {
+                    header('Location: ' . (defined('APP_URL') ? APP_URL : '') . '/dang-nhap');
+                    exit;
+                }
+
                 if (class_exists($controllerClass)) {
                     $controllerInstance = new $controllerClass();
                     if (method_exists($controllerInstance, $action)) {

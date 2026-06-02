@@ -11,7 +11,7 @@
         <p class="text-gray-500 text-xs font-light">Vui lòng nhập thông tin tài khoản để truy cập trang quản trị.</p>
     </div>
 
-    <form id="form-login" action="/admin/dang-nhap/xu-ly" method="POST" class="space-y-4">
+    <form id="form-login" action="<?= APP_URL ?>/admin/dang-nhap/xu-ly" method="POST" class="space-y-4">
         <?php component('input_text', [
             'name' => 'email', 
             'label' => 'Email hoặc tên đăng nhập', 
@@ -35,8 +35,8 @@
         </div>
 
         <button type="submit" id="btn-login" class="w-full h-[48px] bg-[#6B0D18] hover:bg-[#4C0519] text-[#FAF8F5] font-semibold rounded-xl transition-all shadow-md flex items-center justify-center gap-2 focus:outline-none">
-            <span>Đăng nhập quản trị</span>
-            <span class="iconify" data-icon="mdi:login"></span>
+            <span id="btn-login-text">Đăng nhập quản trị</span>
+            <span id="btn-login-icon" class="iconify" data-icon="mdi:login"></span>
         </button>
     </form>
 </div>

@@ -1,5 +1,31 @@
 <?php
 // views/components/Admin/nhan_su/form_permissions.php
+$staff = $staff ?? null;
+$quyen = $quyen ?? [];
+
+$currentRole = $staff['vai_tro'] ?? 'cskh';
+$roleMap = [
+    'Super Admin' => 'super_admin',
+    'Admin' => 'admin',
+    'Quản lý kho' => 'kho',
+    'CSKH' => 'cskh',
+    'Tùy chỉnh' => 'custom',
+];
+$currentRoleKey = $roleMap[$currentRole] ?? 'cskh';
+
+// Build quyền map cho JS
+$quyenMap = [];
+foreach ($quyen as $q) {
+    $quyenMap[$q['module']] = $q;
+}
+
+$modules = [
+    ['key' => 0, 'name' => 'Dashboard & Thống kê'],
+    ['key' => 1, 'name' => 'Sản phẩm & Danh mục'],
+    ['key' => 2, 'name' => 'Đơn hàng & Thanh toán'],
+    ['key' => 3, 'name' => 'Quản lý Kho'],
+    ['key' => 4, 'name' => 'Cấu hình & Nhân sự'],
+];
 ?>
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
     <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-100">
@@ -15,11 +41,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             <!-- Super Admin -->
             <label class="relative block cursor-pointer group">
-                <input type="radio" name="role" value="super_admin" id="roleSelect" class="peer sr-only" onchange="handleRoleChange()">
+                <input type="radio" name="vai_tro" value="Super Admin" class="peer sr-only" onchange="handleRoleChange()" <?= $currentRoleKey === 'super_admin' ? 'checked' : '' ?>>
                 <div class="p-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 peer-checked:border-[#6B0D18] peer-checked:bg-[#6B0D18]/5 transition-all">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="iconify text-[#6B0D18]" data-icon="mdi:shield-crown-outline"></span>
-                        <span class="font-bold text-gray-900 peer-checked:text-[#6B0D18]">Super Admin</span>
+                        <span class="font-bold text-gray-900">Super Admin</span>
                     </div>
                     <p class="text-xs text-gray-500 line-clamp-2">Toàn quyền kiểm soát hệ thống, bao gồm phân quyền và xóa dữ liệu.</p>
                 </div>
@@ -30,11 +56,11 @@
 
             <!-- Admin -->
             <label class="relative block cursor-pointer group">
-                <input type="radio" name="role" value="admin" class="peer sr-only" onchange="handleRoleChange()">
+                <input type="radio" name="vai_tro" value="Admin" class="peer sr-only" onchange="handleRoleChange()" <?= $currentRoleKey === 'admin' ? 'checked' : '' ?>>
                 <div class="p-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 peer-checked:border-[#6B0D18] peer-checked:bg-[#6B0D18]/5 transition-all">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="iconify text-orange-600" data-icon="mdi:shield-account-outline"></span>
-                        <span class="font-bold text-gray-900 peer-checked:text-[#6B0D18]">Admin</span>
+                        <span class="font-bold text-gray-900">Admin</span>
                     </div>
                     <p class="text-xs text-gray-500 line-clamp-2">Quản lý hầu hết chức năng, ngoại trừ thiết lập hệ thống.</p>
                 </div>
@@ -45,11 +71,11 @@
 
             <!-- Quản lý kho -->
             <label class="relative block cursor-pointer group">
-                <input type="radio" name="role" value="kho" class="peer sr-only" onchange="handleRoleChange()">
+                <input type="radio" name="vai_tro" value="Quản lý kho" class="peer sr-only" onchange="handleRoleChange()" <?= $currentRoleKey === 'kho' ? 'checked' : '' ?>>
                 <div class="p-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 peer-checked:border-[#6B0D18] peer-checked:bg-[#6B0D18]/5 transition-all">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="iconify text-blue-600" data-icon="mdi:warehouse"></span>
-                        <span class="font-bold text-gray-900 peer-checked:text-[#6B0D18]">Quản lý kho</span>
+                        <span class="font-bold text-gray-900">Quản lý kho</span>
                     </div>
                     <p class="text-xs text-gray-500 line-clamp-2">Kiểm soát tồn kho, nhập/xuất và kiểm kê hàng hóa.</p>
                 </div>
@@ -60,11 +86,11 @@
 
             <!-- CSKH -->
             <label class="relative block cursor-pointer group">
-                <input type="radio" name="role" value="cskh" class="peer sr-only" onchange="handleRoleChange()" checked>
+                <input type="radio" name="vai_tro" value="CSKH" class="peer sr-only" onchange="handleRoleChange()" <?= $currentRoleKey === 'cskh' ? 'checked' : '' ?>>
                 <div class="p-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 peer-checked:border-[#6B0D18] peer-checked:bg-[#6B0D18]/5 transition-all">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="iconify text-purple-600" data-icon="mdi:headset"></span>
-                        <span class="font-bold text-gray-900 peer-checked:text-[#6B0D18]">CSKH</span>
+                        <span class="font-bold text-gray-900">CSKH</span>
                     </div>
                     <p class="text-xs text-gray-500 line-clamp-2">Tương tác khách hàng, xem đơn hàng, hỗ trợ giải đáp.</p>
                 </div>
@@ -75,11 +101,11 @@
 
             <!-- Tùy chỉnh -->
             <label class="relative block cursor-pointer group">
-                <input type="radio" name="role" value="custom" class="peer sr-only" onchange="handleRoleChange()">
+                <input type="radio" name="vai_tro" value="Tùy chỉnh" class="peer sr-only" onchange="handleRoleChange()" <?= $currentRoleKey === 'custom' ? 'checked' : '' ?>>
                 <div class="p-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 peer-checked:border-[#6B0D18] peer-checked:bg-[#6B0D18]/5 transition-all h-full">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="iconify text-gray-600" data-icon="mdi:cog-outline"></span>
-                        <span class="font-bold text-gray-900 peer-checked:text-[#6B0D18]">Tùy chỉnh quyền</span>
+                        <span class="font-bold text-gray-900">Tùy chỉnh quyền</span>
                     </div>
                     <p class="text-xs text-gray-500 line-clamp-2">Thiết lập quyền hạn thủ công cho từng module.</p>
                 </div>
@@ -118,71 +144,24 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm">
-                    <!-- Dashboard -->
+                    <?php foreach ($modules as $m): 
+                        $mq = $quyenMap[$m['name']] ?? ['xem' => 0, 'them' => 0, 'sua' => 0, 'xoa' => 0, 'dac_biet' => 0];
+                        $prefix = 'perm_' . $m['key'];
+                    ?>
                     <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">Dashboard & Thống kê</td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view"></td>
-                        <td class="px-4 py-3 text-center">-</td>
-                        <td class="px-4 py-3 text-center">-</td>
-                        <td class="px-4 py-3 text-center">-</td>
+                        <td class="px-4 py-3 font-medium text-gray-900"><?= $m['name'] ?></td>
+                        <td class="px-4 py-3 text-center"><?php if ($m['key'] == 0 || true): ?><input type="checkbox" name="<?= $prefix ?>_xem" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view" <?= $mq['xem'] ? 'checked' : '' ?>><?php else: ?>-<?php endif; ?></td>
+                        <td class="px-4 py-3 text-center"><?php if ($m['key'] > 0 || $m['key'] == 0): ?><input type="checkbox" name="<?= $prefix ?>_them" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-add" <?= $mq['them'] ? 'checked' : '' ?>><?php else: ?>-<?php endif; ?></td>
+                        <td class="px-4 py-3 text-center"><?php if ($m['key'] > 0 || $m['key'] == 0): ?><input type="checkbox" name="<?= $prefix ?>_sua" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-edit" <?= $mq['sua'] ? 'checked' : '' ?>><?php else: ?>-<?php endif; ?></td>
+                        <td class="px-4 py-3 text-center"><input type="checkbox" name="<?= $prefix ?>_xoa" class="rounded border-gray-300 text-red-500 focus:ring-red-500 p-check p-delete" <?= $mq['xoa'] ? 'checked' : '' ?>></td>
                         <td class="px-4 py-3 text-center">
-                            <label class="inline-flex items-center gap-1 cursor-pointer" title="Quyền xuất Excel">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-special">
-                                <span class="iconify text-gray-400" data-icon="mdi:file-excel-outline"></span>
+                            <label class="inline-flex items-center gap-1 cursor-pointer" title="Quyền đặc biệt">
+                                <input type="checkbox" name="<?= $prefix ?>_dac_biet" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-special" <?= $mq['dac_biet'] ? 'checked' : '' ?>>
+                                <span class="iconify text-gray-400" data-icon="<?= $m['key'] == 3 ? 'mdi:check-decagram-outline' : 'mdi:file-excel-outline' ?>"></span>
                             </label>
                         </td>
                     </tr>
-                    <!-- Sản phẩm -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">Sản phẩm & Danh mục</td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-add"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-edit"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-red-500 focus:ring-red-500 p-check p-delete"></td>
-                        <td class="px-4 py-3 text-center">
-                            <label class="inline-flex items-center gap-1 cursor-pointer" title="Quyền xuất Excel">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-special">
-                                <span class="iconify text-gray-400" data-icon="mdi:file-excel-outline"></span>
-                            </label>
-                        </td>
-                    </tr>
-                    <!-- Đơn hàng -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">Đơn hàng & Thanh toán</td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-add"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-edit"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-red-500 focus:ring-red-500 p-check p-delete"></td>
-                        <td class="px-4 py-3 text-center">
-                            <label class="inline-flex items-center gap-1 cursor-pointer" title="Quyền xuất Excel">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-special">
-                                <span class="iconify text-gray-400" data-icon="mdi:file-excel-outline"></span>
-                            </label>
-                        </td>
-                    </tr>
-                    <!-- Kho -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">Quản lý Kho</td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-add"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-edit"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-red-500 focus:ring-red-500 p-check p-delete"></td>
-                        <td class="px-4 py-3 text-center">
-                            <label class="inline-flex items-center gap-1 cursor-pointer" title="Duyệt phiếu nhập/xuất">
-                                <input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-special">
-                                <span class="iconify text-gray-400" data-icon="mdi:check-decagram-outline"></span>
-                            </label>
-                        </td>
-                    </tr>
-                    <!-- Cấu hình -->
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-3 font-medium text-gray-900">Cấu hình & Nhân sự</td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-view"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-add"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-[#6B0D18] focus:ring-[#6B0D18] p-check p-edit"></td>
-                        <td class="px-4 py-3 text-center"><input type="checkbox" class="rounded border-gray-300 text-red-500 focus:ring-red-500 p-check p-delete"></td>
-                        <td class="px-4 py-3 text-center">-</td>
-                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
             <div id="matrixOverlay" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] hidden items-center justify-center border border-gray-200 rounded-xl" style="margin-top: -1px">
@@ -204,53 +183,65 @@
 </style>
 
 <script>
-    function handleRoleChange() {
-        const roles = document.getElementsByName('role');
-        let selectedRole = '';
-        for (let r of roles) {
-            if (r.checked) selectedRole = r.value;
+    // Preset permissions per role
+    const rolePresets = {
+        'Super Admin': {all: true},
+        'Admin': {
+            'perm_0_xem':1,'perm_0_dac_biet':1,
+            'perm_1_xem':1,'perm_1_them':1,'perm_1_sua':1,'perm_1_xoa':1,'perm_1_dac_biet':1,
+            'perm_2_xem':1,'perm_2_them':1,'perm_2_sua':1,'perm_2_xoa':1,'perm_2_dac_biet':1,
+            'perm_3_xem':1,'perm_3_them':1,'perm_3_sua':1,'perm_3_xoa':1,'perm_3_dac_biet':1,
+            'perm_4_xem':1,'perm_4_them':0,'perm_4_sua':0,'perm_4_xoa':0
+        },
+        'Quản lý kho': {
+            'perm_0_xem':1,
+            'perm_1_xem':1,'perm_1_them':1,'perm_1_sua':1,'perm_1_dac_biet':1,
+            'perm_2_xem':1,
+            'perm_3_xem':1,'perm_3_them':1,'perm_3_sua':1,'perm_3_xoa':1,'perm_3_dac_biet':1
+        },
+        'CSKH': {
+            'perm_0_xem':1,
+            'perm_1_xem':1,
+            'perm_2_xem':1,'perm_2_them':1,'perm_2_sua':1
         }
+    };
+
+    function handleRoleChange() {
+        const selected = document.querySelector('input[name="vai_tro"]:checked');
+        if (!selected) return;
+        const role = selected.value;
 
         const warning = document.getElementById('superAdminWarning');
         const overlay = document.getElementById('matrixOverlay');
         const checkboxes = document.querySelectorAll('.p-check');
 
-        // Reset
         warning.classList.add('hidden');
         overlay.classList.add('hidden');
         overlay.classList.remove('flex');
 
-        if (selectedRole === 'super_admin') {
-            warning.classList.remove('hidden');
-            // Check all
-            checkboxes.forEach(cb => { cb.checked = true; cb.disabled = true; });
-            overlay.classList.add('flex');
-            overlay.classList.remove('hidden');
-        } 
-        else if (selectedRole === 'cskh') {
-            // Check view, add, edit for order, view for product. Uncheck others.
-            checkboxes.forEach((cb, idx) => {
-                cb.checked = false;
-                cb.disabled = true;
-                // row 1: product, row 2: order
-                // This is just a mock logic
-                if(cb.classList.contains('p-view')) cb.checked = true;
-            });
-            overlay.classList.add('flex');
-            overlay.classList.remove('hidden');
-        }
-        else if (selectedRole === 'custom') {
-            // Enable all
+        if (role === 'Tùy chỉnh') {
             checkboxes.forEach(cb => { cb.disabled = false; });
+            return;
         }
-        else {
-            // Admin, Kho ...
-            checkboxes.forEach((cb, idx) => {
-                cb.checked = (idx % 2 === 0); // Mock check
-                cb.disabled = true;
-            });
-            overlay.classList.add('flex');
-            overlay.classList.remove('hidden');
+
+        // Show overlay for preset roles
+        overlay.classList.add('flex');
+        overlay.classList.remove('hidden');
+
+        if (role === 'Super Admin') {
+            warning.classList.remove('hidden');
+            checkboxes.forEach(cb => { cb.checked = true; cb.disabled = true; });
+            return;
         }
+
+        const preset = rolePresets[role] || {};
+        checkboxes.forEach(cb => {
+            const name = cb.getAttribute('name');
+            cb.checked = preset[name] === 1;
+            cb.disabled = true;
+        });
     }
+
+    // Init on load
+    document.addEventListener('DOMContentLoaded', handleRoleChange);
 </script>
