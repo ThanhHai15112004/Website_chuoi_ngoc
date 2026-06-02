@@ -1,3 +1,4 @@
+<?php if(!empty($actionSuggestions)): ?>
 <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6">
     <h3 class="text-base font-bold text-gray-800 flex items-center gap-2 mb-4">
         <span class="iconify text-[#6B0D18] text-xl" data-icon="mdi:lightbulb-on"></span> Gợi ý hành động từ hệ thống
@@ -13,10 +14,11 @@
                 <h4 class="text-sm font-bold text-gray-800 leading-tight"><?= $suggestion['title'] ?></h4>
             </div>
             <p class="text-xs text-gray-600 mb-4 flex-1 line-clamp-2"><?= $suggestion['desc'] ?></p>
-            <button class="w-full py-1.5 px-3 text-xs font-medium text-center rounded border <?= $suggestion['btn_class'] ?> transition-colors">
+            <a href="<?= $suggestion['link'] ?>" class="w-full py-1.5 px-3 text-xs font-medium text-center rounded border block <?= $suggestion['btn_class'] ?> transition-colors">
                 <?= $suggestion['btn_text'] ?>
-            </button>
+            </a>
         </div>
         <?php endforeach; ?>
     </div>
 </div>
+<?php endif; ?>

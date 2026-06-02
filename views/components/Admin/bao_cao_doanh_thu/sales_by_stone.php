@@ -4,6 +4,9 @@
         <button class="text-gray-400 hover:text-[#6B0D18]"><span class="iconify" data-icon="mdi:export"></span></button>
     </div>
     
+    <?php if (empty($revenueByStone)): ?>
+        <div class="text-center text-gray-500 py-4">Chưa có dữ liệu.</div>
+    <?php else: ?>
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -29,4 +32,5 @@
             </tbody>
         </table>
     </div>
+    <?php endif; ?>
 </div>

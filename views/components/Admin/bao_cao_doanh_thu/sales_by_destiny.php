@@ -5,6 +5,9 @@
     </div>
     
     <div class="space-y-3">
+        <?php if (empty($revenueByDestiny)): ?>
+            <div class="text-center text-gray-500 py-4">Chưa có dữ liệu.</div>
+        <?php else: ?>
         <?php foreach($revenueByDestiny as $destiny): ?>
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
             <div class="flex items-center gap-3">
@@ -22,5 +25,6 @@
             </div>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>

@@ -4,7 +4,7 @@
         <p class="text-sm text-gray-600 mt-1">Theo dõi doanh thu, đơn hàng, sản phẩm bán chạy và hiệu quả kinh doanh theo từng khoảng thời gian.</p>
     </div>
     <div class="flex items-center gap-3">
-        <button class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+        <button onclick="location.reload()" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
             <span class="iconify" data-icon="mdi:refresh"></span> Làm mới
         </button>
         <div class="relative group">

@@ -116,6 +116,7 @@ $router->post('/admin/banner/api/xoa', 'Admin\BannerController@apiXoa');
 $router->post('/admin/banner/api/trang-thai', 'Admin\BannerController@apiTrangThai');
 
 $router->get('/admin/bao-cao-doanh-thu', 'Admin\BaoCaoDoanhThuController@index');
+$router->get('/admin/bao-cao-doanh-thu/api/chart', 'Admin\BaoCaoDoanhThuController@apiChartData');
 $router->get('/admin/bao-cao-san-pham', 'Admin\BaoCaoSanPhamController@index');
 $router->get('/admin/ton-kho', 'Admin\TonKhoController@index');
 $router->post('/admin/ton-kho/dieu-chinh', 'Admin\TonKhoController@dieuChinh');

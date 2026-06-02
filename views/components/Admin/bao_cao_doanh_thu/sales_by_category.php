@@ -5,6 +5,9 @@
     </div>
     
     <div class="space-y-4">
+        <?php if (empty($revenueByCategory)): ?>
+            <div class="text-center text-gray-500 py-4">Chưa có dữ liệu.</div>
+        <?php else: ?>
         <?php foreach($revenueByCategory as $cat): ?>
         <div>
             <div class="flex justify-between items-end mb-1">
@@ -22,5 +25,6 @@
             </div>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>

@@ -33,6 +33,11 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 text-sm">
+                <?php if (empty($marketingReport['danh_sach_voucher'])): ?>
+                <tr>
+                    <td colspan="5" class="py-4 text-center text-gray-500">Chưa có voucher nào được sử dụng.</td>
+                </tr>
+                <?php else: ?>
                 <?php foreach($marketingReport['danh_sach_voucher'] as $vc): ?>
                 <tr class="hover:bg-gray-50">
                     <td class="py-2.5 px-3">
@@ -50,6 +55,7 @@
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

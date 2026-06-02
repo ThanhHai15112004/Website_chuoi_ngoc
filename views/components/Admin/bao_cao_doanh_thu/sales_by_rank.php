@@ -4,6 +4,9 @@
     </div>
     
     <div class="space-y-3">
+        <?php if (empty($customerRanks)): ?>
+            <div class="text-center text-gray-500 py-4 text-sm">Chưa có dữ liệu.</div>
+        <?php else: ?>
         <?php foreach($customerRanks as $rank): ?>
         <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 border border-transparent hover:border-gray-100">
             <div>
@@ -16,5 +19,6 @@
             </div>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>

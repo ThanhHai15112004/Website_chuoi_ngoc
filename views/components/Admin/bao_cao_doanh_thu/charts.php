@@ -4,10 +4,10 @@
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 lg:col-span-2">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-bold text-gray-800">Doanh thu theo thời gian</h3>
-            <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1">
-                <button class="px-3 py-1 text-xs font-medium bg-white shadow-sm rounded-md text-gray-800">Ngày</button>
-                <button class="px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-800">Tuần</button>
-                <button class="px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-800">Tháng</button>
+            <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1" id="chartIntervalTabs">
+                <button data-interval="day" class="chart-tab-btn px-3 py-1 text-xs font-medium bg-white shadow-sm rounded-md text-gray-800 transition-colors">Ngày</button>
+                <button data-interval="week" class="chart-tab-btn px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-800 transition-colors">Tuần</button>
+                <button data-interval="month" class="chart-tab-btn px-3 py-1 text-xs font-medium text-gray-500 hover:text-gray-800 transition-colors">Tháng</button>
             </div>
         </div>
         <div class="h-[300px] w-full">

@@ -4,6 +4,9 @@
     </div>
     
     <div class="space-y-3">
+        <?php if (empty($paymentMethods)): ?>
+            <div class="text-center text-gray-500 py-4 text-sm">Chưa có dữ liệu.</div>
+        <?php else: ?>
         <?php foreach($paymentMethods as $pm): ?>
         <div>
             <div class="flex justify-between items-center mb-1">
@@ -18,5 +21,6 @@
             </div>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>

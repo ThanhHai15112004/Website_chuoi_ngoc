@@ -19,9 +19,13 @@
                 <span class="flex items-center text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded mr-2">
                     <span class="iconify mr-1" data-icon="mdi:arrow-top-right"></span> +<?= $overview['tong_doanh_thu']['tang_truong'] ?>%
                 </span>
-            <?php else: ?>
+            <?php elseif($overview['tong_doanh_thu']['xu_huong'] === 'giam'): ?>
                 <span class="flex items-center text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded mr-2">
                     <span class="iconify mr-1" data-icon="mdi:arrow-bottom-right"></span> -<?= $overview['tong_doanh_thu']['tang_truong'] ?>%
+                </span>
+            <?php else: ?>
+                <span class="flex items-center text-gray-600 font-medium bg-gray-100 px-2 py-0.5 rounded mr-2">
+                    <span class="iconify mr-1" data-icon="mdi:minus"></span> 0%
                 </span>
             <?php endif; ?>
             <span class="text-gray-500 text-xs">so với kỳ trước</span>
@@ -37,9 +41,19 @@
             </div>
         </div>
         <div class="mt-4 flex items-center text-sm">
-            <span class="flex items-center text-green-600 font-medium">
-                <span class="iconify mr-1" data-icon="mdi:arrow-top-right"></span> +<?= $overview['don_thanh_cong']['tang_truong'] ?> đơn
-            </span>
+            <?php if($overview['don_thanh_cong']['xu_huong'] === 'tang'): ?>
+                <span class="flex items-center text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:arrow-top-right"></span> +<?= $overview['don_thanh_cong']['tang_truong'] ?>%
+                </span>
+            <?php elseif($overview['don_thanh_cong']['xu_huong'] === 'giam'): ?>
+                <span class="flex items-center text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:arrow-bottom-right"></span> -<?= $overview['don_thanh_cong']['tang_truong'] ?>%
+                </span>
+            <?php else: ?>
+                <span class="flex items-center text-gray-600 font-medium bg-gray-100 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:minus"></span> 0%
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -52,9 +66,19 @@
             </div>
         </div>
         <div class="mt-4 flex items-center text-sm">
-            <span class="flex items-center text-green-600 font-medium">
-                <span class="iconify mr-1" data-icon="mdi:arrow-top-right"></span> +<?= $overview['gia_tri_trung_binh']['tang_truong'] ?>%
-            </span>
+            <?php if($overview['gia_tri_trung_binh']['xu_huong'] === 'tang'): ?>
+                <span class="flex items-center text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:arrow-top-right"></span> +<?= $overview['gia_tri_trung_binh']['tang_truong'] ?>%
+                </span>
+            <?php elseif($overview['gia_tri_trung_binh']['xu_huong'] === 'giam'): ?>
+                <span class="flex items-center text-red-600 font-medium bg-red-50 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:arrow-bottom-right"></span> -<?= $overview['gia_tri_trung_binh']['tang_truong'] ?>%
+                </span>
+            <?php else: ?>
+                <span class="flex items-center text-gray-600 font-medium bg-gray-100 px-2 py-0.5 rounded">
+                    <span class="iconify mr-1" data-icon="mdi:minus"></span> 0%
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 

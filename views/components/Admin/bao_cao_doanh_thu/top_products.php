@@ -6,6 +6,9 @@
 
     <!-- Top Sản Phẩm Bán Chạy -->
     <div class="flex-1 space-y-4">
+        <?php if (empty($topProducts)): ?>
+            <div class="text-center text-gray-500 py-4">Chưa có dữ liệu sản phẩm bán chạy.</div>
+        <?php else: ?>
         <?php foreach($topProducts as $index => $sp): ?>
         <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50/50 border border-transparent hover:border-red-100 transition-colors group">
             <div class="w-6 font-bold text-gray-400 text-center flex-shrink-0">
@@ -32,6 +35,7 @@
             </div>
         </div>
         <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
     <!-- Cảnh báo sản phẩm bán chậm -->
@@ -40,17 +44,22 @@
             <span class="iconify text-orange-500" data-icon="mdi:alert-circle-outline"></span> Cần tối ưu (Bán chậm)
         </h4>
         <div class="space-y-3">
+            <?php if (empty($slowProducts)): ?>
+                <div class="text-center text-gray-500 py-2 text-sm">Không có sản phẩm nào cần tối ưu.</div>
+            <?php else: ?>
             <?php foreach($slowProducts as $sp): ?>
-            <div class="bg-orange-50/50 border border-orange-100 rounded-lg p-3 flex justify-between items-center">
-                <div>
-                    <p class="text-sm font-medium text-gray-800"><?= $sp['ten_sp'] ?></p>
-                    <p class="text-xs text-gray-500 mt-0.5">Tồn: <?= $sp['ton_kho'] ?> &bull; Đã bán: <?= $sp['da_ban_ky'] ?></p>
+            <div class="bg-orange-50/50 border border-orange-100 rounded-lg p-3 flex justify-between items-center gap-3">
+                <img src="<?= $sp['hinh_anh'] ?>" alt="<?= $sp['ten_sp'] ?>" class="w-10 h-10 rounded object-cover border border-orange-200 shrink-0">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-800 truncate" title="<?= $sp['ten_sp'] ?>"><?= $sp['ten_sp'] ?></p>
+                    <p class="text-xs text-gray-500 mt-0.5">Tồn: <strong class="text-gray-700"><?= $sp['ton_kho'] ?></strong> &bull; Đã bán: <?= $sp['da_ban_ky'] ?></p>
                 </div>
-                <button class="px-3 py-1.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded text-xs font-medium hover:bg-red-50 transition-colors whitespace-nowrap">
-                    Tạo khuyến mãi
-                </button>
+                <a href="<?= APP_URL ?>/admin/voucher/them?id_sp=<?= $sp['ma_sp'] ?>" class="px-3 py-1.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded text-xs font-medium hover:bg-red-50 transition-colors whitespace-nowrap text-center">
+                    Tạo KM
+                </a>
             </div>
             <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>
