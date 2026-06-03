@@ -43,6 +43,16 @@ class VongTheoMenhController extends Controller
     {
         header('Content-Type: application/json; charset=utf-8');
 
+        if (empty($_SESSION['user_id'])) {
+            echo json_encode([
+                'success' => false, 
+                'require_login' => true, 
+                'message' => 'Vui lòng đăng nhập để xem kết quả.'
+            ]);
+            return;
+        }
+
+
         // 1. Nhận và validate input
         $day      = isset($_POST['birth_day'])   ? (int)trim($_POST['birth_day'])   : 0;
         $month    = isset($_POST['birth_month']) ? (int)trim($_POST['birth_month']) : 0;
@@ -124,8 +134,13 @@ class VongTheoMenhController extends Controller
     {
         $slug = trim($slug);
 
+        if (empty($_SESSION['user_id'])) {
+            header('Location: ' . APP_URL . '/dang-nhap?redirect=' . urlencode(APP_URL . '/vong-theo-menh/ket-qua/' . $slug));
+            exit;
+        }
 
         if (empty($slug)) {
+
             header('Location: ' . APP_URL . '/vong-theo-menh');
             exit;
         }

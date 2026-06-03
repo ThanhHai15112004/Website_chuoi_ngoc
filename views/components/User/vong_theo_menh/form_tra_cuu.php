@@ -190,6 +190,18 @@ document.getElementById('fengshuiForm').addEventListener('submit', async functio
 
         if (data.success && data.redirect_url) {
             window.location.href = data.redirect_url;
+        } else if (data.require_login) {
+            // Save form to session
+            const fd = new FormData(document.getElementById('fengshuiForm'));
+            const savedData = {};
+            fd.forEach((v, k) => savedData[k] = v);
+            sessionStorage.setItem('pending_fengshui', JSON.stringify(savedData));
+            
+            // Show message and redirect to login
+            showError(data.message || 'Vui lòng đăng nhập để xem kết quả.');
+            setTimeout(() => {
+                window.location.href = '<?= APP_URL ?>/dang-nhap?redirect=' + encodeURIComponent('<?= APP_URL ?>/vong-theo-menh?auto=1');
+            }, 1000);
         } else {
             const msg = (data.errors || ['Có lỗi xảy ra, vui lòng thử lại.']).join(' ');
             showError(msg);
@@ -209,6 +221,41 @@ document.getElementById('fengshuiForm').addEventListener('submit', async functio
         document.getElementById('submitText').textContent = 'Xem Kết Quả Phong Thủy';
         document.getElementById('submitIcon').classList.remove('hidden');
         document.getElementById('submitLoader').classList.add('hidden');
+    }
+});
+
+// Auto fill & submit if redirect back from login
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('auto') && <?= !empty($_SESSION['user_id']) ? 'true' : 'false' ?>) {
+        const saved = sessionStorage.getItem('pending_fengshui');
+        if (saved) {
+            try {
+                const data = JSON.parse(saved);
+                if (data.birth_day) document.getElementById('birthDay').value = data.birth_day;
+                if (data.birth_month) document.getElementById('birthMonth').value = data.birth_month;
+                if (data.birth_year) document.getElementById('birthYear').value = data.birth_year;
+                
+                if (data.gender) {
+                    const el = document.querySelector(`input[name="gender"][value="${data.gender}"]`);
+                    if (el) el.checked = true;
+                }
+                if (data.desire) {
+                    const el = document.querySelector(`input[name="desire"][value="${data.desire}"]`);
+                    if (el) el.checked = true;
+                }
+                if (data.lich_type) {
+                    const el = document.querySelector(`input[name="lich_type"][value="${data.lich_type}"]`);
+                    if (el) el.checked = true;
+                }
+                
+                // Clear session storage and auto submit
+                sessionStorage.removeItem('pending_fengshui');
+                document.getElementById('submitBtn').click();
+            } catch (e) {
+                console.error('Error auto-filling form', e);
+            }
+        }
     }
 });
 </script>
