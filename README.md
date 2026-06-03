@@ -35,10 +35,10 @@ Thiết kế hiện đại · Quản trị chuyên nghiệp · Trải nghiệm m
 
 Dự án bao gồm **2 phân hệ chính**:
 
-| Phân hệ | Mô tả |
-|---------|-------|
-| 🛍️ **Trang khách hàng (User)** | Trang chủ, danh sách sản phẩm, chi tiết sản phẩm, giỏ hàng, thanh toán, khuyến mãi, bài viết, liên hệ, tài khoản cá nhân |
-| ⚙️ **Trang quản trị (Admin)** | Dashboard, quản lý sản phẩm, đơn hàng, khách hàng, nhân sự, kho hàng, khuyến mãi, voucher, bài viết, thông báo, báo cáo... |
+| Phân hệ                        | Mô tả                                                                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| 🛍️ **Trang khách hàng (User)** | Trang chủ, danh sách sản phẩm, chi tiết sản phẩm, giỏ hàng, thanh toán, khuyến mãi, bài viết, liên hệ, tài khoản cá nhân   |
+| ⚙️ **Trang quản trị (Admin)**  | Dashboard, quản lý sản phẩm, đơn hàng, khách hàng, nhân sự, kho hàng, khuyến mãi, voucher, bài viết, thông báo, báo cáo... |
 
 ---
 
@@ -86,16 +86,16 @@ Dự án bao gồm **2 phân hệ chính**:
 
 ## 🛠️ Công Nghệ Sử Dụng
 
-| Thành phần | Công nghệ |
-|-----------|-----------|
-| **Backend** | PHP 8.0+ thuần (Vanilla PHP, không framework) |
-| **Database** | MySQL / MariaDB 10.4+ (PDO, Prepared Statements) |
-| **Frontend (User)** | HTML5, TailwindCSS v4 (build via CLI), Vanilla JavaScript |
-| **Frontend (Admin)** | HTML5, TailwindCSS v4 (CDN), Vanilla JavaScript |
-| **CSS Build Tool** | `@tailwindcss/cli` v4.3 |
-| **Thư viện JS** | Swiper.js (slider), Chart.js (biểu đồ), AOS (animation on scroll), SweetAlert2 (toast), Iconify (icon) |
-| **Email** | Raw SMTP Socket (custom MailHelper, không dùng PHPMailer) |
-| **Web Server** | Apache (XAMPP) với `mod_rewrite` |
+| Thành phần           | Công nghệ                                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Backend**          | PHP 8.0+ thuần (Vanilla PHP, không framework)                                                          |
+| **Database**         | MySQL / MariaDB 10.4+ (PDO, Prepared Statements)                                                       |
+| **Frontend (User)**  | HTML5, TailwindCSS v4 (build via CLI), Vanilla JavaScript                                              |
+| **Frontend (Admin)** | HTML5, TailwindCSS v4 (CDN), Vanilla JavaScript                                                        |
+| **CSS Build Tool**   | `@tailwindcss/cli` v4.3                                                                                |
+| **Thư viện JS**      | Swiper.js (slider), Chart.js (biểu đồ), AOS (animation on scroll), SweetAlert2 (toast), Iconify (icon) |
+| **Email**            | Raw SMTP Socket (custom MailHelper, không dùng PHPMailer)                                              |
+| **Web Server**       | Apache (XAMPP) với `mod_rewrite`                                                                       |
 
 ---
 
@@ -109,17 +109,18 @@ Request → .htaccess → public/index.php → Router → Controller → Service
                                                       View (Layout + Page + Components)
 ```
 
-| Tầng | Thư mục | Vai trò |
-|------|---------|---------|
-| **Router** | `routes/` | Định nghĩa route bằng regex, map URL → Controller@action |
-| **Controller** | `app/Controllers/` | Nhận request, validate input, gọi Service, trả View/JSON |
-| **Service** | `app/Services/` | Xử lý logic nghiệp vụ (business logic) |
-| **Model** | `app/Models/` | Tương tác Database qua PDO Singleton |
-| **View** | `views/` | Giao diện: layouts, pages, components, emails |
-| **Core** | `app/Core/` | Router, Controller base, Database singleton, Helpers, MailHelper |
-| **Constants** | `app/Constants/` | Hằng số: trạng thái đơn hàng, hạng thành viên, sản phẩm... |
+| Tầng           | Thư mục            | Vai trò                                                          |
+| -------------- | ------------------ | ---------------------------------------------------------------- |
+| **Router**     | `routes/`          | Định nghĩa route bằng regex, map URL → Controller@action         |
+| **Controller** | `app/Controllers/` | Nhận request, validate input, gọi Service, trả View/JSON         |
+| **Service**    | `app/Services/`    | Xử lý logic nghiệp vụ (business logic)                           |
+| **Model**      | `app/Models/`      | Tương tác Database qua PDO Singleton                             |
+| **View**       | `views/`           | Giao diện: layouts, pages, components, emails                    |
+| **Core**       | `app/Core/`        | Router, Controller base, Database singleton, Helpers, MailHelper |
+| **Constants**  | `app/Constants/`   | Hằng số: trạng thái đơn hàng, hạng thành viên, sản phẩm...       |
 
 ### Quy ước quan trọng:
+
 - Tất cả **Primary Key** dùng **UUID** (`varchar(36)`), tự generate bằng PHP
 - Bảng `nguoi_dung` dùng chung cho Admin/Staff và Khách hàng (phân biệt qua `id_vai_tro`)
 - Sử dụng **Prepared Statements** cho 100% SQL query
@@ -186,11 +187,11 @@ shopbanhangchuoingoc/
 
 ### Yêu cầu hệ thống
 
-| Phần mềm | Phiên bản tối thiểu |
-|-----------|---------------------|
+| Phần mềm                                | Phiên bản tối thiểu                         |
+| --------------------------------------- | ------------------------------------------- |
 | [XAMPP](https://www.apachefriends.org/) | 8.0+ (bao gồm Apache + MySQL/MariaDB + PHP) |
-| [Node.js](https://nodejs.org/) | 18+ (để build TailwindCSS) |
-| [Git](https://git-scm.com/) | Bất kỳ |
+| [Node.js](https://nodejs.org/)          | 18+ (để build TailwindCSS)                  |
+| [Git](https://git-scm.com/)             | Bất kỳ                                      |
 
 ### Các bước cài đặt
 
@@ -273,9 +274,9 @@ npm run dev
 
 #### 5️⃣ Truy cập Website
 
-| Trang | URL |
-|-------|-----|
-| 🏠 **Trang chủ** | [http://localhost/shopbanhangchuoingoc](http://localhost/shopbanhangchuoingoc) |
+| Trang                 | URL                                                                                        |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| 🏠 **Trang chủ**      | [http://localhost/shopbanhangchuoingoc](http://localhost/shopbanhangchuoingoc)             |
 | ⚙️ **Trang quản trị** | [http://localhost/shopbanhangchuoingoc/admin](http://localhost/shopbanhangchuoingoc/admin) |
 
 > 🎉 **Xong!** Nếu bạn thấy trang chủ hiển thị bình thường, nghĩa là mọi thứ đã được cài đặt thành công.
@@ -286,19 +287,19 @@ npm run dev
 
 ### Biến môi trường (`.env`)
 
-| Biến | Mô tả | Giá trị mặc định |
-|------|--------|-------------------|
-| `DB_HOST` | Địa chỉ MySQL server | `127.0.0.1` |
-| `DB_PORT` | Port MySQL | `3306` hoặc `3307` |
-| `DB_DATABASE` | Tên database | `shop_chuoi_ngoc` |
-| `DB_USERNAME` | Username MySQL | `root` |
-| `DB_PASSWORD` | Password MySQL | _(trống)_ |
-| `DB_CHARSET` | Character set | `utf8mb4` |
-| `EMAIL_HOST` | SMTP host | `smtp.gmail.com` |
-| `EMAIL_PORT` | SMTP port | `587` |
-| `EMAIL_USER` | Email gửi đi | – |
-| `EMAIL_PASS` | App password | – |
-| `EMAIL_FROM` | Email hiển thị người gửi | – |
+| Biến          | Mô tả                    | Giá trị mặc định   |
+| ------------- | ------------------------ | ------------------ |
+| `DB_HOST`     | Địa chỉ MySQL server     | `127.0.0.1`        |
+| `DB_PORT`     | Port MySQL               | `3306` hoặc `3307` |
+| `DB_DATABASE` | Tên database             | `shop_chuoi_ngoc`  |
+| `DB_USERNAME` | Username MySQL           | `root`             |
+| `DB_PASSWORD` | Password MySQL           | _(trống)_          |
+| `DB_CHARSET`  | Character set            | `utf8mb4`          |
+| `EMAIL_HOST`  | SMTP host                | `smtp.gmail.com`   |
+| `EMAIL_PORT`  | SMTP port                | `587`              |
+| `EMAIL_USER`  | Email gửi đi             | –                  |
+| `EMAIL_PASS`  | App password             | –                  |
+| `EMAIL_FROM`  | Email hiển thị người gửi | –                  |
 
 ### Cấu hình Apache
 
@@ -316,59 +317,63 @@ Và `AllowOverride` được đặt thành `All` cho thư mục htdocs.
 
 ### Trang Khách Hàng (User Frontend)
 
-| Module | Trạng thái | Ghi chú |
-|--------|-----------|---------|
-| Trang chủ | ✅ Hoàn thành | Banner, SP bán chạy, danh mục, ngũ hành, bài viết, đánh giá |
-| Danh sách sản phẩm | ✅ Hoàn thành | Bộ lọc, sắp xếp, phân trang, grid/list view |
-| Chi tiết sản phẩm | ✅ Hoàn thành | Gallery, biến thể, đánh giá, voucher, SP liên quan, SP đã xem |
-| Trang khuyến mãi | ✅ Hoàn thành | Flash sale, voucher theo hạng KH, SP giảm giá, ưu đãi hội viên |
-| Giỏ hàng | ✅ Hoàn thành | CRUD giỏ hàng, cập nhật số lượng |
-| Thanh toán | ✅ Hoàn thành | Form đặt hàng, chọn PTTT/PTVC |
-| Bài viết / Blog | ✅ Hoàn thành | Danh sách, chi tiết bài viết |
-| Đăng nhập / Đăng ký | ✅ Hoàn thành | Xác thực, session |
-| Tài khoản cá nhân | ✅ Hoàn thành | Thông tin, đổi mật khẩu |
-| Tra cứu đơn hàng | ✅ Hoàn thành | Xem chi tiết, trạng thái |
-| Liên hệ | ✅ Hoàn thành | Form liên hệ |
-| Vòng theo mệnh | ✅ Hoàn thành | Tư vấn SP theo ngũ hành |
+| Module              | Trạng thái    | Ghi chú                                                        |
+| ------------------- | ------------- | -------------------------------------------------------------- |
+| Trang chủ           | ✅ Hoàn thành | Banner, SP bán chạy, danh mục, ngũ hành, bài viết, đánh giá    |
+| Danh sách sản phẩm  | ✅ Hoàn thành | Bộ lọc, sắp xếp, phân trang, grid/list view                    |
+| Chi tiết sản phẩm   | ✅ Hoàn thành | Gallery, biến thể, đánh giá, voucher, SP liên quan, SP đã xem  |
+| Trang khuyến mãi    | ✅ Hoàn thành | Flash sale, voucher theo hạng KH, SP giảm giá, ưu đãi hội viên |
+| Giỏ hàng            | ✅ Hoàn thành | CRUD giỏ hàng, cập nhật số lượng                               |
+| Thanh toán          | ✅ Hoàn thành | Form đặt hàng, chọn PTTT/PTVC                                  |
+| Bài viết / Blog     | ✅ Hoàn thành | Danh sách, chi tiết bài viết                                   |
+| Đăng nhập / Đăng ký | ✅ Hoàn thành | Xác thực, session                                              |
+| Tài khoản cá nhân   | ✅ Hoàn thành | Thông tin, đổi mật khẩu                                        |
+| Tra cứu đơn hàng    | ✅ Hoàn thành | Xem chi tiết, trạng thái                                       |
+| Liên hệ             | ✅ Hoàn thành | Form liên hệ                                                   |
+| Vòng theo mệnh      | ✅ Hoàn thành | Tư vấn SP theo ngũ hành                                        |
 
 ### Trang Quản Trị (Admin)
 
-| Module | Trạng thái | Ghi chú |
-|--------|-----------|---------|
-| Dashboard | ✅ Hoàn thành | Thống kê, biểu đồ Chart.js |
-| Quản lý sản phẩm | ✅ Hoàn thành | CRUD, biến thể, nhiều ảnh |
-| Quản lý danh mục | ✅ Hoàn thành | CRUD |
-| Quản lý loại đá | ✅ Hoàn thành | CRUD |
-| Quản lý mệnh phong thủy | ✅ Hoàn thành | CRUD |
-| Quản lý đơn hàng | ✅ Hoàn thành | Danh sách, chi tiết, tạo đơn, cập nhật trạng thái |
-| Quản lý khách hàng | ✅ Hoàn thành | CRUD, chi tiết, hạng thành viên |
-| Quản lý nhân sự | ✅ Hoàn thành | CRUD nhân viên, phân vai trò |
-| Quản lý kho hàng | ✅ Hoàn thành | Nhập/xuất/thuyên chuyển/kiểm kê, cấu hình kho |
-| Quản lý nhà cung cấp | ✅ Hoàn thành | CRUD |
-| Quản lý khuyến mãi | ✅ Hoàn thành | Chương trình KM, Flash Sale |
-| Quản lý voucher | ✅ Hoàn thành | CRUD, phân bổ theo hạng KH |
-| Quản lý bài viết | ✅ Hoàn thành | CMS blog |
-| Quản lý banner | ✅ Hoàn thành | Slider ảnh |
-| Quản lý chính sách | ✅ Hoàn thành | Đổi trả, bảo hành |
-| Thanh toán & Vận chuyển | ✅ Hoàn thành | PTTT, PTVC, freeship |
-| Hệ thống thông báo | ✅ Hoàn thành | Gửi thông báo KH |
-| Nhật ký hoạt động | ✅ Hoàn thành | Log hành vi admin |
-| Báo cáo doanh thu | ✅ Hoàn thành | Biểu đồ theo thời gian |
-| Báo cáo sản phẩm | ✅ Hoàn thành | SP bán chạy, tồn kho |
-| Quản lý tài khoản | ✅ Hoàn thành | Admin accounts, vai trò |
-| Hạng thành viên | ✅ Hoàn thành | 4 hạng: Đồng, Bạc, Vàng, Kim Cương |
-| Đánh giá / Bình luận | ✅ Hoàn thành | Duyệt, phản hồi |
+| Module                  | Trạng thái    | Ghi chú                                           |
+| ----------------------- | ------------- | ------------------------------------------------- |
+| Dashboard               | ✅ Hoàn thành | Thống kê, biểu đồ Chart.js                        |
+| Quản lý sản phẩm        | ✅ Hoàn thành | CRUD, biến thể, nhiều ảnh                         |
+| Quản lý danh mục        | ✅ Hoàn thành | CRUD                                              |
+| Quản lý loại đá         | ✅ Hoàn thành | CRUD                                              |
+| Quản lý mệnh phong thủy | ✅ Hoàn thành | CRUD                                              |
+| Quản lý đơn hàng        | ✅ Hoàn thành | Danh sách, chi tiết, tạo đơn, cập nhật trạng thái |
+| Quản lý khách hàng      | ✅ Hoàn thành | CRUD, chi tiết, hạng thành viên                   |
+| Quản lý nhân sự         | ✅ Hoàn thành | CRUD nhân viên, phân vai trò                      |
+| Quản lý kho hàng        | ✅ Hoàn thành | Nhập/xuất/thuyên chuyển/kiểm kê, cấu hình kho     |
+| Quản lý nhà cung cấp    | ✅ Hoàn thành | CRUD                                              |
+| Quản lý khuyến mãi      | ✅ Hoàn thành | Chương trình KM, Flash Sale                       |
+| Quản lý voucher         | ✅ Hoàn thành | CRUD, phân bổ theo hạng KH                        |
+| Quản lý bài viết        | ✅ Hoàn thành | CMS blog                                          |
+| Quản lý banner          | ✅ Hoàn thành | Slider ảnh                                        |
+| Quản lý chính sách      | ✅ Hoàn thành | Đổi trả, bảo hành                                 |
+| Thanh toán & Vận chuyển | ✅ Hoàn thành | PTTT, PTVC, freeship                              |
+| Hệ thống thông báo      | ✅ Hoàn thành | Gửi thông báo KH                                  |
+| Nhật ký hoạt động       | ✅ Hoàn thành | Log hành vi admin                                 |
+| Báo cáo doanh thu       | ✅ Hoàn thành | Biểu đồ theo thời gian                            |
+| Báo cáo sản phẩm        | ✅ Hoàn thành | SP bán chạy, tồn kho                              |
+| Quản lý tài khoản       | ✅ Hoàn thành | Admin accounts, vai trò                           |
+| Hạng thành viên         | ✅ Hoàn thành | 4 hạng: Đồng, Bạc, Vàng, Kim Cương                |
+| Đánh giá / Bình luận    | ✅ Hoàn thành | Duyệt, phản hồi                                   |
 
 ---
 
 ## 🔑 Tài Khoản Demo
 
+\*\*\*Tài khoản admin:
+Tài khoản: admin@chuoingocshop.com
+Mật khẩu: admin1234
+
 > ⚠️ Tài khoản mặc định có trong dữ liệu mẫu. Vui lòng kiểm tra bảng `nguoi_dung` trong database sau khi import.
 
-| Vai trò | Ghi chú |
-|---------|---------|
-| **Admin** | Tài khoản có `id_vai_tro IS NOT NULL` |
-| **Khách hàng** | Tài khoản có `id_vai_tro IS NULL` |
+| Vai trò        | Ghi chú                               |
+| -------------- | ------------------------------------- |
+| **Admin**      | Tài khoản có `id_vai_tro IS NOT NULL` |
+| **Khách hàng** | Tài khoản có `id_vai_tro IS NULL`     |
 
 ---
 
