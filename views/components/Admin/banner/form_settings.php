@@ -74,6 +74,20 @@ $loai_link = $banner['loai_link'] ?? 'san_pham';
             </div>
         </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Text Nút Phụ -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chữ nút phụ (tùy chọn)</label>
+                <input type="text" name="btn_2_text" value="<?= $banner['btn_2_text'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Ví dụ: Tìm hiểu thêm">
+            </div>
+            
+            <!-- Link Nút Phụ -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Link nút phụ (tùy chọn)</label>
+                <input type="text" name="btn_2_link" value="<?= $banner['btn_2_link'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="/bai-viet/abc">
+            </div>
+        </div>
+
         <!-- Thứ tự -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Thứ tự hiển thị</label>

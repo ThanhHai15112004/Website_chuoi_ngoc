@@ -3,11 +3,11 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14" data-aos="fade-up">
             <h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: #111;">
-                Vì sao chọn <span class="font-bold" style="color: #8b0000;">Chuỗi Ngọc</span>
+                <?= htmlspecialchars($tai_sao_chon_chung_toi['tieu_de'] ?? 'Vì sao chọn Chuỗi Ngọc') ?>
             </h2>
             <div class="w-20 h-1 mx-auto rounded-full mb-4" style="background: linear-gradient(90deg, #d4af37, #e6d490);"></div>
             <p class="max-w-2xl mx-auto" style="color: #666;">
-                Chúng tôi cam kết mang đến những giá trị phong thủy tốt nhất, giúp bạn thu hút tài lộc, bình an và may mắn.
+                <?= htmlspecialchars($tai_sao_chon_chung_toi['mo_ta'] ?? 'Chúng tôi cam kết mang đến những giá trị phong thủy tốt nhất, giúp bạn thu hút tài lộc, bình an và may mắn.') ?>
             </p>
         </div>
 

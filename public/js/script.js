@@ -2,41 +2,69 @@
 document.addEventListener('DOMContentLoaded', () => {
     const timerElement = document.getElementById('flash-sale-timer');
     if (timerElement) {
-        // Initialize with 5 hours, 23 minutes, 18 seconds (as in HTML)
+        const endTimeStr = timerElement.getAttribute('data-endtime');
         let hours = 5;
         let minutes = 23;
         let seconds = 18;
 
-        const updateTimer = () => {
-            if (seconds > 0) {
-                seconds--;
-            } else {
-                seconds = 59;
-                if (minutes > 0) {
-                    minutes--;
+        if (endTimeStr) {
+            // Parse end time (YYYY-MM-DD HH:MM:SS) - replacing space with T for cross-browser ISO compatibility
+            const endTime = new Date(endTimeStr.replace(' ', 'T')).getTime();
+            
+            const updateTimer = () => {
+                const now = new Date().getTime();
+                const distance = endTime - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    timerElement.innerHTML = '<span class="text-xs font-semibold text-gray-500">Đã kết thúc</span>';
+                    return;
+                }
+
+                hours = Math.floor(distance / (1000 * 60 * 60));
+                minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const spans = timerElement.querySelectorAll('span[style*="background"], span.bg-crimson-600');
+                if (spans.length >= 3) {
+                    spans[0].textContent = hours.toString().padStart(2, '0');
+                    spans[1].textContent = minutes.toString().padStart(2, '0');
+                    spans[2].textContent = seconds.toString().padStart(2, '0');
+                }
+            };
+            updateTimer();
+            const interval = setInterval(updateTimer, 1000);
+        } else {
+            // Fallback static countdown
+            const updateTimer = () => {
+                if (seconds > 0) {
+                    seconds--;
                 } else {
-                    minutes = 59;
-                    if (hours > 0) {
-                        hours--;
+                    seconds = 59;
+                    if (minutes > 0) {
+                        minutes--;
                     } else {
-                        // Reset or hide when finished
-                        hours = 0;
-                        minutes = 0;
-                        seconds = 0;
-                        clearInterval(interval);
+                        minutes = 59;
+                        if (hours > 0) {
+                            hours--;
+                        } else {
+                            hours = 0;
+                            minutes = 0;
+                            seconds = 0;
+                            clearInterval(interval);
+                        }
                     }
                 }
-            }
 
-            const spans = timerElement.querySelectorAll('span.bg-crimson-600');
-            if (spans.length === 3) {
-                spans[0].textContent = hours.toString().padStart(2, '0');
-                spans[1].textContent = minutes.toString().padStart(2, '0');
-                spans[2].textContent = seconds.toString().padStart(2, '0');
-            }
-        };
-
-        const interval = setInterval(updateTimer, 1000);
+                const spans = timerElement.querySelectorAll('span[style*="background"], span.bg-crimson-600');
+                if (spans.length >= 3) {
+                    spans[0].textContent = hours.toString().padStart(2, '0');
+                    spans[1].textContent = minutes.toString().padStart(2, '0');
+                    spans[2].textContent = seconds.toString().padStart(2, '0');
+                }
+            };
+            const interval = setInterval(updateTimer, 1000);
+        }
     }
 
     // Header smooth transition on scroll
@@ -78,8 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
         new Swiper('.hero-swiper', {
             loop: true,
             effect: 'fade',
+            fadeEffect: { crossFade: true },
+            speed: 1000,
             autoplay: {
-                delay: 5000,
+                delay: 4000,
                 disableOnInteraction: false,
             },
             pagination: {

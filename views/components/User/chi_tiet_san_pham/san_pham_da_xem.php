@@ -4,66 +4,146 @@
  */
 ?>
 
-<div class="mt-8 border-t border-gray-100 pt-8">
-    <div class="flex justify-between items-end mb-6">
-        <h2 class="text-xl font-semibold text-gray-800">
-            Sản Phẩm Bạn Vừa Xem
-        </h2>
+<div class="mt-8 border-t border-gray-100 pt-16">
+    <div class="flex justify-between items-end mb-8 pb-4">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">
+                Sản Phẩm Bạn Vừa Xem
+            </h2>
+            <p class="text-sm text-gray-500 mt-1">Lịch sử duyệt sản phẩm gần đây của bạn</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Navigation buttons for Swiper -->
+            <div class="hidden md:flex gap-2">
+                <button class="viewed-swiper-prev w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-crimson-600 hover:bg-crimson-50 hover:text-crimson-600 transition-all">
+                    <iconify-icon icon="heroicons:arrow-left" class="text-lg"></iconify-icon>
+                </button>
+                <button class="viewed-swiper-next w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-crimson-600 hover:bg-crimson-50 hover:text-crimson-600 transition-all">
+                    <iconify-icon icon="heroicons:arrow-right" class="text-lg"></iconify-icon>
+                </button>
+            </div>
+        </div>
     </div>
 
-    <!-- Danh sách sản phẩm (Scroll ngang trên mobile, Grid trên desktop) -->
-    <div class="flex overflow-x-auto lg:grid lg:grid-cols-5 gap-4 pb-4 snap-x hide-scrollbar">
-        <?php foreach ($san_pham_da_xem as $sp): ?>
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300 overflow-hidden flex-none w-[180px] lg:w-auto snap-start group border border-gray-100">
-                <!-- Ảnh sản phẩm -->
-                <div class="relative w-full aspect-[4/5] bg-[#FAF7F2] overflow-hidden group/img">
-                    <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="block w-full h-full">
-                        <img src="<?= $sp['hinh_anh'] ?>" alt="<?= htmlspecialchars($sp['ten']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    </a>
-                    
-                    <!-- Nhãn/Badge -->
-                    <?php if (!empty($sp['nhan'])): ?>
-                        <div class="absolute top-2 left-2 bg-[#8B0000] text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm z-10">
-                            <?= $sp['nhan'] ?>
+    <!-- Swiper Container -->
+    <div class="swiper viewed-products-swiper -mx-4 px-4 sm:mx-0 sm:px-0 py-4">
+        <div class="swiper-wrapper">
+            <?php foreach ($san_pham_da_xem as $sp): ?>
+                <?php
+                    // Xác định màu badge
+                    $badge_class = '';
+                    if (!empty($sp['nhan'])) {
+                        if ($sp['nhan'] === 'Bán chạy') $badge_class = 'bg-gradient-to-r from-crimson-500 to-rose-500 text-white';
+                        elseif ($sp['nhan'] === 'Mới') $badge_class = 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white';
+                        elseif ($sp['nhan'] === 'Cao cấp') $badge_class = 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white';
+                        elseif (str_starts_with($sp['nhan'], '-')) $badge_class = 'bg-gradient-to-r from-orange-500 to-red-500 text-white';
+                        else $badge_class = 'bg-crimson-600 text-white';
+                    }
+                ?>
+                <div class="swiper-slide h-auto">
+                    <div class="product-card group h-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-crimson-100/50 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                        
+                        <!-- Ảnh sản phẩm -->
+                        <div class="relative overflow-hidden aspect-square bg-ivory-50 group/img shrink-0">
+                            <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="block w-full h-full">
+                                <img src="<?= $sp['hinh_anh'] ?>" 
+                                     alt="<?= htmlspecialchars($sp['ten']) ?>" 
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                     loading="lazy">
+                            </a>
+                            
+                            <!-- Badge -->
+                            <?php if (!empty($sp['nhan'])): ?>
+                            <span class="absolute top-3 left-3 <?= $badge_class ?> text-[11px] font-bold px-3 py-1 rounded-full shadow-lg">
+                                <?= $sp['nhan'] ?>
+                            </span>
+                            <?php endif; ?>
+
+                            <!-- Nút yêu thích -->
+                            <button class="absolute top-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-crimson-50 hover:text-crimson-600 transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
+                                <iconify-icon icon="heroicons:heart" class="text-base"></iconify-icon>
+                            </button>
+
+                            <!-- Quick view overlay -->
+                            <div class="absolute inset-x-0 bottom-4 flex justify-center gap-2 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 pointer-events-none z-10">
+                                <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Xem chi tiết">
+                                    <iconify-icon icon="heroicons:eye" class="text-xl"></iconify-icon>
+                                </a>
+                                <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Thêm vào giỏ">
+                                    <iconify-icon icon="heroicons:shopping-bag" class="text-xl"></iconify-icon>
+                                </button>
+                            </div>
                         </div>
-                    <?php endif; ?>
 
-                    <!-- Action buttons -->
-                    <div class="absolute inset-x-0 bottom-3 flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 pointer-events-none z-10">
-                        <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="w-8 h-8 bg-white/95 backdrop-blur-sm text-gray-700 rounded-full flex items-center justify-center shadow-lg hover:bg-[#8B0000] hover:text-white transition pointer-events-auto" title="Xem chi tiết">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </a>
-                        <button class="w-8 h-8 bg-white/95 backdrop-blur-sm text-gray-700 rounded-full flex items-center justify-center shadow-lg hover:bg-[#8B0000] hover:text-white transition pointer-events-auto" title="Thêm vào giỏ">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                        </button>
+                        <!-- Thông tin sản phẩm -->
+                        <div class="p-4 flex flex-col flex-grow">
+                            <!-- Tên sản phẩm -->
+                            <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="block mt-1">
+                                <h3 class="text-[15px] font-semibold text-gray-800 line-clamp-2 hover:text-crimson-600 transition-colors h-11">
+                                    <?= htmlspecialchars($sp['ten']) ?>
+                                </h3>
+                            </a>
+                            
+                            <div class="flex items-center gap-2 mt-2">
+                                <div class="flex items-center text-amber-400 gap-0.5">
+                                    <iconify-icon icon="heroicons:star-solid" class="text-sm"></iconify-icon>
+                                    <span class="text-xs font-medium text-gray-600 ml-0.5"><?= number_format($sp['danh_gia'], 1) ?></span>
+                                </div>
+                                <span class="text-gray-300 text-xs">|</span>
+                                <div class="text-xs text-gray-500">
+                                    Đã bán <?= $sp['da_ban'] ?>
+                                </div>
+                            </div>
+
+                            <!-- Giá -->
+                            <div class="mt-auto pt-3 flex items-end gap-2 h-[28px]">
+                                <span class="text-lg font-bold text-[#8B0000] leading-none"><?= number_format($sp['gia'], 0, ',', '.') ?>đ</span>
+                                <?php if (!empty($sp['gia_cu'])): ?>
+                                    <span class="text-xs text-gray-400 line-through mb-0.5 leading-none"><?= number_format($sp['gia_cu'], 0, ',', '.') ?>đ</span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <!-- Nút Thêm vào giỏ -->
+                            <button class="w-full mt-4 py-2.5 bg-[#8B0000] text-white rounded-lg text-sm font-semibold hover:bg-[#7A0C0C] transition-colors flex items-center justify-center gap-2">
+                                Thêm vào giỏ
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Thông tin sản phẩm -->
-                <div class="p-3 flex flex-col flex-1">
-                    <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>">
-                        <h3 class="text-xs font-medium text-gray-800 mb-1.5 line-clamp-2 hover:text-[#8B0000] transition h-8">
-                            <?= htmlspecialchars($sp['ten']) ?>
-                        </h3>
-                    </a>
-                    
-                    <div class="flex items-center flex-wrap gap-2 mb-2">
-                        <span class="text-[#8B0000] font-bold text-sm"><?= number_format($sp['gia'], 0, ',', '.') ?>đ</span>
-                        <?php if (!empty($sp['gia_cu'])): ?>
-                            <span class="text-gray-400 text-[10px] line-through"><?= number_format($sp['gia_cu'], 0, ',', '.') ?>đ</span>
-                        <?php endif; ?>
-                    </div>
-
-                    <button class="w-full mt-auto py-1.5 bg-[#8B0000] text-white hover:bg-[#7A0C0C] rounded text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 shadow-sm">
-                        <i class="fas fa-cart-plus"></i> Thêm
-                    </button>
-                </div>
-            </div>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof Swiper !== 'undefined') {
+        new Swiper('.viewed-products-swiper', {
+            slidesPerView: 2,
+            spaceBetween: 16,
+            navigation: {
+                nextEl: '.viewed-swiper-next',
+                prevEl: '.viewed-swiper-prev',
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 24,
+                },
+                1280: {
+                    slidesPerView: 5,
+                    spaceBetween: 24,
+                }
+            }
+        });
+    }
+});
+</script>

@@ -23,8 +23,8 @@
                 Mô tả sản phẩm
                 <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div class="accordion-content text-gray-700 leading-relaxed text-[15px]">
-                <p><?= nl2br(htmlspecialchars($san_pham['mo_ta_chi_tiet'])) ?></p>
+            <div class="accordion-content text-gray-700 leading-relaxed text-[15px] custom-html-content">
+                <?= $san_pham['mo_ta_chi_tiet'] ?>
                 <!-- Thêm ảnh minh họa nếu có -->
                 <div class="mt-6 flex justify-center">
                     <img src="<?= htmlspecialchars($san_pham['anh_chinh']) ?>" alt="Mô tả <?= htmlspecialchars($san_pham['ten']) ?>" class="rounded-xl max-w-[400px] h-auto shadow-sm object-contain bg-[#F9F8F6] p-2 border border-gray-100">
@@ -64,13 +64,13 @@
                 Ý nghĩa phong thủy
                 <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div class="accordion-content hidden md:block text-gray-700 leading-relaxed text-[15px]">
+            <div class="accordion-content hidden md:block text-gray-700 leading-relaxed text-[15px] custom-html-content">
                 <div class="p-6 bg-[#8B0000]/5 rounded-xl border border-[#8B0000]/10">
                     <h4 class="text-[#8B0000] font-semibold mb-3 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                         Năng lượng từ đá tự nhiên
                     </h4>
-                    <p><?= nl2br(htmlspecialchars($san_pham['y_nghia_phong_thuy'])) ?></p>
+                    <div><?= $san_pham['y_nghia_phong_thuy'] ?></div>
                 </div>
             </div>
         </div>
@@ -86,7 +86,7 @@
                     <?php foreach ($san_pham['huong_dan_bao_quan'] as $item): ?>
                     <li class="flex gap-3">
                         <svg class="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span><?= htmlspecialchars($item) ?></span>
+                        <span><?= htmlspecialchars(trim(preg_replace('/^-/', '', $item))) ?></span>
                     </li>
                     <?php endforeach; ?>
                 </ul>
@@ -99,8 +99,8 @@
                 Chính sách đổi trả
                 <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
-            <div class="accordion-content hidden md:block text-gray-700 leading-relaxed text-[15px] pt-4 md:pt-0">
-                <p><?= nl2br(htmlspecialchars($san_pham['chinh_sach_doi_tra'])) ?></p>
+            <div class="accordion-content hidden md:block text-gray-700 leading-relaxed text-[15px] pt-4 md:pt-0 custom-html-content">
+                <?= $san_pham['chinh_sach_doi_tra'] ?>
             </div>
         </div>
 
@@ -159,3 +159,50 @@
         }
     }
 </script>
+
+<style>
+/* Styling for raw HTML content from database */
+.custom-html-content h1, .custom-html-content h2, .custom-html-content h3, .custom-html-content h4, .custom-html-content h5, .custom-html-content h6 {
+    font-weight: 600;
+    color: #111827;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.3;
+}
+.custom-html-content h1 { font-size: 1.5em; }
+.custom-html-content h2 { font-size: 1.25em; border-bottom: 1px solid #f3f4f6; padding-bottom: 0.3em; }
+.custom-html-content h3 { font-size: 1.125em; }
+.custom-html-content p {
+    margin-bottom: 1em;
+}
+.custom-html-content ul {
+    list-style-type: disc;
+    padding-left: 1.5em;
+    margin-bottom: 1em;
+}
+.custom-html-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5em;
+    margin-bottom: 1em;
+}
+.custom-html-content li {
+    margin-bottom: 0.25em;
+}
+.custom-html-content a {
+    color: #8B0000;
+    text-decoration: underline;
+}
+.custom-html-content strong, .custom-html-content b {
+    font-weight: 600;
+    color: #111827;
+}
+.custom-html-content blockquote {
+    border-left: 4px solid #8B0000;
+    padding-left: 1em;
+    font-style: italic;
+    color: #4b5563;
+    background: #f9fafb;
+    padding: 0.5em 1em;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+</style>

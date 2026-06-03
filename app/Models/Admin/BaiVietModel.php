@@ -189,4 +189,30 @@ class BaiVietModel {
         $stmt = $this->db->query($sql);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getLatestPosts($limit = 3) {
+        $sql = "SELECT bv.*, 
+                       dm.ten_danh_muc, 
+                       nd.ho_ten as ten_nguoi_tao, nd.anh_dai_dien as anh_nguoi_tao
+                FROM bai_viet bv
+                LEFT JOIN danh_muc_bai_viet dm ON bv.id_danh_muc = dm.id
+                LEFT JOIN nguoi_dung nd ON bv.id_nguoi_tao = nd.id
+                WHERE bv.trang_thai = 1 
+                ORDER BY bv.ngay_tao DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function timTheoSlug($slug) {
+        $sql = "SELECT bv.*, dm.ten_danh_muc
+                FROM bai_viet bv
+                LEFT JOIN danh_muc_bai_viet dm ON bv.id_danh_muc = dm.id
+                WHERE bv.slug = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$slug]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

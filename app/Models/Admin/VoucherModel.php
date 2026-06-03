@@ -404,4 +404,29 @@ class VoucherModel
             'message' => $message
         ];
     }
+
+    public function getApplicableVouchers($idSanPham, $idDanhMuc)
+    {
+        $sql = "SELECT DISTINCT v.* 
+                FROM voucher v
+                LEFT JOIN voucher_danh_muc vdm ON v.id = vdm.id_voucher
+                LEFT JOIN voucher_san_pham vsp ON v.id = vsp.id_voucher
+                WHERE v.trang_thai = 1 
+                AND (v.ngay_bat_dau IS NULL OR v.ngay_bat_dau <= NOW())
+                AND (v.ngay_ket_thuc IS NULL OR v.ngay_ket_thuc >= NOW())
+                AND (v.so_luong = -1 OR v.da_dung < v.so_luong)
+                AND (
+                    v.doi_tuong = 'all' 
+                    OR (v.doi_tuong = 'category' AND vdm.id_danh_muc = :id_danh_muc)
+                    OR (v.doi_tuong = 'product' AND vsp.id_san_pham = :id_san_pham)
+                )
+                ORDER BY v.ngay_tao DESC";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_danh_muc', $idDanhMuc);
+        $stmt->bindValue(':id_san_pham', $idSanPham);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

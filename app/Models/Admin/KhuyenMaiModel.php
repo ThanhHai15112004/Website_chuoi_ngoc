@@ -419,4 +419,23 @@ class KhuyenMaiModel {
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
     }
+
+    public function getActiveFlashSale()
+    {
+        $sql = "SELECT * FROM chuong_trinh_khuyen_mai 
+                WHERE loai_km = 'flash' 
+                AND trang_thai = 1 
+                AND ngay_bat_dau <= NOW() 
+                AND ngay_ket_thuc >= NOW() 
+                ORDER BY ngay_bat_dau ASC LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $promo = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($promo) {
+            $promo['san_pham_ap_dung'] = $this->getProductsByPromotionId($promo['id']);
+        }
+        
+        return $promo;
+    }
 }

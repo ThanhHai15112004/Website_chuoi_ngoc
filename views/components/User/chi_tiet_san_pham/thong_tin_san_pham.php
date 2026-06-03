@@ -179,28 +179,40 @@
     </div>
 
     <!-- Vouchers -->
+    <?php if (!empty($vouchers)): ?>
     <div class="mb-2">
         <h3 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
             <svg class="w-4 h-4 text-[#8B0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
             Ưu đãi có thể áp dụng
         </h3>
         <div class="flex flex-col gap-2">
+            <?php foreach ($vouchers as $vc): ?>
             <div class="flex items-center justify-between bg-red-50/50 border border-red-100 border-dashed rounded-lg p-3">
                 <div class="flex flex-col">
-                    <span class="text-sm font-medium text-[#8B0000]">Giảm 10%</span>
-                    <span class="text-xs text-gray-500">Cho đơn từ 500.000đ</span>
+                    <span class="text-sm font-medium text-[#8B0000]">
+                        <?= htmlspecialchars($vc['ten_chuong_trinh']) ?>
+                        <?php if ($vc['loai_giam'] == 1): ?>
+                            (Giảm <?= $vc['gia_tri'] ?>%)
+                        <?php elseif ($vc['loai_giam'] == 2): ?>
+                            (Giảm <?= number_format($vc['gia_tri'], 0, ',', '.') ?>đ)
+                        <?php elseif ($vc['loai_giam'] == 3): ?>
+                            (Freeship)
+                        <?php endif; ?>
+                    </span>
+                    <span class="text-xs text-gray-500">Cho đơn từ <?= number_format($vc['don_toi_thieu'], 0, ',', '.') ?>đ</span>
                 </div>
-                <button class="bg-[#8B0000] hover:bg-[#660000] text-white text-xs font-semibold px-3 py-1.5 rounded transition-colors">Lưu mã</button>
+                <?php if (in_array($vc['id'], $saved_vouchers ?? [])): ?>
+                    <button class="bg-gray-200 text-gray-500 text-xs font-semibold px-3 py-1.5 rounded cursor-default flex items-center gap-1 btn-luu-voucher" disabled>
+                        <iconify-icon icon="ph:check-circle-fill"></iconify-icon> Đã lưu
+                    </button>
+                <?php else: ?>
+                    <button type="button" class="bg-[#8B0000] hover:bg-[#660000] text-white text-xs font-semibold px-3 py-1.5 rounded transition-colors btn-luu-voucher" data-id="<?= $vc['id'] ?>">Lưu mã</button>
+                <?php endif; ?>
             </div>
-            <div class="flex items-center justify-between bg-red-50/50 border border-red-100 border-dashed rounded-lg p-3">
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-[#8B0000]">Freeship</span>
-                    <span class="text-xs text-gray-500">Cho đơn từ 300.000đ</span>
-                </div>
-                <button class="bg-[#8B0000] hover:bg-[#660000] text-white text-xs font-semibold px-3 py-1.5 rounded transition-colors">Lưu mã</button>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
 <script>
@@ -265,4 +277,61 @@
             }
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.btn-luu-voucher');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const voucherId = this.dataset.id;
+                if (!voucherId) return;
+
+                const originalText = this.innerHTML;
+                this.innerHTML = '<iconify-icon icon="ph:spinner-gap" class="animate-spin"></iconify-icon>';
+                this.disabled = true;
+
+                const formData = new FormData();
+                formData.append('voucher_id', voucherId);
+
+                fetch('<?= APP_URL ?>/khuyen-mai/luu-voucher', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Toast.fire({
+                            icon: 'success',
+                            title: data.message
+                        });
+                        this.innerHTML = '<iconify-icon icon="ph:check-circle-fill"></iconify-icon> Đã lưu';
+                        this.className = 'bg-gray-200 text-gray-500 text-xs font-semibold px-3 py-1.5 rounded cursor-default flex items-center gap-1 btn-luu-voucher';
+                        this.removeAttribute('data-id');
+                    } else {
+                        Toast.fire({
+                            icon: 'error',
+                            title: data.message
+                        });
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                        
+                        if (data.message.includes('đăng nhập')) {
+                            setTimeout(() => {
+                                window.location.href = '<?= APP_URL ?>/dang-nhap';
+                            }, 1500);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Đã có lỗi xảy ra, vui lòng thử lại sau.'
+                    });
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+            });
+        });
+    });
 </script>

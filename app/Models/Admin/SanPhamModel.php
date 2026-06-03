@@ -194,7 +194,7 @@ class SanPhamModel
 
     public function timTheoId($id)
     {
-        $sql = "SELECT sp.*, dm.ten_danh_muc, ld.ten_loai_da, mpt.ten_menh 
+        $sql = "SELECT sp.*, dm.ten_danh_muc, dm.slug as danh_muc_slug, ld.ten_loai_da, mpt.ten_menh, mpt.mo_ta as y_nghia_phong_thuy, mpt.mo_ta_chi_tiet as y_nghia_phong_thuy_chi_tiet 
             FROM san_pham sp
             LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
             LEFT JOIN loai_da ld ON sp.id_loai_da = ld.id
@@ -245,6 +245,14 @@ class SanPhamModel
     public function xoaMem($id)
     {
         $sql = "UPDATE san_pham SET da_xoa = 1 WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function tangLuotXem($id)
+    {
+        $sql = "UPDATE san_pham SET luot_xem = luot_xem + 1 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id);
         return $stmt->execute();
@@ -311,5 +319,222 @@ class SanPhamModel
         $stmt->bindValue(':so_luong_ton', (int)$so_luong_ton, PDO::PARAM_INT);
         $stmt->bindValue(':gia_cong_them', (float)$gia_cong_them);
         return $stmt->execute();
+    }
+
+    public function getBestSellers($limit = 8)
+    {
+        // Chú ý: Do bảng san_pham chưa có cột da_ban, ta dùng tạm luot_xem để lấy sản phẩm hot.
+        // Có thể join với bảng chi tiết đơn hàng để lấy da_ban thực tế nếu cần.
+        $sql = "SELECT sp.*, dm.ten_danh_muc 
+                FROM san_pham sp
+                LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
+                WHERE sp.da_xoa = 0 AND sp.trang_thai = " . \App\Constants\SanPhamConstants::TRANG_THAI_HIEN_THI . "
+                ORDER BY sp.luot_xem DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getNewProducts($limit = 8)
+    {
+        $sql = "SELECT sp.*, dm.ten_danh_muc 
+                FROM san_pham sp
+                LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
+                WHERE sp.da_xoa = 0 AND sp.trang_thai = " . \App\Constants\SanPhamConstants::TRANG_THAI_HIEN_THI . "
+                ORDER BY sp.ngay_tao DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function layDanhSachUser($filters = [], $sortBy = 'sp.ngay_tao', $sortDir = 'DESC', $limit = 12, $offset = 0)
+    {
+        $sql = "SELECT 
+                sp.id, sp.ma_sp, sp.ten_sp, sp.hinh_anh_chinh, sp.mo_ta_ngan, sp.don_vi_tinh,
+                sp.gia_ban, sp.gia_khuyen_mai, sp.tong_ton_kho, sp.trang_thai, sp.ngay_tao, sp.luot_xem,
+                dm.ten_danh_muc, dm.slug as danh_muc_slug,
+                ld.ten_loai_da, 
+                mpt.ten_menh 
+            FROM san_pham sp
+            LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
+            LEFT JOIN loai_da ld ON sp.id_loai_da = ld.id
+            LEFT JOIN menh_phong_thuy mpt ON sp.id_menh_phong_thuy = mpt.id
+            WHERE sp.da_xoa = 0 AND sp.trang_thai = " . \App\Constants\SanPhamConstants::TRANG_THAI_HIEN_THI;
+
+        $params = [];
+
+        if (!empty($filters['q'])) {
+            $sql .= " AND (sp.ten_sp LIKE :q OR sp.mo_ta_ngan LIKE :q)";
+            $params['q'] = '%' . $filters['q'] . '%';
+        }
+
+        if (!empty($filters['danh_muc'])) {
+            $sql .= " AND dm.slug = :danh_muc";
+            $params['danh_muc'] = $filters['danh_muc'];
+        }
+
+        if (!empty($filters['loai_da'])) {
+            // Có thể truyền mảng loại đá
+            if (is_array($filters['loai_da'])) {
+                $in = str_repeat('?,', count($filters['loai_da']) - 1) . '?';
+                $sql .= " AND ld.ten_loai_da IN ($in)";
+                // We'll handle this differently since we are using named params. Let's use named params for array.
+                // Actually, to make it simple, let's use positional for IN or dynamically create named.
+            } else {
+                $sql .= " AND ld.ten_loai_da = :loai_da";
+                $params['loai_da'] = $filters['loai_da'];
+            }
+        }
+        
+        // Let's refactor the array binding to be simpler by modifying how we build query
+        if (!empty($filters['menh'])) {
+            $sql .= " AND mpt.ten_menh = :menh";
+            $params['menh'] = $filters['menh'];
+        }
+
+        if (!empty($filters['gia_min'])) {
+            $sql .= " AND sp.gia_ban >= :gia_min";
+            $params['gia_min'] = $filters['gia_min'];
+        }
+        
+        if (!empty($filters['gia_max'])) {
+            $sql .= " AND sp.gia_ban <= :gia_max";
+            $params['gia_max'] = $filters['gia_max'];
+        }
+
+        if (!empty($filters['exclude_id'])) {
+            $sql .= " AND sp.id != :exclude_id";
+            $params['exclude_id'] = $filters['exclude_id'];
+        }
+
+        // Handle array bindings for loai_da and menh if they are arrays (from checkboxes)
+        $inParams = [];
+        if (!empty($filters['loai_da']) && is_array($filters['loai_da'])) {
+            $sql = str_replace("AND ld.ten_loai_da = :loai_da", "", $sql);
+            unset($params['loai_da']);
+            $loaiDaNames = [];
+            foreach ($filters['loai_da'] as $k => $v) {
+                $pName = "ld_" . $k;
+                $loaiDaNames[] = ":" . $pName;
+                $params[$pName] = $v;
+            }
+            $sql .= " AND ld.ten_loai_da IN (" . implode(",", $loaiDaNames) . ")";
+        }
+        
+        if (!empty($filters['menh']) && is_array($filters['menh'])) {
+            $sql = str_replace("AND mpt.ten_menh = :menh", "", $sql);
+            unset($params['menh']);
+            $menhNames = [];
+            foreach ($filters['menh'] as $k => $v) {
+                $pName = "menh_" . $k;
+                $menhNames[] = ":" . $pName;
+                $params[$pName] = $v;
+            }
+            $sql .= " AND mpt.ten_menh IN (" . implode(",", $menhNames) . ")";
+        }
+
+        $sql .= " ORDER BY $sortBy $sortDir";
+        if ($limit > 0) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+        }
+        
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        if ($limit > 0) {
+            $stmt->bindValue(":limit", (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(":offset", (int)$offset, PDO::PARAM_INT);
+        }
+        
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function demDanhSachUser($filters = [])
+    {
+        $sql = "SELECT COUNT(*) as total
+            FROM san_pham sp
+            LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
+            LEFT JOIN loai_da ld ON sp.id_loai_da = ld.id
+            LEFT JOIN menh_phong_thuy mpt ON sp.id_menh_phong_thuy = mpt.id
+            WHERE sp.da_xoa = 0 AND sp.trang_thai = " . \App\Constants\SanPhamConstants::TRANG_THAI_HIEN_THI;
+
+        $params = [];
+
+        if (!empty($filters['q'])) {
+            $sql .= " AND (sp.ten_sp LIKE :q OR sp.mo_ta_ngan LIKE :q)";
+            $params['q'] = '%' . $filters['q'] . '%';
+        }
+
+        if (!empty($filters['danh_muc'])) {
+            $sql .= " AND dm.slug = :danh_muc";
+            $params['danh_muc'] = $filters['danh_muc'];
+        }
+
+        if (!empty($filters['gia_min'])) {
+            $sql .= " AND sp.gia_ban >= :gia_min";
+            $params['gia_min'] = $filters['gia_min'];
+        }
+        
+        if (!empty($filters['gia_max'])) {
+            $sql .= " AND sp.gia_ban <= :gia_max";
+            $params['gia_max'] = $filters['gia_max'];
+        }
+
+        if (!empty($filters['loai_da']) && is_array($filters['loai_da'])) {
+            $loaiDaNames = [];
+            foreach ($filters['loai_da'] as $k => $v) {
+                $pName = "ld_" . $k;
+                $loaiDaNames[] = ":" . $pName;
+                $params[$pName] = $v;
+            }
+            $sql .= " AND ld.ten_loai_da IN (" . implode(",", $loaiDaNames) . ")";
+        }
+        
+        if (!empty($filters['menh']) && is_array($filters['menh'])) {
+            $menhNames = [];
+            foreach ($filters['menh'] as $k => $v) {
+                $pName = "menh_" . $k;
+                $menhNames[] = ":" . $pName;
+                $params[$pName] = $v;
+            }
+            $sql .= " AND mpt.ten_menh IN (" . implode(",", $menhNames) . ")";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $key => $val) {
+            $stmt->bindValue(":$key", $val);
+        }
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['total'] : 0;
+    }
+
+    public function layDanhSachLoaiDa()
+    {
+        $sql = "SELECT ten_loai_da, COUNT(sp.id) as so_san_pham 
+                FROM loai_da ld
+                LEFT JOIN san_pham sp ON ld.id = sp.id_loai_da AND sp.da_xoa = 0 AND sp.trang_thai = 1
+                GROUP BY ld.id, ld.ten_loai_da
+                HAVING COUNT(sp.id) > 0
+                ORDER BY ten_loai_da ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layDanhSachMenh()
+    {
+        $sql = "SELECT ten_menh, COUNT(sp.id) as so_san_pham 
+                FROM menh_phong_thuy mpt
+                LEFT JOIN san_pham sp ON mpt.id = sp.id_menh_phong_thuy AND sp.da_xoa = 0 AND sp.trang_thai = 1
+                GROUP BY mpt.id, mpt.ten_menh
+                HAVING COUNT(sp.id) > 0
+                ORDER BY mpt.id ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

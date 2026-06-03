@@ -145,10 +145,8 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 2);
-    endDate.setHours(endDate.getHours() + 14);
-    endDate.setMinutes(endDate.getMinutes() + 30);
+    const endDateStr = "<?= $km_end_date ?? date('Y-m-d H:i:s', strtotime('+2 days 14 hours 30 minutes')) ?>";
+    const endDate = new Date(endDateStr.replace(/-/g, "/"));
 
     function updateBannerCountdown() {
         const now = new Date();

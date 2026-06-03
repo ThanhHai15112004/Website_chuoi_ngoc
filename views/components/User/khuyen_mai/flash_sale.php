@@ -1,44 +1,7 @@
 <?php
 // views/components/User/khuyen_mai/flash_sale.php
 
-$flash_sale_products = [
-    [
-        'ten' => 'Vòng Cổ Trầm Hương Tốc Kiến 108 Hạt',
-        'hinh_anh' => APP_URL . '/images/san_pham/tram_huong_1.jpg',
-        'gia_cu' => 2500000,
-        'gia' => 1250000,
-        'phan_tram_giam' => 50,
-        'da_ban' => 85,
-        'tong_so' => 100
-    ],
-    [
-        'ten' => 'Vòng Tay Đá Ngọc Bích Tự Nhiên',
-        'hinh_anh' => APP_URL . '/images/san_pham/ngoc_bich_1.jpg',
-        'gia_cu' => 1800000,
-        'gia' => 1080000,
-        'phan_tram_giam' => 40,
-        'da_ban' => 42,
-        'tong_so' => 50
-    ],
-    [
-        'ten' => 'Chuỗi Đá Thạch Anh Tóc Vàng',
-        'hinh_anh' => APP_URL . '/images/san_pham/thach_anh_1.jpg',
-        'gia_cu' => 3200000,
-        'gia' => 2240000,
-        'phan_tram_giam' => 30,
-        'da_ban' => 12,
-        'tong_so' => 20
-    ],
-    [
-        'ten' => 'Vòng Đá Mã Não Đỏ May Mắn',
-        'hinh_anh' => APP_URL . '/images/san_pham/ma_nao_1.jpg',
-        'gia_cu' => 850000,
-        'gia' => 425000,
-        'phan_tram_giam' => 50,
-        'da_ban' => 180,
-        'tong_so' => 200
-    ]
-];
+$flash_sale_products = $flash_sale ?? [];
 ?>
 <div class="bg-gradient-to-br from-[#1a1a1a] to-[#2a0808] rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
     <!-- Decorative background elements -->
@@ -50,7 +13,7 @@ $flash_sale_products = [
         <div>
             <div class="flex items-center gap-3 mb-2">
                 <iconify-icon icon="ph:lightning-fill" class="text-[#D4AF37] text-3xl animate-pulse"></iconify-icon>
-                <h2 class="text-3xl md:text-4xl font-semibold font-bold text-white italic">FLASH SALE</h2>
+                <h2 class="text-3xl md:text-4xl font-black text-white tracking-widest uppercase">FLASH SALE</h2>
             </div>
             <p class="text-gray-400">Giá hủy diệt - Giờ vàng giá sốc</p>
         </div>
@@ -87,7 +50,7 @@ $flash_sale_products = [
             
             <!-- Info Area -->
             <div class="p-4">
-                <a href="#" class="text-sm font-medium text-gray-800 hover:text-[#8B0000] line-clamp-2 mb-2 h-10">
+                <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="text-sm font-medium text-gray-800 hover:text-[#8B0000] line-clamp-2 mb-2 h-10">
                     <?= htmlspecialchars($sp['ten']) ?>
                 </a>
                 

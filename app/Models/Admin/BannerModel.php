@@ -45,11 +45,11 @@ class BannerModel
     public function create($data)
     {
         $sql = "INSERT INTO banner (
-                    id, ten, tieu_de_hien_thi, cta, mo_ta, anh_desktop, anh_mobile, 
+                    id, ten, tieu_de_hien_thi, badge_text, cta, mo_ta, dac_diem_1, dac_diem_2, btn_2_text, btn_2_link, anh_desktop, anh_mobile, 
                     vi_tri, thiet_bi, loai_link, link, thu_tu, trang_thai, 
                     khong_gioi_han, bat_dau, ket_thuc, luot_click, ngay_tao, ngay_cap_nhat
                 ) VALUES (
-                    :id, :ten, :tieu_de_hien_thi, :cta, :mo_ta, :anh_desktop, :anh_mobile, 
+                    :id, :ten, :tieu_de_hien_thi, :badge_text, :cta, :mo_ta, :dac_diem_1, :dac_diem_2, :btn_2_text, :btn_2_link, :anh_desktop, :anh_mobile, 
                     :vi_tri, :thiet_bi, :loai_link, :link, :thu_tu, :trang_thai, 
                     :khong_gioi_han, :bat_dau, :ket_thuc, 0, :ngay_tao, :ngay_cap_nhat
                 )";
@@ -59,8 +59,13 @@ class BannerModel
             ':id' => $data['id'],
             ':ten' => $data['ten'],
             ':tieu_de_hien_thi' => $data['tieu_de_hien_thi'] ?? null,
+            ':badge_text' => $data['badge_text'] ?? null,
             ':cta' => $data['cta'] ?? null,
             ':mo_ta' => $data['mo_ta'] ?? null,
+            ':dac_diem_1' => $data['dac_diem_1'] ?? null,
+            ':dac_diem_2' => $data['dac_diem_2'] ?? null,
+            ':btn_2_text' => $data['btn_2_text'] ?? null,
+            ':btn_2_link' => $data['btn_2_link'] ?? null,
             ':anh_desktop' => $data['anh_desktop'],
             ':anh_mobile' => $data['anh_mobile'] ?? null,
             ':vi_tri' => $data['vi_tri'],
@@ -108,5 +113,20 @@ class BannerModel
     {
         $stmt = $this->db->prepare("UPDATE banner SET luot_click = luot_click + 1 WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    public function getActiveBanners($vi_tri = 'trang_chu_hero', $limit = 5)
+    {
+        $sql = "SELECT * FROM banner 
+                WHERE vi_tri = :vi_tri 
+                AND trang_thai = 'dang_hien_thi'
+                AND (khong_gioi_han = 1 OR (bat_dau <= NOW() AND (ket_thuc IS NULL OR ket_thuc >= NOW())))
+                ORDER BY thu_tu ASC, ngay_tao DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':vi_tri', $vi_tri);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

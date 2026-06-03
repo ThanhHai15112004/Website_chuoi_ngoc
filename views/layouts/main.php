@@ -87,6 +87,21 @@
     <!-- CountUp JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.umd.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+    </script>
     <script src="<?= APP_URL ?>/js/script.js"></script>
     <script>
         // Initialize AOS
@@ -96,37 +111,6 @@
                 once: true,
                 offset: 50,
             });
-
-            // Hero Swiper
-            if (document.querySelector('.hero-swiper')) {
-                new Swiper('.hero-swiper', {
-                    loop: true,
-                    effect: 'fade',
-                    fadeEffect: { crossFade: true },
-                    autoplay: { delay: 4000, disableOnInteraction: false },
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true,
-                    },
-                    speed: 1000,
-                });
-            }
-
-            // Flash Sale Timer
-            const timerEl = document.getElementById('flash-sale-timer');
-            if (timerEl) {
-                const spans = timerEl.querySelectorAll('span[style*="background"]');
-                let hours = 5, mins = 23, secs = 18;
-                setInterval(() => {
-                    secs--;
-                    if (secs < 0) { secs = 59; mins--; }
-                    if (mins < 0) { mins = 59; hours--; }
-                    if (hours < 0) { hours = 23; mins = 59; secs = 59; }
-                    if (spans[0]) spans[0].textContent = String(hours).padStart(2, '0');
-                    if (spans[1]) spans[1].textContent = String(mins).padStart(2, '0');
-                    if (spans[2]) spans[2].textContent = String(secs).padStart(2, '0');
-                }, 1000);
-            }
         });
     </script>
 </body>

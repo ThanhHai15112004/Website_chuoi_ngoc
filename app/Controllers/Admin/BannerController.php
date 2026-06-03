@@ -161,8 +161,13 @@ class BannerController extends Controller
             
             $ten = $_POST['ten'] ?? '';
             $tieu_de_hien_thi = $_POST['tieu_de_hien_thi'] ?? '';
+            $badge_text = $_POST['badge_text'] ?? '';
             $cta = $_POST['cta'] ?? '';
+            $btn_2_text = $_POST['btn_2_text'] ?? '';
+            $btn_2_link = $_POST['btn_2_link'] ?? '';
             $mo_ta = $_POST['mo_ta'] ?? '';
+            $dac_diem_1 = $_POST['dac_diem_1'] ?? '';
+            $dac_diem_2 = $_POST['dac_diem_2'] ?? '';
             $vi_tri = $_POST['vi_tri'] ?? '';
             $thiet_bi = $_POST['thiet_bi'] ?? 'desktop_mobile';
             $loai_link = $_POST['loai_link'] ?? '';
@@ -214,8 +219,13 @@ class BannerController extends Controller
             $data = [
                 'ten' => $ten,
                 'tieu_de_hien_thi' => $tieu_de_hien_thi,
+                'badge_text' => $badge_text,
                 'cta' => $cta,
+                'btn_2_text' => $btn_2_text,
+                'btn_2_link' => $btn_2_link,
                 'mo_ta' => $mo_ta,
+                'dac_diem_1' => $dac_diem_1,
+                'dac_diem_2' => $dac_diem_2,
                 'anh_desktop' => $anh_desktop,
                 'anh_mobile' => $anh_mobile,
                 'vi_tri' => $vi_tri,

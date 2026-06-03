@@ -34,11 +34,31 @@
             </div>
         </div>
 
+        <!-- Tiêu đề phụ (Badge) -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tiêu đề phụ / Badge (tùy chọn)</label>
+            <input type="text" name="badge_text" value="<?= $banner['badge_text'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Ví dụ: Chuỗi Ngọc Phong Thủy" maxlength="100">
+        </div>
+
         <!-- Mô tả -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Mô tả ngắn (tùy chọn)</label>
             <textarea name="mo_ta" rows="2" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Giảm đến 30% cho các mẫu vòng ngọc phong thủy chọn lọc..." maxlength="120"><?= $banner['mo_ta'] ?? '' ?></textarea>
             <p class="mt-1 text-[10px] text-gray-400 text-right"><span class="text-gray-600 font-medium">0</span>/120</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Đặc điểm 1 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Đặc điểm 1 (tùy chọn)</label>
+                <input type="text" name="dac_diem_1" value="<?= $banner['dac_diem_1'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Ví dụ: Chế tác thủ công tinh xảo">
+            </div>
+            
+            <!-- Đặc điểm 2 -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Đặc điểm 2 (tùy chọn)</label>
+                <input type="text" name="dac_diem_2" value="<?= $banner['dac_diem_2'] ?? '' ?>" class="w-full border border-gray-300 rounded-lg shadow-sm py-2 px-3 text-sm focus:ring-[#6B0D18] focus:border-[#6B0D18]" placeholder="Ví dụ: Bảo hành 100%">
+            </div>
         </div>
     </div>
 </div>

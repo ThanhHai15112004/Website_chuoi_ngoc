@@ -10,37 +10,49 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            <?php
-            $ngu_hanh = [
-                ['ten' => 'Mệnh Kim', 'bieu_tuong' => '<iconify-icon icon="mdi:sword-cross" class="text-gray-500"></iconify-icon>', 'mau_sac' => 'Trắng, Vàng, Nâu', 'loai_da' => 'Thạch anh trắng, Hổ phách', 'mau_nen' => '#f3f4f6', 'vien' => '#e5e7eb'],
-                ['ten' => 'Mệnh Mộc', 'bieu_tuong' => '<iconify-icon icon="mdi:leaf" class="text-green-600"></iconify-icon>', 'mau_sac' => 'Xanh lá, Đen, Xanh dương', 'loai_da' => 'Ngọc bích, Thạch anh đen', 'mau_nen' => '#f0fdf4', 'vien' => '#bbf7d0'],
-                ['ten' => 'Mệnh Thủy', 'bieu_tuong' => '<iconify-icon icon="mdi:water-drop" class="text-blue-500"></iconify-icon>', 'mau_sac' => 'Đen, Xanh dương, Trắng', 'loai_da' => 'Aquamarine, Đá vỏ chai', 'mau_nen' => '#eff6ff', 'vien' => '#bfdbfe'],
-                ['ten' => 'Mệnh Hỏa', 'bieu_tuong' => '<iconify-icon icon="mdi:fire" class="text-red-500"></iconify-icon>', 'mau_sac' => 'Đỏ, Hồng, Tím, Xanh lá', 'loai_da' => 'Thạch anh hồng, Mã não đỏ', 'mau_nen' => '#fef2f2', 'vien' => '#fecaca'],
-                ['ten' => 'Mệnh Thổ', 'bieu_tuong' => '<iconify-icon icon="mdi:terrain" class="text-amber-600"></iconify-icon>', 'mau_sac' => 'Vàng, Nâu, Đỏ, Hồng', 'loai_da' => 'Mắt hổ, Thạch anh vàng', 'mau_nen' => '#fefce8', 'vien' => '#fef08a'],
-            ];
-            foreach ($ngu_hanh as $index => $nh): ?>
-            <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col h-full hover:-translate-y-1 hover:shadow-lg transition-all duration-300" style="border: 1px solid <?= $nh['vien'] ?>;" data-aos="fade-up" data-aos-delay="<?= $index * 80 ?>">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-inner" style="background: <?= $nh['mau_nen'] ?>;">
-                        <?= $nh['bieu_tuong'] ?>
+            <?php if (!empty($ngu_hanh)): ?>
+                <?php 
+                $icon_map = [
+                    'kim' => ['icon' => 'mdi:sword-cross', 'color' => 'text-gray-500', 'bg' => '#f3f4f6', 'border' => '#e5e7eb'],
+                    'mộc' => ['icon' => 'mdi:leaf', 'color' => 'text-green-600', 'bg' => '#f0fdf4', 'border' => '#bbf7d0'],
+                    'thủy' => ['icon' => 'mdi:water-drop', 'color' => 'text-blue-500', 'bg' => '#eff6ff', 'border' => '#bfdbfe'],
+                    'hỏa' => ['icon' => 'mdi:fire', 'color' => 'text-red-500', 'bg' => '#fef2f2', 'border' => '#fecaca'],
+                    'thổ' => ['icon' => 'mdi:terrain', 'color' => 'text-amber-600', 'bg' => '#fefce8', 'border' => '#fef08a']
+                ];
+                foreach ($ngu_hanh as $index => $nh): 
+                    $ten_menh_lower = mb_strtolower($nh['ten_menh'], 'UTF-8');
+                    $matched_key = 'thủy'; // default
+                    foreach ($icon_map as $key => $style) {
+                        if (strpos($ten_menh_lower, $key) !== false) {
+                            $matched_key = $key;
+                            break;
+                        }
+                    }
+                    $style = $icon_map[$matched_key];
+                ?>
+                <div class="bg-white rounded-2xl shadow-sm p-6 flex flex-col h-full hover:-translate-y-1 hover:shadow-lg transition-all duration-300" style="border: 1px solid <?= $style['border'] ?>;" data-aos="fade-up" data-aos-delay="<?= $index * 80 ?>">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl shadow-inner" style="background: <?= $style['bg'] ?>;">
+                            <iconify-icon icon="<?= $style['icon'] ?>" class="<?= $style['color'] ?>"></iconify-icon>
+                        </div>
+                        <h3 class="text-lg font-bold" style="color: #111;"><?= htmlspecialchars($nh['ten_menh']) ?></h3>
                     </div>
-                    <h3 class="text-lg font-bold" style="color: #111;"><?= $nh['ten'] ?></h3>
+                    <div class="space-y-3 flex-grow mb-6">
+                        <div>
+                            <p class="text-xs uppercase tracking-wider font-semibold" style="color: #999;">Màu hợp</p>
+                            <p class="text-sm font-medium" style="color: #333;"><?= htmlspecialchars($nh['mau_sac_hop'] ?? 'Đang cập nhật') ?></p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-wider font-semibold" style="color: #999;">Sản phẩm phù hợp</p>
+                            <p class="text-sm font-medium" style="color: #333;"><?= $nh['so_san_pham'] ?? 0 ?> sản phẩm</p>
+                        </div>
+                    </div>
+                    <a href="<?= APP_URL ?>/products?menh=<?= $nh['id'] ?>" class="block w-full py-2.5 text-center font-medium rounded-lg transition-all duration-300 border-2" style="border-color: #8b0000; color: #8b0000; background: transparent;" onmouseover="this.style.background='#8b0000';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#8b0000'">
+                        Xem vòng <?= htmlspecialchars($nh['ten_menh']) ?>
+                    </a>
                 </div>
-                <div class="space-y-3 flex-grow mb-6">
-                    <div>
-                        <p class="text-xs uppercase tracking-wider font-semibold" style="color: #999;">Màu hợp</p>
-                        <p class="text-sm font-medium" style="color: #333;"><?= $nh['mau_sac'] ?></p>
-                    </div>
-                    <div>
-                        <p class="text-xs uppercase tracking-wider font-semibold" style="color: #999;">Gợi ý đá</p>
-                        <p class="text-sm font-medium" style="color: #333;"><?= $nh['loai_da'] ?></p>
-                    </div>
-                </div>
-                <a href="<?= APP_URL ?>/products" class="block w-full py-2.5 text-center font-medium rounded-lg transition-all duration-300 border-2" style="border-color: #8b0000; color: #8b0000; background: transparent;" onmouseover="this.style.background='#8b0000';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#8b0000'">
-                    Xem vòng <?= $nh['ten'] ?>
-                </a>
-            </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>

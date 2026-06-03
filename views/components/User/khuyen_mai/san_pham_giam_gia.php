@@ -4,33 +4,7 @@ $filters = [
     'Tất cả', 'Giảm dưới 10%', 'Giảm 10% - 20%', 'Giảm trên 20%', 'Dưới 500K', 'Theo mệnh Kim', 'Theo mệnh Mộc', 'Theo mệnh Thuỷ', 'Theo mệnh Hoả', 'Theo mệnh Thổ'
 ];
 
-// Placeholder products
-$discount_products = [
-    [
-        'id' => 1, 'name' => 'Vòng Ngọc Bích Bình An', 'stone' => 'Ngọc bích', 'element' => 'Mộc, Hỏa', 'rating' => 4.9, 'sold' => 128, 'price_old' => 850000, 'price_new' => 680000, 'discount' => 20, 'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg'
-    ],
-    [
-        'id' => 2, 'name' => 'Vòng Tay Diệp Lục Đỉnh', 'stone' => 'Cẩm thạch', 'element' => 'Mộc', 'rating' => 4.8, 'sold' => 56, 'price_old' => 1200000, 'price_new' => 1080000, 'discount' => 10, 'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Sâm Panh Thuần/sam-panh-thuan-1.jpg'
-    ],
-    [
-        'id' => 3, 'name' => 'Chuỗi Hạt Gỗ Sưa Thơm Nhẹ', 'stone' => 'Gỗ sưa', 'element' => 'Thổ, Kim', 'rating' => 5.0, 'sold' => 210, 'price_old' => 550000, 'price_new' => 440000, 'discount' => 20, 'image' => APP_URL . '/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg'
-    ],
-    [
-        'id' => 4, 'name' => 'Vòng Thạch Anh Tóc Vàng', 'stone' => 'Thạch anh', 'element' => 'Thổ, Kim', 'rating' => 4.7, 'sold' => 85, 'price_old' => 1500000, 'price_new' => 1125000, 'discount' => 25, 'image' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-1.jpg', 'badge' => 'Sắp hết'
-    ],
-    [
-        'id' => 5, 'name' => 'Ngọc Trúc Xanh Nhạt May Mắn', 'stone' => 'Ngọc trúc', 'element' => 'Mộc, Thuỷ', 'rating' => 4.9, 'sold' => 42, 'price_old' => 790000, 'price_new' => 711000, 'discount' => 10, 'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-2.jpg'
-    ],
-    [
-        'id' => 6, 'name' => 'Chuỗi Đá Núi Lửa Obsidian', 'stone' => 'Đá núi lửa', 'element' => 'Thuỷ', 'rating' => 4.6, 'sold' => 19, 'price_old' => 450000, 'price_new' => 315000, 'discount' => 30, 'image' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-2.jpg'
-    ],
-    [
-        'id' => 7, 'name' => 'Vòng Huyết Long Đỏ Rực', 'stone' => 'Đá huyết long', 'element' => 'Hoả, Thổ', 'rating' => 4.8, 'sold' => 77, 'price_old' => 820000, 'price_new' => 697000, 'discount' => 15, 'image' => APP_URL . '/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-2.jpg'
-    ],
-    [
-        'id' => 8, 'name' => 'Bộ Vòng Tứ Tượng Hộ Mệnh', 'stone' => 'Đá quý tổng hợp', 'element' => 'Tất cả', 'rating' => 5.0, 'sold' => 8, 'price_old' => 3200000, 'price_new' => 2560000, 'discount' => 20, 'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Sâm Panh Thuần/sam-panh-thuan-2.jpg', 'badge' => 'Giới hạn'
-    ],
-];
+$discount_products = $san_pham_giam_gia ?? [];
 ?>
 <section id="san-pham-sale">
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-4">
@@ -93,9 +67,9 @@ $discount_products = [
             
             <!-- Content -->
             <div class="p-4 flex flex-col flex-1">
-                <div class="text-xs text-gray-500 mb-1 line-clamp-1"><?= $p['stone'] ?> &bull; Hợp mệnh <?= $p['element'] ?></div>
-                <h3 class="font-medium text-gray-900 mb-1 line-clamp-2 hover:text-[#8B0000] transition-colors">
-                    <a href="<?= APP_URL ?>/chi-tiet-san-pham"><?= $p['name'] ?></a>
+                <div class="text-xs text-gray-500 mb-1 line-clamp-1"><?= htmlspecialchars($p['stone']) ?> &bull; Hợp mệnh <?= htmlspecialchars($p['element']) ?></div>
+                <h3 class="font-medium text-gray-900 mb-1 line-clamp-2 hover:text-[#8B0000] transition-colors min-h-[40px]">
+                    <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $p['id'] ?>"><?= htmlspecialchars($p['name']) ?></a>
                 </h3>
                 
                 <div class="flex items-center gap-1 text-xs text-gray-500 mb-3">
@@ -111,10 +85,10 @@ $discount_products = [
                     <span>Đã bán <?= $p['sold'] ?></span>
                 </div>
                 
-                <div class="mt-auto pt-2 flex flex-col gap-1">
+                <div class="mt-auto pt-2 flex flex-col gap-1 min-h-[44px] justify-end">
                     <div class="flex items-end gap-2 flex-wrap">
-                        <span class="text-lg font-bold text-[#8B0000]"><?= number_format($p['price_new'], 0, ',', '.') ?>đ</span>
-                        <span class="text-sm text-gray-400 line-through mb-0.5"><?= number_format($p['price_old'], 0, ',', '.') ?>đ</span>
+                        <span class="text-lg font-bold text-[#8B0000] leading-none"><?= number_format($p['price_new'], 0, ',', '.') ?>đ</span>
+                        <span class="text-sm text-gray-400 line-through mb-0.5 leading-none"><?= number_format($p['price_old'], 0, ',', '.') ?>đ</span>
                     </div>
                 </div>
                 

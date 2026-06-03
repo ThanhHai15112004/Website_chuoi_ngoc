@@ -3,20 +3,24 @@
 namespace App\Controllers\User;
 
 use App\Core\Controller;
+use App\Services\User\HomeService;
 
 class HomeController extends Controller {
+    private $homeService;
+
+    public function __construct()
+    {
+        $this->homeService = new HomeService();
+    }
+
     public function index() {
-        $data = [
+        $homeData = $this->homeService->getHomeData();
+        
+        $data = array_merge([
             'tieu_de' => 'Trang chủ - Chuỗi Ngọc Phong Thủy',
             'trang_hien_tai' => 'trang_chu',
-            'san_pham' => [
-                ['ten' => 'Ngọc Tụ Nham Vân Mây', 'gia' => '850.000đ', 'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-2 (1).jpg'],
-                ['ten' => 'Vòng Thời Trang Xinh Yêu', 'gia' => '550.000đ', 'hinh_anh' => APP_URL . '/images/Sản phẩm/Tràng Hạt/Vòng Thời Trang Xinh Yêu/thoi-trang-xinh-yeu-1.jpg'],
-                ['ten' => 'Nhang Trầm Hương', 'gia' => '250.000đ', 'hinh_anh' => APP_URL . '/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg'],
-                ['ten' => 'Vòng Tụ Nham', 'gia' => '550.000đ', 'hinh_anh' => APP_URL . '/images/Sản phẩm/Vòng Ngọc/Ngọc Tụ Nham Vân Mây/ngoc-tu-nham-vay-may-3.jpg']
-            ]
-        ];
+        ], $homeData);
         
-        $this->view('trang_chu', $data);
+        $this->view('trang_chu', $data, 'main');
     }
 }

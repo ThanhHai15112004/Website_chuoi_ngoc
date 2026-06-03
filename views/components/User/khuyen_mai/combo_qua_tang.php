@@ -1,25 +1,6 @@
 <?php
 // views/components/User/khuyen_mai/combo_qua_tang.php
-$combos = [
-    [
-        'title' => 'Vòng ngọc + hộp quà cao cấp',
-        'desc' => 'Tặng kèm hộp nhung đỏ sang trọng và thẻ bảo hành mạ vàng.',
-        'save' => '50.000đ',
-        'image' => APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg'
-    ],
-    [
-        'title' => 'Chuỗi đá + túi gấm + thiệp',
-        'desc' => 'Phù hợp làm quà tặng người thân, đối tác nhân dịp đặc biệt.',
-        'save' => '30.000đ',
-        'image' => APP_URL . '/public/images/Sản phẩm/Tràng Hạt/Vòng Đá Mã Não/vong-da-ma-nao-1.jpg'
-    ],
-    [
-        'title' => 'Cặp vòng bình an',
-        'desc' => 'Ưu đãi đặc biệt cho đơn mua 2 sản phẩm vòng tay bất kỳ.',
-        'save' => '15%',
-        'image' => APP_URL . '/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg'
-    ]
-];
+$combos = $combo_qua_tang ?? [];
 ?>
 <section id="combo-qua-tang">
     <div class="mb-8">

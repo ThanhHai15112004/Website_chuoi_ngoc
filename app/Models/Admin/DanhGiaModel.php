@@ -211,4 +211,80 @@ class DanhGiaModel
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
+
+    public function getFeaturedReviews($limit = 6)
+    {
+        $sql = "SELECT dg.*, 
+                sp.ten_sp, sp.ma_sp, sp.hinh_anh_chinh, sp.slug as sp_slug,
+                nd.ho_ten as ten_khach, nd.anh_dai_dien as avatar_khach,
+                htv.ten_hang as hang_thanh_vien
+                FROM danh_gia dg
+                JOIN san_pham sp ON dg.id_san_pham = sp.id
+                JOIN nguoi_dung nd ON dg.id_nguoi_dung = nd.id
+                LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
+                WHERE dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET . "
+                AND dg.so_sao >= 4
+                ORDER BY dg.ngay_tao DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getByProductId($idSanPham, $limit = 5, $offset = 0)
+    {
+        $sql = "SELECT dg.*, 
+                nd.ho_ten as ten_khach, nd.anh_dai_dien as avatar_khach,
+                htv.ten_hang as hang_thanh_vien
+                FROM danh_gia dg
+                JOIN nguoi_dung nd ON dg.id_nguoi_dung = nd.id
+                LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
+                WHERE dg.id_san_pham = :id_san_pham 
+                AND dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET . "
+                ORDER BY dg.ngay_tao DESC 
+                LIMIT :limit OFFSET :offset";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $idSanPham);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getStatsByProductId($idSanPham)
+    {
+        $sql = "SELECT 
+                COUNT(id) as tong_danh_gia,
+                AVG(so_sao) as diem_trung_binh,
+                SUM(CASE WHEN so_sao = 5 THEN 1 ELSE 0 END) as sao_5,
+                SUM(CASE WHEN so_sao = 4 THEN 1 ELSE 0 END) as sao_4,
+                SUM(CASE WHEN so_sao = 3 THEN 1 ELSE 0 END) as sao_3,
+                SUM(CASE WHEN so_sao = 2 THEN 1 ELSE 0 END) as sao_2,
+                SUM(CASE WHEN so_sao = 1 THEN 1 ELSE 0 END) as sao_1
+                FROM danh_gia 
+                WHERE id_san_pham = :id_san_pham 
+                AND trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET;
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $idSanPham);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $total = (int)($result['tong_danh_gia'] ?? 0);
+        $phan_bo = [
+            5 => $total > 0 ? round((($result['sao_5'] ?? 0) / $total) * 100) : 0,
+            4 => $total > 0 ? round((($result['sao_4'] ?? 0) / $total) * 100) : 0,
+            3 => $total > 0 ? round((($result['sao_3'] ?? 0) / $total) * 100) : 0,
+            2 => $total > 0 ? round((($result['sao_2'] ?? 0) / $total) * 100) : 0,
+            1 => $total > 0 ? round((($result['sao_1'] ?? 0) / $total) * 100) : 0,
+        ];
+        
+        return [
+            'tong_danh_gia' => $total,
+            'diem_trung_binh' => round((float)($result['diem_trung_binh'] ?? 0), 1),
+            'phan_bo' => $phan_bo
+        ];
+    }
 }

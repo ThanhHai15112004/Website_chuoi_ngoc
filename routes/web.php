@@ -11,6 +11,7 @@ $router->get('/thanh-toan', 'User\CheckoutController@index');
 $router->get('/dat-hang-thanh-cong', 'User\CheckoutController@success');
 $router->get('/vong-theo-menh', 'User\VongTheoMenhController@index');
 $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
+$router->post('/khuyen-mai/luu-voucher', 'User\KhuyenMaiController@saveVoucher');
 $router->get('/bai-viet', 'User\ArticleController@index');
 $router->get('/chi-tiet-bai-viet', 'User\ArticleController@detail');
 $router->get('/lien-he', 'User\ContactController@index');

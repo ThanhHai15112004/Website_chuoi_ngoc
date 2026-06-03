@@ -82,7 +82,7 @@
             </div>
 
             <!-- Nút thêm vào giỏ -->
-            <button class="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 <?= $het_hang ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-crimson-50 text-crimson-600 hover:bg-crimson-600 hover:text-white hover:shadow-lg hover:shadow-crimson-200' ?>" <?= $het_hang ? 'disabled' : '' ?>>
+            <button class="add-to-cart-btn mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 <?= $het_hang ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-crimson-50 text-crimson-600 hover:bg-crimson-600 hover:text-white hover:shadow-lg hover:shadow-crimson-200' ?>" <?= $het_hang ? 'disabled' : '' ?>>
                 <iconify-icon icon="heroicons:shopping-bag" class="text-base"></iconify-icon>
                 <?= $het_hang ? 'Hết hàng' : 'Thêm vào giỏ' ?>
             </button>
@@ -90,3 +90,45 @@
     </div>
     <?php endforeach; ?>
 </div>
+
+<style>
+/* Chế độ List Mode cho Product Grid (chỉ áp dụng từ sm trở lên) */
+@media (min-width: 640px) {
+    #product-grid.list-mode {
+        display: flex;
+        flex-direction: column;
+    }
+    #product-grid.list-mode .product-card {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+    #product-grid.list-mode .product-card > .group\/img {
+        width: 33.333333%;
+        flex-shrink: 0;
+        aspect-ratio: auto;
+    }
+    #product-grid.list-mode .product-card > .p-4 {
+        width: 66.666667%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1.5rem 2rem;
+    }
+    #product-grid.list-mode .product-card p.line-clamp-1 {
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        margin-top: 0.5rem;
+    }
+    #product-grid.list-mode .product-card h3 {
+        font-size: 1.125rem;
+    }
+    #product-grid.list-mode .product-card .add-to-cart-btn {
+        width: auto;
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+        margin-top: 1.5rem;
+        align-self: flex-start;
+    }
+}
+</style>

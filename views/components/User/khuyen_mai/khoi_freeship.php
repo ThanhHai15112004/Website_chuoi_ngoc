@@ -22,9 +22,16 @@
             </div>
             <div>
                 <h3 class="font-semibold text-3xl md:text-4xl text-white font-bold mb-2">Miễn phí vận chuyển</h3>
-                <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-red-100">
-                    <span class="bg-[#D4AF37] text-white text-xs uppercase font-bold px-2 py-1 rounded inline-block w-fit">Từ 500K</span>
-                    <span>Áp dụng giao hàng tiêu chuẩn trên toàn quốc.</span>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-red-100 flex-wrap">
+                    <?php if (!empty($quy_tac_freeship)): ?>
+                        <?php foreach($quy_tac_freeship as $rule): ?>
+                            <span class="bg-[#D4AF37] text-white text-xs uppercase font-bold px-2 py-1 rounded inline-block w-fit"><?= htmlspecialchars($rule['ten']) ?></span>
+                        <?php endforeach; ?>
+                        <span>Áp dụng theo từng quy tắc cụ thể.</span>
+                    <?php else: ?>
+                        <span class="bg-[#D4AF37] text-white text-xs uppercase font-bold px-2 py-1 rounded inline-block w-fit">Từ 500K</span>
+                        <span>Áp dụng giao hàng tiêu chuẩn trên toàn quốc.</span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
