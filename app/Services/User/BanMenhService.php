@@ -44,6 +44,51 @@ class BanMenhService
         'Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'
     ];
 
+    // =============================================
+    // BẢNG NẠP ÂM LỤC THẬP HOA GIÁP (30 cặp = 60 năm)
+    // Mỗi mục tương ứng 2 năm liên tiếp trong chu kỳ 60 năm
+    // =============================================
+    private const NAP_AM_TABLE = [
+        'Hải Trung Kim',    // 0:  Giáp Tý, Ất Sửu
+        'Lư Trung Hỏa',    // 1:  Bính Dần, Đinh Mão
+        'Đại Lâm Mộc',     // 2:  Mậu Thìn, Kỷ Tỵ
+        'Lộ Bàng Thổ',     // 3:  Canh Ngọ, Tân Mùi
+        'Kiếm Phong Kim',  // 4:  Nhâm Thân, Quý Dậu
+        'Sơn Đầu Hỏa',    // 5:  Giáp Tuất, Ất Hợi
+        'Giản Hạ Thủy',    // 6:  Bính Tý, Đinh Sửu
+        'Thành Đầu Thổ',   // 7:  Mậu Dần, Kỷ Mão
+        'Bạch Lạp Kim',    // 8:  Canh Thìn, Tân Tỵ
+        'Dương Liễu Mộc',  // 9:  Nhâm Ngọ, Quý Mùi
+        'Tuyền Trung Thủy',// 10: Giáp Thân, Ất Dậu
+        'Ốc Thượng Thổ',   // 11: Bính Tuất, Đinh Hợi
+        'Tích Lịch Hỏa',   // 12: Mậu Tý, Kỷ Sửu
+        'Tùng Bách Mộc',   // 13: Canh Dần, Tân Mão
+        'Trường Lưu Thủy', // 14: Nhâm Thìn, Quý Tỵ
+        'Sa Trung Kim',    // 15: Giáp Ngọ, Ất Mùi
+        'Sơn Hạ Hỏa',     // 16: Bính Thân, Đinh Dậu
+        'Bình Địa Mộc',    // 17: Mậu Tuất, Kỷ Hợi
+        'Bích Thượng Thổ', // 18: Canh Tý, Tân Sửu
+        'Kim Bạch Kim',    // 19: Nhâm Dần, Quý Mão
+        'Phú Đăng Hỏa',   // 20: Giáp Thìn, Ất Tỵ
+        'Thiên Hà Thủy',   // 21: Bính Ngọ, Đinh Mùi
+        'Đại Trạch Thổ',   // 22: Mậu Thân, Kỷ Dậu
+        'Thoa Xuyến Kim',  // 23: Canh Tuất, Tân Hợi
+        'Tang Đố Mộc',     // 24: Nhâm Tý, Quý Sửu
+        'Đại Khê Thủy',    // 25: Giáp Dần, Ất Mão
+        'Sa Trung Thổ',    // 26: Bính Thìn, Đinh Tỵ
+        'Thiên Thượng Hỏa',// 27: Mậu Ngọ, Kỷ Mùi
+        'Thạch Lựu Mộc',   // 28: Canh Thân, Tân Dậu
+        'Đại Hải Thủy',    // 29: Nhâm Tuất, Quý Hợi
+    ];
+
+    // Giá trị Nạp Âm của Thiên Can (theo index: year % 10)
+    // 0=Canh→4, 1=Tân→4, 2=Nhâm→5, 3=Quý→5, 4=Giáp→1, 5=Ất→1, 6=Bính→2, 7=Đinh→2, 8=Mậu→3, 9=Kỷ→3
+    private const CAN_NAP_AM_VALUE = [4, 4, 5, 5, 1, 1, 2, 2, 3, 3];
+
+    // Giá trị Nạp Âm của Địa Chi (theo index: (year-4) % 12)
+    // Tý/Sửu=0, Dần/Mão=1, Thìn/Tỵ=2, Ngọ/Mùi=0, Thân/Dậu=1, Tuất/Hợi=2
+    private const CHI_NAP_AM_VALUE = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2];
+
     // Con giáp tương ứng Địa Chi
     private const CON_GIAP = [
         'Tý' => 'Chuột', 'Sửu' => 'Trâu', 'Dần' => 'Hổ', 'Mão' => 'Mèo',
@@ -456,23 +501,27 @@ class BanMenhService
         // 1. Xác định năm âm lịch thực sự
         $namAmLich = $this->xacDinhNamAmLich($day, $month, $year, $lichType);
 
-        // 2. Tính Thiên Can → Ngũ Hành
+        // 2. Tính Thiên Can (để lấy tên Can: Giáp, Ất, ...)
         $canChi = $this->tinhThienCan($namAmLich);
 
         // 3. Tính Địa Chi
         $diaChi = $this->tinhDiaChi($namAmLich);
         $conGiap = self::CON_GIAP[$diaChi] ?? '?';
 
-        // 4. Tính Cung Phi
+        // 4. Tính Nạp Âm → Ngũ Hành Bản Mệnh (Lục Thập Hoa Giáp)
+        $napAm = $this->tinhNapAm($namAmLich);
+
+        // 5. Tính Cung Phi
         $cungPhi = $this->tinhCungPhi($namAmLich, $gender);
         $cungInfo = self::CUNG_PHI_INFO[$cungPhi];
 
-        // 5. Nhóm mệnh Đông/Tây
+        // 6. Nhóm mệnh Đông/Tây
         $nhomMenh = $cungInfo['nhom'] === 'dong' ? 'Đông Tứ Mệnh' : 'Tây Tứ Mệnh';
         $huong = $cungInfo['nhom'] === 'dong' ? self::HUONG_DONG_TU : self::HUONG_TAY_TU;
 
-        // 6. Ngũ Hành thông tin chi tiết
-        $nguHanh = $canChi['hanh'];
+        // 7. Ngũ Hành thông tin chi tiết (dùng Nạp Âm, KHÔNG phải Thiên Can)
+        $nguHanh = $napAm['hanh'];
+        $tenNapAm = $napAm['ten_nap_am'];
         $nguHanhInfo = self::NGU_HANH[$nguHanh];
         $mauSac = self::MAU_SAC[$nguHanh];
         $daQuy = self::DA_QUY[$nguHanh];
@@ -502,10 +551,12 @@ class BanMenhService
             ],
             'ngu_hanh' => [
                 'ten' => $nguHanh,
+                'nap_am' => $tenNapAm,
                 'icon' => $nguHanhInfo['icon'],
                 'color' => $nguHanhInfo['color'],
                 'gradient' => $nguHanhInfo['gradient'],
                 'thien_can' => $canChi['can'],
+                'hanh_thien_can' => $canChi['hanh'],
                 'dia_chi' => $diaChi,
                 'con_giap' => $conGiap,
                 'tuong_sinh_boi' => $nguHanhInfo['tuong_sinh_boi'],
@@ -600,11 +651,49 @@ class BanMenhService
     /**
      * Tính Thiên Can và Ngũ Hành từ năm âm lịch
      * Dựa trên chữ số cuối của năm mod 10
+     * LƯU Ý: Hành của Thiên Can KHÁC với Hành Bản Mệnh (Nạp Âm)
      */
     private function tinhThienCan(int $namAmLich): array
     {
         $index = $namAmLich % 10;
         return self::THIEN_CAN[$index];
+    }
+
+    /**
+     * Tính Ngũ Hành Bản Mệnh theo Nạp Âm Lục Thập Hoa Giáp
+     * Đây là thuật toán CHUẨN để xác định mệnh phong thủy
+     *
+     * Công thức:
+     *   Can value: Giáp/Ất=1, Bính/Đinh=2, Mậu/Kỷ=3, Canh/Tân=4, Nhâm/Quý=5
+     *   Chi value: Tý/Sửu & Ngọ/Mùi=0, Dần/Mão & Thân/Dậu=1, Thìn/Tỵ & Tuất/Hợi=2
+     *   Sum = Can + Chi (nếu > 5 thì trừ 5)
+     *   1=Kim, 2=Thủy, 3=Hỏa, 4=Thổ, 5=Mộc
+     */
+    private function tinhNapAm(int $namAmLich): array
+    {
+        $canIndex = $namAmLich % 10;
+        $chiIndex = ($namAmLich - 4) % 12;
+        if ($chiIndex < 0) $chiIndex += 12;
+
+        // Tính Ngũ Hành bằng công thức Nạp Âm
+        $canValue = self::CAN_NAP_AM_VALUE[$canIndex];
+        $chiValue = self::CHI_NAP_AM_VALUE[$chiIndex];
+        $sum = $canValue + $chiValue;
+        if ($sum > 5) $sum -= 5;
+
+        $hanhMap = [1 => 'Kim', 2 => 'Thủy', 3 => 'Hỏa', 4 => 'Thổ', 5 => 'Mộc'];
+        $hanh = $hanhMap[$sum];
+
+        // Tên Nạp Âm chi tiết (VD: Hải Trung Kim, Tuyền Trung Thủy, ...)
+        $cyclePos = ($namAmLich - 4) % 60;
+        if ($cyclePos < 0) $cyclePos += 60;
+        $napAmIndex = intdiv($cyclePos, 2);
+        $tenNapAm = self::NAP_AM_TABLE[$napAmIndex];
+
+        return [
+            'hanh' => $hanh,
+            'ten_nap_am' => $tenNapAm,
+        ];
     }
 
     /**

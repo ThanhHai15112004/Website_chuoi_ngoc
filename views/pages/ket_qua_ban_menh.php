@@ -43,6 +43,7 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
                 <span class="text-xl md:text-2xl font-black tracking-tight">Mệnh <?= $nguHanh ?></span>
             </div>
             <div class="text-gray-600 font-medium"><?= $r['ngu_hanh']['thien_can'] ?> <?= $r['ngu_hanh']['dia_chi'] ?> – Tuổi <?= $r['ngu_hanh']['con_giap'] ?></div>
+            <div class="text-sm mt-1 font-semibold" style="color:<?= $color ?>;"><?= $r['ngu_hanh']['nap_am'] ?? '' ?></div>
         </div>
         
         <!-- Thông tin chính -->
