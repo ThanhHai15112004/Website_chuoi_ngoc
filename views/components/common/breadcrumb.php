@@ -33,21 +33,17 @@
                 <?php if (!$is_last && isset($item['url'])): ?>
                     <!-- Link item -->
                     <li>
-                        <a href="<?= $item['url'] ?>" class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-gray-50 transition-colors">
-                            <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-gray-50 text-gray-500">
-                                <iconify-icon icon="<?= $item['icon'] ?>" class="text-lg"></iconify-icon>
-                            </div>
-                            <span class="text-sm font-medium text-gray-600"><?= htmlspecialchars($item['ten']) ?></span>
+                        <a href="<?= $item['url'] ?>" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-gray-50 text-gray-500 hover:text-[#8B0000] transition-colors">
+                            <iconify-icon icon="<?= $item['icon'] ?>" class="text-lg"></iconify-icon>
+                            <span class="text-sm font-medium"><?= htmlspecialchars($item['ten']) ?></span>
                         </a>
                     </li>
                 <?php else: ?>
                     <!-- Active (current page) -->
                     <li aria-current="page">
-                        <div class="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8B0000]">
-                            <div class="flex items-center justify-center w-7 h-7 rounded-lg text-white">
-                                <iconify-icon icon="<?= $item['icon'] ?>" class="text-lg"></iconify-icon>
-                            </div>
-                            <span class="text-sm font-bold text-white tracking-wide"><?= htmlspecialchars($item['ten']) ?></span>
+                        <div class="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-50 text-[#8B0000] border border-red-100">
+                            <iconify-icon icon="<?= $item['icon'] ?>" class="text-lg"></iconify-icon>
+                            <span class="text-sm font-bold tracking-wide"><?= htmlspecialchars($item['ten']) ?></span>
                         </div>
                     </li>
                 <?php endif; ?>

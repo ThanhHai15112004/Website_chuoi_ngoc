@@ -24,36 +24,39 @@ $desireLabels = [
 ];
 ?>
 
-<div id="tab-ban-menh" class="tab-content hidden">
+<div>
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-900 mb-1">Bản Mệnh <span style="color:#8b0000;">Phong Thủy</span></h2>
         <p class="text-sm text-gray-500">Lịch sử các lần tra cứu bản mệnh của bạn tại Chuỗi Ngọc.</p>
     </div>
 
     <!-- CTA Tra cứu mới -->
-    <div class="mb-6 p-5 rounded-2xl flex flex-col md:flex-row items-center gap-4 justify-between" style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);">
-        <div class="text-white">
-            <div class="font-bold text-lg mb-1">✨ Khám phá bản mệnh ngay</div>
-            <p class="text-gray-400 text-sm">Tra cứu ngũ hành, cung phi, màu sắc cát tường và đá quý phù hợp nhất với bạn.</p>
+    <div class="mb-6 p-5 rounded-2xl flex flex-col md:flex-row items-center gap-4 justify-between bg-red-50 border border-red-100">
+        <div>
+            <div class="font-bold text-lg mb-1 flex items-center gap-2 text-[#8b0000]">
+                <iconify-icon icon="mdi:compass-rose" class="text-xl"></iconify-icon>
+                Khám phá bản mệnh ngay
+            </div>
+            <p class="text-gray-600 text-sm">Tra cứu ngũ hành, cung phi, màu sắc cát tường và đá quý phù hợp nhất với bạn.</p>
         </div>
         <a href="<?= APP_URL ?>/vong-theo-menh" target="_blank" 
-           class="shrink-0 inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
+           class="shrink-0 inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 shadow-sm"
            style="background:#8b0000;">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             Tra Cứu Bản Mệnh
+            <iconify-icon icon="mdi:arrow-right" class="text-lg"></iconify-icon>
         </a>
     </div>
 
     <?php if (empty($lichSu)): ?>
     <!-- Empty state -->
-    <div class="text-center py-16 px-8 bg-white rounded-2xl border border-gray-100 shadow-sm">
-        <div class="text-6xl mb-4">🔮</div>
+    <div class="text-center py-16 px-8 bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+        <iconify-icon icon="mdi:yin-yang" class="text-6xl text-gray-200 mb-4"></iconify-icon>
         <h3 class="text-xl font-bold text-gray-800 mb-2">Chưa có lịch sử tra cứu</h3>
         <p class="text-gray-500 mb-6 max-w-sm mx-auto">Bạn chưa tra cứu bản mệnh lần nào. Hãy bắt đầu khám phá ngũ hành, cung phi và những gợi ý phong thủy dành riêng cho bạn.</p>
         <a href="<?= APP_URL ?>/vong-theo-menh" 
-           class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-all"
+           class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-all shadow-sm"
            style="background:#8b0000;">
-            Tra cứu ngay <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            Tra cứu ngay <iconify-icon icon="mdi:arrow-right" class="text-lg"></iconify-icon>
         </a>
     </div>
     

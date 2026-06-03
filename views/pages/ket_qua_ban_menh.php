@@ -31,77 +31,78 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
 <div class="max-w-6xl mx-auto px-4 pt-6">
 
 <!-- ===== HERO HEADER ===== -->
-<div class="rounded-3xl overflow-hidden shadow-2xl mb-10" style="background:linear-gradient(135deg,#1a1a1a 0%, #2d2d2d 100%);" data-aos="fade-up">
-    <div class="relative p-8 md:p-12">
-        <!-- BG Pattern -->
-        <div class="absolute inset-0 opacity-5" style="background-image:url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-        
-        <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
-            <!-- Mệnh Badge -->
-            <div class="shrink-0 text-center">
-                <div class="w-36 h-36 rounded-full flex flex-col items-center justify-center text-white shadow-[0_0_40px_rgba(255,255,255,0.15)] border-4 border-white/20 mx-auto mb-3" style="background:linear-gradient(135deg,<?= $color ?>,<?= $color ?>99);">
-                    <span class="text-4xl mb-1"><?= $icon ?></span>
-                    <span class="text-xl font-black">Mệnh <?= $nguHanh ?></span>
-                </div>
-                <div class="text-gray-400 text-sm"><?= $r['ngu_hanh']['thien_can'] ?> <?= $r['ngu_hanh']['dia_chi'] ?> – Tuổi <?= $r['ngu_hanh']['con_giap'] ?></div>
-            </div>
-            
-            <!-- Thông tin chính -->
-            <div class="flex-1 text-white text-center md:text-left">
-                <div class="text-sm text-gray-400 mb-2">BẢN PHÂN TÍCH BẢN MỆNH PHONG THỦY</div>
-                <h1 class="text-3xl md:text-4xl font-black mb-4">
-                    <?= $r['ngu_hanh']['thien_can'] ?> <?= $r['ngu_hanh']['dia_chi'] ?>
-                    – Ngũ Hành <span style="color:<?= $color ?>;"><?= $nguHanh ?></span>
-                </h1>
-                
-                <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                    <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/10">
-                        <?= $r['thong_tin_co_ban']['gioi_tinh_ten'] ?> · <?= $r['thong_tin_co_ban']['ngay_thang'] ?>/<?= $r['thong_tin_co_ban']['nam_sinh_duong'] ?> DL (<?= $r['thong_tin_co_ban']['nam_sinh_am'] ?> ÂL)
-                    </span>
-                    <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/10">
-                        Cung <?= $r['cung_phi']['ten'] ?> (Cung <?= $r['cung_phi']['so'] ?>)
-                    </span>
-                    <span class="px-3 py-1.5 rounded-full text-xs font-semibold" style="background:<?= $color ?>33; color:<?= $color ?>;">
-                        <?= $r['cung_phi']['nhom_menh'] ?>
-                    </span>
-                </div>
+<div class="rounded-3xl bg-white border border-gray-100 shadow-sm mb-10 overflow-hidden relative" data-aos="fade-up">
+    <!-- BG Pattern nhẹ -->
+    <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br opacity-20 rounded-full blur-3xl -mr-20 -mt-20" style="background-image: linear-gradient(to bottom right, <?= $color ?>, transparent);"></div>
 
-                <div class="mt-6 flex flex-wrap gap-4 justify-center md:justify-start text-center">
-                    <div>
-                        <div class="text-2xl font-black text-white"><?= $r['diem_van_khi']['tong_van_khi'] ?><span class="text-sm font-normal">/100</span></div>
-                        <div class="text-xs text-gray-400">Tổng Vận Khí</div>
-                        <div class="text-xs font-semibold mt-1" style="color:<?= $color ?>;"><?= $r['diem_van_khi']['nam_van'] ?></div>
-                    </div>
-                    <div class="w-px bg-white/10 hidden md:block"></div>
-                    <div>
-                        <div class="text-2xl font-black" style="color:<?= $color ?>;"><?= $nguHanh ?></div>
-                        <div class="text-xs text-gray-400">Bản Mệnh</div>
-                    </div>
-                    <div class="w-px bg-white/10 hidden md:block"></div>
-                    <div>
-                        <div class="text-2xl font-black text-white">Cung <?= $r['cung_phi']['so'] ?></div>
-                        <div class="text-xs text-gray-400">Cung Phi</div>
-                    </div>
-                </div>
+    <div class="relative p-8 md:p-10 flex flex-col md:flex-row items-center gap-8">
+        <!-- Mệnh Badge -->
+        <div class="shrink-0 text-center relative z-10">
+            <div class="w-32 h-32 md:w-36 md:h-36 rounded-full flex flex-col items-center justify-center text-white shadow-xl mx-auto mb-4 border-4 border-white" style="background:linear-gradient(135deg,<?= $color ?>,<?= $color ?>dd);">
+                <span class="text-4xl md:text-5xl mb-1"><?= $icon ?></span>
+                <span class="text-xl md:text-2xl font-black tracking-tight">Mệnh <?= $nguHanh ?></span>
             </div>
+            <div class="text-gray-600 font-medium"><?= $r['ngu_hanh']['thien_can'] ?> <?= $r['ngu_hanh']['dia_chi'] ?> – Tuổi <?= $r['ngu_hanh']['con_giap'] ?></div>
         </div>
+        
+        <!-- Thông tin chính -->
+        <div class="flex-1 text-center md:text-left relative z-10">
+            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wider mb-3" style="color:<?= $color ?>; background:<?= $color ?>15;">BẢN PHÂN TÍCH BẢN MỆNH PHONG THỦY</div>
+            
+            <h1 class="text-3xl md:text-4xl font-black text-gray-900 mb-4 leading-tight">
+                <?= $r['ngu_hanh']['thien_can'] ?> <?= $r['ngu_hanh']['dia_chi'] ?> <br class="hidden md:block">
+                <span class="text-gray-500 font-medium text-2xl md:text-3xl">Ngũ Hành</span> <span style="color:<?= $color ?>;"><?= $nguHanh ?></span>
+            </h1>
+            
+            <div class="flex flex-wrap gap-2 justify-center md:justify-start mb-6">
+                <span class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-50 text-gray-700 border border-gray-200">
+                    <iconify-icon icon="mdi:calendar-blank" class="inline-block mr-1 align-middle text-gray-400"></iconify-icon>
+                    <?= $r['thong_tin_co_ban']['gioi_tinh_ten'] ?> · <?= $r['thong_tin_co_ban']['ngay_thang'] ?>/<?= $r['thong_tin_co_ban']['nam_sinh_duong'] ?> DL
+                </span>
+                <span class="px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-50 text-gray-700 border border-gray-200">
+                    <iconify-icon icon="mdi:compass-outline" class="inline-block mr-1 align-middle text-gray-400"></iconify-icon>
+                    Cung <?= $r['cung_phi']['ten'] ?> (<?= $r['cung_phi']['so'] ?>)
+                </span>
+                <span class="px-3 py-1.5 rounded-lg text-sm font-semibold border" style="background:<?= $color ?>10; color:<?= $color ?>; border-color:<?= $color ?>33;">
+                    <?= $r['cung_phi']['nhom_menh'] ?>
+                </span>
+            </div>
 
-        <!-- Action buttons -->
-        <div class="relative z-10 flex flex-wrap gap-3 mt-8 justify-center md:justify-start">
-            <a href="<?= APP_URL ?>/vong-theo-menh" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white border border-white/20 hover:bg-white/10 transition-all">
-                <iconify-icon icon="mdi:refresh"></iconify-icon> Tra cứu mới
-            </a>
-            <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white border border-white/20 hover:bg-white/10 transition-all">
-                <iconify-icon icon="mdi:printer-outline"></iconify-icon> In kết quả
-            </button>
-            <?php if (!empty($_SESSION['user_id'])): ?>
-            <a href="<?= APP_URL ?>/tai-khoan#tab-ban-menh" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border border-white/20 hover:bg-white/10 transition-all" style="color:<?= $color ?>;">
-                <iconify-icon icon="mdi:history"></iconify-icon> Lịch sử tra cứu
-            </a>
-            <?php endif; ?>
+            <!-- Stats -->
+            <div class="flex flex-wrap gap-6 justify-center md:justify-start items-center p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                <div class="text-center md:text-left">
+                    <div class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Tổng Vận Khí</div>
+                    <div class="text-2xl font-black text-gray-900"><?= $r['diem_van_khi']['tong_van_khi'] ?><span class="text-base font-normal text-gray-400">/100</span></div>
+                    <div class="text-xs font-bold mt-1" style="color:<?= $color ?>;"><?= $r['diem_van_khi']['nam_van'] ?></div>
+                </div>
+                <div class="w-px h-12 bg-gray-200 hidden md:block"></div>
+                <div class="text-center md:text-left">
+                    <div class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Hành Bản Mệnh</div>
+                    <div class="text-2xl font-black" style="color:<?= $color ?>;"><?= $nguHanh ?></div>
+                </div>
+                <div class="w-px h-12 bg-gray-200 hidden md:block"></div>
+                <div class="text-center md:text-left">
+                    <div class="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Cung Phi</div>
+                    <div class="text-2xl font-black text-gray-900">Cung <?= $r['cung_phi']['so'] ?></div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Action buttons -->
+    <div class="bg-gray-50 border-t border-gray-100 px-8 py-4 flex flex-wrap gap-3 justify-center md:justify-start">
+        <a href="<?= APP_URL ?>/vong-theo-menh" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+            <iconify-icon icon="mdi:refresh"></iconify-icon> Tra cứu mới
+        </a>
+        <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm">
+            <iconify-icon icon="mdi:printer-outline"></iconify-icon> In kết quả
+        </button>
+        <?php if (!empty($_SESSION['user_id'])): ?>
+        <a href="<?= APP_URL ?>/tai-khoan#tab-ban-menh" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm text-white" style="background:<?= $color ?>;">
+            <iconify-icon icon="mdi:history"></iconify-icon> Lịch sử tra cứu
+        </a>
+        <?php endif; ?>
+    </div>
 
 <!-- ===== BODY CONTENT GRID ===== -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -135,17 +136,17 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
             </div>
             
             <!-- Can Chi -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-black text-white" style="background:<?= $color ?>;"><?= mb_substr($r['ngu_hanh']['thien_can'], 0, 1) ?></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                    <div class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center text-2xl font-black text-white shadow-sm" style="background:<?= $color ?>;"><?= mb_substr($r['ngu_hanh']['thien_can'], 0, 1) ?></div>
                     <div>
                         <div class="text-xs text-gray-500">Thiên Can</div>
                         <div class="font-bold text-gray-900"><?= $r['ngu_hanh']['thien_can'] ?></div>
                         <div class="text-xs text-gray-400">Hành <?= $nguHanh ?></div>
                     </div>
                 </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl font-black text-white" style="background:#4a5568;"><?= mb_substr($r['ngu_hanh']['dia_chi'], 0, 1) ?></div>
+                <div class="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100">
+                    <div class="w-12 h-12 shrink-0 rounded-xl flex items-center justify-center text-2xl font-black text-white shadow-sm" style="background:#4a5568;"><?= mb_substr($r['ngu_hanh']['dia_chi'], 0, 1) ?></div>
                     <div>
                         <div class="text-xs text-gray-500">Địa Chi – Tuổi</div>
                         <div class="font-bold text-gray-900"><?= $r['ngu_hanh']['dia_chi'] ?></div>
@@ -168,10 +169,10 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
                     <iconify-icon icon="mdi:check-circle" class="text-green-600 text-xl"></iconify-icon>
                     <span class="font-semibold text-gray-900">Màu mang lại may mắn</span>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <?php foreach ($r['mau_sac']['cat'] as $mau): ?>
-                    <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                        <div class="h-16" style="background:<?= $mau['hex'] ?>;"></div>
+                    <div class="rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                        <div class="h-16 shrink-0" style="background:<?= $mau['hex'] ?>;"></div>
                         <div class="p-3">
                             <div class="font-semibold text-gray-900 text-sm"><?= $mau['ten'] ?></div>
                             <div class="text-xs text-gray-400 font-mono"><?= $mau['hex'] ?></div>
@@ -304,7 +305,7 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
                     $badgeTen = $sp['loai_goi_y'] === 'tuong_hop' ? 'Tương hợp' : 
                                 ($sp['loai_goi_y'] === 'tuong_sinh' ? 'Tương sinh' : 'Phù hợp');
                 ?>
-                <a href="<?= APP_URL ?>/chi-tiet-san-pham?slug=<?= $sp['slug'] ?>" class="group block">
+                <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="group block">
                     <div class="relative rounded-xl overflow-hidden mb-3 border border-gray-100 group-hover:shadow-lg transition-all duration-300">
                         <div class="absolute top-2 right-2 z-10">
                             <span class="px-2 py-0.5 rounded-md text-xs font-bold <?= $badgeClass ?>"><?= $badgeTen ?></span>
@@ -314,9 +315,9 @@ require_once __DIR__ . '/../components/common/breadcrumb.php';
                              onerror="this.src='<?= APP_URL ?>/public/images/placeholder.png'">
                     </div>
                     <h3 class="text-sm font-semibold text-gray-900 group-hover:text-[#8b0000] transition-colors line-clamp-2 mb-1"><?= htmlspecialchars($sp['ten_sp']) ?></h3>
-                    <div class="font-bold text-base" style="color:#8b0000;"><?= format_currency_short($gia) ?></div>
+                    <div class="font-bold text-base" style="color:#8b0000;"><?= number_format($gia, 0, ',', '.') ?>đ</div>
                     <?php if ($sp['gia_khuyen_mai']): ?>
-                    <div class="text-xs text-gray-400 line-through"><?= format_currency_short($sp['gia_ban']) ?></div>
+                    <div class="text-xs text-gray-400 line-through"><?= number_format($sp['gia_ban'], 0, ',', '.') ?>đ</div>
                     <?php endif; ?>
                 </a>
                 <?php endforeach; ?>

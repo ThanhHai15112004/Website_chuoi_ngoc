@@ -159,6 +159,7 @@ class AuthController extends Controller {
             'ho_ten'   => $pending['ho_ten'],
             'email'    => $pending['email'],
             'mat_khau' => password_hash($pending['password'], PASSWORD_DEFAULT),
+            'id_hang_thanh_vien' => 'rank_1', // Mặc định hạng Đồng
             'trang_thai'    => 1,
             'tong_chi_tieu' => 0,
             'diem_thuong'   => 0,

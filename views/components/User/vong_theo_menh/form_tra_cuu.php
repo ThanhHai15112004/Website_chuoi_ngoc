@@ -15,16 +15,16 @@
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cursor-pointer relative group">
                                 <input type="radio" name="lich_type" value="duong" class="peer" style="display:none;" checked>
-                                <div class="flex items-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl peer-checked:border-[#8b0000] peer-checked:bg-red-50 transition-all">
+                                <div class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl peer-checked:border-[#8b0000] peer-checked:bg-red-50 transition-all text-center">
                                     <iconify-icon icon="mdi:white-balance-sunny" class="text-xl text-gray-400 peer-checked:text-[#8b0000]"></iconify-icon>
-                                    <span class="text-sm font-medium text-gray-700">Dương lịch (Gregorian)</span>
+                                    <span class="text-sm font-medium text-gray-700">Dương lịch</span>
                                 </div>
                             </label>
                             <label class="cursor-pointer relative group">
                                 <input type="radio" name="lich_type" value="am" class="peer" style="display:none;">
-                                <div class="flex items-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl peer-checked:border-[#8b0000] peer-checked:bg-red-50 transition-all">
-                                    <iconify-icon icon="mdi:moon-waning-crescent" class="text-xl text-gray-400"></iconify-icon>
-                                    <span class="text-sm font-medium text-gray-700">Âm lịch (Lunar)</span>
+                                <div class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl peer-checked:border-[#8b0000] peer-checked:bg-red-50 transition-all text-center">
+                                    <iconify-icon icon="mdi:moon-waning-crescent" class="text-xl text-gray-400 peer-checked:text-[#8b0000]"></iconify-icon>
+                                    <span class="text-sm font-medium text-gray-700">Âm lịch</span>
                                 </div>
                             </label>
                         </div>
@@ -197,11 +197,21 @@ document.getElementById('fengshuiForm').addEventListener('submit', async functio
             fd.forEach((v, k) => savedData[k] = v);
             sessionStorage.setItem('pending_fengshui', JSON.stringify(savedData));
             
-            // Show message and redirect to login
-            showError(data.message || 'Vui lòng đăng nhập để xem kết quả.');
+            // Show SweetAlert2 Toast instead of normal text error
+            resetBtn();
+            if (typeof Toast !== 'undefined') {
+                Toast.fire({
+                    icon: 'warning',
+                    title: data.message || 'Vui lòng đăng nhập để tra cứu bản mệnh.'
+                });
+            } else {
+                alert(data.message || 'Vui lòng đăng nhập để tra cứu bản mệnh.');
+            }
+
+            // Delay redirect to let user see the Toast
             setTimeout(() => {
                 window.location.href = '<?= APP_URL ?>/dang-nhap?redirect=' + encodeURIComponent('<?= APP_URL ?>/vong-theo-menh?auto=1');
-            }, 1000);
+            }, 5000);
         } else {
             const msg = (data.errors || ['Có lỗi xảy ra, vui lòng thử lại.']).join(' ');
             showError(msg);
