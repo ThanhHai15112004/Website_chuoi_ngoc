@@ -68,6 +68,10 @@
                     <?php require_once __DIR__ . '/../components/User/tai_khoan/bao_mat.php'; ?>
                 </div>
 
+                <div id="tab-ban-menh" class="tab-content hidden">
+                    <?php require_once __DIR__ . '/../components/User/tai_khoan/lich_su_ban_menh.php'; ?>
+                </div>
+
             </div>
 
         </div>

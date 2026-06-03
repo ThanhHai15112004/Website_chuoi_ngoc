@@ -10,6 +10,10 @@ $router->get('/gio-hang', 'User\CartController@index');
 $router->get('/thanh-toan', 'User\CheckoutController@index');
 $router->get('/dat-hang-thanh-cong', 'User\CheckoutController@success');
 $router->get('/vong-theo-menh', 'User\VongTheoMenhController@index');
+$router->post('/vong-theo-menh/phan-tich', 'User\VongTheoMenhController@analyze');
+$router->get('/vong-theo-menh/ket-qua/([a-zA-Z0-9\-]+)', 'User\VongTheoMenhController@ketQua');
+
+
 $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
 $router->post('/khuyen-mai/luu-voucher', 'User\KhuyenMaiController@saveVoucher');
 $router->get('/bai-viet', 'User\ArticleController@index');
