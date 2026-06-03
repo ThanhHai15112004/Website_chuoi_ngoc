@@ -23,7 +23,7 @@ class KhuyenMaiController extends Controller {
             'quy_tac_freeship' => $khuyenMaiService->getFreeshipRules(),
             'combo_qua_tang' => $khuyenMaiService->getGiftCombos(3),
             'km_end_date' => $khuyenMaiService->getPromotionEndDate(),
-            'saved_vouchers' => isset($_SESSION['user']['id']) ? $khuyenMaiService->getSavedVoucherIds($_SESSION['user']['id']) : [],
+            'saved_vouchers' => !empty($_SESSION['user_id']) ? $khuyenMaiService->getSavedVoucherIds($_SESSION['user_id']) : [],
         ];
         
         $this->view('khuyen_mai', $data);
@@ -32,12 +32,12 @@ class KhuyenMaiController extends Controller {
     public function saveVoucher() {
         header('Content-Type: application/json');
         
-        if (!isset($_SESSION['user'])) {
+        if (empty($_SESSION['user_id'])) {
             echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập để lưu mã ưu đãi.']);
             return;
         }
 
-        $userId = $_SESSION['user']['id'] ?? '';
+        $userId = $_SESSION['user_id'];
         $voucherId = $_POST['voucher_id'] ?? '';
 
         if (empty($voucherId)) {
@@ -51,3 +51,4 @@ class KhuyenMaiController extends Controller {
         echo json_encode($result);
     }
 }
+

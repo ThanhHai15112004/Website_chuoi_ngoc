@@ -19,18 +19,19 @@ $flash_sale_products = $flash_sale ?? [];
         </div>
         <div class="mt-4 md:mt-0 flex items-center gap-4">
             <span class="text-sm font-medium text-white/80">Kết thúc trong:</span>
-            <div class="flex gap-2 text-center text-sm font-bold">
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">02</div><span class="text-white mt-2">:</span>
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">15</div><span class="text-white mt-2">:</span>
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">45</div>
+            <div class="flex gap-2 text-center text-sm font-bold" id="flash-sale-timer-page" data-endtime="<?= !empty($km_end_date) ? $km_end_date : '' ?>">
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div><span class="text-white mt-2">:</span>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div><span class="text-white mt-2">:</span>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div>
             </div>
         </div>
     </div>
 
     <!-- Products Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative z-10">
+        <?php if (!empty($flash_sale_products)): ?>
         <?php foreach($flash_sale_products as $sp): 
-            $percent = ($sp['da_ban'] / $sp['tong_so']) * 100;
+            $percent = ($sp['tong_so'] > 0) ? ($sp['da_ban'] / $sp['tong_so']) * 100 : 0;
         ?>
         <div class="bg-white rounded-2xl overflow-hidden group hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300">
             <!-- Image Area -->
@@ -42,9 +43,9 @@ $flash_sale_products = $flash_sale ?? [];
                 <img src="<?= $sp['hinh_anh'] ?>" alt="<?= htmlspecialchars($sp['ten']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg';">
                 
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <button class="px-6 py-2 bg-[#D4AF37] text-white font-semibold rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-amber-600">
+                    <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="px-6 py-2 bg-[#D4AF37] text-white font-semibold rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-amber-600">
                         Mua Ngay
-                    </button>
+                    </a>
                 </div>
             </div>
             
@@ -75,6 +76,11 @@ $flash_sale_products = $flash_sale ?? [];
             </div>
         </div>
         <?php endforeach; ?>
+        <?php else: ?>
+        <div class="col-span-2 lg:col-span-4 text-center py-8">
+            <p class="text-gray-400 text-lg">Hiện chưa có chương trình Flash Sale nào đang diễn ra.</p>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 

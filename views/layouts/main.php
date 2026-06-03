@@ -102,7 +102,7 @@
             }
         });
     </script>
-    <script src="<?= APP_URL ?>/js/script.js"></script>
+    <script src="<?= APP_URL ?>/js/script.js?v=<?= time() ?>"></script>
     <script>
         // Initialize AOS
         document.addEventListener('DOMContentLoaded', function() {
