@@ -18,11 +18,15 @@ $router->get('/khuyen-mai', 'User\KhuyenMaiController@index');
 $router->post('/khuyen-mai/luu-voucher', 'User\KhuyenMaiController@saveVoucher');
 $router->get('/bai-viet', 'User\ArticleController@index');
 $router->get('/chi-tiet-bai-viet', 'User\ArticleController@detail');
+$router->post('/chi-tiet-bai-viet/binh-luan', 'User\ArticleController@submitComment');
 $router->get('/lien-he', 'User\ContactController@index');
 $router->post('/lien-he/gui', 'User\ContactController@submit');
 $router->get('/chi-tiet-don-hang', 'User\DonHangController@detail');
 $router->post('/chi-tiet-don-hang/huy', 'User\DonHangController@cancel');
 $router->get('/tai-khoan', 'User\AccountController@index');
+$router->post('/tai-khoan/cap-nhat-ho-so', 'User\AccountController@updateProfile');
+$router->post('/tai-khoan/doi-mat-khau', 'User\AccountController@changePassword');
+$router->post('/tai-khoan/doc-thong-bao', 'User\AccountController@markNotificationRead');
 
 // Authentication Routes
 $router->get('/dang-nhap', 'User\AuthController@index');

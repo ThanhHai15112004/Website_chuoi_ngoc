@@ -43,9 +43,18 @@
                         <p class="text-sm" style="color: #888;"><?= htmlspecialchars($mo_ta_vc) ?></p>
                     </div>
                     <div class="pr-2 text-right">
-                        <button onclick="saveVoucher('<?= APP_URL ?>', '<?= $vc['id'] ?>', this)" class="px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300 border" style="background: #fdf2f2; color: #8b0000; border-color: #f5c6cb;" onmouseover="this.style.background='#8b0000';this.style.color='#fff';this.style.borderColor='#8b0000'" onmouseout="this.style.background='#fdf2f2';this.style.color='#8b0000';this.style.borderColor='#f5c6cb'">
-                            Lưu mã
-                        </button>
+                        <?php 
+                        $is_saved = in_array($vc['id'], $saved_vouchers ?? []); 
+                        if ($is_saved): 
+                        ?>
+                            <button class="px-4 py-1.5 text-sm font-semibold rounded-lg border cursor-not-allowed" style="background: #8b0000; color: #fff; border-color: #8b0000;" disabled>
+                                Đã lưu
+                            </button>
+                        <?php else: ?>
+                            <button onclick="saveVoucher('<?= APP_URL ?>', '<?= $vc['id'] ?>', this)" class="px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300 border" style="background: #fdf2f2; color: #8b0000; border-color: #f5c6cb;" onmouseover="this.style.background='#8b0000';this.style.color='#fff';this.style.borderColor='#8b0000'" onmouseout="this.style.background='#fdf2f2';this.style.color='#8b0000';this.style.borderColor='#f5c6cb'">
+                                Lưu mã
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -66,18 +75,20 @@
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium" style="color: #666;">Kết thúc sau:</span>
                         <div class="flex items-center gap-1 font-bold" id="flash-sale-timer" data-endtime="<?= !empty($flash_sale['ngay_ket_thuc']) ? $flash_sale['ngay_ket_thuc'] : '' ?>">
-                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm" style="background: #8b0000;">00</span>
+                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm timer-day" style="background: #8b0000; display: none;">00</span>
+                            <span class="timer-day-sep" style="color: #8b0000; display: none;">ngày</span>
+                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm timer-hour" style="background: #8b0000;">00</span>
                             <span style="color: #8b0000;">:</span>
-                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm" style="background: #8b0000;">00</span>
+                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm timer-min" style="background: #8b0000;">00</span>
                             <span style="color: #8b0000;">:</span>
-                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm" style="background: #8b0000;">00</span>
+                            <span class="px-2.5 py-1 rounded text-white text-sm shadow-sm timer-sec" style="background: #8b0000;">00</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <?php if (!empty($flash_sale) && !empty($flash_sale['san_pham_ap_dung'])): 
-                        $flash_sale_items = array_slice($flash_sale['san_pham_ap_dung'], 0, 4);
+                        $flash_sale_items = $flash_sale['san_pham_ap_dung'];
                     ?>
                         <?php foreach($flash_sale_items as $gg):
                             $tong_cong = $flash_sale['gioi_han_tong'] > 0 ? $flash_sale['gioi_han_tong'] : max(100, $gg['so_luong_da_ban'] * 2);

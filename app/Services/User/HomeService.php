@@ -43,8 +43,15 @@ class HomeService
         // Lấy voucher đang hoạt động (còn lượt dùng, chưa hết hạn), giới hạn 3
         $allVouchers = $this->voucherModel->getActiveVouchers();
         $vouchers = array_slice($allVouchers, 0, 3);
+        
+        $saved_vouchers = [];
+        if (!empty($_SESSION['user_id'])) {
+            $khuyenMaiService = new \App\Services\User\KhuyenMaiService();
+            $saved_vouchers = $khuyenMaiService->getSavedVoucherIds($_SESSION['user_id']);
+        }
 
         return [
+            'saved_vouchers' => $saved_vouchers,
             'banners' => $this->bannerModel->getActiveBanners('slider_chinh', 5),
             'danh_muc' => $this->danhMucModel->getFeaturedCategories(6),
             'san_pham_ban_chay' => $this->sanPhamModel->getBestSellers(8),

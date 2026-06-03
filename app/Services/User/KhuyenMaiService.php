@@ -115,7 +115,7 @@ class KhuyenMaiService
             return $b['phan_tram_giam'] <=> $a['phan_tram_giam'];
         });
 
-        return $flashSale;
+        return array_slice($flashSale, 0, $limit);
     }
 
     public function getDiscountedProducts($limit = 8)

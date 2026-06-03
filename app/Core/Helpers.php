@@ -61,3 +61,44 @@ if (!function_exists('format_currency_short')) {
         return ($isNegative ? '-' : '') . $formatted;
     }
 }
+
+if (!function_exists('get_image_url')) {
+    /**
+     * Trả về URL ảnh đúng cho cả 3 trường hợp:
+     * - URL bên ngoài (https://...) → giữ nguyên
+     * - Đường dẫn local (public/images/...) → thêm APP_URL
+     * - Rỗng/null → trả ảnh placeholder
+     *
+     * @param string|null $path Đường dẫn ảnh từ DB
+     * @param string $placeholder Ảnh mặc định nếu rỗng
+     * @return string URL ảnh hoàn chỉnh
+     */
+    function get_image_url($path, $placeholder = '') {
+        if (empty(trim($path ?? ''))) {
+            // Nếu rỗng, dùng ảnh placeholder
+            return $placeholder ?: APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg';
+        }
+
+        // Nếu là URL bên ngoài (http:// hoặc https://) → giữ nguyên
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        // Đường dẫn local → thêm APP_URL
+        return APP_URL . '/' . ltrim($path, '/');
+    }
+}
+
+if (!function_exists('format_phone_number')) {
+    /**
+     * Format số điện thoại cho dễ đọc
+     * VD: 0123456789 -> 0123 456 789
+     */
+    function format_phone_number($phone) {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        if (strlen($phone) == 10) {
+            return preg_replace('/(\d{4})(\d{3})(\d{3})/', '$1 $2 $3', $phone);
+        }
+        return $phone;
+    }
+}

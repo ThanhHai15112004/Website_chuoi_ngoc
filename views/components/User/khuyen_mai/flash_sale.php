@@ -20,9 +20,10 @@ $flash_sale_products = $flash_sale ?? [];
         <div class="mt-4 md:mt-0 flex items-center gap-4">
             <span class="text-sm font-medium text-white/80">Kết thúc trong:</span>
             <div class="flex gap-2 text-center text-sm font-bold" id="flash-sale-timer-page" data-endtime="<?= !empty($km_end_date) ? $km_end_date : '' ?>">
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div><span class="text-white mt-2">:</span>
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div><span class="text-white mt-2">:</span>
-                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center">00</div>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center timer-day" style="display: none;">00</div><span class="text-white mt-2 timer-day-sep" style="display: none;">ngày</span>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center timer-hour">00</div><span class="text-white mt-2">:</span>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center timer-min">00</div><span class="text-white mt-2">:</span>
+                <div class="bg-[#8B0000] text-white rounded w-10 h-10 flex items-center justify-center timer-sec">00</div>
             </div>
         </div>
     </div>

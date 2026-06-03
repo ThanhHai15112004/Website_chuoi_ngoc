@@ -18,7 +18,7 @@
                     <span>Hỗ trợ & tư vấn</span>
                 </div>
                 
-                <h1 class="text-4xl font-serif text-gray-900 leading-tight">
+                <h1 class="text-4xl font-bold text-gray-900 leading-tight">
                     Cần tư vấn chọn <br/>
                     <span class="text-red-800">vòng ngọc phong thủy?</span>
                 </h1>
@@ -35,11 +35,11 @@
                         Gửi yêu cầu tư vấn
                     </a>
                     
-                    <a href="tel:0901234567" class="inline-flex justify-center items-center px-6 py-3 border-2 border-red-800 text-base font-medium rounded-full text-red-800 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-800 transition duration-300">
+                    <a href="tel:<?= htmlspecialchars($cau_hinh['hotline_chinh']) ?>" class="inline-flex justify-center items-center px-6 py-3 border-2 border-red-800 text-base font-medium rounded-full text-red-800 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-800 transition duration-300">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
-                        Gọi hotline: 090.123.4567
+                        Gọi hotline: <?= htmlspecialchars(format_phone_number($cau_hinh['hotline_chinh']) ?? $cau_hinh['hotline_chinh']) ?>
                     </a>
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <div class="hidden lg:flex justify-end relative pr-8">
                 <!-- Using a placeholder image styling that fits the jewelry theme -->
                 <div class="w-full max-w-[400px] aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative">
-                    <img src="/public/images/contact-banner.jpg" alt="Tư vấn vòng phong thủy" class="object-cover w-full h-full" onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=1000&auto=format&fit=crop'">
+                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg" alt="Tư vấn vòng phong thủy" class="object-cover w-full h-full" onerror="this.src='https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=1000&auto=format&fit=crop'">
                     <div class="absolute inset-0 border border-black/5 rounded-2xl pointer-events-none"></div>
                 </div>
                 

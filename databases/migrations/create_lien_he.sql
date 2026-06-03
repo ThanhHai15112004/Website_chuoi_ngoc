@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS lien_he (
+    id VARCHAR(36) PRIMARY KEY,
+    ho_ten VARCHAR(255) NOT NULL,
+    so_dien_thoai VARCHAR(20) NOT NULL,
+    email VARCHAR(255) DEFAULT NULL,
+    chu_de VARCHAR(100) NOT NULL,
+    menh_nam_sinh VARCHAR(100) DEFAULT NULL,
+    noi_dung TEXT NOT NULL,
+    kenh_lien_he VARCHAR(255) DEFAULT NULL,
+    trang_thai TINYINT(1) DEFAULT 0,
+    ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP
+);

@@ -34,15 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const hours = Math.floor(distance / (1000 * 60 * 60));
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            const slots = getTimeSlots();
-            if (slots.length >= 3) {
-                slots[0].textContent = hours.toString().padStart(2, '0');
-                slots[1].textContent = minutes.toString().padStart(2, '0');
-                slots[2].textContent = seconds.toString().padStart(2, '0');
+            const daysSlot = timerElement.querySelector('.timer-day');
+            const daySepSlot = timerElement.querySelector('.timer-day-sep');
+            const hoursSlot = timerElement.querySelector('.timer-hour');
+            const minsSlot = timerElement.querySelector('.timer-min');
+            const secsSlot = timerElement.querySelector('.timer-sec');
+
+            if (hoursSlot && minsSlot && secsSlot) {
+                if (daysSlot) {
+                    if (days > 0) {
+                        daysSlot.textContent = days.toString().padStart(2, '0');
+                        daysSlot.style.display = '';
+                        if (daySepSlot) daySepSlot.style.display = '';
+                    } else {
+                        daysSlot.style.display = 'none';
+                        if (daySepSlot) daySepSlot.style.display = 'none';
+                    }
+                }
+                hoursSlot.textContent = hours.toString().padStart(2, '0');
+                minsSlot.textContent = minutes.toString().padStart(2, '0');
+                secsSlot.textContent = seconds.toString().padStart(2, '0');
+            } else {
+                const totalHours = Math.floor(distance / (1000 * 60 * 60));
+                const slots = getTimeSlots();
+                if (slots.length >= 3) {
+                    slots[0].textContent = totalHours.toString().padStart(2, '0');
+                    slots[1].textContent = minutes.toString().padStart(2, '0');
+                    slots[2].textContent = seconds.toString().padStart(2, '0');
+                }
             }
         };
 

@@ -7,7 +7,7 @@
         </svg>
     </div>
 
-    <h3 class="text-xl font-serif font-bold mb-4 relative z-10">Cam kết phản hồi</h3>
+    <h3 class="text-xl font-bold mb-4 relative z-10">Cam kết phản hồi</h3>
     <div class="space-y-4 relative z-10 text-red-50">
         <div class="flex items-center justify-between border-b border-red-700/50 pb-3">
             <span class="flex items-center">

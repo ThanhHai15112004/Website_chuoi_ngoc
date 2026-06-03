@@ -1,7 +1,7 @@
 <!-- views/components/User/lien_he/cau_hoi_thuong_gap.php -->
 <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 sm:p-10">
     <div class="text-center mb-10">
-        <h2 class="text-3xl font-serif font-bold text-gray-900 mb-3">Câu hỏi thường gặp</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mb-3">Câu hỏi thường gặp</h2>
         <p class="text-gray-600">Những thắc mắc phổ biến của khách hàng khi liên hệ với chúng tôi.</p>
     </div>
 

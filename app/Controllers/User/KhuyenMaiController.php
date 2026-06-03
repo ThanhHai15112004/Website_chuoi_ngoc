@@ -17,7 +17,7 @@ class KhuyenMaiController extends Controller {
             ],
             // Dynamic data
             'vouchers_noi_bat' => $khuyenMaiService->getVouchersForDisplay(8),
-            'flash_sale' => $khuyenMaiService->getFlashSaleProducts(4),
+            'flash_sale' => $khuyenMaiService->getFlashSaleProducts(8),
             'san_pham_giam_gia' => $khuyenMaiService->getDiscountedProducts(8),
             'hang_thanh_vien' => $khuyenMaiService->getMembershipTiers(),
             'quy_tac_freeship' => $khuyenMaiService->getFreeshipRules(),

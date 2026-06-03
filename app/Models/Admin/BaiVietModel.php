@@ -207,12 +207,84 @@ class BaiVietModel {
     }
 
     public function timTheoSlug($slug) {
-        $sql = "SELECT bv.*, dm.ten_danh_muc
+        $sql = "SELECT bv.*, dm.ten_danh_muc, nd.ho_ten as ten_nguoi_tao, nd.anh_dai_dien as anh_nguoi_tao
                 FROM bai_viet bv
                 LEFT JOIN danh_muc_bai_viet dm ON bv.id_danh_muc = dm.id
+                LEFT JOIN nguoi_dung nd ON bv.id_nguoi_tao = nd.id
                 WHERE bv.slug = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$slug]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function tangLuotXem($id) {
+        $sql = "UPDATE bai_viet SET luot_xem = luot_xem + 1 WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public function layBaiVietNoiBat($limit = 3) {
+        $sql = "SELECT bv.*, dm.ten_danh_muc, nd.ho_ten as ten_nguoi_tao
+                FROM bai_viet bv
+                LEFT JOIN danh_muc_bai_viet dm ON bv.id_danh_muc = dm.id
+                LEFT JOIN nguoi_dung nd ON bv.id_nguoi_tao = nd.id
+                WHERE bv.trang_thai = 1 
+                ORDER BY bv.luot_xem DESC, bv.ngay_tao DESC 
+                LIMIT :limit";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layBaiVietLienQuan($id_danh_muc, $exclude_id, $limit = 3) {
+        $sql = "SELECT bv.*, dm.ten_danh_muc, nd.ho_ten as ten_nguoi_tao
+                FROM bai_viet bv
+                LEFT JOIN danh_muc_bai_viet dm ON bv.id_danh_muc = dm.id
+                LEFT JOIN nguoi_dung nd ON bv.id_nguoi_tao = nd.id
+                WHERE bv.trang_thai = 1 AND bv.id_danh_muc = ? AND bv.id != ?
+                ORDER BY bv.ngay_tao DESC 
+                LIMIT ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(1, $id_danh_muc);
+        $stmt->bindValue(2, $exclude_id);
+        $stmt->bindValue(3, (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layDanhMucKemSoLuong() {
+        $sql = "SELECT dm.*, COUNT(bv.id) as so_luong_bai_viet
+                FROM danh_muc_bai_viet dm
+                LEFT JOIN bai_viet bv ON dm.id = bv.id_danh_muc AND bv.trang_thai = 1
+                GROUP BY dm.id
+                ORDER BY dm.thu_tu ASC, dm.ten_danh_muc ASC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function layTagsPhoBien($limit = 10) {
+        // In MySQL 5.7+ we could extract JSON, but for simplicity we will just fetch all non-empty tags 
+        // and process them in PHP or use a LIKE query. Here we just fetch all tags.
+        $sql = "SELECT tags FROM bai_viet WHERE trang_thai = 1 AND tags IS NOT NULL AND tags != '' AND tags != '[]'";
+        $stmt = $this->db->query($sql);
+        $allTagsRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $tagCounts = [];
+        foreach ($allTagsRows as $row) {
+            $tagsArray = json_decode($row['tags'], true);
+            if (is_array($tagsArray)) {
+                foreach ($tagsArray as $tag) {
+                    $tag = trim($tag);
+                    if (!empty($tag)) {
+                        if (!isset($tagCounts[$tag])) $tagCounts[$tag] = 0;
+                        $tagCounts[$tag]++;
+                    }
+                }
+            }
+        }
+        
+        arsort($tagCounts);
+        return array_slice(array_keys($tagCounts), 0, $limit);
     }
 }

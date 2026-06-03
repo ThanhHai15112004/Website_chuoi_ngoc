@@ -1,3 +1,24 @@
+<?php
+use App\Constants\DonHangConstants;
+
+$trangThaiMap = [
+    DonHangConstants::TRANG_THAI_CHO_XU_LY => ['text' => 'Chờ xác nhận', 'bg' => 'bg-yellow-50', 'color' => 'text-yellow-700', 'border' => 'border-yellow-100', 'dot' => 'bg-yellow-500'],
+    DonHangConstants::TRANG_THAI_DANG_XU_LY => ['text' => 'Đang xử lý', 'bg' => 'bg-blue-50', 'color' => 'text-blue-700', 'border' => 'border-blue-100', 'dot' => 'bg-blue-500'],
+    DonHangConstants::TRANG_THAI_DA_GIAO_CHO_DON_VI_VAN_CHUYEN => ['text' => 'Đang giao hàng', 'bg' => 'bg-teal-50', 'color' => 'text-teal-700', 'border' => 'border-teal-100', 'dot' => 'bg-teal-500'],
+    DonHangConstants::TRANG_THAI_DA_GIAO_HANG => ['text' => 'Hoàn thành', 'bg' => 'bg-green-50', 'color' => 'text-green-700', 'border' => 'border-green-100', 'dot' => 'bg-green-500'],
+    DonHangConstants::TRANG_THAI_DA_HUY => ['text' => 'Đã hủy', 'bg' => 'bg-red-100', 'color' => 'text-[#8b0000]', 'border' => 'border-red-200', 'dot' => 'bg-red-500'],
+];
+
+$donHangItems = $don_hang['items'] ?? [];
+$totalDon = $don_hang['total'] ?? 0;
+
+// Đếm theo trạng thái
+$demTrangThai = [];
+foreach ($donHangItems as $dh) {
+    $tt = $dh['trang_thai_don_hang'];
+    $demTrangThai[$tt] = ($demTrangThai[$tt] ?? 0) + 1;
+}
+?>
 <div class="bg-white rounded-2xl shadow-sm p-6 lg:p-10">
     
     <!-- Tiêu đề trang -->
@@ -7,350 +28,110 @@
             <p class="text-gray-500 mt-1 text-sm">Theo dõi, kiểm tra và quản lý các đơn hàng bạn đã đặt.</p>
         </div>
         <div class="text-sm text-gray-600 bg-red-50 px-4 py-2 rounded-lg border border-red-100">
-            Bạn có <span class="text-[#8b0000] font-bold text-base">12</span> đơn hàng
+            Bạn có <span class="text-[#8b0000] font-bold text-base"><?= $totalDon ?></span> đơn hàng
         </div>
     </div>
 
-    <!-- Tìm kiếm & Bộ lọc -->
-    <div class="flex flex-col lg:flex-row gap-4 mb-6">
-        <!-- Search -->
-        <div class="relative flex-1">
-            <iconify-icon icon="ph:magnifying-glass" class="text-xl absolute left-3 top-1/2 -translate-y-1/2 text-[#8b0000]"></iconify-icon>
-            <input type="text" placeholder="Tìm theo mã đơn hàng, tên sản phẩm..." class="w-full rounded-xl border border-gray-300 pl-10 pr-24 py-3 focus:border-[#8b0000] focus:ring-[#8b0000] focus:ring-1 outline-none transition-shadow text-sm">
-            <button class="absolute right-1.5 top-1.5 bottom-1.5 bg-[#8b0000] text-white px-4 rounded-lg text-sm font-medium hover:bg-[#700000] transition-colors">
-                Tìm
-            </button>
-        </div>
-        <!-- Lọc Nhanh -->
-        <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide lg:pb-0 items-center">
-            <button class="whitespace-nowrap px-4 py-2.5 rounded-xl bg-[#8b0000] text-white text-sm font-medium shadow-sm transition-colors">
-                Tất cả
-            </button>
-            <button class="whitespace-nowrap px-4 py-2.5 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 text-sm font-medium transition-colors">
-                7 ngày gần đây
-            </button>
-            <button class="whitespace-nowrap px-4 py-2.5 rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200 text-sm font-medium transition-colors">
-                30 ngày
-            </button>
-            <!-- Nút Lọc Nâng cao -->
-            <button class="whitespace-nowrap px-4 py-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 text-sm font-medium transition-colors flex items-center gap-2">
-                <iconify-icon icon="ph:faders" class="text-lg"></iconify-icon>
-                Bộ lọc
-            </button>
-        </div>
-    </div>
-
-    <!-- Tabs Trạng thái -->
-    <div class="border-b border-gray-200 mb-6 relative">
-        <nav class="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-[#8b0000] text-white font-medium text-sm transition-colors">
-                Tất cả
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Chờ xác nhận <span class="ml-1 text-[#8b0000]">(2)</span>
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Đã xác nhận
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Đang giao <span class="ml-1 text-blue-600">(1)</span>
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Đã giao
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Thành công
-            </button>
-            <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 hover:border-gray-300 font-medium text-sm transition-colors">
-                Đã hủy
-            </button>
-        </nav>
-        <!-- Fade effect for scroll -->
-        <div class="absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none lg:hidden"></div>
-    </div>
-
+    <?php if (!empty($donHangItems)): ?>
     <!-- Danh sách Đơn hàng -->
     <div class="space-y-6">
-        
-        <!-- ================= CARD ĐƠN HÀNG 1: Chờ Xác Nhận ================= -->
-        <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white">
+        <?php foreach ($donHangItems as $dh): ?>
+        <?php 
+        $tt = $trangThaiMap[$dh['trang_thai_don_hang']] ?? ['text' => 'Không rõ', 'bg' => 'bg-gray-50', 'color' => 'text-gray-700', 'border' => 'border-gray-100', 'dot' => 'bg-gray-500'];
+        $isHuy = $dh['trang_thai_don_hang'] == DonHangConstants::TRANG_THAI_DA_HUY;
+        $isHoanThanh = $dh['trang_thai_don_hang'] == DonHangConstants::TRANG_THAI_DA_GIAO_HANG;
+        $isChoXuLy = $dh['trang_thai_don_hang'] == DonHangConstants::TRANG_THAI_CHO_XU_LY;
+        ?>
+        <div class="border <?= $isHuy ? 'border-red-100' : 'border-gray-200' ?> rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white">
             <!-- Header Card -->
-            <div class="bg-gray-50/50 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="<?= $isHuy ? 'bg-red-50/50' : 'bg-gray-50/50' ?> px-4 py-3 sm:px-6 sm:py-4 border-b <?= $isHuy ? 'border-red-100' : 'border-gray-100' ?> flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                    <span class="font-bold text-gray-900">Mã đơn: #DH202600123</span>
+                    <span class="font-bold text-gray-900">Mã đơn: #<?= htmlspecialchars($dh['ma_don_hang']) ?></span>
                     <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Ngày đặt: 17/05/2026</span>
+                    <span class="text-gray-500">Ngày đặt: <?= date('d/m/Y', strtotime($dh['ngay_tao'])) ?></span>
                     <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Thanh toán: COD</span>
+                    <span class="text-gray-500">Thanh toán: <?= htmlspecialchars($dh['pt_thanh_toan'] ?? 'COD') ?></span>
                 </div>
-                <!-- Badge -->
                 <div class="self-start sm:self-auto">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-100">
-                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
-                        Chờ xác nhận
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium <?= $tt['bg'] ?> <?= $tt['color'] ?> border <?= $tt['border'] ?>">
+                        <span class="w-1.5 h-1.5 rounded-full <?= $tt['dot'] ?>"></span>
+                        <?= $tt['text'] ?>
                     </span>
                 </div>
             </div>
             
             <!-- Danh sách sản phẩm -->
             <div class="p-4 sm:p-6">
-                <!-- SP 1 -->
-                <div class="flex gap-4 items-start">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
-                            <div>
-                                <h3 class="font-bold text-gray-900 mb-1 truncate">Vòng tay Tỳ Hưu Vàng 24K</h3>
-                                <p class="text-sm text-gray-500 mb-1">Phân loại: Đá Đen, Mix Vàng</p>
-                                <p class="text-sm font-medium text-gray-700">x1</p>
-                            </div>
-                            <div class="sm:text-right">
-                                <p class="text-gray-900 font-medium">3.500.000đ</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Dấu ngăn cách nếu có nhiều SP -->
+                <?php $chiTiet = $dh['chi_tiet'] ?? []; ?>
+                <?php foreach (array_slice($chiTiet, 0, 2) as $idx => $ct): ?>
+                <?php if ($idx > 0): ?>
                 <div class="my-4 border-t border-dashed border-gray-200"></div>
-                <!-- SP 2 -->
-                <div class="flex gap-4 items-start">
+                <?php endif; ?>
+                <div class="flex gap-4 items-start <?= $isHuy ? 'opacity-75' : '' ?>">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Tràng Hạt/Tràng Hạt Ngọc Hòa Điền/trang-hat-ngoc-1.jpg" alt="Product" class="w-full h-full object-cover">
+                        <?php if (!empty($ct['hinh_anh_chinh'])): ?>
+                        <img src="<?= get_image_url($ct['hinh_anh_chinh']) ?>" alt="<?= htmlspecialchars($ct['ten_sp']) ?>" class="w-full h-full object-cover">
+                        <?php else: ?>
+                        <div class="w-full h-full bg-[#8b0000] opacity-20"></div>
+                        <?php endif; ?>
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
                             <div>
-                                <h3 class="font-bold text-gray-900 mb-1 truncate">Chuỗi hạt Gỗ Sưa Đỏ</h3>
-                                <p class="text-sm text-gray-500 mb-1">Phân loại: 108 hạt, 8mm</p>
-                                <p class="text-sm font-medium text-gray-700">x2</p>
+                                <h3 class="font-bold text-gray-900 mb-1 truncate"><?= htmlspecialchars($ct['ten_sp']) ?></h3>
+                                <?php if (!empty($ct['thuoc_tinh'])): ?>
+                                <p class="text-sm text-gray-500 mb-1">Phân loại: <?= htmlspecialchars($ct['thuoc_tinh']) ?></p>
+                                <?php endif; ?>
+                                <p class="text-sm font-medium text-gray-700">x<?= $ct['so_luong'] ?></p>
                             </div>
                             <div class="sm:text-right">
-                                <p class="text-gray-900 font-medium">1.200.000đ</p>
+                                <p class="text-gray-900 font-medium"><?= number_format($ct['don_gia'], 0, ',', '.') ?>đ</p>
                             </div>
                         </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
                 
+                <?php if (count($chiTiet) > 2): ?>
                 <div class="mt-4 text-center">
-                    <button class="text-sm text-[#8b0000] hover:underline font-medium">Xem thêm 2 sản phẩm khác</button>
+                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=<?= htmlspecialchars($dh['ma_don_hang']) ?>" class="text-sm text-[#8b0000] hover:underline font-medium">Xem thêm <?= count($chiTiet) - 2 ?> sản phẩm khác</a>
                 </div>
+                <?php endif; ?>
             </div>
 
             <!-- Footer Card -->
             <div class="bg-gray-50/30 px-4 py-4 sm:px-6 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div class="text-right lg:text-left">
-                    <p class="text-sm text-gray-500 mb-1">Đã áp dụng voucher: <span class="text-green-600">-50.000đ</span></p>
+                    <?php if (!empty($dh['tien_giam_gia']) && $dh['tien_giam_gia'] > 0): ?>
+                    <p class="text-sm text-gray-500 mb-1">Giảm giá: <span class="text-green-600">-<?= number_format($dh['tien_giam_gia'], 0, ',', '.') ?>đ</span></p>
+                    <?php endif; ?>
                     <div class="text-sm text-gray-600">
-                        Tổng thanh toán: <span class="text-xl font-bold text-[#8b0000] ml-2">5.850.000đ</span>
+                        Tổng thanh toán: <span class="text-xl font-bold <?= $isHuy ? 'text-gray-500 line-through' : 'text-[#8b0000]' ?> ml-2"><?= number_format($dh['thanh_tien'], 0, ',', '.') ?>đ</span>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    <button onclick="document.getElementById('cancelModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-6 py-2.5 border border-[#8b0000] text-[#8b0000] rounded-xl font-medium hover:bg-red-50 transition-colors text-sm text-center">
+                    <?php if ($isChoXuLy): ?>
+                    <button onclick="huyDonHang('<?= htmlspecialchars($dh['ma_don_hang']) ?>')" class="flex-1 sm:flex-none px-6 py-2.5 border border-[#8b0000] text-[#8b0000] rounded-xl font-medium hover:bg-red-50 transition-colors text-sm text-center">
                         Hủy đơn
                     </button>
-                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=DH202600123" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm text-center" style="text-decoration: none;">
-                        Xem chi tiết
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= CARD ĐƠN HÀNG 2: Đang Giao ================= -->
-        <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white">
-            <!-- Header Card -->
-            <div class="bg-gray-50/50 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                    <span class="font-bold text-gray-900">Mã đơn: #DH202600098</span>
-                    <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Ngày đặt: 12/05/2026</span>
-                    <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Thanh toán: Chuyển khoản</span>
-                </div>
-                <!-- Badge -->
-                <div class="self-start sm:self-auto">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-teal-50 text-teal-700 border border-teal-100">
-                        <iconify-icon icon="ph:truck"></iconify-icon>
-                        Đang giao hàng
-                    </span>
-                </div>
-            </div>
-            
-            <!-- Timeline (Optional) -->
-            <div class="px-4 sm:px-6 pt-4 pb-2">
-                <div class="flex items-center text-xs">
-                    <div class="flex items-center text-[#8b0000]">
-                        <span class="w-5 h-5 rounded-full bg-[#8b0000] text-white flex items-center justify-center">✓</span>
-                        <span class="ml-2 font-medium">Xác nhận</span>
-                    </div>
-                    <div class="flex-1 h-px bg-[#8b0000] mx-2"></div>
-                    <div class="flex items-center text-[#8b0000]">
-                        <span class="w-5 h-5 rounded-full bg-red-100 text-[#8b0000] flex items-center justify-center animate-pulse">●</span>
-                        <span class="ml-2 font-medium">Đang giao</span>
-                    </div>
-                    <div class="flex-1 h-px bg-gray-200 mx-2"></div>
-                    <div class="flex items-center text-gray-400">
-                        <span class="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center"></span>
-                        <span class="ml-2">Thành công</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Danh sách sản phẩm -->
-            <div class="p-4 sm:p-6">
-                <!-- SP 1 -->
-                <div class="flex gap-4 items-start">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-2.jpg" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
-                            <div>
-                                <h3 class="font-bold text-gray-900 mb-1 truncate">Vòng tay Đá Thạch Anh Hồng</h3>
-                                <p class="text-sm text-gray-500 mb-1">Phân loại: Size M (16cm)</p>
-                                <p class="text-sm font-medium text-gray-700">x1</p>
-                            </div>
-                            <div class="sm:text-right">
-                                <p class="text-gray-900 font-medium">1.250.000đ</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Card -->
-            <div class="bg-gray-50/30 px-4 py-4 sm:px-6 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div class="text-right lg:text-left">
-                    <div class="text-sm text-gray-600">
-                        Tổng thanh toán: <span class="text-xl font-bold text-[#8b0000] ml-2">1.250.000đ</span>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=DH202600098" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm text-center" style="text-decoration: none;">
-                        Xem chi tiết
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= CARD ĐƠN HÀNG 3: Thành Công ================= -->
-        <div class="border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white">
-            <div class="bg-gray-50/50 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                    <span class="font-bold text-gray-900">Mã đơn: #DH202600045</span>
-                    <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Ngày đặt: 05/05/2026</span>
-                </div>
-                <!-- Badge -->
-                <div class="self-start sm:self-auto">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                        <iconify-icon icon="ph:check-circle"></iconify-icon>
-                        Thành công
-                    </span>
-                </div>
-            </div>
-            
-            <!-- Danh sách sản phẩm -->
-            <div class="p-4 sm:p-6">
-                <!-- SP 1 -->
-                <div class="flex gap-4 items-start">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Trầm Hương và Nhang/tram-huong-1.jpg" alt="Product" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
-                            <div>
-                                <h3 class="font-bold text-gray-900 mb-1 truncate">Mặt Dây Chuyền Phật Bản Mệnh</h3>
-                                <p class="text-sm text-gray-500 mb-1">Phân loại: Đá Mắt Hổ</p>
-                                <p class="text-sm font-medium text-gray-700">x1</p>
-                            </div>
-                            <div class="sm:text-right">
-                                <p class="text-gray-900 font-medium">950.000đ</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Card -->
-            <div class="bg-gray-50/30 px-4 py-4 sm:px-6 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div class="text-right lg:text-left">
-                    <div class="text-sm text-gray-600">
-                        Tổng thanh toán: <span class="text-xl font-bold text-[#8b0000] ml-2">950.000đ</span>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                    <?php endif; ?>
+                    <?php if ($isHuy || $isHoanThanh): ?>
                     <button class="flex-1 sm:flex-none px-6 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-colors text-sm text-center">
                         Mua lại
                     </button>
-                    <button class="flex-1 sm:flex-none px-6 py-2.5 border border-[#8b0000] text-[#8b0000] rounded-xl font-medium hover:bg-red-50 transition-colors text-sm text-center">
-                        Đánh giá sản phẩm
-                    </button>
-                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=DH202600045" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm text-center" style="text-decoration: none;">
+                    <?php endif; ?>
+                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=<?= htmlspecialchars($dh['ma_don_hang']) ?>" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm text-center" style="text-decoration: none;">
                         Xem chi tiết
                     </a>
                 </div>
             </div>
         </div>
-        
-        <!-- ================= Lỗi Thanh Toán / Hủy ================= -->
-        <div class="border border-red-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow bg-white relative">
-            <div class="bg-red-50/50 px-4 py-3 sm:px-6 sm:py-4 border-b border-red-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-                    <span class="font-bold text-gray-900">Mã đơn: #DH202600021</span>
-                    <span class="hidden sm:inline text-gray-300">|</span>
-                    <span class="text-gray-500">Ngày đặt: 01/05/2026</span>
-                </div>
-                <!-- Badge -->
-                <div class="self-start sm:self-auto">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-[#8b0000] border border-red-200">
-                        <iconify-icon icon="ph:x-circle"></iconify-icon>
-                        Đã hủy
-                    </span>
-                </div>
-            </div>
-            
-            <div class="p-4 sm:p-6">
-                <!-- Nội dung giải thích lỗi -->
-                <div class="mb-4 text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-100">
-                    <span class="font-medium">Lý do hủy:</span> Bạn chưa hoàn tất thanh toán trong thời gian quy định.
-                </div>
-                
-                <!-- SP 1 -->
-                <div class="flex gap-4 items-start opacity-75 grayscale-[30%]">
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-xl overflow-hidden shrink-0 border border-gray-100">
-                        <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-3.jpg" alt="Product" class="w-full h-full object-cover opacity-60">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-medium text-gray-900 mb-1 truncate">Vòng ngọc bích 12 con giáp</h3>
-                        <p class="text-sm text-gray-500 mb-1">x1</p>
-                    </div>
-                    <div class="sm:text-right">
-                        <p class="text-gray-900 font-medium">1.800.000đ</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50/30 px-4 py-4 sm:px-6 border-t border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div class="text-right lg:text-left text-sm text-gray-600">
-                    Tổng thanh toán: <span class="text-xl font-bold text-gray-500 ml-2 line-through">1.800.000đ</span>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                    <button class="flex-1 sm:flex-none px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 shadow-sm transition-colors text-sm text-center">
-                        Mua lại đơn này
-                    </button>
-                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=DH202600021" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm text-center" style="text-decoration: none;">
-                        Xem chi tiết
-                    </a>
-                </div>
-            </div>
-        </div>
-
+        <?php endforeach; ?>
     </div>
     
-    <!-- Empty State (Trạng thái Chưa có đơn hàng - Ẩn mặc định, thêm class 'hidden' khi có data) -->
-    <div class="hidden flex-col items-center justify-center py-16 text-center">
+    <?php else: ?>
+    <!-- Empty State -->
+    <div class="flex flex-col items-center justify-center py-16 text-center">
         <div class="w-32 h-32 mb-6 bg-red-50 rounded-full flex items-center justify-center">
             <iconify-icon icon="ph:package" class="text-6xl text-[#8b0000] opacity-50"></iconify-icon>
         </div>
@@ -365,62 +146,38 @@
             </a>
         </div>
     </div>
-
-    <!-- Phân trang -->
-    <div class="mt-10 flex justify-center">
-        <nav class="flex items-center gap-1.5 sm:gap-2">
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50">
-                <iconify-icon icon="ph:caret-left" class="text-xl"></iconify-icon>
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#8b0000] text-white font-medium shadow-sm">1</button>
-            <button class="w-10 h-10 hidden sm:flex items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-medium">2</button>
-            <button class="w-10 h-10 hidden sm:flex items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-medium">3</button>
-            <span class="px-1 text-gray-400 hidden sm:block">...</span>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors font-medium">8</button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors">
-                <iconify-icon icon="ph:caret-right" class="text-xl"></iconify-icon>
-            </button>
-        </nav>
-    </div>
+    <?php endif; ?>
 </div>
 
-<!-- Modal Xác nhận hủy đơn -->
-<div id="cancelModal" class="fixed inset-0 z-50 hidden">
-    <!-- Backdrop -->
-    <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" onclick="document.getElementById('cancelModal').classList.add('hidden')"></div>
-    
-    <!-- Modal Content -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white rounded-2xl shadow-xl overflow-hidden p-6 animate-fade-in">
-        <div class="flex justify-between items-center mb-5">
-            <h3 class="text-xl font-bold text-gray-900">Xác nhận hủy đơn hàng</h3>
-            <button onclick="document.getElementById('cancelModal').classList.add('hidden')" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <iconify-icon icon="ph:x" class="text-2xl"></iconify-icon>
-            </button>
-        </div>
-        
-        <p class="text-gray-600 mb-6 text-sm">
-            Bạn có chắc muốn hủy đơn hàng <span class="font-bold text-gray-900">#DH202600123</span> không? Thao tác này không thể hoàn tác sau khi xác nhận.
-        </p>
-
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Vui lòng chọn lý do hủy:</label>
-            <select class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-[#8b0000] focus:ring-[#8b0000] focus:ring-1 outline-none transition-shadow text-sm bg-white">
-                <option value="">-- Chọn lý do --</option>
-                <option value="1">Đặt nhầm sản phẩm</option>
-                <option value="2">Muốn thay đổi địa chỉ giao hàng</option>
-                <option value="3">Muốn thay đổi phương thức thanh toán</option>
-                <option value="4">Không còn nhu cầu mua nữa</option>
-                <option value="5">Lý do khác</option>
-            </select>
-        </div>
-
-        <div class="flex flex-col-reverse sm:flex-row gap-3">
-            <button onclick="document.getElementById('cancelModal').classList.add('hidden')" class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors text-sm">
-                Không, giữ đơn hàng
-            </button>
-            <button class="flex-1 px-4 py-3 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] shadow-sm transition-colors text-sm">
-                Xác nhận hủy
-            </button>
-        </div>
-    </div>
-</div>
+<script>
+function huyDonHang(maDon) {
+    Swal.fire({
+        title: 'Xác nhận hủy đơn hàng',
+        html: `Bạn có chắc muốn hủy đơn hàng <strong>#${maDon}</strong>?<br>Thao tác này không thể hoàn tác.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#8b0000',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Xác nhận hủy',
+        cancelButtonText: 'Không, giữ đơn'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('<?= APP_URL ?>/chi-tiet-don-hang/huy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'ma_don_hang=' + maDon
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Toast.fire({ icon: 'success', title: 'Đã hủy đơn hàng thành công!' });
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    Toast.fire({ icon: 'error', title: data.message || 'Không thể hủy đơn hàng.' });
+                }
+            })
+            .catch(() => Toast.fire({ icon: 'error', title: 'Có lỗi xảy ra.' }));
+        }
+    });
+}
+</script>
