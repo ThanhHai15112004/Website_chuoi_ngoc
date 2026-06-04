@@ -16,7 +16,7 @@ $iconMap = [
             <p class="text-gray-500 mt-1">Cập nhật mới nhất về đơn hàng và ưu đãi</p>
         </div>
         <?php if (!empty($userThongBao)): ?>
-        <button onclick="docTatCaThongBao()" class="text-sm text-[#8b0000] font-medium hover:underline flex items-center gap-1">
+        <button onclick="docTatCaThongBao()" class="text-sm text-[#8b0000] font-medium hover:opacity-80 transition-opacity flex items-center gap-1">
             <iconify-icon icon="ph:checks"></iconify-icon> Đọc tất cả
         </button>
         <?php endif; ?>
@@ -45,7 +45,7 @@ $iconMap = [
                 <div class="flex items-center justify-between mt-2">
                     <span class="text-xs text-gray-400"><?= date('d/m/Y H:i', strtotime($tb['ngay_tao'])) ?></span>
                     <?php if (!empty($tb['link'])): ?>
-                    <a href="<?= htmlspecialchars($tb['link']) ?>" class="text-xs text-[#8b0000] font-medium hover:underline">Xem chi tiết →</a>
+                    <a href="<?= htmlspecialchars($tb['link']) ?>" class="text-xs text-[#8b0000] font-medium hover:opacity-80 transition-opacity">Xem chi tiết →</a>
                     <?php endif; ?>
                 </div>
             </div>

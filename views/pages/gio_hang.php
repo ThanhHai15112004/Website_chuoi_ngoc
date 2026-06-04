@@ -22,7 +22,7 @@
             <div class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50 flex items-center justify-between">
                 <div>
                     <span class="block text-xs text-gray-500">Tổng thanh toán</span>
-                    <span class="block text-lg font-bold text-[#8B0000]"><?php echo number_format($tong_tam_tinh ?? 0, 0, ',', '.'); ?>đ</span>
+                    <span class="block text-lg font-bold text-[#8B0000] mobile-cart-total"><?php echo number_format($tong_tam_tinh ?? 0, 0, ',', '.'); ?>đ</span>
                 </div>
                 <a href="<?= APP_URL ?>/thanh-toan" class="bg-[#8B0000] text-white font-medium py-3 px-6 rounded-xl hover:bg-red-800 transition-colors shadow-md shadow-red-900/20">
                     Mua hàng (<?php echo count($gio_hang); ?>)

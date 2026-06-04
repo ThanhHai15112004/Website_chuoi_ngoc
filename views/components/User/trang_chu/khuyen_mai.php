@@ -38,20 +38,20 @@
                     <div class="absolute top-1/2 -left-3 w-6 h-6 rounded-full -translate-y-1/2" style="background: #fdf2f2;"></div>
                     <div class="absolute top-1/2 -right-3 w-6 h-6 rounded-full -translate-y-1/2" style="background: #fdf2f2;"></div>
                     
-                    <div class="pl-4">
+                    <div class="pl-4 flex-1">
                         <h4 class="font-bold text-lg" style="color: #8b0000;"><?= htmlspecialchars($tieu_de) ?></h4>
                         <p class="text-sm" style="color: #888;"><?= htmlspecialchars($mo_ta_vc) ?></p>
                     </div>
-                    <div class="pr-2 text-right">
+                    <div class="pr-2 text-right flex-shrink-0">
                         <?php 
                         $is_saved = in_array($vc['id'], $saved_vouchers ?? []); 
                         if ($is_saved): 
                         ?>
-                            <button class="px-4 py-1.5 text-sm font-semibold rounded-lg border cursor-not-allowed" style="background: #8b0000; color: #fff; border-color: #8b0000;" disabled>
+                            <button class="px-4 py-1.5 text-sm font-semibold rounded-lg border cursor-not-allowed whitespace-nowrap" style="background: #8b0000; color: #fff; border-color: #8b0000;" disabled>
                                 Đã lưu
                             </button>
                         <?php else: ?>
-                            <button onclick="saveVoucher('<?= APP_URL ?>', '<?= $vc['id'] ?>', this)" class="px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300 border" style="background: #fdf2f2; color: #8b0000; border-color: #f5c6cb;" onmouseover="this.style.background='#8b0000';this.style.color='#fff';this.style.borderColor='#8b0000'" onmouseout="this.style.background='#fdf2f2';this.style.color='#8b0000';this.style.borderColor='#f5c6cb'">
+                            <button onclick="saveVoucher('<?= APP_URL ?>', '<?= $vc['id'] ?>', this)" class="px-4 py-1.5 text-sm font-semibold rounded-lg transition-all duration-300 border whitespace-nowrap" style="background: #fdf2f2; color: #8b0000; border-color: #f5c6cb;" onmouseover="this.style.background='#8b0000';this.style.color='#fff';this.style.borderColor='#8b0000'" onmouseout="this.style.background='#fdf2f2';this.style.color='#8b0000';this.style.borderColor='#f5c6cb'">
                                 Lưu mã
                             </button>
                         <?php endif; ?>

@@ -190,7 +190,7 @@
 }
 .custom-html-content a {
     color: #8B0000;
-    text-decoration: underline;
+    border-bottom: 1px solid currentColor;
 }
 .custom-html-content strong, .custom-html-content b {
     font-weight: 600;

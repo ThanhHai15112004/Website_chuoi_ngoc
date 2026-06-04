@@ -22,10 +22,12 @@
 
         <!-- Buttons -->
         <div class="flex-1 flex items-center gap-2 pl-2">
-            <button class="flex-1 py-2.5 px-2 bg-[#FAF7F2] text-[#8B0000] border border-[#8B0000] rounded-lg text-sm font-medium hover:bg-red-50 transition">
+            <button class="flex-1 py-2.5 px-2 bg-[#FAF7F2] text-[#8B0000] border border-[#8B0000] rounded-lg text-sm font-medium hover:bg-red-50 transition"
+                onclick="(function(){ const id='<?= $san_pham['id'] ?>'; const bt=document.getElementById('id_bien_the_input'); const qty=document.getElementById('quantity'); CartHelper.addDirect(id, bt?bt.value:null, qty?parseInt(qty.value):1); })()">
                 Thêm giỏ
             </button>
-            <button class="flex-1 py-2.5 px-2 bg-[#8B0000] text-white rounded-lg text-sm font-medium shadow-md hover:bg-[#7A0C0C] transition">
+            <button class="flex-1 py-2.5 px-2 bg-[#8B0000] text-white rounded-lg text-sm font-medium shadow-md hover:bg-[#7A0C0C] transition"
+                onclick="(function(){ const id='<?= $san_pham['id'] ?>'; const bt=document.getElementById('id_bien_the_input'); const qty=document.getElementById('quantity'); CartHelper.buyNow(id, bt?bt.value:null, qty?parseInt(qty.value):1); })()">
                 Mua ngay
             </button>
         </div>

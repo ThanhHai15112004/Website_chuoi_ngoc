@@ -32,7 +32,7 @@
         </h3>
         <div class="space-y-6">
             <?php foreach ($related_articles as $rel_article): ?>
-            <a href="<?= APP_URL ?>/chi-tiet-bai-viet?id=<?= $rel_article['id'] ?>" class="group block">
+            <a href="<?= APP_URL ?>/chi-tiet-bai-viet?slug=<?= htmlspecialchars($rel_article['slug']) ?>" class="group block">
                 <div class="flex gap-4">
                     <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0">
                         <img src="<?= htmlspecialchars($rel_article['image']) ?>" alt="<?= htmlspecialchars($rel_article['title']) ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
@@ -55,7 +55,7 @@
 
     <!-- Banner CTA -->
     <a href="<?= APP_URL ?>/vong-theo-menh" class="block rounded-2xl overflow-hidden shadow-sm relative group">
-        <img src="<?= APP_URL ?>/public/images/Banner/banner3.jpg" alt="Tra cứu vòng theo mệnh" class="w-full h-auto group-hover:scale-105 transition-transform duration-700">
+        <img src="<?= APP_URL ?>/uploads/banners/banner3.jpg" alt="Tra cứu vòng theo mệnh" class="w-full h-auto group-hover:scale-105 transition-transform duration-700">
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
             <h4 class="text-white font-serif text-xl font-bold mb-2">Vòng Sinh Mệnh</h4>
             <p class="text-white/80 text-sm mb-4">Khám phá ngay viên đá hộ mệnh dành riêng cho bạn.</p>

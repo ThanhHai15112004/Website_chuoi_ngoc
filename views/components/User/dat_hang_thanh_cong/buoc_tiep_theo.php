@@ -11,13 +11,13 @@
         <ul class="space-y-2 text-gray-700 text-sm">
             <li class="flex items-start">
                 <iconify-icon icon="mdi:circle-small" class="text-lg text-[#D4AF37] mt-0.5 mr-1 flex-shrink-0"></iconify-icon>
-                <span>Chúng tôi sẽ liên hệ với bạn qua số điện thoại <strong class="text-gray-900"><?= htmlspecialchars($order_info['nguoi_nhan']['so_dien_thoai']) ?></strong> trong vòng 24h để xác nhận đơn hàng.</span>
+                <span>Chúng tôi sẽ liên hệ với bạn qua số điện thoại <strong class="text-gray-900"><?= htmlspecialchars($order_info['sdt_nguoi_nhan']) ?></strong> trong vòng 24h để xác nhận đơn hàng.</span>
             </li>
             <li class="flex items-start">
                 <iconify-icon icon="mdi:circle-small" class="text-lg text-[#D4AF37] mt-0.5 mr-1 flex-shrink-0"></iconify-icon>
                 <span>Bạn có thể theo dõi trạng thái đơn hàng trong phần <strong class="text-gray-900">Đơn hàng của tôi</strong>.</span>
             </li>
-            <?php if($order_info['phuong_thuc_thanh_toan'] == 'Chuyển khoản ngân hàng'): ?>
+            <?php if(strpos($order_info['pt_thanh_toan'], 'Chuyển khoản') !== false || strpos($order_info['pt_thanh_toan'], 'CK') !== false): ?>
             <li class="flex items-start bg-white p-3 rounded-md border border-amber-200 mt-3 shadow-sm">
                 <iconify-icon icon="mdi:bank" class="text-[#8B0000] mt-0.5 mr-2 flex-shrink-0 text-lg"></iconify-icon>
                 <span class="text-[#8B0000]">

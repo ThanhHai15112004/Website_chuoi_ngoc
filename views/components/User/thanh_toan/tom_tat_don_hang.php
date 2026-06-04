@@ -44,7 +44,7 @@ $tong_tien_cuoi_cung = max(0, $tong_tam_tinh - 50000);
                 <iconify-icon icon="mdi:ticket-percent-outline" class="text-xl text-[#8B0000]"></iconify-icon>
                 <span class="text-sm font-bold text-[#8B0000]">GIAM50K</span>
             </div>
-            <button class="text-xs text-gray-500 hover:text-red-500 hover:underline">Xóa</button>
+            <button class="text-xs text-gray-500 hover:text-red-500 transition-colors">Xóa</button>
         </div>
     </div>
 
@@ -76,6 +76,6 @@ $tong_tien_cuoi_cung = max(0, $tong_tam_tinh - 50000);
     </a>
     
     <p class="text-xs text-center text-gray-500 mt-4 px-4 hidden md:block">
-        Bằng việc đặt hàng, bạn đồng ý với <a href="#" class="text-[#8B0000] hover:underline">Điều khoản dịch vụ</a> và <a href="#" class="text-[#8B0000] hover:underline">Chính sách bảo mật</a> của chúng tôi.
+        Bằng việc đặt hàng, bạn đồng ý với <a href="#" class="text-[#8B0000] hover:opacity-80 transition-opacity">Điều khoản dịch vụ</a> và <a href="#" class="text-[#8B0000] hover:opacity-80 transition-opacity">Chính sách bảo mật</a> của chúng tôi.
     </p>
 </div>

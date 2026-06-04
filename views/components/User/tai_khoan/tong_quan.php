@@ -21,7 +21,7 @@ $trangThaiMap = [
         <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
             <div class="flex items-start justify-between mb-6">
                 <h3 class="text-lg font-bold text-gray-900">Thông tin cá nhân</h3>
-                <button class="text-sm text-[#8b0000] font-medium hover:underline flex items-center gap-1" onclick="document.querySelector('[data-target=\'tab-ho-so\']').click()">
+                <button class="text-sm text-[#8b0000] font-medium hover:opacity-80 transition-opacity flex items-center gap-1" onclick="document.querySelector('[data-target=\'tab-ho-so\']').click()">
                     <iconify-icon icon="ph:pencil-simple"></iconify-icon> Chỉnh sửa
                 </button>
             </div>
@@ -125,7 +125,7 @@ $trangThaiMap = [
     <div>
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-gray-900">Đơn hàng gần đây</h3>
-            <button class="text-sm text-[#8b0000] font-medium hover:underline flex items-center gap-1" onclick="document.querySelector('[data-target=\'tab-don-hang\']').click()">Xem tất cả <iconify-icon icon="ph:caret-right"></iconify-icon></button>
+            <button class="text-sm text-[#8b0000] font-medium hover:opacity-80 transition-opacity flex items-center gap-1" onclick="document.querySelector('[data-target=\'tab-don-hang\']').click()">Xem tất cả <iconify-icon icon="ph:caret-right"></iconify-icon></button>
         </div>
         
         <?php if (!empty($don_hang_gan_day)): ?>
@@ -183,7 +183,7 @@ $trangThaiMap = [
         <?php else: ?>
         <div class="text-center py-10 text-gray-500">
             <iconify-icon icon="ph:package" class="text-5xl text-gray-300 mb-3"></iconify-icon>
-            <p>Bạn chưa có đơn hàng nào. <a href="<?= APP_URL ?>/san-pham" class="text-[#8b0000] font-medium hover:underline">Mua sắm ngay!</a></p>
+            <p>Bạn chưa có đơn hàng nào. <a href="<?= APP_URL ?>/san-pham" class="text-[#8b0000] font-medium hover:opacity-80 transition-opacity">Mua sắm ngay!</a></p>
         </div>
         <?php endif; ?>
     </div>

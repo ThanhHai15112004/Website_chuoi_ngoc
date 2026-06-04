@@ -44,7 +44,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                 </svg>
                             </a>
-                            <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-gray-700 rounded-full flex items-center justify-center shadow-lg hover:bg-[#8B0000] hover:text-white transition pointer-events-auto" title="Thêm vào giỏ">
+                            <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-gray-700 rounded-full flex items-center justify-center shadow-lg hover:bg-[#8B0000] hover:text-white transition pointer-events-auto" title="Thêm vào giỏ" data-add-cart="<?= $sp['id'] ?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                                 </svg>
@@ -68,7 +68,7 @@
                                     <span class="text-base font-bold" style="color: #8b0000;"><?= number_format($sp['gia_ban'], 0, ',', '.') ?>đ</span>
                                 <?php endif; ?>
                             </div>
-                            <button class="w-full py-2.5 text-white text-sm font-medium rounded-xl transition-all duration-300 shadow-sm" style="background: linear-gradient(135deg, #8b0000, #9b111e);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            <button class="w-full py-2.5 text-white text-sm font-medium rounded-xl transition-all duration-300 shadow-sm" style="background: linear-gradient(135deg, #8b0000, #9b111e);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'" data-add-cart="<?= $sp['id'] ?>">
                                 Thêm vào giỏ
                             </button>
                         </div>

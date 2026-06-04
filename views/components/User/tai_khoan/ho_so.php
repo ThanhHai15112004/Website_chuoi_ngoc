@@ -123,7 +123,7 @@ $gioiTinh = $user['gioi_tinh'] ?? '';
                 <div class="relative">
                     <input type="text" value="<?= htmlspecialchars($user['ten_menh'] ?? 'Chưa cập nhật') ?>" disabled class="w-full rounded-xl border border-gray-100 bg-gray-50 px-5 py-4 text-gray-500 cursor-not-allowed">
                 </div>
-                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5"><iconify-icon icon="ph:info-bold" class="text-[#d4af37] text-sm"></iconify-icon> Mệnh được tự động tính dựa trên năm sinh. <a href="<?= APP_URL ?>/vong-theo-menh" class="text-[#8b0000] hover:underline">Tra cứu bản mệnh</a></p>
+                <p class="text-xs text-gray-500 mt-1 flex items-center gap-1.5"><iconify-icon icon="ph:info-bold" class="text-[#d4af37] text-sm"></iconify-icon> Mệnh được tự động tính dựa trên năm sinh. <a href="<?= APP_URL ?>/vong-theo-menh" class="text-[#8b0000] hover:opacity-80 transition-opacity">Tra cứu bản mệnh</a></p>
             </div>
         </div>
 

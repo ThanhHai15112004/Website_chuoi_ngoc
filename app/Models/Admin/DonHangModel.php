@@ -516,12 +516,12 @@ class DonHangModel
                 $updKho->execute([$p['quantity'], $p['id']]);
             }
 
-            // Ghi Log
-            $this->logger->log("Tạo đơn hàng", "Đơn hàng", $id_don_hang, "Tạo đơn hàng POS cho " . $kh['ho_ten']);
+            // Ghi Log (Tạm ẩn vì NhatKyHoatDongModel không có hàm log và Frontend không có id_nhan_vien)
+            // $this->logger->log("Tạo đơn hàng", "Đơn hàng", $id_don_hang, "Tạo đơn hàng POS cho " . $kh['ho_ten']);
 
             // Nếu thanh toán ngay (trạng thái thanh toán = 1), capNhatThanhToan (sẽ log)
             if (isset($data['trang_thai_thanh_toan']) && $data['trang_thai_thanh_toan'] == 1) {
-                $this->logger->log("Cập nhật thanh toán", "Đơn hàng", $id_don_hang, "Trạng thái TT: Đã thanh toán");
+                // $this->logger->log("Cập nhật thanh toán", "Đơn hàng", $id_don_hang, "Trạng thái TT: Đã thanh toán");
             }
             
             // Xử lý status = 3 (thành công) ngay lập tức nếu cần (POS thu tiền liền)

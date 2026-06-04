@@ -308,5 +308,15 @@ class AuthController extends Controller {
         $_SESSION['user_name']   = $user['ho_ten'];
         $_SESSION['user_email']  = $user['email'];
         $_SESSION['user_avatar'] = $user['anh_dai_dien'] ?? null;
+
+        // Merge giỏ hàng từ Session (guest) sang DB (logged-in)
+        if (!empty($_SESSION['cart'])) {
+            try {
+                $cartService = new \App\Services\User\CartService();
+                $cartService->mergeSessionToDb($user['id']);
+            } catch (\Exception $e) {
+                error_log('[Auth] Lỗi merge giỏ hàng: ' . $e->getMessage());
+            }
+        }
     }
 }

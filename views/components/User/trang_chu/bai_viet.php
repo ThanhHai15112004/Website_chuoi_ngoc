@@ -21,7 +21,7 @@
                     // Fix image: if external URL keep as is, if relative add APP_URL, if filename add uploads path
                     $bv_img = $bv['hinh_anh'] ?? '';
                     if (empty($bv_img)) {
-                        $bv_img_src = APP_URL . '/images/placeholder.jpg';
+                        $bv_img_src = APP_URL . '/images/Logo_.jpg';
                     } elseif (strpos($bv_img, 'http') === 0) {
                         $bv_img_src = $bv_img;
                     } elseif (strpos($bv_img, '/') === 0) {
@@ -35,7 +35,7 @@
                         <div class="absolute top-4 left-4 px-3 py-1 text-xs font-semibold rounded-full z-10" style="background: rgba(255,255,255,0.92); color: #8b0000;">
                             <?= htmlspecialchars($bv['ten_danh_muc'] ?? 'Tin tức') ?>
                         </div>
-                        <img src="<?= $bv_img_src ?>" alt="<?= htmlspecialchars($bv['tieu_de']) ?>" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="<?= $bv_img_src ?>" onerror="this.onerror=null;this.src='<?= APP_URL ?>/images/Logo_.jpg';" alt="<?= htmlspecialchars($bv['tieu_de']) ?>" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500">
                     </a>
                     <div class="p-6">
                         <div class="text-xs mb-3 flex items-center" style="color: #999;">

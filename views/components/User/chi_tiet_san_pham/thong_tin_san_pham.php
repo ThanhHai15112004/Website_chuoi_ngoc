@@ -23,7 +23,7 @@
             </div>
             <span class="font-semibold text-gray-900 ml-1.5"><?= number_format($san_pham['danh_gia'], 1) ?></span>
             <span class="mx-2 text-gray-300">|</span>
-            <a href="#danh-gia" class="text-gray-500 hover:text-[#8B0000] underline-offset-2 hover:underline"><?= number_format($san_pham['tong_danh_gia']) ?> đánh giá</a>
+            <a href="#danh-gia" class="text-gray-500 hover:text-[#8B0000] hover:opacity-80 transition-opacity"><?= number_format($san_pham['tong_danh_gia']) ?> đánh giá</a>
             <span class="mx-2 text-gray-300">|</span>
             <span class="text-gray-500">Đã bán <?= number_format($san_pham['da_ban']) ?></span>
         </div>
@@ -333,5 +333,31 @@
                 });
             });
         });
-    });
+
+    // === Cart: Thêm vào giỏ & Mua ngay ===
+    const btnAddCart = document.getElementById('btn_add_cart');
+    const btnBuyNow = document.getElementById('btn_buy_now');
+
+    if (btnAddCart) {
+        btnAddCart.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.disabled) return;
+            const idSanPham = '<?= $san_pham['id'] ?>';
+            const idBienThe = document.getElementById('id_bien_the_input')?.value || null;
+            const soLuong = parseInt(document.getElementById('quantity')?.value || 1);
+            CartHelper.addDirect(idSanPham, idBienThe, soLuong);
+        });
+    }
+
+    if (btnBuyNow) {
+        btnBuyNow.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (this.disabled) return;
+            const idSanPham = '<?= $san_pham['id'] ?>';
+            const idBienThe = document.getElementById('id_bien_the_input')?.value || null;
+            const soLuong = parseInt(document.getElementById('quantity')?.value || 1);
+            CartHelper.buyNow(idSanPham, idBienThe, soLuong);
+        });
+    }
+});
 </script>

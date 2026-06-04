@@ -49,7 +49,7 @@
                     'name' => 'remember',
                     'label' => 'Ghi nhớ tôi'
                 ]); ?>
-                <a href="javascript:void(0)" onclick="openForgotModal()" class="text-[11px] font-semibold text-crimson-600 hover:text-crimson-700 hover:underline transition-colors">Quên mật khẩu?</a>
+                <a href="javascript:void(0)" onclick="openForgotModal()" class="text-[11px] font-semibold text-crimson-600 hover:text-crimson-700 hover:opacity-80 transition-opacity">Quên mật khẩu?</a>
             </div>
         </div>
 

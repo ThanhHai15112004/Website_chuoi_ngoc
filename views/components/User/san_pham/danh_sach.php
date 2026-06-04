@@ -45,7 +45,7 @@
                 <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Xem chi tiết">
                     <iconify-icon icon="heroicons:eye" class="text-xl"></iconify-icon>
                 </a>
-                <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Thêm vào giỏ" <?= $het_hang ? 'disabled' : '' ?>>
+                <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Thêm vào giỏ" data-add-cart="<?= $sp['id'] ?>" <?= $het_hang ? 'disabled' : '' ?>>
                     <iconify-icon icon="heroicons:shopping-bag" class="text-xl"></iconify-icon>
                 </button>
             </div>
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Nút thêm vào giỏ -->
-            <button class="add-to-cart-btn mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 <?= $het_hang ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-crimson-50 text-crimson-600 hover:bg-crimson-600 hover:text-white hover:shadow-lg hover:shadow-crimson-200' ?>" <?= $het_hang ? 'disabled' : '' ?>>
+            <button class="add-to-cart-btn mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 <?= $het_hang ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-crimson-50 text-crimson-600 hover:bg-crimson-600 hover:text-white hover:shadow-lg hover:shadow-crimson-200' ?>" <?= $het_hang ? 'disabled' : '' ?> data-add-cart="<?= $sp['id'] ?>">
                 <iconify-icon icon="heroicons:shopping-bag" class="text-base"></iconify-icon>
                 <?= $het_hang ? 'Hết hàng' : 'Thêm vào giỏ' ?>
             </button>

@@ -31,7 +31,7 @@
             <!-- Image Content -->
             <div class="w-full md:w-5/12 hidden md:flex items-center justify-center">
                 <div class="relative w-full max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl border border-white/10" style="max-height: 320px;">
-                    <img src="<?= APP_URL ?>/public/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg" 
+                    <img src="<?= APP_URL ?>/images/Sản phẩm/Vòng Ngọc/Hồng Anh Đào Ngọc Nương Tử/hong-anh-dao-1.jpg" 
                          alt="Góc tư vấn phong thủy" 
                          class="w-full h-full object-cover" />
                     <!-- Lớp phủ gradient nhẹ -->

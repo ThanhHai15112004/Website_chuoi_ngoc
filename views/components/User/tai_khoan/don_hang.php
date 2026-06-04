@@ -94,7 +94,7 @@ foreach ($donHangItems as $dh) {
                 
                 <?php if (count($chiTiet) > 2): ?>
                 <div class="mt-4 text-center">
-                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=<?= htmlspecialchars($dh['ma_don_hang']) ?>" class="text-sm text-[#8b0000] hover:underline font-medium">Xem thêm <?= count($chiTiet) - 2 ?> sản phẩm khác</a>
+                    <a href="<?= APP_URL ?>/chi-tiet-don-hang?id=<?= htmlspecialchars($dh['ma_don_hang']) ?>" class="text-sm text-[#8b0000] hover:opacity-80 transition-opacity font-medium">Xem thêm <?= count($chiTiet) - 2 ?> sản phẩm khác</a>
                 </div>
                 <?php endif; ?>
             </div>

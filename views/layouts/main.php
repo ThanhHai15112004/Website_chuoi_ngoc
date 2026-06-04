@@ -8,6 +8,8 @@
     
     <!-- Tailwind CSS (Build output) -->
     <link rel="stylesheet" href="<?= APP_URL ?>/css/style.css">
+    <!-- Khai báo biến APP_URL cho Javascript -->
+    <script>const APP_URL = '<?= APP_URL ?>';</script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,6 +81,11 @@
 
     <!-- Include Footer Component -->
     <?php require_once __DIR__ . '/../components/User/footer.php'; ?>
+
+    <!-- Global JS Config -->
+    <script>const APP_URL = '<?= APP_URL ?>';</script>
+    <!-- Cart JS -->
+    <script src="<?= APP_URL ?>/js/cart.js?v=<?= time() ?>"></script>
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

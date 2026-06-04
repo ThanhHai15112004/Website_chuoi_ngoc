@@ -93,7 +93,7 @@ $discount_products = $san_pham_giam_gia ?? [];
                 </div>
                 
                 <!-- Add to cart -->
-                <button class="w-full mt-4 py-2 border border-[#8B0000] text-[#8B0000] font-medium rounded-lg hover:bg-[#8B0000] hover:text-white transition-colors flex items-center justify-center gap-2 text-sm">
+                <button class="w-full mt-4 py-2 border border-[#8B0000] text-[#8B0000] font-medium rounded-lg hover:bg-[#8B0000] hover:text-white transition-colors flex items-center justify-center gap-2 text-sm" data-add-cart="<?= $p['id'] ?>">
                     <iconify-icon icon="mdi:cart-plus"></iconify-icon> Thêm vào giỏ
                 </button>
             </div>

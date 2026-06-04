@@ -52,7 +52,7 @@
                 <!-- Admin Phản hồi -->
                 <div class="flex gap-4 mt-4 ml-8">
                     <div class="w-10 h-10 rounded-full shrink-0 overflow-hidden border-2 border-[#8B1538]/20 bg-white flex justify-center items-center">
-                        <img src="<?= APP_URL ?>/public/images/Logo/Logo2.jpg" alt="Admin" class="w-8 h-8 object-cover rounded-full">
+                        <img src="<?= APP_URL ?>/images/Logo_.jpg" alt="Admin" class="w-8 h-8 object-cover rounded-full">
                     </div>
                     <div class="flex-1">
                         <div class="bg-[#8B1538]/5 rounded-2xl p-4 relative group border border-[#8B1538]/10">

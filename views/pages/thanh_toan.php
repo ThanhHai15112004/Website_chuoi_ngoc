@@ -1,67 +1,87 @@
 <?php
 // views/pages/thanh_toan.php
 ?>
-<div class="bg-slate-50 py-8 pb-32 md:py-12 md:pb-16">
+<div class="bg-[#f8f9fa] py-6 md:py-10 pb-32">
     <div class="container mx-auto px-4 max-w-6xl">
-        <!-- Breadcrumb -->
-        <?php require_once __DIR__ . '/../components/User/thanh_toan/breadcrumb.php'; ?>
+        <!-- Breadcrumb & Progress -->
+        <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <!-- Breadcrumb Pill -->
+            <nav class="flex text-sm text-gray-500 font-medium">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                    <li class="inline-flex items-center">
+                        <a href="<?= APP_URL ?>/" class="hover:text-[#8B0000] transition-colors">Trang Chủ</a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <iconify-icon icon="mdi:chevron-right" class="text-gray-400"></iconify-icon>
+                            <a href="<?= APP_URL ?>/gio-hang" class="ml-1 md:ml-2 hover:text-[#8B0000] transition-colors">Giỏ Hàng</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <iconify-icon icon="mdi:chevron-right" class="text-gray-400"></iconify-icon>
+                            <span class="ml-1 md:ml-2 text-[#8B0000] bg-red-50 px-3 py-1 rounded-full border border-red-100 flex items-center gap-1">
+                                <iconify-icon icon="mdi:credit-card-outline" class="text-lg"></iconify-icon> Thanh Toán
+                            </span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Progress Bar -->
+            <div class="flex items-center gap-2 md:gap-4 text-xs md:text-sm font-medium">
+                <div class="flex items-center gap-1.5 text-green-600">
+                    <iconify-icon icon="mdi:check-circle" class="text-lg"></iconify-icon>
+                    <span>1. Giỏ hàng</span>
+                </div>
+                <div class="h-[1px] w-8 md:w-12 bg-gray-300"></div>
+                <div class="flex items-center gap-1.5 text-[#8B0000] bg-red-50 px-2 py-1 rounded-md border border-red-100">
+                    <span class="w-5 h-5 rounded-full bg-[#8B0000] text-white flex items-center justify-center text-xs">2</span>
+                    <span>Thanh toán</span>
+                </div>
+                <div class="h-[1px] w-8 md:w-12 bg-gray-300"></div>
+                <div class="flex items-center gap-1.5 text-gray-400">
+                    <span class="w-5 h-5 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-xs">3</span>
+                    <span>Hoàn tất</span>
+                </div>
+            </div>
+        </div>
 
         <?php if(empty($gio_hang)): ?>
             <!-- Trạng thái giỏ hàng trống khi thanh toán -->
             <?php require_once __DIR__ . '/../components/User/thanh_toan/gio_hang_trong.php'; ?>
         <?php else: ?>
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Cột trái: Form thông tin thanh toán -->
-                <div class="lg:w-2/3 space-y-6">
-                    <!-- Thông tin người nhận -->
-                    <?php require_once __DIR__ . '/../components/User/thanh_toan/thong_tin_nguoi_nhan.php'; ?>
-
+            <form id="checkout-form" method="POST" action="<?= APP_URL ?>/thanh-toan/dat-hang" class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+                
+                <!-- Cột trái (65%): Form nhập liệu -->
+                <div class="w-full lg:w-[65%] space-y-5">
                     <!-- Địa chỉ giao hàng -->
-                    <?php require_once __DIR__ . '/../components/User/thanh_toan/dia_chi_giao_hang.php'; ?>
+                    <?php require_once __DIR__ . '/../components/User/thanh_toan/dia_chi_nhan_hang.php'; ?>
+
+                    <!-- Danh sách Sản phẩm -->
+                    <?php require_once __DIR__ . '/../components/User/thanh_toan/san_pham.php'; ?>
+
+                    <!-- Voucher -->
+                    <?php require_once __DIR__ . '/../components/User/thanh_toan/voucher.php'; ?>
+
+                    <!-- Phương thức vận chuyển -->
+                    <?php require_once __DIR__ . '/../components/User/thanh_toan/phuong_thuc_van_chuyen.php'; ?>
 
                     <!-- Phương thức thanh toán -->
                     <?php require_once __DIR__ . '/../components/User/thanh_toan/phuong_thuc_thanh_toan.php'; ?>
                 </div>
 
-                <!-- Cột phải: Tóm tắt đơn hàng -->
-                <div class="lg:w-1/3">
-                    <?php require_once __DIR__ . '/../components/User/thanh_toan/tom_tat_don_hang.php'; ?>
+                <!-- Cột phải (35%): Tóm tắt & Đặt hàng -->
+                <div class="w-full lg:w-[35%] sticky top-24">
+                    <!-- Chi tiết thanh toán & Nút đặt hàng -->
+                    <?php require_once __DIR__ . '/../components/User/thanh_toan/chi_tiet_thanh_toan.php'; ?>
                 </div>
-            </div>
 
-            <!-- Sticky Checkout Button cho Mobile -->
-            <?php require_once __DIR__ . '/../components/User/thanh_toan/sticky_mobile_btn.php'; ?>
-            
+            </form>
+
+            <!-- Modals (Bắt buộc để ngoài form) -->
+            <?php require_once __DIR__ . '/../components/User/thanh_toan/modal_dia_chi.php'; ?>
         <?php endif; ?>
     </div>
 </div>
-
-<script>
-// Logic đơn giản đổi viền màu đỏ khi click radio phương thức thanh toán
-document.addEventListener('DOMContentLoaded', function() {
-    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
-    
-    paymentRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            // Xóa style active của tất cả
-            paymentRadios.forEach(r => {
-                const parent = r.closest('label');
-                parent.classList.remove('bg-red-50/20', 'border-[#8B0000]/30');
-                const overlay = parent.querySelector('.absolute');
-                if(overlay) overlay.classList.remove('opacity-100');
-                if(overlay) overlay.classList.add('opacity-0');
-            });
-            
-            // Thêm style active cho radio được chọn
-            if(this.checked) {
-                const parent = this.closest('label');
-                parent.classList.add('bg-red-50/20', 'border-[#8B0000]/30');
-                const overlay = parent.querySelector('.absolute');
-                if(overlay) overlay.classList.remove('opacity-0');
-                if(overlay) overlay.classList.add('opacity-100');
-            }
-        });
-    });
-});
-</script>
 

@@ -73,7 +73,7 @@
                                 <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= $sp['id'] ?>" class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Xem chi tiết">
                                     <iconify-icon icon="heroicons:eye" class="text-xl"></iconify-icon>
                                 </a>
-                                <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Thêm vào giỏ">
+                                <button class="w-10 h-10 bg-white/95 backdrop-blur-sm text-charcoal-800 rounded-full flex items-center justify-center shadow-lg hover:bg-crimson-600 hover:text-white transition pointer-events-auto" title="Thêm vào giỏ" data-add-cart="<?= $sp['id'] ?>">
                                     <iconify-icon icon="heroicons:shopping-bag" class="text-xl"></iconify-icon>
                                 </button>
                             </div>
@@ -108,7 +108,7 @@
                             </div>
                             
                             <!-- Nút Thêm vào giỏ -->
-                            <button class="w-full mt-4 py-2.5 bg-[#8B0000] text-white rounded-lg text-sm font-semibold hover:bg-[#7A0C0C] transition-colors flex items-center justify-center gap-2">
+                            <button class="w-full mt-4 py-2.5 bg-[#8B0000] text-white rounded-lg text-sm font-semibold hover:bg-[#7A0C0C] transition-colors flex items-center justify-center gap-2" data-add-cart="<?= $sp['id'] ?>">
                                 Thêm vào giỏ
                             </button>
                         </div>

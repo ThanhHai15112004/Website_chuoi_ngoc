@@ -26,18 +26,22 @@ class BaiVietService {
     }
 
     public function getBaiVietNoiBat($limit = 3) {
-        return $this->baiVietModel->layBaiVietNoiBat($limit);
+        $articles = $this->baiVietModel->layBaiVietNoiBat($limit);
+        return array_map([$this, 'mapArticle'], $articles);
     }
 
     public function getDanhSachBaiViet($params = [], $page = 1, $perPage = 6) {
         $offset = ($page - 1) * $perPage;
         $params['status'] = 'published'; // Only show published articles
-        return $this->baiVietModel->layDanhSach($params, $perPage, $offset);
+        $result = $this->baiVietModel->layDanhSach($params, $perPage, $offset);
+        $result['data'] = array_map([$this, 'mapArticle'], $result['data']);
+        return $result;
     }
 
     public function getBaiDocNhieu($limit = 4) {
         // Reusing layBaiVietNoiBat which orders by luot_xem
-        return $this->baiVietModel->layBaiVietNoiBat($limit);
+        $articles = $this->baiVietModel->layBaiVietNoiBat($limit);
+        return array_map([$this, 'mapArticle'], $articles);
     }
 
     public function getChiTietBaiViet($slug) {
@@ -45,18 +49,61 @@ class BaiVietService {
         if ($article) {
             $this->baiVietModel->tangLuotXem($article['id']);
             $article['luot_xem'] += 1;
-            
-            // Calculate reading time (approx 200 words per minute)
-            $wordCount = str_word_count(strip_tags($article['noi_dung'] ?? ''));
-            $minutes = ceil($wordCount / 200);
-            $article['reading_time'] = $minutes . ' phút đọc';
+            return $this->mapArticle($article);
         }
-        return $article;
+        return null;
     }
 
     public function getBaiVietLienQuan($id_danh_muc, $exclude_id, $limit = 3) {
         if (!$id_danh_muc) return [];
-        return $this->baiVietModel->layBaiVietLienQuan($id_danh_muc, $exclude_id, $limit);
+        $articles = $this->baiVietModel->layBaiVietLienQuan($id_danh_muc, $exclude_id, $limit);
+        return array_map([$this, 'mapArticle'], $articles);
+    }
+
+    private function mapArticle($article) {
+        if (!$article) return null;
+        
+        $bv_img = $article['hinh_anh'] ?? '';
+        if (empty($bv_img)) {
+            $bv_img_src = APP_URL . '/images/Logo_.jpg';
+        } elseif (strpos($bv_img, 'http') === 0) {
+            $bv_img_src = $bv_img;
+        } elseif (strpos($bv_img, '/') === 0) {
+            $bv_img_src = APP_URL . $bv_img;
+        } else {
+            $bv_img_src = APP_URL . '/uploads/bai_viet/' . $bv_img;
+        }
+
+        // Calculate reading time
+        $wordCount = count(explode(' ', strip_tags($article['noi_dung'] ?? '')));
+        $minutes = max(1, ceil($wordCount / 200));
+        $reading_time = $minutes . ' phút đọc';
+
+        return [
+            'id' => $article['id'],
+            'slug' => $article['slug'],
+            'title' => $article['tieu_de'] ?? '',
+            'tieu_de' => $article['tieu_de'] ?? '',
+            'excerpt' => $article['tom_tat'] ?? '',
+            'tom_tat' => $article['tom_tat'] ?? '',
+            'content' => $article['noi_dung'] ?? '',
+            'noi_dung' => $article['noi_dung'] ?? '',
+            'image' => $bv_img_src,
+            'hinh_anh' => $article['hinh_anh'] ?? '',
+            'category' => $article['ten_danh_muc'] ?? 'Tin tức',
+            'ten_danh_muc' => $article['ten_danh_muc'] ?? 'Tin tức',
+            'id_danh_muc' => $article['id_danh_muc'] ?? '',
+            'date' => isset($article['ngay_tao']) ? date('d/m/Y', strtotime($article['ngay_tao'])) : '',
+            'ngay_tao' => $article['ngay_tao'] ?? '',
+            'author' => $article['ten_nguoi_tao'] ?? 'Ban biên tập',
+            'ten_nguoi_tao' => $article['ten_nguoi_tao'] ?? 'Ban biên tập',
+            'views' => $article['luot_xem'] ?? 0,
+            'luot_xem' => $article['luot_xem'] ?? 0,
+            'reading_time' => $reading_time,
+            'is_main' => $article['is_main'] ?? 0,
+            'tags' => $article['tags'] ?? '[]',
+            'san_pham_lien_quan' => $article['san_pham_lien_quan'] ?? '[]'
+        ];
     }
 
     public function getSanPhamLienQuan($json_san_pham_ids) {

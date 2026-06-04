@@ -5,7 +5,7 @@
                 <h2 class="text-3xl font-bold mb-2" style="color:#8b0000;">Vòng Ngọc Đề Xuất</h2>
                 <p class="text-gray-600">Tuyển tập những mẫu vòng phù hợp nhất với bản mệnh của bạn.</p>
             </div>
-            <a href="<?= APP_URL ?>/san-pham" class="mt-4 md:mt-0 inline-flex items-center gap-1 text-sm font-semibold hover:underline" style="color:#d4af37;">
+            <a href="<?= APP_URL ?>/san-pham" class="mt-4 md:mt-0 inline-flex items-center gap-1 text-sm font-semibold hover:opacity-80 transition-opacity" style="color:#d4af37;">
                 Xem tất cả sản phẩm
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>

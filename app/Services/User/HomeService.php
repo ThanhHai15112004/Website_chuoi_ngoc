@@ -42,7 +42,7 @@ class HomeService
     {
         // Lấy voucher đang hoạt động (còn lượt dùng, chưa hết hạn), giới hạn 3
         $allVouchers = $this->voucherModel->getActiveVouchers();
-        $vouchers = array_slice($allVouchers, 0, 3);
+        $vouchers = array_slice($allVouchers, 0, 4);
         
         $saved_vouchers = [];
         if (!empty($_SESSION['user_id'])) {

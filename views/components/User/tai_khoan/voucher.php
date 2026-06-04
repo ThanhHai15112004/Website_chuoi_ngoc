@@ -46,7 +46,7 @@ $userVouchers = $vouchers ?? [];
                     <?php elseif ($daSuDung): ?>
                     <span class="text-xs text-gray-500 font-medium">Đã sử dụng</span>
                     <?php else: ?>
-                    <span class="text-xs text-[#8b0000] font-medium cursor-pointer hover:underline">Điều kiện</span>
+                    <span class="text-xs text-[#8b0000] font-medium cursor-pointer hover:opacity-80 transition-opacity">Điều kiện</span>
                     <a href="<?= APP_URL ?>/san-pham" class="px-4 py-1.5 bg-[#8b0000] text-white text-xs font-medium rounded hover:bg-[#700000] transition-colors">Sử dụng</a>
                     <?php endif; ?>
                 </div>

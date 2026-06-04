@@ -327,71 +327,106 @@ class VoucherModel
         return $stmt->execute([$status, $id]);
     }
 
+    private function validateVoucherScope($vc, $gio_hang, $userRankId)
+    {
+        // 1. Kiểm tra hạng thành viên
+        if (!empty($vc['hang_thanh_vien'])) {
+            if ($userRankId !== $vc['hang_thanh_vien']) {
+                return false; // Không thuộc hạng thành viên -> Ẩn
+            }
+        }
+
+        // 2. Kiểm tra phạm vi sản phẩm & Tính $tongTienHopLe
+        $tongTienHopLe = 0;
+        $hasApplicableItems = false;
+
+        if ($vc['pham_vi_san_pham'] === 'all' || empty($vc['pham_vi_san_pham'])) {
+            $hasApplicableItems = true;
+            foreach ($gio_hang as $item) {
+                $tongTienHopLe += $item['gia'] * $item['so_luong'];
+            }
+        } elseif ($vc['pham_vi_san_pham'] === 'category') {
+            $vcCategories = $this->getVoucherCategories($vc['id']);
+            foreach ($gio_hang as $item) {
+                if (in_array($item['id_danh_muc'], $vcCategories)) {
+                    $hasApplicableItems = true;
+                    $tongTienHopLe += $item['gia'] * $item['so_luong'];
+                }
+            }
+        } elseif ($vc['pham_vi_san_pham'] === 'product') {
+            $vcProducts = array_column($this->getVoucherProducts($vc['id']), 'id_san_pham');
+            foreach ($gio_hang as $item) {
+                if (in_array($item['id_san_pham'], $vcProducts)) {
+                    $hasApplicableItems = true;
+                    $tongTienHopLe += $item['gia'] * $item['so_luong'];
+                }
+            }
+        }
+
+        if (!$hasApplicableItems) {
+            return false;
+        }
+
+        return $tongTienHopLe;
+    }
+
     /**
      * Kiểm tra voucher theo mã và tính giảm giá
      */
-    public function checkVoucherByCode($ma, $tongTien)
+    public function checkVoucherByCode($ma, $gio_hang, $userId = null)
     {
-        $sql = "SELECT * FROM voucher WHERE ma_voucher = ? LIMIT 1";
+        $sql = "SELECT * FROM voucher WHERE ma_voucher = ? AND loai_giam != 4 LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([strtoupper(trim($ma))]);
         $vc = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$vc) {
-            return ['success' => false, 'message' => 'Mã voucher không tồn tại.'];
-        }
+        if (!$vc) return ['success' => false, 'message' => 'Mã voucher không tồn tại.'];
+        if ($vc['trang_thai'] != 1) return ['success' => false, 'message' => 'Voucher đã bị tắt.'];
 
-        // Kiểm tra trạng thái
-        if ($vc['trang_thai'] != 1) {
-            return ['success' => false, 'message' => 'Voucher đã bị tắt.'];
-        }
-
-        // Kiểm tra thời hạn
         $now = time();
         $start = strtotime($vc['ngay_bat_dau']);
         $end = strtotime($vc['ngay_ket_thuc']);
+        if ($now < $start) return ['success' => false, 'message' => 'Voucher chưa đến thời gian sử dụng.'];
+        if ($now > $end) return ['success' => false, 'message' => 'Voucher đã hết hạn.'];
 
-        if ($now < $start) {
-            return ['success' => false, 'message' => 'Voucher chưa đến thời gian sử dụng (bắt đầu: ' . date('d/m/Y', $start) . ').'];
-        }
-        if ($now > $end) {
-            return ['success' => false, 'message' => 'Voucher đã hết hạn (hết hạn: ' . date('d/m/Y', $end) . ').'];
-        }
-
-        // Kiểm tra lượt dùng
         if ($vc['so_luong'] != -1 && $vc['da_dung'] >= $vc['so_luong']) {
             return ['success' => false, 'message' => 'Voucher đã hết lượt sử dụng.'];
         }
 
-        // Kiểm tra đơn tối thiểu
-        if ($vc['don_toi_thieu'] > 0 && $tongTien < $vc['don_toi_thieu']) {
-            return ['success' => false, 'message' => 'Đơn hàng chưa đạt giá trị tối thiểu ' . number_format($vc['don_toi_thieu'], 0, ',', '.') . 'đ.'];
+        if ($userId && isset($vc['gioi_han_moi_user']) && $vc['gioi_han_moi_user'] != -1) {
+            if ($this->countUserVoucherUsage($userId, $vc['id']) >= $vc['gioi_han_moi_user']) {
+                return ['success' => false, 'message' => 'Bạn đã hết lượt sử dụng mã này.'];
+            }
+        }
+
+        $userRankId = null;
+        if ($userId) {
+            $stmtRank = $this->db->prepare("SELECT id_hang_thanh_vien FROM nguoi_dung WHERE id = ?");
+            $stmtRank->execute([$userId]);
+            $userRankId = $stmtRank->fetchColumn();
+        }
+
+        $tongTienHopLe = $this->validateVoucherScope($vc, $gio_hang, $userRankId);
+        if ($tongTienHopLe === false) {
+            return ['success' => false, 'message' => 'Mã voucher không áp dụng cho các sản phẩm trong giỏ hàng.'];
+        }
+
+        if ($vc['don_toi_thieu'] > 0 && $tongTienHopLe < $vc['don_toi_thieu']) {
+            return ['success' => false, 'message' => 'Cần mua thêm ' . number_format($vc['don_toi_thieu'] - $tongTienHopLe, 0, ',', '.') . 'đ các sản phẩm hợp lệ để dùng mã này.'];
         }
 
         // Tính giảm giá
+        $loaiGiam = $vc['loai_giam'];
         $giamGia = 0;
-        $loaiGiam = (int)$vc['loai_giam'];
-
         if ($loaiGiam == 1) {
-            // Giảm phần trăm
-            $giamGia = $tongTien * ($vc['gia_tri'] / 100);
-            if ($vc['giam_toi_da'] > 0 && $giamGia > $vc['giam_toi_da']) {
-                $giamGia = $vc['giam_toi_da'];
-            }
+            $giamGia = $tongTienHopLe * ($vc['gia_tri'] / 100);
+            if ($vc['giam_toi_da'] > 0 && $giamGia > $vc['giam_toi_da']) $giamGia = $vc['giam_toi_da'];
         } elseif ($loaiGiam == 2) {
-            // Giảm số tiền cố định
             $giamGia = $vc['gia_tri'];
         } elseif ($loaiGiam == 3) {
-            // Freeship
-            $giamGia = 0; // Freeship xử lý riêng ở phí vận chuyển
+            $giamGia = 0; // freeship handled elsewhere
         }
-
-        $giamGia = min($giamGia, $tongTien); // Không giảm quá tổng tiền
-
-        $message = 'Áp dụng thành công: ' . $vc['ten_chuong_trinh'];
-        if ($loaiGiam == 3) {
-            $message = 'Áp dụng Freeship: ' . $vc['ten_chuong_trinh'];
-        }
+        $giamGia = min($giamGia, $tongTienHopLe);
 
         return [
             'success' => true,
@@ -401,7 +436,7 @@ class VoucherModel
             'loai_giam' => $loaiGiam,
             'giam_gia' => (int)$giamGia,
             'is_freeship' => $loaiGiam == 3,
-            'message' => $message
+            'message' => $loaiGiam == 3 ? 'Áp dụng Freeship: ' . $vc['ten_chuong_trinh'] : 'Áp dụng thành công: ' . $vc['ten_chuong_trinh']
         ];
     }
 
@@ -428,5 +463,86 @@ class VoucherModel
         $stmt->execute();
         
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function countUserVoucherUsage($userId, $idVoucher)
+    {
+        // Hiện tại dùng chung bảng nguoi_dung_voucher. trang_thai = 1 là đã dùng
+        $sql = "SELECT COUNT(*) FROM nguoi_dung_voucher WHERE id_nguoi_dung = ? AND id_voucher = ? AND trang_thai = 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId, $idVoucher]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getEligibleVouchersForCart($gio_hang, $userId = null)
+    {
+        $sql = "SELECT * FROM voucher 
+                WHERE trang_thai = 1 
+                AND loai_giam != 4
+                AND (ngay_bat_dau IS NULL OR ngay_bat_dau <= NOW())
+                AND (ngay_ket_thuc IS NULL OR ngay_ket_thuc >= NOW())
+                ORDER BY loai_giam DESC, gia_tri DESC";
+        $stmt = $this->db->query($sql);
+        $vouchers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userRankId = null;
+        if ($userId) {
+            $stmtRank = $this->db->prepare("SELECT id_hang_thanh_vien FROM nguoi_dung WHERE id = ?");
+            $stmtRank->execute([$userId]);
+            $userRankId = $stmtRank->fetchColumn();
+        }
+
+        $results = [];
+        foreach ($vouchers as $vc) {
+            $tongTienHopLe = $this->validateVoucherScope($vc, $gio_hang, $userRankId);
+            if ($tongTienHopLe === false) {
+                continue; // Ẩn hoàn toàn
+            }
+
+            $isEligible = true;
+            $reason = '';
+
+            if ($vc['so_luong'] != -1 && $vc['da_dung'] >= $vc['so_luong']) {
+                $isEligible = false;
+                $reason = 'Đã hết lượt sử dụng';
+            } elseif ($vc['don_toi_thieu'] > 0 && $tongTienHopLe < $vc['don_toi_thieu']) {
+                $isEligible = false;
+                $reason = 'Đơn chưa đạt ' . number_format($vc['don_toi_thieu'], 0, ',', '.') . 'đ';
+            } elseif ($userId && isset($vc['gioi_han_moi_user']) && $vc['gioi_han_moi_user'] != -1) {
+                if ($this->countUserVoucherUsage($userId, $vc['id']) >= $vc['gioi_han_moi_user']) {
+                    $isEligible = false;
+                    $reason = 'Bạn đã hết lượt dùng';
+                }
+            }
+
+            $giamGia = 0;
+            if ($vc['loai_giam'] == 1) {
+                $giamGia = $tongTienHopLe * ($vc['gia_tri'] / 100);
+                if ($vc['giam_toi_da'] > 0 && $giamGia > $vc['giam_toi_da']) {
+                    $giamGia = $vc['giam_toi_da'];
+                }
+            } elseif ($vc['loai_giam'] == 2) {
+                $giamGia = $vc['gia_tri'];
+            }
+            $giamGia = min($giamGia, $tongTienHopLe);
+
+            $results[] = [
+                'id' => $vc['id'],
+                'ma_voucher' => $vc['ma_voucher'],
+                'ten_chuong_trinh' => $vc['ten_chuong_trinh'],
+                'loai_giam' => $vc['loai_giam'],
+                'gia_tri' => $vc['gia_tri'],
+                'don_toi_thieu' => $vc['don_toi_thieu'],
+                'giam_toi_da' => $vc['giam_toi_da'],
+                'so_luong' => $vc['so_luong'],
+                'da_dung' => $vc['da_dung'],
+                'ngay_ket_thuc' => $vc['ngay_ket_thuc'],
+                'is_eligible' => $isEligible,
+                'reason' => $reason,
+                'giam_gia_du_kien' => $giamGia
+            ];
+        }
+
+        return $results;
     }
 }
