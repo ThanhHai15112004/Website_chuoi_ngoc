@@ -58,8 +58,11 @@ $router->post('/api/dia-chi/mac-dinh', 'User\AddressController@setDefault');
 
 // Wishlist Routes (API)
 $router->post('/api/yeu-thich/toggle', 'User\WishlistController@toggle');
-$router->get('/api/yeu-thich/danh-sach', 'User\WishlistController@getIds');
+$router->get('/api/yeu-thich/ids', 'User\WishlistController@getIds');
 
-// Search Routes (API)
+// Search Route (API)
 $router->get('/api/san-pham/tim-kiem', 'User\SanPhamController@searchSuggest');
 
+// Review Routes (API)
+$router->post('/api/danh-gia/submit', 'User\DanhGiaController@submit');
+$router->get('/api/danh-gia/danh-sach', 'User\DanhGiaController@getList');

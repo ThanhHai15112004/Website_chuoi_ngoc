@@ -187,7 +187,7 @@ class DonHangModel
     {
         $sql = "SELECT ct.*, 
                        bt.thuoc_tinh as variant_name, bt.so_luong_ton, bt.so_luong_tam_giu,
-                       sp.ten_sp, sp.ma_sp, sp.hinh_anh_chinh as image
+                       sp.id as id_san_pham, sp.ten_sp, sp.ma_sp, sp.hinh_anh_chinh as image
                 FROM chi_tiet_don_hang ct
                 LEFT JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
                 LEFT JOIN san_pham sp ON bt.id_san_pham = sp.id

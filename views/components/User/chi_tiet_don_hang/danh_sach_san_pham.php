@@ -20,7 +20,7 @@
                 
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-medium text-gray-600">Số lượng: <?= $item['quantity'] ?></span>
-                    <a href="<?= APP_URL ?>/chi-tiet-san-pham" class="px-4 py-2 border border-[#8b0000] text-[#8b0000] hover:bg-[#8b0000] hover:text-white rounded-lg text-sm font-medium transition-colors text-center" style="text-decoration: none;">Xem sản phẩm</a>
+                    <a href="<?= APP_URL ?>/chi-tiet-san-pham?id=<?= htmlspecialchars($item['product_id']) ?>" class="px-4 py-2 border border-[#8b0000] text-[#8b0000] hover:bg-[#8b0000] hover:text-white rounded-lg text-sm font-medium transition-colors text-center" style="text-decoration: none;">Xem sản phẩm</a>
                 </div>
             </div>
         </div>

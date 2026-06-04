@@ -127,9 +127,18 @@ class SanPhamController extends Controller {
         $vouchers = array_slice($vouchers, 0, 3);
 
         $saved_vouchers = [];
-        if (isset($_SESSION['user']['id'])) {
+        $hasBought = false;
+        $userReview = null;
+
+        if (isset($_SESSION['user_id'])) {
+            $userId = $_SESSION['user_id'];
             $khuyenMaiService = new \App\Services\User\KhuyenMaiService();
-            $saved_vouchers = $khuyenMaiService->getSavedVoucherIds($_SESSION['user']['id']);
+            $saved_vouchers = $khuyenMaiService->getSavedVoucherIds($userId);
+            
+            // Lấy thông tin review của user
+            $hasBought = $danhGiaModel->hasBought($userId, $id);
+            
+            $userReview = $danhGiaModel->getUserReview($userId, $id);
         }
 
         // 3. Chính sách đổi trả từ bài viết
@@ -281,7 +290,10 @@ class SanPhamController extends Controller {
             'danh_gia_list' => $danh_gia_list,
             'thong_ke_danh_gia' => $thong_ke_danh_gia,
             'vouchers' => $vouchers,
-            'saved_vouchers' => $saved_vouchers
+            'saved_vouchers' => $saved_vouchers,
+            'chinh_sach_doi_tra' => $chinh_sach_doi_tra,
+            'hasBought' => $hasBought,
+            'userReview' => $userReview
         ];
 
         $this->view('chi_tiet_san_pham', $data);

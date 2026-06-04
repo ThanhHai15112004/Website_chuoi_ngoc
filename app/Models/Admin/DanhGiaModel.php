@@ -236,10 +236,12 @@ class DanhGiaModel
     {
         $sql = "SELECT dg.*, 
                 nd.ho_ten as ten_khach, nd.anh_dai_dien as avatar_khach,
-                htv.ten_hang as hang_thanh_vien
+                htv.ten_hang as hang_thanh_vien,
+                nv.ho_ten as ten_nhan_vien_phan_hoi
                 FROM danh_gia dg
                 JOIN nguoi_dung nd ON dg.id_nguoi_dung = nd.id
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
+                LEFT JOIN nguoi_dung nv ON dg.phan_hoi_boi = nv.id
                 WHERE dg.id_san_pham = :id_san_pham 
                 AND dg.trang_thai = " . DanhGiaConstants::TRANG_THAI_DA_DUYET . "
                 ORDER BY dg.ngay_tao DESC 
@@ -286,5 +288,92 @@ class DanhGiaModel
             'diem_trung_binh' => round((float)($result['diem_trung_binh'] ?? 0), 1),
             'phan_bo' => $phan_bo
         ];
+    }
+
+    public function hasBought($userId, $productId)
+    {
+        $sql = "SELECT COUNT(*) as count
+                FROM chi_tiet_don_hang ctdh
+                JOIN don_hang dh ON ctdh.id_don_hang = dh.id
+                JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
+                WHERE dh.id_nguoi_dung = :user_id 
+                AND bt.id_san_pham = :product_id 
+                AND dh.trang_thai_don_hang = " . \App\Constants\DonHangConstants::TRANG_THAI_DA_GIAO_HANG;
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'user_id' => $userId,
+            'product_id' => $productId
+        ]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'] > 0;
+    }
+
+    public function getUserReview($userId, $productId)
+    {
+        $sql = "SELECT * FROM danh_gia 
+                WHERE id_nguoi_dung = :user_id 
+                AND id_san_pham = :product_id 
+                LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'user_id' => $userId,
+            'product_id' => $productId
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function insert($data)
+    {
+        $id = \App\Core\Helpers::generateUUID();
+        $sql = "INSERT INTO danh_gia (
+                    id, id_san_pham, id_nguoi_dung, bien_the_mua, 
+                    so_sao, sao_chat_luong, sao_mo_ta, sao_dich_vu, 
+                    noi_dung, hinh_anh, trang_thai, ngay_tao
+                ) VALUES (
+                    :id, :id_san_pham, :id_nguoi_dung, :bien_the_mua, 
+                    :so_sao, :sao_chat_luong, :sao_mo_ta, :sao_dich_vu, 
+                    :noi_dung, :hinh_anh, :trang_thai, NOW()
+                )";
+        $stmt = $this->db->prepare($sql);
+        $result = $stmt->execute([
+            'id' => $id,
+            'id_san_pham' => $data['id_san_pham'],
+            'id_nguoi_dung' => $data['id_nguoi_dung'],
+            'bien_the_mua' => $data['bien_the_mua'] ?? null,
+            'so_sao' => $data['so_sao'],
+            'sao_chat_luong' => $data['sao_chat_luong'] ?? 5,
+            'sao_mo_ta' => $data['sao_mo_ta'] ?? 5,
+            'sao_dich_vu' => $data['sao_dich_vu'] ?? 5,
+            'noi_dung' => $data['noi_dung'] ?? null,
+            'hinh_anh' => $data['hinh_anh'] ?? null,
+            'trang_thai' => DanhGiaConstants::TRANG_THAI_CHO_DUYET
+        ]);
+        return $result ? $id : false;
+    }
+
+    public function updateUserReview($id, $userId, $data)
+    {
+        $sql = "UPDATE danh_gia SET 
+                so_sao = :so_sao,
+                sao_chat_luong = :sao_chat_luong,
+                sao_mo_ta = :sao_mo_ta,
+                sao_dich_vu = :sao_dich_vu,
+                noi_dung = :noi_dung,
+                hinh_anh = :hinh_anh,
+                trang_thai = :trang_thai
+                WHERE id = :id AND id_nguoi_dung = :user_id";
+        
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            'so_sao' => $data['so_sao'],
+            'sao_chat_luong' => $data['sao_chat_luong'] ?? 5,
+            'sao_mo_ta' => $data['sao_mo_ta'] ?? 5,
+            'sao_dich_vu' => $data['sao_dich_vu'] ?? 5,
+            'noi_dung' => $data['noi_dung'] ?? null,
+            'hinh_anh' => $data['hinh_anh'] ?? null,
+            'trang_thai' => DanhGiaConstants::TRANG_THAI_CHO_DUYET, // Cần duyệt lại khi sửa
+            'id' => $id,
+            'user_id' => $userId
+        ]);
     }
 }

@@ -86,6 +86,7 @@ class DonHangController extends Controller {
         $orderItems = [];
         foreach ($rawItems as $item) {
             $orderItems[] = [
+                'product_id' => $item['id_san_pham'],
                 'product_image' => get_image_url($item['image']),
                 'product_name' => $item['ten_sp'],
                 'price' => $item['don_gia'],
