@@ -45,21 +45,31 @@ $trangThaiMap = [
         <?php
         $hangHienTai = $user['hang_thanh_vien'] ?? null;
         $chiTieu = (float)($user['tong_chi_tieu'] ?? 0);
+        
+        // Dynamic color map theo hạng
+        $tenHang = $hangHienTai['ten_hang'] ?? '';
+        $hangCardColors = [
+            'Đồng'      => ['grad' => 'from-amber-50 via-orange-100 to-amber-200', 'border' => 'border-amber-300', 'blob1' => 'bg-amber-300', 'blob2' => 'bg-orange-400', 'text' => 'text-amber-800', 'textLight' => 'text-amber-700', 'icon' => 'text-amber-600', 'bar_bg' => 'bg-amber-200', 'bar' => 'bg-amber-500', 'emoji' => '🥉'],
+            'Bạc'       => ['grad' => 'from-gray-50 via-slate-100 to-gray-200', 'border' => 'border-gray-300', 'blob1' => 'bg-gray-300', 'blob2' => 'bg-slate-400', 'text' => 'text-slate-700', 'textLight' => 'text-slate-600', 'icon' => 'text-slate-500', 'bar_bg' => 'bg-gray-200', 'bar' => 'bg-slate-500', 'emoji' => '🥈'],
+            'Vàng'      => ['grad' => 'from-yellow-50 via-amber-100 to-yellow-200', 'border' => 'border-yellow-300', 'blob1' => 'bg-yellow-300', 'blob2' => 'bg-amber-400', 'text' => 'text-yellow-800', 'textLight' => 'text-yellow-700', 'icon' => 'text-yellow-600', 'bar_bg' => 'bg-yellow-200', 'bar' => 'bg-yellow-500', 'emoji' => '🥇'],
+            'Kim Cương'  => ['grad' => 'from-cyan-50 via-blue-100 to-indigo-200', 'border' => 'border-indigo-300', 'blob1' => 'bg-cyan-300', 'blob2' => 'bg-indigo-400', 'text' => 'text-indigo-800', 'textLight' => 'text-indigo-700', 'icon' => 'text-indigo-500', 'bar_bg' => 'bg-indigo-200', 'bar' => 'bg-indigo-500', 'emoji' => '💎'],
+        ];
+        $hc = $hangCardColors[$tenHang] ?? $hangCardColors['Đồng'];
         ?>
-        <div class="bg-gradient-to-br from-yellow-50 via-amber-100 to-yellow-200 rounded-2xl p-6 border border-yellow-300 relative overflow-hidden shadow-sm">
-            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-yellow-300 opacity-30 rounded-full blur-2xl"></div>
-            <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-amber-400 opacity-30 rounded-full blur-2xl"></div>
+        <div class="bg-gradient-to-br <?= $hc['grad'] ?> rounded-2xl p-6 border <?= $hc['border'] ?> relative overflow-hidden shadow-sm">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 <?= $hc['blob1'] ?> opacity-30 rounded-full blur-2xl"></div>
+            <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 <?= $hc['blob2'] ?> opacity-30 rounded-full blur-2xl"></div>
             
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-gray-900">Hạng thành viên</h3>
-                    <iconify-icon icon="ph:crown-simple-fill" class="text-3xl text-yellow-600 drop-shadow-md"></iconify-icon>
+                    <iconify-icon icon="ph:crown-simple-fill" class="text-3xl <?= $hc['icon'] ?> drop-shadow-md"></iconify-icon>
                 </div>
-                <div class="text-3xl font-bold text-yellow-700 mb-1"><?= htmlspecialchars($hangHienTai['ten_hang'] ?? 'Chưa có hạng') ?></div>
+                <div class="text-3xl font-bold <?= $hc['textLight'] ?> mb-1"><?= $hc['emoji'] ?> <?= htmlspecialchars($hangHienTai['ten_hang'] ?? 'Chưa có hạng') ?></div>
                 <?php if ($hangHienTai && !empty($hangHienTai['phan_tram_giam'])): ?>
-                <p class="text-sm text-yellow-800 mb-4">Bạn đang hưởng ưu đãi giảm <span class="font-bold"><?= (int)$hangHienTai['phan_tram_giam'] ?>%</span> cho mọi đơn hàng.</p>
+                <p class="text-sm <?= $hc['text'] ?> mb-4">Bạn đang hưởng ưu đãi giảm <span class="font-bold"><?= (int)$hangHienTai['phan_tram_giam'] ?>%</span> cho mọi đơn hàng.</p>
                 <?php else: ?>
-                <p class="text-sm text-yellow-800 mb-4">Mua sắm thêm để nhận ưu đãi thành viên!</p>
+                <p class="text-sm <?= $hc['text'] ?> mb-4">Mua sắm thêm để nhận ưu đãi thành viên!</p>
                 <?php endif; ?>
                 
                 <?php if ($hang_tiep_theo): ?>
@@ -69,14 +79,14 @@ $trangThaiMap = [
                     $progress = $chiTieuHangTiep > 0 ? min(100, ($chiTieu / $chiTieuHangTiep) * 100) : 0;
                     $conThieu = max(0, $chiTieuHangTiep - $chiTieu);
                     ?>
-                    <div class="flex justify-between text-xs text-yellow-800 mb-1">
+                    <div class="flex justify-between text-xs <?= $hc['text'] ?> mb-1">
                         <span>Chi tiêu: <?= number_format($chiTieu, 0, ',', '.') ?>đ</span>
                         <span><?= htmlspecialchars($hang_tiep_theo['ten_hang']) ?>: <?= number_format($chiTieuHangTiep, 0, ',', '.') ?>đ</span>
                     </div>
-                    <div class="w-full bg-yellow-200 rounded-full h-2">
-                        <div class="bg-yellow-500 h-2 rounded-full" style="width: <?= $progress ?>%"></div>
+                    <div class="w-full <?= $hc['bar_bg'] ?> rounded-full h-2">
+                        <div class="<?= $hc['bar'] ?> h-2 rounded-full transition-all duration-500" style="width: <?= $progress ?>%"></div>
                     </div>
-                    <p class="text-xs text-yellow-700 mt-2 text-right">Mua thêm <?= number_format($conThieu, 0, ',', '.') ?>đ để thăng hạng</p>
+                    <p class="text-xs <?= $hc['textLight'] ?> mt-2 text-right">Mua thêm <?= number_format($conThieu, 0, ',', '.') ?>đ để thăng hạng</p>
                 </div>
                 <?php endif; ?>
             </div>

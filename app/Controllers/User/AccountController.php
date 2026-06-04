@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Services\User\TaiKhoanService;
 use App\Models\Admin\BanMenhModel;
 use App\Models\Admin\ThongBaoModel;
+use App\Models\User\SoDiaChiModel;
 
 class AccountController extends Controller
 {
@@ -61,6 +62,10 @@ class AccountController extends Controller
         $tat_ca_hang = $this->taiKhoanService->getTatCaHang();
         $hang_tiep_theo = $this->taiKhoanService->getHangTiepTheo($user['tong_chi_tieu'] ?? 0);
 
+        // Sổ địa chỉ
+        $soDiaChiModel = new SoDiaChiModel();
+        $danh_sach_dia_chi = $soDiaChiModel->getAllByUserId($userId);
+
         // Lịch sử bản mệnh (wrap try/catch vì bảng có thể chưa tồn tại)
         $lichSuBanMenh = [];
         try {
@@ -84,6 +89,7 @@ class AccountController extends Controller
             'tat_ca_hang'        => $tat_ca_hang,
             'hang_tiep_theo'     => $hang_tiep_theo,
             'lich_su_ban_menh'   => $lichSuBanMenh,
+            'danh_sach_dia_chi'  => $danh_sach_dia_chi,
         ];
 
         $this->view('tai_khoan', $data);
@@ -181,6 +187,29 @@ class AccountController extends Controller
             $thongBaoModel->markAllAsRead(false, $_SESSION['user_id']);
         } else if (!empty($id)) {
             $thongBaoModel->markAsRead($id);
+        }
+
+        echo json_encode(['success' => true]);
+    }
+
+    /**
+     * API: Xóa thông báo
+     */
+    public function deleteNotification()
+    {
+        if (empty($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Chưa đăng nhập']);
+            return;
+        }
+
+        $thongBaoModel = new ThongBaoModel();
+        $id = $_POST['id'] ?? '';
+
+        if ($id === 'all_read') {
+            // Xóa tất cả đã đọc
+            $thongBaoModel->xoaTatCaDaDoc($_SESSION['user_id']);
+        } else if (!empty($id)) {
+            $thongBaoModel->xoa($id);
         }
 
         echo json_encode(['success' => true]);

@@ -4,6 +4,8 @@ namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Models\Admin\DonHangModel;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class DonHangController extends Controller {
     public function detail() {
@@ -84,7 +86,7 @@ class DonHangController extends Controller {
         $orderItems = [];
         foreach ($rawItems as $item) {
             $orderItems[] = [
-                'product_image' => APP_URL . '/public/uploads/san_pham/' . $item['image'],
+                'product_image' => get_image_url($item['image']),
                 'product_name' => $item['ten_sp'],
                 'price' => $item['don_gia'],
                 'note' => '', // Ghi chú riêng cho sản phẩm nếu có
@@ -144,8 +146,15 @@ class DonHangController extends Controller {
         // Cập nhật trạng thái thành 4 (Đã hủy)
         $result = $donHangModel->capNhatTrangThai($orderId, 4, $note);
         
-        if ($result['success']) {
-            // Cập nhật lại tồn kho nếu cần (tùy logic hệ thống, thường capNhatTrangThai sẽ xử lý)
+        if ($result) {
+            // Gửi thông báo + email cho user
+            try {
+                $notif = new NotificationService();
+                $notif->orderStatusChanged($rawOrder, 4, $reason);
+                MailService::sendOrderCancelled($rawOrder, $reason);
+            } catch (\Exception $ex) {
+                error_log('[DonHang] Lỗi gửi mail hủy đơn: ' . $ex->getMessage());
+            }
             echo json_encode(['success' => true, 'message' => 'Đã hủy đơn hàng thành công']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Không thể hủy đơn hàng']);

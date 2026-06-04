@@ -83,7 +83,6 @@
     <?php require_once __DIR__ . '/../components/User/footer.php'; ?>
 
     <!-- Global JS Config -->
-    <script>const APP_URL = '<?= APP_URL ?>';</script>
     <!-- Cart JS -->
     <script src="<?= APP_URL ?>/js/cart.js?v=<?= time() ?>"></script>
 

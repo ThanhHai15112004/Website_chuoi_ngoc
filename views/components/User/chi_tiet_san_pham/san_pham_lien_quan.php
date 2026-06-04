@@ -64,7 +64,7 @@
                             <?php endif; ?>
 
                             <!-- Nút yêu thích -->
-                            <button class="absolute top-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-crimson-50 hover:text-crimson-600 transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
+                            <button class="wishlist-btn absolute top-3 right-3 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-crimson-50 hover:text-crimson-600 transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300" data-product-id="<?= $sp['id'] ?>" onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<?= $sp['id'] ?>', this)">
                                 <iconify-icon icon="heroicons:heart" class="text-base"></iconify-icon>
                             </button>
 

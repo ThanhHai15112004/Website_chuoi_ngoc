@@ -36,6 +36,7 @@ $router->get('/tai-khoan', 'User\AccountController@index');
 $router->post('/tai-khoan/cap-nhat-ho-so', 'User\AccountController@updateProfile');
 $router->post('/tai-khoan/doi-mat-khau', 'User\AccountController@changePassword');
 $router->post('/tai-khoan/doc-thong-bao', 'User\AccountController@markNotificationRead');
+$router->post('/tai-khoan/xoa-thong-bao', 'User\AccountController@deleteNotification');
 
 // Authentication Routes
 $router->get('/dang-nhap', 'User\AuthController@index');
@@ -54,3 +55,11 @@ $router->post('/api/dia-chi/them', 'User\AddressController@add');
 $router->post('/api/dia-chi/sua', 'User\AddressController@update');
 $router->post('/api/dia-chi/xoa', 'User\AddressController@delete');
 $router->post('/api/dia-chi/mac-dinh', 'User\AddressController@setDefault');
+
+// Wishlist Routes (API)
+$router->post('/api/yeu-thich/toggle', 'User\WishlistController@toggle');
+$router->get('/api/yeu-thich/danh-sach', 'User\WishlistController@getIds');
+
+// Search Routes (API)
+$router->get('/api/san-pham/tim-kiem', 'User\SanPhamController@searchSuggest');
+

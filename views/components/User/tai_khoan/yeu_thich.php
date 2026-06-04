@@ -8,9 +8,9 @@ $userYeuThich = $yeu_thich ?? [];
     </div>
 
     <?php if (!empty($userYeuThich)): ?>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <?php foreach ($userYeuThich as $sp): ?>
-        <div class="border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 group bg-white">
+        <div class="wishlist-card border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 group bg-white" data-product-id="<?= htmlspecialchars($sp['id']) ?>">
             <!-- Product Image -->
             <div class="relative aspect-square bg-gray-50 overflow-hidden">
                 <?php if (!empty($sp['hinh_anh'])): ?>
@@ -22,7 +22,8 @@ $userYeuThich = $yeu_thich ?? [];
                 <?php endif; ?>
                 
                 <!-- Remove button -->
-                <button class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-red-500 hover:bg-red-500 hover:text-white transition-colors" title="Bỏ yêu thích">
+                <button class="absolute top-3 right-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-red-500 hover:bg-red-500 hover:text-white transition-colors" title="Bỏ yêu thích"
+                        onclick="removeFromWishlist('<?= htmlspecialchars($sp['id']) ?>', this)">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
                 </button>
 
@@ -43,7 +44,7 @@ $userYeuThich = $yeu_thich ?? [];
         <?php endforeach; ?>
     </div>
     <?php else: ?>
-    <div class="text-center py-16">
+    <div id="wishlist-empty" class="text-center py-16">
         <iconify-icon icon="ph:heart" class="text-5xl text-gray-300 mb-3"></iconify-icon>
         <h3 class="text-lg font-bold text-gray-900 mb-2">Chưa có sản phẩm yêu thích</h3>
         <p class="text-gray-500 mb-6">Nhấn ❤️ trên sản phẩm để lưu lại và mua sau!</p>
@@ -51,3 +52,53 @@ $userYeuThich = $yeu_thich ?? [];
     </div>
     <?php endif; ?>
 </div>
+
+<script>
+function removeFromWishlist(productId, btnEl) {
+    Swal.fire({
+        title: 'Bỏ yêu thích',
+        text: 'Bạn muốn xóa sản phẩm này khỏi danh sách yêu thích?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#8b0000',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Bỏ yêu thích',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('<?= APP_URL ?>/api/yeu-thich/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_san_pham: productId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    // Fade out card
+                    const card = btnEl.closest('.wishlist-card');
+                    if (card) {
+                        card.style.transition = 'all 0.3s';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            card.remove();
+                            // Check if grid empty
+                            const grid = document.getElementById('wishlist-grid');
+                            if (grid && grid.children.length === 0) {
+                                location.reload();
+                            }
+                        }, 300);
+                    }
+                    // Update badge
+                    const badge = document.getElementById('wishlist-badge-count');
+                    if (badge) {
+                        badge.textContent = data.total;
+                        badge.style.display = data.total > 0 ? '' : 'none';
+                    }
+                    Toast.fire({ icon: 'success', title: 'Đã bỏ yêu thích' });
+                }
+            });
+        }
+    });
+}
+</script>

@@ -130,4 +130,14 @@ class ThongBaoModel
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
     }
+
+    /**
+     * Xóa tất cả thông báo đã đọc của user
+     */
+    public function xoaTatCaDaDoc($userId)
+    {
+        $sql = "DELETE FROM thong_bao WHERE id_nguoi_dung = ? AND da_doc = 1";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$userId]);
+    }
 }

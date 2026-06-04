@@ -7,6 +7,8 @@ use App\Models\Admin\PhuongThucThanhToanModel;
 use App\Models\Admin\TaiKhoanNganHangModel;
 use App\Services\User\CartService;
 use App\Models\Admin\DonHangModel;
+use App\Services\MailService;
+use App\Services\NotificationService;
 
 class CheckoutController extends Controller {
     public function index() {
@@ -260,6 +262,19 @@ class CheckoutController extends Controller {
             // Xóa giỏ hàng
             $cartService->clearCart($userId);
             unset($_SESSION['cart_vouchers']);
+
+            // Gửi thông báo + email xác nhận đơn hàng
+            try {
+                $don_hang = $donHangModel->layChiTiet($result['id_don_hang']);
+                if ($don_hang) {
+                    $items = $donHangModel->laySanPhamDonHang($result['id_don_hang']);
+                    $notif = new NotificationService();
+                    $notif->orderCreated($don_hang);
+                    MailService::sendOrderConfirmation($don_hang, $items);
+                }
+            } catch (\Exception $ex) {
+                error_log('[Checkout] Lỗi gửi mail/thông báo: ' . $ex->getMessage());
+            }
 
             header('Location: ' . APP_URL . '/dat-hang-thanh-cong?id=' . $result['id_don_hang']);
             exit;

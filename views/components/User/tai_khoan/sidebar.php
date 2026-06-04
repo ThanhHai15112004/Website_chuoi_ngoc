@@ -72,9 +72,19 @@ $menuItems = [
     </div>
     <h3 class="text-lg font-bold text-gray-900"><?= htmlspecialchars($user['ho_ten'] ?? 'Khách hàng') ?></h3>
     <?php if (!empty($user['hang_thanh_vien'])): ?>
-    <div class="inline-flex items-center mt-2 px-3 py-1 rounded-full bg-yellow-50 border border-yellow-200">
-        <svg class="w-4 h-4 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-        <span class="text-xs font-medium text-yellow-700"><?= htmlspecialchars($user['hang_thanh_vien']['ten_hang']) ?></span>
+    <?php
+    $sidebarTenHang = $user['hang_thanh_vien']['ten_hang'] ?? '';
+    $sidebarHangColors = [
+        'Đồng'      => ['bg' => 'bg-amber-50', 'border' => 'border-amber-200', 'star' => 'text-amber-500', 'text' => 'text-amber-700'],
+        'Bạc'       => ['bg' => 'bg-gray-100', 'border' => 'border-gray-300', 'star' => 'text-gray-400', 'text' => 'text-gray-600'],
+        'Vàng'      => ['bg' => 'bg-yellow-50', 'border' => 'border-yellow-200', 'star' => 'text-yellow-500', 'text' => 'text-yellow-700'],
+        'Kim Cương'  => ['bg' => 'bg-indigo-50', 'border' => 'border-indigo-200', 'star' => 'text-indigo-500', 'text' => 'text-indigo-700'],
+    ];
+    $sbHc = $sidebarHangColors[$sidebarTenHang] ?? $sidebarHangColors['Đồng'];
+    ?>
+    <div class="inline-flex items-center mt-2 px-3 py-1 rounded-full <?= $sbHc['bg'] ?> border <?= $sbHc['border'] ?>">
+        <svg class="w-4 h-4 <?= $sbHc['star'] ?> mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+        <span class="text-xs font-medium <?= $sbHc['text'] ?>"><?= htmlspecialchars($user['hang_thanh_vien']['ten_hang']) ?></span>
     </div>
     <?php endif; ?>
 </div>

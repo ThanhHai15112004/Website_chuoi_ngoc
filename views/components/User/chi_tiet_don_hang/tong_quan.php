@@ -8,11 +8,28 @@
         'cancelled' => ['label' => 'Đã hủy', 'color' => 'bg-red-50 text-red-700', 'desc' => 'Đơn hàng đã bị hủy.']
     ];
     $currentStatus = $statusLabels[$order['status']] ?? $statusLabels['pending'];
+    
+    // Stepper config
+    $isCancelled = $order['status'] === 'cancelled';
+    $statusSteps = [
+        ['key' => 'pending', 'label' => 'Chờ xác nhận', 'icon' => 'ph:clipboard-text'],
+        ['key' => 'confirmed', 'label' => 'Đã xác nhận', 'icon' => 'ph:check-circle'],
+        ['key' => 'shipping', 'label' => 'Đang giao', 'icon' => 'ph:truck'],
+        ['key' => 'completed', 'label' => 'Hoàn thành', 'icon' => 'ph:gift'],
+    ];
+    $statusOrder = ['pending' => 0, 'confirmed' => 1, 'shipping' => 2, 'delivered' => 3, 'completed' => 3];
+    $currentStep = $statusOrder[$order['status']] ?? 0;
 ?>
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+
+<!-- Order Summary Card -->
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-4 flex flex-col md:flex-row items-center justify-between gap-6">
     <div class="flex items-center gap-4">
         <div class="w-12 h-12 rounded-full <?= explode(' ', $currentStatus['color'])[0] ?> flex items-center justify-center flex-shrink-0">
-            <i class="fas fa-box-open <?= explode(' ', $currentStatus['color'])[1] ?> text-xl"></i>
+            <?php if ($isCancelled): ?>
+            <iconify-icon icon="ph:x-circle" class="<?= explode(' ', $currentStatus['color'])[1] ?> text-xl"></iconify-icon>
+            <?php else: ?>
+            <iconify-icon icon="ph:box-arrow-down" class="<?= explode(' ', $currentStatus['color'])[1] ?> text-xl"></iconify-icon>
+            <?php endif; ?>
         </div>
         <div>
             <p class="text-sm text-gray-500 mb-1">Trạng thái hiện tại</p>
@@ -34,3 +51,87 @@
         </div>
     </div>
 </div>
+
+<!-- Order Status Stepper -->
+<?php if (!$isCancelled): ?>
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+    <div class="relative">
+        <!-- Desktop Stepper -->
+        <div class="hidden sm:block">
+            <div class="flex items-center justify-between relative">
+                <!-- Background line -->
+                <div class="absolute top-5 left-[12.5%] right-[12.5%] h-1 bg-gray-200 rounded-full"></div>
+                <!-- Active line -->
+                <?php 
+                $totalSteps = count($statusSteps);
+                $progressWidth = $totalSteps > 1 ? ($currentStep / ($totalSteps - 1)) * 100 : 0;
+                ?>
+                <div class="absolute top-5 left-[12.5%] h-1 bg-green-500 rounded-full transition-all duration-700" style="width: calc(<?= $progressWidth ?>% * 0.75)"></div>
+                
+                <?php foreach ($statusSteps as $idx => $step): 
+                    $isDone = $idx < $currentStep;
+                    $isActive = $idx === $currentStep;
+                    $isFuture = $idx > $currentStep;
+                ?>
+                <div class="flex flex-col items-center relative z-10" style="width: <?= 100 / $totalSteps ?>%">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300
+                        <?php if ($isDone): ?>
+                            bg-green-500 border-green-500 text-white shadow-sm
+                        <?php elseif ($isActive): ?>
+                            bg-white border-[#8b0000] text-[#8b0000] shadow-md ring-4 ring-red-100
+                        <?php else: ?>
+                            bg-gray-100 border-gray-200 text-gray-400
+                        <?php endif; ?>
+                    ">
+                        <?php if ($isDone): ?>
+                        <iconify-icon icon="ph:check-bold" class="text-lg"></iconify-icon>
+                        <?php else: ?>
+                        <iconify-icon icon="<?= $step['icon'] ?>" class="text-lg"></iconify-icon>
+                        <?php endif; ?>
+                    </div>
+                    <p class="text-xs font-medium mt-2 text-center
+                        <?= $isDone ? 'text-green-600' : ($isActive ? 'text-[#8b0000] font-bold' : 'text-gray-400') ?>
+                    "><?= $step['label'] ?></p>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        
+        <!-- Mobile Stepper (vertical) -->
+        <div class="sm:hidden space-y-1">
+            <?php foreach ($statusSteps as $idx => $step): 
+                $isDone = $idx < $currentStep;
+                $isActive = $idx === $currentStep;
+                $isLast = $idx === count($statusSteps) - 1;
+            ?>
+            <div class="flex items-start gap-3">
+                <div class="flex flex-col items-center">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 shrink-0
+                        <?= $isDone ? 'bg-green-500 border-green-500 text-white' : ($isActive ? 'bg-white border-[#8b0000] text-[#8b0000]' : 'bg-gray-100 border-gray-200 text-gray-400') ?>
+                    ">
+                        <?php if ($isDone): ?>
+                        <iconify-icon icon="ph:check-bold" class="text-sm"></iconify-icon>
+                        <?php else: ?>
+                        <iconify-icon icon="<?= $step['icon'] ?>" class="text-sm"></iconify-icon>
+                        <?php endif; ?>
+                    </div>
+                    <?php if (!$isLast): ?>
+                    <div class="w-0.5 h-6 <?= $isDone ? 'bg-green-400' : 'bg-gray-200' ?>"></div>
+                    <?php endif; ?>
+                </div>
+                <p class="text-sm pt-1 <?= $isDone ? 'text-green-600' : ($isActive ? 'text-[#8b0000] font-bold' : 'text-gray-400') ?>"><?= $step['label'] ?></p>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php else: ?>
+<!-- Cancelled Banner -->
+<div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-8 flex items-center gap-3">
+    <iconify-icon icon="ph:warning-circle-fill" class="text-2xl text-red-500 shrink-0"></iconify-icon>
+    <div>
+        <p class="text-sm font-bold text-red-700">Đơn hàng đã bị hủy</p>
+        <p class="text-xs text-red-600">Đơn hàng này đã bị hủy và không thể thực hiện.</p>
+    </div>
+</div>
+<?php endif; ?>

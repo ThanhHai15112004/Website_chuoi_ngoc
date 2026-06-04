@@ -286,4 +286,43 @@ class SanPhamController extends Controller {
 
         $this->view('chi_tiet_san_pham', $data);
     }
+
+    /**
+     * API: Gợi ý tìm kiếm sản phẩm (autocomplete)
+     * GET /api/san-pham/tim-kiem?q=...
+     */
+    public function searchSuggest()
+    {
+        header('Content-Type: application/json');
+
+        $q = trim($_GET['q'] ?? '');
+        if (strlen($q) < 1) {
+            echo json_encode(['success' => true, 'data' => []]);
+            return;
+        }
+
+        $results = $this->sanPhamModel->layDanhSachUser(
+            ['q' => $q],
+            'sp.luot_xem', 'DESC',
+            6, 0
+        );
+
+        $data = [];
+        foreach ($results as $sp) {
+            $img = $sp['hinh_anh_chinh'] ?? '';
+            if ($img && strpos($img, 'http') !== 0) {
+                $img = APP_URL . '/' . ltrim($img, '/');
+            }
+            $data[] = [
+                'id' => $sp['id'],
+                'ten' => $sp['ten_sp'],
+                'gia' => (float)($sp['gia_khuyen_mai'] ?: $sp['gia_ban']),
+                'gia_cu' => $sp['gia_khuyen_mai'] ? (float)$sp['gia_ban'] : null,
+                'hinh_anh' => $img,
+                'danh_muc' => $sp['ten_danh_muc'] ?? '',
+            ];
+        }
+
+        echo json_encode(['success' => true, 'data' => $data]);
+    }
 }
