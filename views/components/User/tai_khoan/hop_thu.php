@@ -102,36 +102,68 @@ $soChuaDoc = count($chuaDoc);
     <?php endif; ?>
 </div>
 
-<!-- Modal Chi tiết Thông báo -->
-<div id="thong-bao-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
-    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="dongThongBaoModal()"></div>
-    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+<!-- Drawer Chi tiết Thông báo -->
+<div id="thong-bao-modal" class="fixed inset-0 z-[100] hidden">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" id="tb-backdrop" onclick="dongThongBaoModal()"></div>
+    
+    <!-- Drawer Panel -->
+    <div class="absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col" id="thong-bao-modal-content">
+        
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div class="flex items-center gap-3">
-                <div id="tb-modal-icon" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <iconify-icon icon="ph:bell" class="text-xl"></iconify-icon>
-                </div>
-                <div>
-                    <h3 id="tb-modal-title" class="font-bold text-gray-900 text-sm line-clamp-2"></h3>
-                    <p id="tb-modal-time" class="text-xs text-gray-400 mt-0.5"></p>
-                </div>
+                <button onclick="dongThongBaoModal()" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors">
+                    <iconify-icon icon="ph:arrow-right" class="text-xl"></iconify-icon>
+                </button>
+                <h2 class="font-bold text-gray-900 text-lg">Chi tiết thông báo</h2>
             </div>
-            <button onclick="dongThongBaoModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
-                <iconify-icon icon="ph:x" class="text-xl text-gray-400"></iconify-icon>
+            <button onclick="xoaThongBaoHienTai()" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Xóa thông báo">
+                <iconify-icon icon="ph:trash" class="text-xl"></iconify-icon>
             </button>
         </div>
-        <div class="p-6">
-            <p id="tb-modal-content" class="text-sm text-gray-700 leading-relaxed"></p>
-        </div>
-        <div id="tb-modal-footer" class="px-6 py-4 bg-gray-50 border-t border-gray-100 hidden">
-            <a id="tb-modal-link" href="#" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#8b0000] text-white rounded-xl font-medium hover:bg-[#700000] transition-colors text-sm" style="text-decoration: none;">
-                <iconify-icon icon="ph:arrow-right"></iconify-icon> Xem chi tiết
-            </a>
+
+        <!-- Drawer Body -->
+        <div class="p-6 flex-1 overflow-y-auto bg-gray-50">
+            <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+                <!-- Header of Notification -->
+                <div class="flex items-start gap-4 mb-5">
+                    <div id="tb-modal-icon" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <iconify-icon icon="ph:bell" class="text-2xl"></iconify-icon>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900">Hệ thống</h3>
+                        <p id="tb-modal-time" class="text-xs text-gray-500 mt-0.5"></p>
+                    </div>
+                    <div class="ml-auto">
+                        <span class="px-2.5 py-1 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">Inbox</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <h4 id="tb-modal-title" class="font-bold text-gray-900 text-lg mb-3"></h4>
+                <p id="tb-modal-content" class="text-sm text-gray-600 leading-relaxed"></p>
+
+                <!-- Button -->
+                <div id="tb-modal-footer" class="mt-6 hidden">
+                    <a id="tb-modal-link" href="#" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#8b0000] hover:bg-[#700000] text-white rounded-lg font-medium shadow-sm transition-colors text-sm">
+                        Xem chi tiết liên quan <iconify-icon icon="ph:arrow-right"></iconify-icon>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+let currentTbId = null;
+
+function xoaThongBaoHienTai() {
+    if (currentTbId) {
+        xoaThongBao(currentTbId);
+        dongThongBaoModal();
+    }
+}
 const TB_BASE = '<?= APP_URL ?>';
 const tbIconMap = {
     'don_hang': { icon: 'ph:package', bg: 'bg-blue-50', color: 'text-blue-600' },
@@ -249,6 +281,8 @@ function moChiTietThongBao(id, title, content, link, time, loai, chuaDoc) {
         });
     }
     
+    currentTbId = id;
+    
     // Show modal
     const ic = tbIconMap[loai] || tbIconMap['he_thong'];
     document.getElementById('tb-modal-title').textContent = title;
@@ -256,8 +290,8 @@ function moChiTietThongBao(id, title, content, link, time, loai, chuaDoc) {
     document.getElementById('tb-modal-time').textContent = time;
     
     const iconDiv = document.getElementById('tb-modal-icon');
-    iconDiv.className = 'w-10 h-10 rounded-full flex items-center justify-center ' + ic.bg + ' ' + ic.color;
-    iconDiv.innerHTML = '<iconify-icon icon="' + ic.icon + '" class="text-xl"></iconify-icon>';
+    iconDiv.className = 'w-12 h-12 rounded-full flex items-center justify-center shrink-0 ' + ic.bg + ' ' + ic.color;
+    iconDiv.innerHTML = '<iconify-icon icon="' + ic.icon + '" class="text-2xl"></iconify-icon>';
     
     const footer = document.getElementById('tb-modal-footer');
     const linkEl = document.getElementById('tb-modal-link');
@@ -268,12 +302,34 @@ function moChiTietThongBao(id, title, content, link, time, loai, chuaDoc) {
         footer.classList.add('hidden');
     }
     
-    document.getElementById('thong-bao-modal').classList.remove('hidden');
+    const modal = document.getElementById('thong-bao-modal');
+    const backdrop = document.getElementById('tb-backdrop');
+    const modalContent = document.getElementById('thong-bao-modal-content');
+    
+    modal.classList.remove('hidden');
+    // Force reflow
+    void modal.offsetWidth;
+    backdrop.classList.remove('opacity-0');
+    backdrop.classList.add('opacity-100');
+    modalContent.classList.remove('translate-x-full');
+    modalContent.classList.add('translate-x-0');
+    
     document.body.style.overflow = 'hidden';
 }
 
 function dongThongBaoModal() {
-    document.getElementById('thong-bao-modal').classList.add('hidden');
-    document.body.style.overflow = '';
+    const modal = document.getElementById('thong-bao-modal');
+    const backdrop = document.getElementById('tb-backdrop');
+    const modalContent = document.getElementById('thong-bao-modal-content');
+    
+    backdrop.classList.remove('opacity-100');
+    backdrop.classList.add('opacity-0');
+    modalContent.classList.remove('translate-x-0');
+    modalContent.classList.add('translate-x-full');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }, 300);
 }
 </script>

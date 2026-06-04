@@ -268,6 +268,8 @@
     function capNhatTrangThai(id, trang_thai) {
         if(!confirm('Bạn có chắc chắn muốn cập nhật trạng thái đơn hàng này?')) return;
         
+        showToast('Đang xử lý, vui lòng chờ trong giây lát...', 'success');
+        
         fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-trang-thai/' + id, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -290,6 +292,8 @@
     function huyDonHang(id) {
         if(!confirm('Bạn có chắc chắn muốn hủy đơn hàng này? Thao tác này không thể hoàn tác!')) return;
         
+        showToast('Đang xử lý, vui lòng chờ trong giây lát...', 'success');
+        
         fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-trang-thai/' + id, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -311,6 +315,8 @@
 
     function capNhatThanhToan(id, trang_thai) {
         if(!confirm('Xác nhận đã thu tiền đơn hàng này?')) return;
+        
+        showToast('Đang xử lý, vui lòng chờ trong giây lát...', 'success');
         
         fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-thanh-toan/' + id, {
             method: 'POST',

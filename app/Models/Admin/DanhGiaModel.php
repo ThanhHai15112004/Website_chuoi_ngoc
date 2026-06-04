@@ -324,13 +324,13 @@ class DanhGiaModel
 
     public function insert($data)
     {
-        $id = \App\Core\Helpers::generateUUID();
+        $id = $this->generateUUID();
         $sql = "INSERT INTO danh_gia (
-                    id, id_san_pham, id_nguoi_dung, bien_the_mua, 
+                    id, id_san_pham, id_nguoi_dung, 
                     so_sao, sao_chat_luong, sao_mo_ta, sao_dich_vu, 
                     noi_dung, hinh_anh, trang_thai, ngay_tao
                 ) VALUES (
-                    :id, :id_san_pham, :id_nguoi_dung, :bien_the_mua, 
+                    :id, :id_san_pham, :id_nguoi_dung, 
                     :so_sao, :sao_chat_luong, :sao_mo_ta, :sao_dich_vu, 
                     :noi_dung, :hinh_anh, :trang_thai, NOW()
                 )";
@@ -339,14 +339,13 @@ class DanhGiaModel
             'id' => $id,
             'id_san_pham' => $data['id_san_pham'],
             'id_nguoi_dung' => $data['id_nguoi_dung'],
-            'bien_the_mua' => $data['bien_the_mua'] ?? null,
             'so_sao' => $data['so_sao'],
             'sao_chat_luong' => $data['sao_chat_luong'] ?? 5,
             'sao_mo_ta' => $data['sao_mo_ta'] ?? 5,
             'sao_dich_vu' => $data['sao_dich_vu'] ?? 5,
             'noi_dung' => $data['noi_dung'] ?? null,
             'hinh_anh' => $data['hinh_anh'] ?? null,
-            'trang_thai' => DanhGiaConstants::TRANG_THAI_CHO_DUYET
+            'trang_thai' => DanhGiaConstants::TRANG_THAI_DA_DUYET
         ]);
         return $result ? $id : false;
     }
@@ -371,9 +370,19 @@ class DanhGiaModel
             'sao_dich_vu' => $data['sao_dich_vu'] ?? 5,
             'noi_dung' => $data['noi_dung'] ?? null,
             'hinh_anh' => $data['hinh_anh'] ?? null,
-            'trang_thai' => DanhGiaConstants::TRANG_THAI_CHO_DUYET, // Cần duyệt lại khi sửa
+            'trang_thai' => DanhGiaConstants::TRANG_THAI_DA_DUYET,
             'id' => $id,
             'user_id' => $userId
         ]);
+    }
+    
+    private function generateUUID() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0xffff ),
+            mt_rand( 0, 0x0fff ) | 0x4000,
+            mt_rand( 0, 0x3fff ) | 0x8000,
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
     }
 }

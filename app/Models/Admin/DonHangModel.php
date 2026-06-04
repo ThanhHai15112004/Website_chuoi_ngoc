@@ -342,7 +342,11 @@ class DonHangModel
             $trangThaiStr = $this->getTrangThaiText($newStatus);
             $msg = "Cập nhật trạng thái thành: " . $trangThaiStr;
             if ($lyDo) $msg .= " (Lý do: $lyDo)";
-            $this->logger->log("Cập nhật đơn hàng", "Đơn hàng", $id, $msg);
+            $this->logger->ghiLog([
+                'id_nhan_vien' => $_SESSION['admin_id'] ?? ($_SESSION['nv_id'] ?? 1),
+                'hanh_dong' => 'Cập nhật đơn hàng ' . $id,
+                'mo_ta' => $msg
+            ]);
 
             $this->db->commit();
             return true;
@@ -359,7 +363,11 @@ class DonHangModel
         
         if ($success) {
             $ttStr = $trangThai == 1 ? "Đã thanh toán" : "Chưa thanh toán";
-            $this->logger->log("Cập nhật thanh toán", "Đơn hàng", $id, "Trạng thái TT: " . $ttStr);
+            $this->logger->ghiLog([
+                'id_nhan_vien' => $_SESSION['admin_id'] ?? ($_SESSION['nv_id'] ?? 1),
+                'hanh_dong' => 'Cập nhật thanh toán đơn hàng ' . $id,
+                'mo_ta' => "Trạng thái TT: " . $ttStr
+            ]);
         }
         
         return $success;

@@ -22,7 +22,7 @@ class DanhGiaController extends Controller
             return;
         }
 
-        if (!$this->isLoggedIn()) {
+        if (!isset($_SESSION['user_id'])) {
             echo json_encode(['success' => false, 'message' => 'Vui lòng đăng nhập để đánh giá.']);
             return;
         }

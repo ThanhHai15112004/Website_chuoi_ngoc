@@ -69,7 +69,7 @@
                 <!-- Sản phẩm liên quan -->
                 <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg border border-gray-100 mb-3 w-fit pr-4">
                     <?php if (!empty($item['anh_sp'])): ?>
-                        <img src="<?= $item['anh_sp'] ?>" class="w-10 h-10 rounded border border-gray-200 object-cover">
+                        <img src="<?= get_image_url($item['anh_sp']) ?>" class="w-10 h-10 rounded border border-gray-200 object-cover">
                     <?php else: ?>
                         <div class="w-10 h-10 rounded bg-white border border-gray-200 flex items-center justify-center text-gray-400">
                             <span class="iconify text-xl" data-icon="mdi:newspaper-variant-outline"></span>
@@ -105,7 +105,7 @@
                     <div class="flex gap-2 mb-4">
                         <?php foreach ($item['anh_dinh_kem'] as $img): ?>
                             <div class="w-16 h-16 rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:border-[#6B0D18] transition-colors">
-                                <img src="<?= $img ?>" class="w-full h-full object-cover">
+                                <img src="<?= get_image_url($img) ?>" class="w-full h-full object-cover">
                             </div>
                         <?php endforeach; ?>
                     </div>
