@@ -27,7 +27,7 @@ if (!empty($_SESSION['user_id'])) {
         }
     }
     // Đếm yêu thích
-    $wlModel = new \App\Models\User\WishlistModel();
+    $wlModel = new \App\Models\User\YeuThichModel();
     $headerSoYeuThich = $wlModel->countByUser($_SESSION['user_id']);
 }
 ?>

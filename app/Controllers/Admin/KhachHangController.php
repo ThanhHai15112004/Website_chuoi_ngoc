@@ -2,8 +2,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Services\MailService;
-use App\Services\NotificationService;
+use App\Services\ThuDienTuService;
+use App\Services\ThongBaoService;
 
 class KhachHangController extends Controller
 {
@@ -54,8 +54,8 @@ class KhachHangController extends Controller
         $history = $service->layLichSuHang();
         $khach_sap_len_hang = $service->layNguoiDungGanLenHang();
 
-        $voucherModel = new \App\Models\Admin\VoucherModel();
-        $vouchers = $voucherModel->getActiveVouchers();
+        $maGiamGiaModel = new \App\Models\Admin\MaGiamGiaModel();
+        $vouchers = $maGiamGiaModel->getActiveVouchers();
 
         $data = [
             'current_page' => 'hang_thanh_vien',
@@ -593,13 +593,13 @@ class KhachHangController extends Controller
 
             // Gửi email thông báo khóa/mở khóa cho từng khách hàng
             try {
-                $notif = new NotificationService();
+                $notif = new ThongBaoService();
                 foreach ($ids as $id) {
                     $kh = $model->timTheoId($id);
                     if ($kh) {
                         $isLocked = (int)$kh['trang_thai'] === 0;
                         if (!empty($kh['email'])) {
-                            MailService::sendAccountLocked($kh['email'], $kh['ho_ten'], $isLocked);
+                            ThuDienTuService::sendAccountLocked($kh['email'], $kh['ho_ten'], $isLocked);
                         }
                         $notif->accountStatusChanged($id, $kh['ho_ten'], $isLocked);
                     }
@@ -667,11 +667,11 @@ class KhachHangController extends Controller
             
             // Gửi email + thông báo voucher cho từng khách hàng
             try {
-                $notif = new NotificationService();
-                $voucherModel = new \App\Models\Admin\VoucherModel();
+                $notif = new ThongBaoService();
+                $maGiamGiaModel = new \App\Models\Admin\MaGiamGiaModel();
                 $voucherInfos = [];
                 foreach ($voucher_ids as $vid) {
-                    $v = $voucherModel->getVoucherById($vid);
+                    $v = $maGiamGiaModel->getVoucherById($vid);
                     if ($v) {
                         $giaTriText = '';
                         if ($v['loai_giam'] == 1) $giaTriText = 'Giảm ' . $v['gia_tri'] . '%';
@@ -688,7 +688,7 @@ class KhachHangController extends Controller
                 foreach ($ids as $userId) {
                     $kh = $model->timTheoId($userId);
                     if ($kh && !empty($kh['email'])) {
-                        MailService::sendVoucherGift($kh['email'], $kh['ho_ten'], $voucherInfos);
+                        ThuDienTuService::sendVoucherGift($kh['email'], $kh['ho_ten'], $voucherInfos);
                     }
                     foreach ($voucherInfos as $vi) {
                         $notif->voucherAssigned($userId, $vi);
@@ -729,7 +729,7 @@ class KhachHangController extends Controller
             try {
                 $kh = $model->timTheoId($id);
                 if ($kh && !empty($kh['email'])) {
-                    MailService::sendPasswordReset($kh['email'], $kh['ho_ten'], '123456');
+                    ThuDienTuService::sendPasswordReset($kh['email'], $kh['ho_ten'], '123456');
                 }
             } catch (\Exception $ex) {
                 error_log('[KhachHang] Lỗi gửi mail reset MK: ' . $ex->getMessage());

@@ -3,8 +3,8 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Services\Admin\NhapKhoService;
-use App\Services\MailService;
-use App\Services\NotificationService;
+use App\Services\ThuDienTuService;
+use App\Services\ThongBaoService;
 
 class NhapKhoController extends Controller {
     private $nhapKhoService;
@@ -131,7 +131,7 @@ class NhapKhoController extends Controller {
                 try {
                     $data = $this->nhapKhoService->chiTiet($id);
                     if ($data) {
-                        $notif = new NotificationService();
+                        $notif = new ThongBaoService();
                         $maPhieu = $data['phieu']['ma_phieu'] ?? '';
                         $ncc = $data['phieu']['ten_ncc'] ?? 'N/A';
                         $tongTien = number_format($data['phieu']['tong_tien'] ?? 0, 0, ',', '.') . 'đ';
@@ -139,7 +139,7 @@ class NhapKhoController extends Controller {
 
                         $adminEmail = $_ENV['EMAIL_FROM'] ?? '';
                         if (!empty($adminEmail)) {
-                            MailService::sendImportCompleted($adminEmail, [
+                            ThuDienTuService::sendImportCompleted($adminEmail, [
                                 'ma_phieu' => $maPhieu,
                                 'ten_ncc' => $ncc,
                                 'tong_tien' => $data['phieu']['tong_tien'] ?? 0

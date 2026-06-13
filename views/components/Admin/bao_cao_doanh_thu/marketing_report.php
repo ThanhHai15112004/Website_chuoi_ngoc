@@ -1,7 +1,7 @@
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 h-full">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-bold text-gray-800">Hiệu quả Voucher / Khuyến mãi</h3>
-        <a href="<?= APP_URL ?>/admin/voucher" class="text-sm text-[#6B0D18] hover:underline font-medium">Chi tiết Voucher</a>
+        <a href="<?= APP_URL ?>/admin/ma-giam-gia" class="text-sm text-[#6B0D18] hover:underline font-medium">Chi tiết Voucher</a>
     </div>
 
     <!-- Tóm tắt -->

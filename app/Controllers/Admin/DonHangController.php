@@ -2,8 +2,8 @@
 namespace App\Controllers\Admin;
 
 use App\Core\Controller;
-use App\Services\MailService;
-use App\Services\NotificationService;
+use App\Services\ThuDienTuService;
+use App\Services\ThongBaoService;
 
 class DonHangController extends Controller
 {
@@ -87,13 +87,13 @@ class DonHangController extends Controller
                 try {
                     $don_hang = $this->donHangModel->layChiTiet($id);
                     if ($don_hang) {
-                        $notif = new NotificationService();
+                        $notif = new ThongBaoService();
                         $notif->orderStatusChanged($don_hang, (int)$trangThai, $lyDo);
 
                         if ((int)$trangThai === 4) {
-                            MailService::sendOrderCancelled($don_hang, $lyDo);
+                            ThuDienTuService::sendOrderCancelled($don_hang, $lyDo);
                         } else {
-                            MailService::sendOrderStatusUpdate($don_hang, (int)$trangThai);
+                            ThuDienTuService::sendOrderStatusUpdate($don_hang, (int)$trangThai);
                         }
                     }
                 } catch (\Exception $ex) {
@@ -127,9 +127,9 @@ class DonHangController extends Controller
                     try {
                         $don_hang = $this->donHangModel->layChiTiet($id);
                         if ($don_hang) {
-                            $notif = new NotificationService();
+                            $notif = new ThongBaoService();
                             $notif->paymentConfirmed($don_hang);
-                            MailService::sendPaymentConfirmed($don_hang);
+                            ThuDienTuService::sendPaymentConfirmed($don_hang);
                         }
                     } catch (\Exception $ex) {
                         error_log('[DonHang] Lỗi gửi mail thanh toán: ' . $ex->getMessage());
@@ -183,9 +183,9 @@ class DonHangController extends Controller
                     $don_hang = $donHangModel->layChiTiet($result['id_don_hang']);
                     if ($don_hang) {
                         $items = $donHangModel->laySanPhamDonHang($result['id_don_hang']);
-                        $notif = new NotificationService();
+                        $notif = new ThongBaoService();
                         $notif->orderCreated($don_hang);
-                        MailService::sendOrderConfirmation($don_hang, $items);
+                        ThuDienTuService::sendOrderConfirmation($don_hang, $items);
                     }
                 } catch (\Exception $ex) {
                     error_log('[DonHang] Lỗi gửi mail đơn mới: ' . $ex->getMessage());

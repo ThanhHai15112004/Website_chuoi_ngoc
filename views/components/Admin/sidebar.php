@@ -19,7 +19,7 @@ function isGroupActive($pages, $current) {
 <aside class="w-64 bg-white border-r border-gray-200 h-screen flex flex-col hidden md:flex flex-shrink-0 z-20 shadow-sm">
     <!-- Logo -->
     <div class="h-20 flex items-center px-6 border-b border-gray-200">
-        <a href="<?= APP_URL ?>/admin/dashboard" class="flex items-center gap-2">
+        <a href="<?= APP_URL ?>/admin/tong-quan" class="flex items-center gap-2">
             <span class="iconify text-red-900 text-3xl" data-icon="mdi:diamond-stone"></span>
             <div>
                 <h1 class="text-lg font-bold text-red-900 leading-tight">Chuỗi Ngọc</h1>
@@ -32,7 +32,7 @@ function isGroupActive($pages, $current) {
     <div class="flex-1 overflow-y-auto py-4 px-3 space-y-2 sidebar-scroll">
         
         <!-- Dashboard -->
-        <a href="<?= APP_URL ?>/admin/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $current_page === 'dashboard' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors">
+        <a href="<?= APP_URL ?>/admin/tong-quan" class="flex items-center gap-3 px-3 py-2.5 rounded-lg <?= $current_page === 'dashboard' ? 'bg-red-50 text-red-900 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-red-900' ?> transition-colors">
             <span class="iconify text-xl <?= $current_page === 'dashboard' ? 'text-red-900' : 'text-gray-400' ?>" data-icon="mdi:view-dashboard-outline"></span>
             Tổng quan
         </a>
@@ -57,7 +57,7 @@ function isGroupActive($pages, $current) {
                         <?php endif; ?>
                     </a>
 
-                    <a href="<?= APP_URL ?>/admin/voucher" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'voucher' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
+                    <a href="<?= APP_URL ?>/admin/ma-giam-gia" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'voucher' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">
                         <span class="flex items-center gap-2"><span class="iconify <?= $current_page === 'voucher' ? 'text-white' : 'text-gray-400 group-hover:text-[#6B0D18]' ?>" data-icon="mdi:ticket-percent-outline"></span> Quản lý voucher</span>
                     </a>
                     <a href="<?= APP_URL ?>/admin/khuyen-mai" class="flex items-center justify-between px-3 py-2 rounded-lg <?= $current_page === 'khuyen_mai' ? 'bg-[#6B0D18] text-white font-medium' : 'text-gray-500 hover:bg-gray-50 hover:text-[#6B0D18]' ?> transition-colors text-sm group">

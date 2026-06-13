@@ -386,7 +386,7 @@
         let subtotal = 0;
         cart.forEach(item => { subtotal += item.price * item.quantity; });
 
-        fetch('<?= APP_URL ?>/admin/voucher/api/check', {
+        fetch('<?= APP_URL ?>/admin/ma-giam-gia/api/check', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ma_voucher: ma, tong_tien: subtotal })

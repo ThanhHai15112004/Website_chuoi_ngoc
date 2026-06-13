@@ -6,7 +6,7 @@ use App\Models\Admin\KhachHangModel;
 use App\Models\Admin\DonHangModel;
 use App\Models\Admin\ThongBaoModel;
 use App\Models\Admin\HangThanhVienModel;
-use App\Models\Admin\VoucherModel;
+use App\Models\Admin\MaGiamGiaModel;
 use App\Core\Database;
 use PDO;
 

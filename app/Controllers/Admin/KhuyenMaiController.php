@@ -3,8 +3,8 @@ namespace App\Controllers\Admin;
 
 use App\Core\Controller;
 use App\Models\Admin\KhuyenMaiModel;
-use App\Services\MailService;
-use App\Services\NotificationService;
+use App\Services\ThuDienTuService;
+use App\Services\ThongBaoService;
 
 class KhuyenMaiController extends Controller {
     private $khuyenMaiModel;
@@ -199,13 +199,13 @@ class KhuyenMaiController extends Controller {
                         ];
 
                         // Gửi thông báo in-app
-                        $notif = new NotificationService();
+                        $notif = new ThongBaoService();
                         $notif->promotionCreated($userIds, $promoData);
 
                         // Gửi email cho từng khách hàng
                         foreach ($users as $u) {
                             if (!empty($u['email']) && strpos($u['email'], '@noemail.com') === false) {
-                                MailService::sendPromotionAlert($u['email'], $u['ho_ten'], $promoData);
+                                ThuDienTuService::sendPromotionAlert($u['email'], $u['ho_ten'], $promoData);
                             }
                         }
                     } catch (\Exception $ex) {

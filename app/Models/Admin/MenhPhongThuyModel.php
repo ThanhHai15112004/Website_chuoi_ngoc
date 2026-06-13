@@ -4,7 +4,7 @@ namespace App\Models\Admin;
 
 use App\Core\Database;
 use PDO;
-use App\Constants\SystemConstants;
+use App\Constants\HeThongConstants;
 
 class MenhPhongThuyModel
 {
@@ -99,7 +99,7 @@ class MenhPhongThuyModel
 
     public function doiTrangThai($id)
     {
-        $sql = "UPDATE menh_phong_thuy SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = :id";
+        $sql = "UPDATE menh_phong_thuy SET trang_thai = CASE WHEN trang_thai = " . HeThongConstants::STATUS_ACTIVE . " THEN " . HeThongConstants::STATUS_INACTIVE . " ELSE " . HeThongConstants::STATUS_ACTIVE . " END WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }

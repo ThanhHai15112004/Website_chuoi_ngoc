@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 use App\Models\Admin\HangThanhVienModel;
 use App\Core\Database;
 use PDO;
-use App\Constants\SystemConstants;
+use App\Constants\HeThongConstants;
 
 class HangThanhVienService
 {
@@ -34,7 +34,7 @@ class HangThanhVienService
                 'benefits' => $r['dac_quyen'] ? json_decode($r['dac_quyen'], true) : [],
                 'customer_count' => (int)$r['customer_count'],
                 'vouchers' => $r['danh_sach_voucher'] ? json_decode($r['danh_sach_voucher'], true) : [],
-                'status' => $r['trang_thai'] == SystemConstants::STATUS_ACTIVE ? 'active' : 'inactive'
+                'status' => $r['trang_thai'] == HeThongConstants::STATUS_ACTIVE ? 'active' : 'inactive'
             ];
         }
 
@@ -73,7 +73,7 @@ class HangThanhVienService
         $sql = "SELECT nd.id, nd.ho_ten, nd.tong_chi_tieu, htv.ten_hang as current_rank
                 FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
-                WHERE nd.id_vai_tro IS NULL AND nd.trang_thai = " . SystemConstants::STATUS_ACTIVE;
+                WHERE nd.id_vai_tro IS NULL AND nd.trang_thai = " . HeThongConstants::STATUS_ACTIVE;
         
         $stmt = $this->db->query($sql);
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -126,7 +126,7 @@ class HangThanhVienService
             return (int)$b['chi_tieu_toi_thieu'] <=> (int)$a['chi_tieu_toi_thieu'];
         });
 
-        $sql = "SELECT id, tong_chi_tieu, id_hang_thanh_vien FROM nguoi_dung WHERE id_vai_tro IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE;
+        $sql = "SELECT id, tong_chi_tieu, id_hang_thanh_vien FROM nguoi_dung WHERE id_vai_tro IS NULL AND trang_thai = " . HeThongConstants::STATUS_ACTIVE;
         $stmt = $this->db->query($sql);
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

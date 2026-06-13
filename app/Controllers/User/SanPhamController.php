@@ -115,7 +115,7 @@ class SanPhamController extends Controller {
 
         // Models for additional data
         $danhGiaModel = new \App\Models\Admin\DanhGiaModel();
-        $voucherModel = new \App\Models\Admin\VoucherModel();
+        $maGiamGiaModel = new \App\Models\Admin\MaGiamGiaModel();
         $baiVietModel = new \App\Models\Admin\BaiVietModel();
 
         // 1. Thống kê và danh sách đánh giá
@@ -123,7 +123,7 @@ class SanPhamController extends Controller {
         $danh_gia_list = $danhGiaModel->getByProductId($id, 5, 0);
 
         // 2. Lấy Voucher phù hợp (Giới hạn tối đa 3)
-        $vouchers = $voucherModel->getApplicableVouchers($id, $san_pham_db['id_danh_muc']);
+        $vouchers = $maGiamGiaModel->getApplicableVouchers($id, $san_pham_db['id_danh_muc']);
         $vouchers = array_slice($vouchers, 0, 3);
 
         $saved_vouchers = [];

@@ -267,13 +267,13 @@ class DonHangModel
                 // Gửi cảnh báo tồn kho thấp
                 if (!empty($lowStockProducts)) {
                     try {
-                        $notif = new \App\Services\NotificationService();
+                        $notif = new \App\Services\ThongBaoService();
                         foreach ($lowStockProducts as $lsp) {
                             $notif->lowStockWarning($lsp['ten_sp'], $lsp['bien_the'], $lsp['ton_kho']);
                         }
                         $adminEmail = $_ENV['EMAIL_FROM'] ?? '';
                         if (!empty($adminEmail)) {
-                            \App\Services\MailService::sendLowStockAlert($adminEmail, $lowStockProducts);
+                            \App\Services\ThuDienTuService::sendLowStockAlert($adminEmail, $lowStockProducts);
                         }
                     } catch (\Exception $ex) {
                         error_log('[DonHang] Lỗi gửi cảnh báo tồn kho: ' . $ex->getMessage());
@@ -418,11 +418,11 @@ class DonHangModel
 
             // Gửi email + thông báo nâng hạng
             try {
-                $notif = new \App\Services\NotificationService();
+                $notif = new \App\Services\ThongBaoService();
                 $notif->rankUpgraded($id_nguoi_dung, $user['ho_ten'], $newRankName, $newRankDiscount);
 
                 if (!empty($user['email'])) {
-                    \App\Services\MailService::sendRankUpgrade($user['email'], $user['ho_ten'], $oldRankName, $newRankName, $newRankDiscount);
+                    \App\Services\ThuDienTuService::sendRankUpgrade($user['email'], $user['ho_ten'], $oldRankName, $newRankName, $newRankDiscount);
                 }
             } catch (\Exception $ex) {
                 error_log('[DonHang] Lỗi gửi mail nâng hạng: ' . $ex->getMessage());

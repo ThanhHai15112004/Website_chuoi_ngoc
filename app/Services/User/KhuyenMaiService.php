@@ -2,7 +2,7 @@
 
 namespace App\Services\User;
 
-use App\Models\Admin\VoucherModel;
+use App\Models\Admin\MaGiamGiaModel;
 use App\Models\Admin\SanPhamModel;
 use App\Models\Admin\HangThanhVienModel;
 use App\Models\Admin\QuyTacFreeshipModel;
@@ -10,7 +10,7 @@ use App\Models\Admin\KhuyenMaiModel;
 
 class KhuyenMaiService
 {
-    private $voucherModel;
+    private $maGiamGiaModel;
     private $sanPhamModel;
     private $hangThanhVienModel;
     private $quyTacFreeshipModel;
@@ -18,7 +18,7 @@ class KhuyenMaiService
 
     public function __construct()
     {
-        $this->voucherModel = new VoucherModel();
+        $this->maGiamGiaModel = new MaGiamGiaModel();
         $this->sanPhamModel = new SanPhamModel();
         $this->hangThanhVienModel = new HangThanhVienModel();
         $this->quyTacFreeshipModel = new QuyTacFreeshipModel();
@@ -27,7 +27,7 @@ class KhuyenMaiService
 
     public function getVouchersForDisplay($limit = 8)
     {
-        $vouchers = $this->voucherModel->getActiveVouchers();
+        $vouchers = $this->maGiamGiaModel->getActiveVouchers();
         
         // Sắp xếp ưu tiên các voucher có % giảm hoặc số tiền lớn, còn lượt sử dụng
         usort($vouchers, function($a, $b) {
@@ -115,7 +115,7 @@ class KhuyenMaiService
             return $b['phan_tram_giam'] <=> $a['phan_tram_giam'];
         });
 
-        return array_slice($flashSale, 0, $limit);
+        return $flashSale;
     }
 
     public function getDiscountedProducts($limit = 8)

@@ -5,7 +5,7 @@
     
     <!-- Breadcrumb -->
     <nav class="flex items-center text-sm text-gray-500 mb-4">
-        <a href="<?= APP_URL ?>/admin/dashboard" class="hover:text-[#6B0D18] transition-colors">Admin</a>
+        <a href="<?= APP_URL ?>/admin/tong-quan" class="hover:text-[#6B0D18] transition-colors">Admin</a>
         <span class="mx-2 iconify" data-icon="mdi:chevron-right"></span>
         <a href="<?= APP_URL ?>/admin/quan-ly-cua-hang" class="hover:text-[#6B0D18] transition-colors">Cấu hình cửa hàng</a>
         <span class="mx-2 iconify" data-icon="mdi:chevron-right"></span>

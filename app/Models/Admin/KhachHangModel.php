@@ -4,7 +4,7 @@ namespace App\Models\Admin;
 
 use App\Core\Database;
 use PDO;
-use App\Constants\SystemConstants;
+use App\Constants\HeThongConstants;
 use App\Constants\HangThanhVienConstants;
 use App\Constants\DonHangConstants;
 
@@ -56,7 +56,7 @@ class KhachHangModel
             } elseif ($filters['tab'] === 'diamond') {
                 $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "'";
             } elseif ($filters['tab'] === 'bi_khoa') {
-                $sql .= " AND nd.trang_thai = " . SystemConstants::STATUS_INACTIVE;
+                $sql .= " AND nd.trang_thai = " . HeThongConstants::STATUS_INACTIVE;
             }
         }
 
@@ -145,7 +145,7 @@ class KhachHangModel
             } elseif ($filters['tab'] === 'diamond') {
                 $sql .= " AND htv.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "'";
             } elseif ($filters['tab'] === 'bi_khoa') {
-                $sql .= " AND nd.trang_thai = " . SystemConstants::STATUS_INACTIVE;
+                $sql .= " AND nd.trang_thai = " . HeThongConstants::STATUS_INACTIVE;
             }
         }
 
@@ -195,7 +195,7 @@ class KhachHangModel
                     SUM(CASE WHEN ngay_tao >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as khach_moi,
                     SUM(CASE WHEN tong_chi_tieu > 0 THEN 1 ELSE 0 END) as da_mua,
                     SUM(CASE WHEN tong_chi_tieu = 0 THEN 1 ELSE 0 END) as chua_mua,
-                    SUM(CASE WHEN trang_thai = " . SystemConstants::STATUS_INACTIVE . " THEN 1 ELSE 0 END) as bi_khoa,
+                    SUM(CASE WHEN trang_thai = " . HeThongConstants::STATUS_INACTIVE . " THEN 1 ELSE 0 END) as bi_khoa,
                     (SELECT COUNT(*) FROM nguoi_dung nd2 LEFT JOIN hang_thanh_vien htv2 ON nd2.id_hang_thanh_vien = htv2.id WHERE nd2.id_vai_tro IS NULL AND htv2.ten_hang = '" . HangThanhVienConstants::HANG_DIAMOND . "') as diamond
                 FROM nguoi_dung
                 WHERE id_vai_tro IS NULL AND deleted_at IS NULL";
@@ -228,7 +228,7 @@ class KhachHangModel
     {
         $sql = "SELECT id, ho_ten, email, so_dien_thoai, id_hang_thanh_vien 
                 FROM nguoi_dung 
-                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE . "
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . HeThongConstants::STATUS_ACTIVE . "
                 ORDER BY ngay_tao DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -245,7 +245,7 @@ class KhachHangModel
         $sql = "SELECT id, ho_ten, email, so_dien_thoai 
                 FROM nguoi_dung 
                 WHERE id_vai_tro IS NULL AND deleted_at IS NULL 
-                  AND trang_thai = " . SystemConstants::STATUS_ACTIVE . "
+                  AND trang_thai = " . HeThongConstants::STATUS_ACTIVE . "
                   AND id_hang_thanh_vien IN ($placeholders)
                 ORDER BY ngay_tao DESC";
         $stmt = $this->db->prepare($sql);
@@ -259,7 +259,7 @@ class KhachHangModel
     public function demTongKhachHang()
     {
         $sql = "SELECT COUNT(*) as total FROM nguoi_dung 
-                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . SystemConstants::STATUS_ACTIVE;
+                WHERE id_vai_tro IS NULL AND deleted_at IS NULL AND trang_thai = " . HeThongConstants::STATUS_ACTIVE;
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -318,7 +318,7 @@ class KhachHangModel
 
     public function doiTrangThai($id)
     {
-        $stmt = $this->db->prepare("UPDATE nguoi_dung SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE nguoi_dung SET trang_thai = CASE WHEN trang_thai = " . HeThongConstants::STATUS_ACTIVE . " THEN " . HeThongConstants::STATUS_INACTIVE . " ELSE " . HeThongConstants::STATUS_ACTIVE . " END WHERE id = ?");
         return $stmt->execute([$id]);
     }
 

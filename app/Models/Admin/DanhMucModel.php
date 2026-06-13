@@ -4,7 +4,7 @@ namespace App\Models\Admin;
 
 use App\Core\Database;
 use PDO;
-use App\Constants\SystemConstants;
+use App\Constants\HeThongConstants;
 
 class DanhMucModel
 {
@@ -110,7 +110,7 @@ class DanhMucModel
 
     public function doiTrangThai($id)
     {
-        $stmt = $this->db->prepare("UPDATE danh_muc SET trang_thai = CASE WHEN trang_thai = " . SystemConstants::STATUS_ACTIVE . " THEN " . SystemConstants::STATUS_INACTIVE . " ELSE " . SystemConstants::STATUS_ACTIVE . " END WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE danh_muc SET trang_thai = CASE WHEN trang_thai = " . HeThongConstants::STATUS_ACTIVE . " THEN " . HeThongConstants::STATUS_INACTIVE . " ELSE " . HeThongConstants::STATUS_ACTIVE . " END WHERE id = ?");
         return $stmt->execute([$id]);
     }
 
@@ -119,7 +119,7 @@ class DanhMucModel
         $sql = "SELECT dm.*, 
                 (SELECT COUNT(*) FROM san_pham sp WHERE sp.id_danh_muc = dm.id AND sp.da_xoa = 0) as so_san_pham
                 FROM danh_muc dm
-                WHERE dm.trang_thai = " . SystemConstants::STATUS_ACTIVE . " 
+                WHERE dm.trang_thai = " . HeThongConstants::STATUS_ACTIVE . " 
                 AND dm.da_xoa = 0 
                 ORDER BY dm.thu_tu ASC 
                 LIMIT :limit";

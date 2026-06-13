@@ -54,7 +54,7 @@
                     <p class="text-sm font-medium text-gray-800 truncate" title="<?= $sp['ten_sp'] ?>"><?= $sp['ten_sp'] ?></p>
                     <p class="text-xs text-gray-500 mt-0.5">Tồn: <strong class="text-gray-700"><?= $sp['ton_kho'] ?></strong> &bull; Đã bán: <?= $sp['da_ban_ky'] ?></p>
                 </div>
-                <a href="<?= APP_URL ?>/admin/voucher/them?id_sp=<?= $sp['ma_sp'] ?>" class="px-3 py-1.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded text-xs font-medium hover:bg-red-50 transition-colors whitespace-nowrap text-center">
+                <a href="<?= APP_URL ?>/admin/ma-giam-gia/them?id_sp=<?= $sp['ma_sp'] ?>" class="px-3 py-1.5 bg-white border border-[#6B0D18] text-[#6B0D18] rounded text-xs font-medium hover:bg-red-50 transition-colors whitespace-nowrap text-center">
                     Tạo KM
                 </a>
             </div>

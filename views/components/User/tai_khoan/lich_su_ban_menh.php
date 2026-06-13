@@ -3,7 +3,7 @@
  * Tab: Lịch Sử Tra Cứu Bản Mệnh Phong Thủy
  */
 
-// $lich_su_ban_menh được truyền từ AccountController
+// $lich_su_ban_menh được truyền từ TaiKhoanController
 $lichSu = $lich_su_ban_menh ?? [];
 
 $menhColors = [

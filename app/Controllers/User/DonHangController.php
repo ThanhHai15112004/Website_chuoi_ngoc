@@ -4,8 +4,8 @@ namespace App\Controllers\User;
 
 use App\Core\Controller;
 use App\Models\Admin\DonHangModel;
-use App\Services\MailService;
-use App\Services\NotificationService;
+use App\Services\ThuDienTuService;
+use App\Services\ThongBaoService;
 
 class DonHangController extends Controller {
     public function detail() {
@@ -150,9 +150,9 @@ class DonHangController extends Controller {
         if ($result) {
             // Gửi thông báo + email cho user
             try {
-                $notif = new NotificationService();
+                $notif = new ThongBaoService();
                 $notif->orderStatusChanged($rawOrder, 4, $reason);
-                MailService::sendOrderCancelled($rawOrder, $reason);
+                ThuDienTuService::sendOrderCancelled($rawOrder, $reason);
             } catch (\Exception $ex) {
                 error_log('[DonHang] Lỗi gửi mail hủy đơn: ' . $ex->getMessage());
             }

@@ -3,11 +3,11 @@
  * Admin Web Routes
  */
 
-$router->get('/admin', 'Admin\DashboardController@index');
-$router->get('/admin/dashboard', 'Admin\DashboardController@index');
-$router->get('/admin/dang-nhap', 'Admin\AuthController@login');
-$router->post('/admin/dang-nhap/xu-ly', 'Admin\AuthController@xuLyDangNhap');
-$router->get('/admin/dang-xuat', 'Admin\AuthController@dangXuat');
+$router->get('/admin', 'Admin\TongQuanController@index');
+$router->get('/admin/tong-quan', 'Admin\TongQuanController@index');
+$router->get('/admin/dang-nhap', 'Admin\XacThucController@login');
+$router->post('/admin/dang-nhap/xu-ly', 'Admin\XacThucController@xuLyDangNhap');
+$router->get('/admin/dang-xuat', 'Admin\XacThucController@dangXuat');
 $router->get('/admin/san-pham', 'Admin\SanPhamController@index');
 $router->get('/admin/san-pham/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\SanPhamController@chiTiet');
 $router->get('/admin/san-pham/them', 'Admin\SanPhamController@taoMoi');
@@ -30,14 +30,14 @@ $router->post('/admin/don-hang/luu', 'Admin\DonHangController@luuMoi');
 $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@chiTiet');
 $router->post('/admin/don-hang/api/cap-nhat-trang-thai/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatTrangThai');
 $router->post('/admin/don-hang/api/cap-nhat-thanh-toan/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatThanhToan');
-$router->get('/admin/voucher', 'Admin\VoucherController@index');
-$router->get('/admin/voucher/them', 'Admin\VoucherController@them');
-$router->post('/admin/voucher/store', 'Admin\VoucherController@store');
-$router->get('/admin/voucher/sua/([a-zA-Z0-9_-]+)', 'Admin\VoucherController@sua');
-$router->post('/admin/voucher/update/([a-zA-Z0-9_-]+)', 'Admin\VoucherController@update');
-$router->post('/admin/voucher/xoa', 'Admin\VoucherController@xoa');
-$router->post('/admin/voucher/toggle_status', 'Admin\VoucherController@toggle_status');
-$router->post('/admin/voucher/api/check', 'Admin\VoucherController@apiCheckVoucher');
+$router->get('/admin/ma-giam-gia', 'Admin\MaGiamGiaController@index');
+$router->get('/admin/ma-giam-gia/them', 'Admin\MaGiamGiaController@them');
+$router->post('/admin/ma-giam-gia/store', 'Admin\MaGiamGiaController@store');
+$router->get('/admin/ma-giam-gia/sua/([a-zA-Z0-9_-]+)', 'Admin\MaGiamGiaController@sua');
+$router->post('/admin/ma-giam-gia/update/([a-zA-Z0-9_-]+)', 'Admin\MaGiamGiaController@update');
+$router->post('/admin/ma-giam-gia/xoa', 'Admin\MaGiamGiaController@xoa');
+$router->post('/admin/ma-giam-gia/toggle_status', 'Admin\MaGiamGiaController@toggle_status');
+$router->post('/admin/ma-giam-gia/api/check', 'Admin\MaGiamGiaController@apiCheckVoucher');
 $router->get('/admin/khuyen-mai', 'Admin\KhuyenMaiController@index');
 $router->get('/admin/khuyen-mai/them', 'Admin\KhuyenMaiController@taoMoi');
 $router->post('/admin/khuyen-mai/luu', 'Admin\KhuyenMaiController@luu');

@@ -256,7 +256,7 @@ class ThongBaoController extends Controller {
             $userModel = new \App\Models\Admin\KhachHangModel();
             $users = $userModel->layTatCa();
 
-            $notif = new \App\Services\NotificationService();
+            $notif = new \App\Services\ThongBaoService();
             $sentCount = 0;
 
             foreach ($vouchers as $v) {
@@ -281,7 +281,7 @@ class ThongBaoController extends Controller {
                     );
 
                     if (!empty($u['email'])) {
-                        \App\Services\MailService::sendVoucherExpiry($u['email'], $u['ho_ten'], $voucherData);
+                        \App\Services\ThuDienTuService::sendVoucherExpiry($u['email'], $u['ho_ten'], $voucherData);
                     }
                     $sentCount++;
                 }
@@ -327,14 +327,14 @@ class ThongBaoController extends Controller {
                 return;
             }
 
-            $notif = new \App\Services\NotificationService();
+            $notif = new \App\Services\ThongBaoService();
             $sentCount = 0;
 
             foreach ($orders as $o) {
                 $notif->reviewReminder($o['id_nguoi_dung'], $o['ma_don_hang']);
 
                 if (!empty($o['email'])) {
-                    \App\Services\MailService::sendReviewReminder($o['email'], $o['ho_ten'], $o);
+                    \App\Services\ThuDienTuService::sendReviewReminder($o['email'], $o['ho_ten'], $o);
                 }
                 $sentCount++;
             }

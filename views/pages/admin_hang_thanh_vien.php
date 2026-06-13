@@ -8,7 +8,7 @@ $khach_sap_len_hang = $khach_sap_len_hang ?? [];
     <!-- Breadcrumb -->
     <div class="mb-4">
         <div class="flex items-center text-xs text-gray-500 mb-2">
-            <a href="<?= APP_URL ?>/admin/dashboard" class="hover:text-[#6B0D18]">Admin</a>
+            <a href="<?= APP_URL ?>/admin/tong-quan" class="hover:text-[#6B0D18]">Admin</a>
             <span class="mx-2">/</span>
             <a href="<?= APP_URL ?>/admin/khach-hang" class="hover:text-[#6B0D18]">Quản lý khách hàng</a>
             <span class="mx-2">/</span>
