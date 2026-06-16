@@ -287,8 +287,8 @@ class TongQuanModel {
         $ago = new \DateTime($datetime);
         $diff = $now->diff($ago);
 
-        $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
+        $w = floor($diff->d / 7);
+        $d = $diff->d - ($w * 7);
 
         $string = array(
             'y' => 'năm',
@@ -300,8 +300,16 @@ class TongQuanModel {
             's' => 'giây',
         );
         foreach ($string as $k => &$v) {
-            if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v;
+            if ($k === 'w') {
+                $val = $w;
+            } elseif ($k === 'd') {
+                $val = $d;
+            } else {
+                $val = $diff->$k;
+            }
+
+            if ($val) {
+                $v = $val . ' ' . $v;
             } else {
                 unset($string[$k]);
             }
