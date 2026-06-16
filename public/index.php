@@ -1,9 +1,4 @@
 <?php
-// Bật hiển thị lỗi để hiển thị chi tiết khi debug trên hosting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 session_start();
 /**
  * Entry Point
