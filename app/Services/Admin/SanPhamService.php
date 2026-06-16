@@ -93,7 +93,7 @@ class SanPhamService
                 'gia_khuyen_mai' => $gia_khuyen_mai,
                 'ton_kho' => $ton_kho,
                 'trang_thai_ton_kho' => $tkStatus,
-                'da_ban' => 0, 
+                'da_ban' => $this->sanPhamModel->laySoLuongDaBan($sp['id']), 
                 'trang_thai' => $sp['trang_thai'] == \App\Constants\SanPhamConstants::TRANG_THAI_HIEN_THI ? \App\Constants\SanPhamConstants::TXT_TRANG_THAI_HIEN_THI : \App\Constants\SanPhamConstants::TXT_TRANG_THAI_AN,
                 'nhan' => $nhan,
                 'ngay_cap_nhat' => date('d/m/Y H:i', strtotime($sp['ngay_tao']))
@@ -135,6 +135,15 @@ class SanPhamService
                 $product['menh'] = [];
             }
             $product['bien_the_thuc_te'] = $this->sanPhamModel->getBienTheByProductId($id);
+            
+            // Thống kê số lượng bán & doanh thu
+            $product['da_ban'] = $this->sanPhamModel->laySoLuongDaBan($id);
+            $product['doanh_thu'] = $this->sanPhamModel->layDoanhThuCuaSanPham($id);
+            
+            // Thống kê cho biến thể
+            foreach ($product['bien_the_thuc_te'] as &$bt) {
+                $bt['da_ban'] = $this->sanPhamModel->laySoLuongDaBanBienThe($bt['id']);
+            }
         }
         return $product;
     }
@@ -252,7 +261,24 @@ class SanPhamService
 
     public function deleteProduct($id)
     {
-        return $this->sanPhamModel->xoaMem($id);
+        $orderCount = $this->sanPhamModel->demSoDonHangActiveCuaSanPham($id);
+        if ($orderCount > 0) {
+            return [
+                'success' => false,
+                'message' => 'Không thể xóa sản phẩm này vì đã có ' . $orderCount . ' đơn hàng liên kết còn hoạt động.'
+            ];
+        }
+        $result = $this->sanPhamModel->xoaMem($id);
+        if ($result) {
+            return [
+                'success' => true,
+                'message' => 'Xóa sản phẩm thành công!'
+            ];
+        }
+        return [
+            'success' => false,
+            'message' => 'Có lỗi xảy ra khi xóa sản phẩm.'
+        ];
     }
 
     private function createSlug($string)

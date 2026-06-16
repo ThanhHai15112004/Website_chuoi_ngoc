@@ -50,6 +50,7 @@ class TonKhoModel
                     WHERE ctdh.id_bien_the = bt.id
                     AND dh.ngay_tao >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                     AND dh.trang_thai_don_hang != 4
+                    AND dh.da_xoa = 0
                 ) as sales_30d
             FROM san_pham_bien_the bt
             JOIN san_pham sp ON bt.id_san_pham = sp.id

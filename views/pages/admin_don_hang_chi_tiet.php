@@ -8,6 +8,9 @@
         4 => 'Đã hủy'
     ];
     $ttText = $statusMap[$don_hang['trang_thai_don_hang']] ?? 'Không xác định';
+    if ($don_hang['trang_thai_don_hang'] == 4 && ($don_hang['ly_do_huy'] ?? '') === 'Giao hàng thất bại') {
+        $ttText = 'Giao hàng thất bại';
+    }
     $paymentStatus = $don_hang['trang_thai_thanh_toan'] == 1 ? 'Đã thanh toán' : 'Chưa thanh toán';
 ?>
 <div class="max-w-7xl mx-auto space-y-6">
@@ -68,7 +71,15 @@
                         elseif($don_hang['trang_thai_don_hang'] == 1) { $badgeClasses = 'bg-blue-50 text-blue-700 border border-blue-200'; $icon = 'mdi:check-circle-outline'; }
                         elseif($don_hang['trang_thai_don_hang'] == 2) { $badgeClasses = 'bg-teal-50 text-teal-700 border border-teal-200'; $icon = 'mdi:truck-delivery-outline'; }
                         elseif($don_hang['trang_thai_don_hang'] == 3) { $badgeClasses = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold'; $icon = 'mdi:check-all'; }
-                        elseif($don_hang['trang_thai_don_hang'] == 4) { $badgeClasses = 'bg-gray-100 text-gray-600 border border-gray-200'; $icon = 'mdi:cancel'; }
+                        elseif($don_hang['trang_thai_don_hang'] == 4) { 
+                            if (($don_hang['ly_do_huy'] ?? '') === 'Giao hàng thất bại') {
+                                $badgeClasses = 'bg-amber-50 text-amber-700 border border-amber-200 font-bold'; 
+                                $icon = 'mdi:alert-circle-outline'; 
+                            } else {
+                                $badgeClasses = 'bg-gray-100 text-gray-600 border border-gray-200'; 
+                                $icon = 'mdi:cancel'; 
+                            }
+                        }
                     ?>
                     <span class="px-3 py-1.5 rounded-lg text-sm flex items-center gap-1.5 <?= $badgeClasses ?>">
                         <span class="iconify text-lg" data-icon="<?= $icon ?>"></span>
@@ -99,19 +110,39 @@
         </div>
     </div>
 
+    <?php if ($don_hang['trang_thai_don_hang'] == 4): ?>
+    <div class="p-4 rounded-xl flex items-center gap-3 border <?= ($don_hang['ly_do_huy'] === 'Giao hàng thất bại') ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-red-50 border-red-200 text-red-800' ?>">
+        <span class="iconify text-2xl shrink-0" data-icon="<?= ($don_hang['ly_do_huy'] === 'Giao hàng thất bại') ? 'mdi:alert-circle' : 'mdi:close-circle' ?>"></span>
+        <div>
+            <p class="font-bold text-sm"><?= ($don_hang['ly_do_huy'] === 'Giao hàng thất bại') ? 'Giao hàng thất bại' : 'Đơn hàng đã bị hủy' ?></p>
+            <?php if (!empty($don_hang['ly_do_huy'])): ?>
+                <p class="text-xs mt-0.5 opacity-90">Lý do: <?= htmlspecialchars($don_hang['ly_do_huy']) ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
 <?php include __DIR__ . '/../components/Admin/don_hang/detail_timeline.php'; ?>
 
     <!-- Quick Actions Bar -->
     <div class="flex items-center gap-3">
-        <?php if(in_array($don_hang['trang_thai_don_hang'], [0, 1])): ?>
-            <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', <?= $don_hang['trang_thai_don_hang'] + 1 ?>)" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">
-                <?= $don_hang['trang_thai_don_hang'] == 0 ? 'Xác nhận đơn' : 'Giao hàng' ?>
+        <?php if($don_hang['trang_thai_don_hang'] == 0): ?>
+            <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', 1)" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">
+                Xác nhận đơn
             </button>
             <button onclick="huyDonHang('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">Hủy đơn</button>
-        <?php endif; ?>
-        <?php if($don_hang['trang_thai_don_hang'] == 2): ?>
+        <?php elseif($don_hang['trang_thai_don_hang'] == 1): ?>
+            <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', 2)" class="px-5 py-2.5 bg-[#6B0D18] text-white rounded-xl hover:bg-[#4C0519] font-medium text-sm transition-colors shadow-sm">
+                Giao hàng
+            </button>
+        <?php elseif($don_hang['trang_thai_don_hang'] == 2): ?>
             <button onclick="capNhatTrangThai('<?= $don_hang['id'] ?>', 3)" class="px-5 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors shadow-sm">Hoàn tất (Thành công)</button>
-            <button onclick="huyDonHang('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-white border border-red-200 text-red-600 rounded-xl hover:bg-red-50 font-medium text-sm transition-colors shadow-sm">Thất bại (Hủy)</button>
+            <button onclick="giaoHangThatBai('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-white border border-amber-200 text-amber-600 rounded-xl hover:bg-amber-50 font-medium text-sm transition-colors shadow-sm">Giao thất bại</button>
+        <?php elseif($don_hang['trang_thai_don_hang'] == 4): ?>
+            <button onclick="xoaDonHang('<?= $don_hang['id'] ?>')" class="px-5 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">
+                <span class="iconify text-lg" data-icon="mdi:delete-outline"></span>
+                Xóa đơn hàng
+            </button>
         <?php endif; ?>
         
         <a href="tel:<?= $don_hang['sdt_nguoi_nhan'] ?>" class="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors shadow-sm flex items-center gap-2">

@@ -3,7 +3,7 @@ $so_luong_sp = 0;
 foreach ($gio_hang as $item) {
     $so_luong_sp += $item['so_luong'];
 }
-$tong_thanh_toan_hien_tai = max(0, $tong_tam_tinh - $tong_giam_gia);
+$tong_thanh_toan_hien_tai = max(0, $tong_tam_tinh - ($order_discount ?? 0));
 ?>
 <div class="bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border border-gray-100 p-4 lg:p-5">
     <div class="flex items-center gap-2 mb-3 pb-3 border-b border-gray-100">

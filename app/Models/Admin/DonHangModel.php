@@ -27,7 +27,7 @@ class DonHangModel
                        (SELECT hinh_anh_chinh FROM chi_tiet_don_hang ct JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id JOIN san_pham sp ON bt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as hinh_anh_chinh
                 FROM don_hang dh
                 LEFT JOIN nguoi_dung nd ON dh.id_nguoi_dung = nd.id
-                WHERE 1=1";
+                WHERE dh.da_xoa = 0";
         
         $params = [];
 
@@ -90,7 +90,7 @@ class DonHangModel
 
     public function demDanhSach($filters = [])
     {
-        $sql = "SELECT COUNT(*) as total FROM don_hang dh WHERE 1=1";
+        $sql = "SELECT COUNT(*) as total FROM don_hang dh WHERE dh.da_xoa = 0";
         $params = [];
 
         if (!empty($filters['keyword'])) {
@@ -151,7 +151,7 @@ class DonHangModel
                     SUM(CASE WHEN trang_thai_don_hang = 3 THEN 1 ELSE 0 END) as thanh_cong,
                     SUM(CASE WHEN trang_thai_don_hang = 4 THEN 1 ELSE 0 END) as da_huy,
                     SUM(CASE WHEN trang_thai_don_hang = 3 THEN thanh_tien ELSE 0 END) as doanh_thu
-                FROM don_hang";
+                FROM don_hang WHERE da_xoa = 0";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -177,7 +177,7 @@ class DonHangModel
                 LEFT JOIN nguoi_dung nd ON dh.id_nguoi_dung = nd.id
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
                 LEFT JOIN voucher v ON dh.id_voucher = v.id
-                WHERE dh.id = ?";
+                WHERE dh.id = ? AND dh.da_xoa = 0";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -348,10 +348,23 @@ class DonHangModel
                 'mo_ta' => $msg
             ]);
 
+            // Ghi vào nhat_ky_hoat_dong để hiển thị cho User và Admin
+            $logId = 'log_' . uniqid();
+            $logStmt = $this->db->prepare("INSERT INTO nhat_ky_hoat_dong (id, id_nguoi_dung, hanh_dong, module, doi_tuong_id, gia_tri_moi, ngay_tao) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $logStmt->execute([
+                $logId,
+                $dh['id_nguoi_dung'] ?? null,
+                'Cập nhật trạng thái',
+                'Đơn hàng',
+                $id,
+                $msg
+            ]);
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
+            error_log("Lỗi capNhatTrangThai: " . $e->getMessage());
             return false;
         }
     }
@@ -414,7 +427,23 @@ class DonHangModel
             $upd = $this->db->prepare("UPDATE nguoi_dung SET id_hang_thanh_vien = ? WHERE id = ?");
             $upd->execute([$newRankId, $id_nguoi_dung]);
             
-            $this->logger->log("Nâng hạng", "Khách hàng", $id_nguoi_dung, "Lên hạng: " . $newRankName);
+            $this->logger->ghiLog([
+                'id_nhan_vien' => $_SESSION['admin_id'] ?? ($_SESSION['nv_id'] ?? 1),
+                'hanh_dong' => 'Nâng hạng khách hàng',
+                'mo_ta' => 'Nâng hạng khách hàng ' . $id_nguoi_dung . ' lên ' . $newRankName
+            ]);
+
+            // Ghi vào nhat_ky_hoat_dong
+            $logId = 'log_' . uniqid();
+            $logStmt = $this->db->prepare("INSERT INTO nhat_ky_hoat_dong (id, id_nguoi_dung, hanh_dong, module, gia_tri_cu, gia_tri_moi, ngay_tao) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+            $logStmt->execute([
+                $logId,
+                $id_nguoi_dung,
+                'Thăng hạng',
+                'Hạng thành viên',
+                $user['id_hang_thanh_vien'],
+                $newRankId
+            ]);
 
             // Gửi email + thông báo nâng hạng
             try {
@@ -546,5 +575,54 @@ class DonHangModel
             $this->db->rollBack();
             return ['success' => false, 'message' => $e->getMessage()];
         }
+    }
+
+    public function xoaDonHang($id)
+    {
+        try {
+            $this->db->beginTransaction();
+
+            // Sử dụng một câu truy vấn riêng không check da_xoa = 0 vì có thể cần check
+            $stmtCheck = $this->db->prepare("SELECT * FROM don_hang WHERE id = ?");
+            $stmtCheck->execute([$id]);
+            $dh = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$dh || (int)$dh['da_xoa'] === 1) {
+                throw new Exception("Không tìm thấy đơn hàng hoặc đơn hàng đã bị xóa");
+            }
+
+            // Chỉ cho phép xóa đơn hàng đã hủy (status 4)
+            if ((int)$dh['trang_thai_don_hang'] !== 4) {
+                throw new Exception("Chỉ có thể xóa đơn hàng đã hủy");
+            }
+
+            // Ghi log hoạt động
+            $this->logger->ghiLog([
+                'id_nhan_vien' => $_SESSION['admin_id'] ?? ($_SESSION['nv_id'] ?? 1),
+                'hanh_dong' => 'Xóa đơn hàng',
+                'mo_ta' => 'Xóa đơn hàng ' . $dh['ma_don_hang'] . ' của ' . $dh['ten_nguoi_nhan']
+            ]);
+
+            // Soft delete: set da_xoa = 1
+            $stmt = $this->db->prepare("UPDATE don_hang SET da_xoa = 1 WHERE id = ?");
+            $result = $stmt->execute([$id]);
+
+            $this->db->commit();
+            return $result;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            return false;
+        }
+    }
+
+    public function layLyDoHuy($id_don_hang)
+    {
+        $stmt = $this->db->prepare("SELECT gia_tri_moi FROM nhat_ky_hoat_dong WHERE module = 'Đơn hàng' AND doi_tuong_id = ? AND gia_tri_moi LIKE '%Lý do:%' ORDER BY ngay_tao DESC LIMIT 1");
+        $stmt->execute([$id_don_hang]);
+        $log = $stmt->fetchColumn();
+        if ($log && preg_match('/\(Lý do:\s*(.*?)\)/u', $log, $matches)) {
+            return trim($matches[1]);
+        }
+        return '';
     }
 }

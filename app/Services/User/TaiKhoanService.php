@@ -59,7 +59,7 @@ class TaiKhoanService
     public function getTongQuan($userId)
     {
         // Đếm đơn hàng
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM don_hang WHERE id_nguoi_dung = ?");
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM don_hang WHERE id_nguoi_dung = ? AND da_xoa = 0");
         $stmt->execute([$userId]);
         $tongDon = (int)$stmt->fetchColumn();
 
@@ -105,7 +105,7 @@ class TaiKhoanService
         $offset = ($page - 1) * $limit;
 
         // Count total
-        $countSql = "SELECT COUNT(*) FROM don_hang WHERE id_nguoi_dung = ?";
+        $countSql = "SELECT COUNT(*) FROM don_hang WHERE id_nguoi_dung = ? AND da_xoa = 0";
         $countParams = [$userId];
         if ($trangThai !== null && $trangThai !== '') {
             $countSql .= " AND trang_thai_don_hang = ?";
@@ -116,7 +116,7 @@ class TaiKhoanService
         $total = (int)$stmt->fetchColumn();
 
         // Fetch orders
-        $sql = "SELECT dh.* FROM don_hang dh WHERE dh.id_nguoi_dung = ?";
+        $sql = "SELECT dh.* FROM don_hang dh WHERE dh.id_nguoi_dung = ? AND dh.da_xoa = 0";
         $params = [$userId];
         if ($trangThai !== null && $trangThai !== '') {
             $sql .= " AND dh.trang_thai_don_hang = ?";

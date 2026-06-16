@@ -298,7 +298,8 @@ class DanhGiaModel
                 JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
                 WHERE dh.id_nguoi_dung = :user_id 
                 AND bt.id_san_pham = :product_id 
-                AND dh.trang_thai_don_hang = " . \App\Constants\DonHangConstants::TRANG_THAI_DA_GIAO_HANG;
+                AND dh.trang_thai_don_hang = " . \App\Constants\DonHangConstants::TRANG_THAI_DA_GIAO_HANG . "
+                AND dh.da_xoa = 0";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'user_id' => $userId,

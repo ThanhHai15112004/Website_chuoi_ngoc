@@ -119,4 +119,53 @@
             showToast('Lỗi kết nối!', 'error');
         });
     }
+
+    function giaoHangThatBai(id) {
+        if(!confirm('Xác nhận đơn hàng giao thất bại? Thao tác này sẽ trả lại kho sản phẩm và cập nhật trạng thái đơn thành Đã hủy.')) return;
+        
+        showToast('Đang xử lý, vui lòng chờ trong giây lát...', 'success');
+        
+        fetch('<?= APP_URL ?>/admin/don-hang/api/cap-nhat-trang-thai/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ trang_thai: 4, ly_do: 'Giao hàng thất bại' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.message || 'Đã cập nhật giao hàng thất bại!');
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showToast(data.error || data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(err => {
+            showToast('Lỗi kết nối!', 'error');
+        });
+    }
+
+    function xoaDonHang(id) {
+        if(!confirm('Bạn có chắc chắn muốn xóa đơn hàng này? Thao tác này sẽ ẩn đơn hàng khỏi hệ thống và không thể khôi phục.')) return;
+        
+        showToast('Đang xử lý, vui lòng chờ trong giây lát...', 'success');
+        
+        fetch('<?= APP_URL ?>/admin/don-hang/api/xoa/' + id, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.message || 'Đã xóa đơn hàng thành công!');
+                setTimeout(() => {
+                    window.location.href = '<?= APP_URL ?>/admin/don-hang';
+                }, 1000);
+            } else {
+                showToast(data.error || data.message || 'Có lỗi xảy ra!', 'error');
+            }
+        })
+        .catch(err => {
+            showToast('Lỗi kết nối!', 'error');
+        });
+    }
 </script>

@@ -8,6 +8,9 @@
         'cancelled' => ['label' => 'Đã hủy', 'color' => 'bg-red-50 text-red-700', 'desc' => 'Đơn hàng đã bị hủy.']
     ];
     $currentStatus = $statusLabels[$order['status']] ?? $statusLabels['pending'];
+    if ($order['status'] === 'cancelled' && ($order['is_delivery_failed'] ?? false)) {
+        $currentStatus['desc'] = 'do giao hàng bị hủy hoặc không giao được.';
+    }
     
     // Stepper config
     $isCancelled = $order['status'] === 'cancelled';
@@ -130,8 +133,13 @@
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-8 flex items-center gap-3">
     <iconify-icon icon="ph:warning-circle-fill" class="text-2xl text-red-500 shrink-0"></iconify-icon>
     <div>
-        <p class="text-sm font-bold text-red-700">Đơn hàng đã bị hủy</p>
-        <p class="text-xs text-red-600">Đơn hàng này đã bị hủy và không thể thực hiện.</p>
+        <?php if ($order['is_delivery_failed'] ?? false): ?>
+            <p class="text-sm font-bold text-red-700">Giao hàng thất bại</p>
+            <p class="text-xs text-red-600">Đơn hàng này bị hủy do giao hàng bị hủy hoặc không giao được.</p>
+        <?php else: ?>
+            <p class="text-sm font-bold text-red-700">Đơn hàng đã bị hủy</p>
+            <p class="text-xs text-red-600">Đơn hàng này đã bị hủy và không thể thực hiện.</p>
+        <?php endif; ?>
     </div>
 </div>
 <?php endif; ?>

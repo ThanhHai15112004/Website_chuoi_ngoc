@@ -2,6 +2,21 @@
 // views/pages/admin_san_pham.php
 ?>
 <div class="space-y-6" x-data="productManagement()">
+    <?php if (isset($_SESSION['flash_success'])): ?>
+        <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-3">
+            <span class="iconify text-xl text-emerald-500" data-icon="mdi:check-circle"></span>
+            <span class="text-sm font-medium"><?= $_SESSION['flash_success'] ?></span>
+            <?php unset($_SESSION['flash_success']); ?>
+        </div>
+    <?php endif; ?>
+    <?php if (isset($_SESSION['flash_error'])): ?>
+        <div class="p-4 bg-red-50 border border-red-200 text-red-800 rounded-xl flex items-center gap-3">
+            <span class="iconify text-xl text-red-500" data-icon="mdi:alert-circle"></span>
+            <span class="text-sm font-medium"><?= $_SESSION['flash_error'] ?></span>
+            <?php unset($_SESSION['flash_error']); ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Header Area -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

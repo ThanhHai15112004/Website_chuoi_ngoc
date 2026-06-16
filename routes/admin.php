@@ -30,6 +30,7 @@ $router->post('/admin/don-hang/luu', 'Admin\DonHangController@luuMoi');
 $router->get('/admin/don-hang/chi-tiet/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@chiTiet');
 $router->post('/admin/don-hang/api/cap-nhat-trang-thai/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatTrangThai');
 $router->post('/admin/don-hang/api/cap-nhat-thanh-toan/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiCapNhatThanhToan');
+$router->post('/admin/don-hang/api/xoa/([a-zA-Z0-9_-]+)', 'Admin\DonHangController@apiXoa');
 $router->get('/admin/ma-giam-gia', 'Admin\MaGiamGiaController@index');
 $router->get('/admin/ma-giam-gia/them', 'Admin\MaGiamGiaController@them');
 $router->post('/admin/ma-giam-gia/store', 'Admin\MaGiamGiaController@store');

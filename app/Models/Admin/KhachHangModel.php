@@ -24,10 +24,10 @@ class KhachHangModel
                        nd.ghi_chu_vip,
                        htv.ten_hang as hang,
                        mpt.ten_menh as menh,
-                       (SELECT COUNT(*) FROM don_hang dh WHERE dh.id_nguoi_dung = nd.id) as tong_don,
-                       (SELECT COUNT(*) FROM don_hang dh2 WHERE dh2.id_nguoi_dung = nd.id AND dh2.trang_thai_don_hang = " . DonHangConstants::TRANG_THAI_DA_HUY . ") as so_don_huy,
-                       (SELECT ma_don_hang FROM don_hang dh3 WHERE dh3.id_nguoi_dung = nd.id ORDER BY dh3.ngay_tao DESC LIMIT 1) as ma_don_gan_nhat,
-                       (SELECT ngay_tao FROM don_hang dh4 WHERE dh4.id_nguoi_dung = nd.id ORDER BY dh4.ngay_tao DESC LIMIT 1) as ngay_don_gan_nhat
+                       (SELECT COUNT(*) FROM don_hang dh WHERE dh.id_nguoi_dung = nd.id AND dh.da_xoa = 0) as tong_don,
+                       (SELECT COUNT(*) FROM don_hang dh2 WHERE dh2.id_nguoi_dung = nd.id AND dh2.trang_thai_don_hang = " . DonHangConstants::TRANG_THAI_DA_HUY . " AND dh2.da_xoa = 0) as so_don_huy,
+                       (SELECT ma_don_hang FROM don_hang dh3 WHERE dh3.id_nguoi_dung = nd.id AND dh3.da_xoa = 0 ORDER BY dh3.ngay_tao DESC LIMIT 1) as ma_don_gan_nhat,
+                       (SELECT ngay_tao FROM don_hang dh4 WHERE dh4.id_nguoi_dung = nd.id AND dh4.da_xoa = 0 ORDER BY dh4.ngay_tao DESC LIMIT 1) as ngay_don_gan_nhat
                 FROM nguoi_dung nd
                 LEFT JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
                 LEFT JOIN menh_phong_thuy mpt ON nd.id_menh = mpt.id
@@ -285,7 +285,7 @@ class KhachHangModel
                        (SELECT sp.ten_sp FROM chi_tiet_don_hang ct JOIN san_pham_bien_the spbt ON ct.id_bien_the = spbt.id JOIN san_pham sp ON spbt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as ten_san_pham,
                        (SELECT sp.hinh_anh_chinh FROM chi_tiet_don_hang ct JOIN san_pham_bien_the spbt ON ct.id_bien_the = spbt.id JOIN san_pham sp ON spbt.id_san_pham = sp.id WHERE ct.id_don_hang = dh.id LIMIT 1) as hinh_anh
                 FROM don_hang dh
-                WHERE dh.id_nguoi_dung = ? 
+                WHERE dh.id_nguoi_dung = ? AND dh.da_xoa = 0
                 ORDER BY dh.ngay_tao DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);

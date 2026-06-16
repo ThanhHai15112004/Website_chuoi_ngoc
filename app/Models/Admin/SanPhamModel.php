@@ -537,4 +537,60 @@ class SanPhamModel
         $stmt = $this->db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function demSoDonHangActiveCuaSanPham($id_san_pham)
+    {
+        $sql = "SELECT COUNT(*) as total 
+                FROM chi_tiet_don_hang ct
+                JOIN don_hang dh ON ct.id_don_hang = dh.id
+                JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
+                WHERE bt.id_san_pham = :id_san_pham AND dh.da_xoa = 0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $id_san_pham);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['total'] : 0;
+    }
+
+    public function laySoLuongDaBan($id_san_pham)
+    {
+        $sql = "SELECT SUM(ct.so_luong) as total 
+                FROM chi_tiet_don_hang ct
+                JOIN don_hang dh ON ct.id_don_hang = dh.id
+                JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
+                WHERE bt.id_san_pham = :id_san_pham AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $id_san_pham);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['total'] : 0;
+    }
+
+    public function laySoLuongDaBanBienThe($id_bien_the)
+    {
+        $sql = "SELECT SUM(ct.so_luong) as total 
+                FROM chi_tiet_don_hang ct
+                JOIN don_hang dh ON ct.id_don_hang = dh.id
+                WHERE ct.id_bien_the = :id_bien_the AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_bien_the', $id_bien_the);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['total'] : 0;
+    }
+
+    public function layDoanhThuCuaSanPham($id_san_pham)
+    {
+        $sql = "SELECT SUM(ct.so_luong * ct.don_gia) as total 
+                FROM chi_tiet_don_hang ct
+                JOIN don_hang dh ON ct.id_don_hang = dh.id
+                JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
+                WHERE bt.id_san_pham = :id_san_pham AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id_san_pham', $id_san_pham);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (float)$row['total'] : 0.0;
+    }
 }
+

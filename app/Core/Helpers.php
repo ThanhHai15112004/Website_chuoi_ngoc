@@ -62,30 +62,70 @@ if (!function_exists('format_currency_short')) {
     }
 }
 
+if (!function_exists('encode_url_path')) {
+    /**
+     * Mã hóa các phân đoạn của đường dẫn URL để đảm bảo URL hợp lệ (tránh ký tự tiếng Việt, khoảng trắng)
+     * mà không làm hỏng giao thức (http://, https://) hay query string (?...) hay cổng (localhost:8080).
+     */
+    function encode_url_path($url) {
+        if (empty($url)) return $url;
+        
+        // Tách phần query string nếu có
+        $urlParts = explode('?', $url, 2);
+        $pathPart = $urlParts[0];
+        $queryPart = isset($urlParts[1]) ? '?' . $urlParts[1] : '';
+
+        $parts = explode('://', $pathPart, 2);
+        if (count($parts) === 2) {
+            $protocol = $parts[0] . '://';
+            $rest = $parts[1];
+            $hasProtocol = true;
+        } else {
+            $protocol = '';
+            $rest = $pathPart;
+            $hasProtocol = false;
+        }
+        
+        $segments = explode('/', $rest);
+        
+        // Nếu có protocol, segment đầu tiên chính là host (ví dụ: localhost:8080) -> không encode segment này
+        if ($hasProtocol && count($segments) > 0) {
+            $host = array_shift($segments);
+            $encodedSegments = array_map('rawurlencode', $segments);
+            array_unshift($encodedSegments, $host);
+        } else {
+            $encodedSegments = array_map('rawurlencode', $segments);
+        }
+        
+        return $protocol . implode('/', $encodedSegments) . $queryPart;
+    }
+}
+
 if (!function_exists('get_image_url')) {
     /**
      * Trả về URL ảnh đúng cho cả 3 trường hợp:
-     * - URL bên ngoài (https://...) → giữ nguyên
-     * - Đường dẫn local (public/images/...) → thêm APP_URL
-     * - Rỗng/null → trả ảnh placeholder
+     * - URL bên ngoài (https://...) → giữ nguyên và mã hóa đường dẫn
+     * - Đường dẫn local (public/images/...) → thêm APP_URL và mã hóa đường dẫn
+     * - Rỗng/null → trả ảnh placeholder (đã mã hóa)
      *
      * @param string|null $path Đường dẫn ảnh từ DB
      * @param string $placeholder Ảnh mặc định nếu rỗng
-     * @return string URL ảnh hoàn chỉnh
+     * @return string URL ảnh hoàn chỉnh đã được mã hóa hợp lệ
      */
     function get_image_url($path, $placeholder = '') {
         if (empty(trim($path ?? ''))) {
             // Nếu rỗng, dùng ảnh placeholder
-            return $placeholder ?: APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg';
+            $url = $placeholder ?: APP_URL . '/public/images/Sản phẩm/Vòng Ngọc/Hồng Đào Điểm Son/hong-dao-diem-son-1.jpg';
+        } elseif (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            // Nếu là URL bên ngoài (http:// hoặc https://) → giữ nguyên
+            $url = $path;
+        } else {
+            // Đường dẫn local → thêm APP_URL
+            $url = APP_URL . '/' . ltrim($path, '/');
         }
 
-        // Nếu là URL bên ngoài (http:// hoặc https://) → giữ nguyên
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        // Đường dẫn local → thêm APP_URL
-        return APP_URL . '/' . ltrim($path, '/');
+        // Mã hóa đường dẫn để tránh lỗi ký tự đặc biệt/tiếng Việt/khoảng trắng trong email clients
+        return encode_url_path($url);
     }
 }
 

@@ -31,7 +31,7 @@ class BaoCaoDoanhThuModel
                     SUM(tien_giam_gia) as tong_giam_gia,
                     SUM(tong_tien) as doanh_thu_thuc_nhan
                 FROM don_hang 
-                WHERE trang_thai_don_hang = 3 
+                WHERE trang_thai_don_hang = 3 AND da_xoa = 0
                   AND ngay_tao >= ? AND ngay_tao <= ?";
                   
         $overview = $this->query($sql, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetch();
@@ -40,7 +40,7 @@ class BaoCaoDoanhThuModel
         $sqlSp = "SELECT SUM(so_luong) as san_pham_da_ban
                   FROM chi_tiet_don_hang ctdh
                   JOIN don_hang dh ON ctdh.id_don_hang = dh.id
-                  WHERE dh.trang_thai_don_hang = 3
+                  WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                     AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
         
         $spData = $this->query($sqlSp, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetch();
@@ -75,7 +75,7 @@ class BaoCaoDoanhThuModel
         
         $sqlKyNay = "SELECT DATE(ngay_tao) as ngay, SUM(thanh_tien) as total
                      FROM don_hang 
-                     WHERE trang_thai_don_hang = 3 
+                     WHERE trang_thai_don_hang = 3 AND da_xoa = 0
                        AND ngay_tao >= ? AND ngay_tao <= ?
                      GROUP BY DATE(ngay_tao)";
         $rowsKyNay = $this->query($sqlKyNay, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetchAll();
@@ -89,7 +89,7 @@ class BaoCaoDoanhThuModel
         
         $sqlKyTruoc = "SELECT DATE(ngay_tao) as ngay, SUM(thanh_tien) as total
                      FROM don_hang 
-                     WHERE trang_thai_don_hang = 3 
+                     WHERE trang_thai_don_hang = 3 AND da_xoa = 0
                        AND ngay_tao >= ? AND ngay_tao <= ?
                      GROUP BY DATE(ngay_tao)";
         $rowsKyTruoc = $this->query($sqlKyTruoc, [$kyTruocTu . ' 00:00:00', $kyTruocDen . ' 23:59:59'])->fetchAll();
@@ -135,7 +135,7 @@ class BaoCaoDoanhThuModel
     {
         $sql = "SELECT trang_thai_don_hang, COUNT(id) as total
                 FROM don_hang
-                WHERE ngay_tao >= ? AND ngay_tao <= ?
+                WHERE ngay_tao >= ? AND ngay_tao <= ? AND da_xoa = 0
                 GROUP BY trang_thai_don_hang";
         $rows = $this->query($sql, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetchAll();
         
@@ -181,7 +181,7 @@ class BaoCaoDoanhThuModel
                     SUM(CASE WHEN dh.trang_thai_don_hang = 3 THEN dh.tong_tien ELSE 0 END) as tong_doanh_thu,
                     SUM(CASE WHEN dh.trang_thai_don_hang = 3 THEN (SELECT SUM(so_luong) FROM chi_tiet_don_hang WHERE id_don_hang = dh.id) ELSE 0 END) as sp_ban
                 FROM don_hang dh
-                WHERE dh.ngay_tao >= ? AND dh.ngay_tao <= ?
+                WHERE dh.ngay_tao >= ? AND dh.ngay_tao <= ? AND dh.da_xoa = 0
                 GROUP BY DATE(dh.ngay_tao)
                 ORDER BY DATE(dh.ngay_tao) DESC";
                 
@@ -211,7 +211,7 @@ class BaoCaoDoanhThuModel
                 -- id_bien_the format: bt_{id_sp}_xxxx
                 JOIN san_pham sp ON SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                 LEFT JOIN danh_muc dm ON sp.id_danh_muc = dm.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY sp.id
                 ORDER BY da_ban DESC, doanh_thu DESC
@@ -250,7 +250,7 @@ class BaoCaoDoanhThuModel
                         SELECT SUM(ct.so_luong) 
                         FROM chi_tiet_don_hang ct 
                         JOIN don_hang dh ON dh.id = ct.id_don_hang 
-                        WHERE dh.trang_thai_don_hang = 3 
+                        WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                           AND SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                           AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                     ), 0) as da_ban_ky,
@@ -258,7 +258,7 @@ class BaoCaoDoanhThuModel
                         SELECT SUM(ct.so_luong * ct.don_gia) 
                         FROM chi_tiet_don_hang ct 
                         JOIN don_hang dh ON dh.id = ct.id_don_hang 
-                        WHERE dh.trang_thai_don_hang = 3 
+                        WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                           AND SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                           AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                     ), 0) as doanh_thu
@@ -292,7 +292,7 @@ class BaoCaoDoanhThuModel
                 JOIN chi_tiet_don_hang ct ON dh.id = ct.id_don_hang
                 JOIN san_pham sp ON SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                 JOIN danh_muc dm ON sp.id_danh_muc = dm.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY dm.id
                 ORDER BY doanh_thu DESC";
@@ -325,7 +325,7 @@ class BaoCaoDoanhThuModel
                         FROM chi_tiet_don_hang ct2 
                         JOIN don_hang dh2 ON dh2.id = ct2.id_don_hang
                         JOIN san_pham sp2 ON SUBSTRING_INDEX(ct2.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp2.id, '_', -1))
-                        WHERE sp2.id_loai_da = ld.id AND dh2.trang_thai_don_hang = 3
+                        WHERE sp2.id_loai_da = ld.id AND dh2.trang_thai_don_hang = 3 AND dh2.da_xoa = 0
                           AND dh2.ngay_tao >= ? AND dh2.ngay_tao <= ?
                         GROUP BY sp2.id 
                         ORDER BY SUM(ct2.so_luong) DESC 
@@ -335,7 +335,7 @@ class BaoCaoDoanhThuModel
                 JOIN chi_tiet_don_hang ct ON dh.id = ct.id_don_hang
                 JOIN san_pham sp ON SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                 JOIN loai_da ld ON sp.id_loai_da = ld.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY ld.id
                 ORDER BY doanh_thu DESC";
@@ -373,7 +373,7 @@ class BaoCaoDoanhThuModel
                         JOIN don_hang dh2 ON dh2.id = ct2.id_don_hang
                         JOIN san_pham sp2 ON SUBSTRING_INDEX(ct2.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp2.id, '_', -1))
                         JOIN loai_da ld2 ON sp2.id_loai_da = ld2.id
-                        WHERE sp2.id_menh_phong_thuy = mpt.id AND dh2.trang_thai_don_hang = 3
+                        WHERE sp2.id_menh_phong_thuy = mpt.id AND dh2.trang_thai_don_hang = 3 AND dh2.da_xoa = 0
                           AND dh2.ngay_tao >= ? AND dh2.ngay_tao <= ?
                         GROUP BY ld2.id 
                         ORDER BY SUM(ct2.so_luong) DESC 
@@ -383,7 +383,7 @@ class BaoCaoDoanhThuModel
                 JOIN chi_tiet_don_hang ct ON dh.id = ct.id_don_hang
                 JOIN san_pham sp ON SUBSTRING_INDEX(ct.id_bien_the, '_', 2) = CONCAT('bt_', SUBSTRING_INDEX(sp.id, '_', -1))
                 JOIN menh_phong_thuy mpt ON sp.id_menh_phong_thuy = mpt.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY mpt.id
                 ORDER BY doanh_thu DESC";
@@ -425,9 +425,9 @@ class BaoCaoDoanhThuModel
                         COUNT(id) as tong_don_dung_voucher,
                         SUM(tien_giam_gia) as tong_giam_tu_voucher,
                         SUM(thanh_tien) as doanh_thu_tu_don_voucher,
-                        (SELECT COUNT(id) FROM don_hang WHERE trang_thai_don_hang = 3 AND ngay_tao >= ? AND ngay_tao <= ?) as tong_don_thanh_cong
+                        (SELECT COUNT(id) FROM don_hang WHERE trang_thai_don_hang = 3 AND ngay_tao >= ? AND ngay_tao <= ? AND da_xoa = 0) as tong_don_thanh_cong
                     FROM don_hang
-                    WHERE trang_thai_don_hang = 3 AND id_voucher IS NOT NULL AND id_voucher != ''
+                    WHERE trang_thai_don_hang = 3 AND id_voucher IS NOT NULL AND id_voucher != '' AND da_xoa = 0
                       AND ngay_tao >= ? AND ngay_tao <= ?";
                       
         $tong = $this->query($sqlTong, [
@@ -446,7 +446,7 @@ class BaoCaoDoanhThuModel
                            v.trang_thai, v.ngay_ket_thuc
                        FROM don_hang dh
                        JOIN voucher v ON dh.id_voucher = v.id
-                       WHERE dh.trang_thai_don_hang = 3
+                       WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                          AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                        GROUP BY v.id
                        ORDER BY luot_dung DESC, doanh_thu DESC";
@@ -482,7 +482,7 @@ class BaoCaoDoanhThuModel
                     COUNT(id) as so_don,
                     SUM(thanh_tien) as doanh_thu
                 FROM don_hang
-                WHERE trang_thai_don_hang = 3
+                WHERE trang_thai_don_hang = 3 AND da_xoa = 0
                   AND ngay_tao >= ? AND ngay_tao <= ?
                 GROUP BY pt_thanh_toan
                 ORDER BY doanh_thu DESC";
@@ -515,7 +515,7 @@ class BaoCaoDoanhThuModel
                 FROM don_hang dh
                 JOIN nguoi_dung nd ON dh.id_nguoi_dung = nd.id
                 JOIN hang_thanh_vien htv ON nd.id_hang_thanh_vien = htv.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY htv.id
                 ORDER BY doanh_thu DESC";
@@ -562,7 +562,7 @@ class BaoCaoDoanhThuModel
                     END as trang_thai,
                     dh.id
                 FROM don_hang dh
-                WHERE dh.trang_thai_don_hang = 3 
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
                 
         $params = [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'];
@@ -601,7 +601,7 @@ class BaoCaoDoanhThuModel
     {
         $sql = "SELECT COUNT(*) as total 
                 FROM don_hang dh
-                WHERE dh.trang_thai_don_hang = 3 
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
         $params = [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'];
         

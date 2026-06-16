@@ -52,9 +52,20 @@ class ThuDienTuService
         $tableRows = [];
         foreach ($items as $item) {
             $tenSP = $item['ten_sp'] ?? $item['product_name'] ?? 'Sản phẩm';
+            if (!empty($item['variant_name'])) {
+                $tenSP .= ' (' . $item['variant_name'] . ')';
+            }
+            if (!empty($item['variant'])) {
+                $tenSP .= ' (' . $item['variant'] . ')';
+            }
             $sl = $item['so_luong'] ?? $item['quantity'] ?? 1;
             $gia = number_format($item['don_gia'] ?? $item['price'] ?? 0, 0, ',', '.') . 'đ';
-            $tableRows[] = [$tenSP, "x{$sl}", $gia];
+            $hinhAnh = $item['image'] ?? $item['hinh_anh_chinh'] ?? $item['product_image'] ?? '';
+            $imgSrc = get_image_url($hinhAnh);
+            
+            $imgHtml = '<img src="' . $imgSrc . '" width="50" height="50" style="object-fit:cover;border-radius:8px;border:1px solid #eee;display:block;" alt="Product">';
+            
+            $tableRows[] = [$imgHtml, $tenSP, "x{$sl}", $gia];
         }
 
         // Tóm tắt thanh toán
@@ -77,7 +88,7 @@ class ThuDienTuService
             'highlight' => $ma,
             'highlight_label' => 'Mã đơn hàng',
             'table_data' => [
-                'headers' => ['Sản phẩm', 'SL', 'Giá'],
+                'headers' => ['Ảnh', 'Sản phẩm', 'SL', 'Giá'],
                 'rows' => $tableRows
             ],
             'summary_data' => $summary,
@@ -91,7 +102,7 @@ class ThuDienTuService
     // =============================================
     // #2-4: CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
     // =============================================
-    public static function sendOrderStatusUpdate(array $order, int $newStatus, string $reason = ''): bool
+    public static function sendOrderStatusUpdate(array $order, int $newStatus, string $reason = '', array $items = []): bool
     {
         $email = $order['email'] ?? '';
         if (empty($email)) return false;
@@ -124,22 +135,62 @@ class ThuDienTuService
         $config = $statusConfig[$newStatus] ?? null;
         if (!$config) return false;
 
+        // Bảng sản phẩm
+        $tableRows = [];
+        foreach ($items as $item) {
+            $tenSP = $item['ten_sp'] ?? $item['product_name'] ?? 'Sản phẩm';
+            if (!empty($item['variant_name'])) {
+                $tenSP .= ' (' . $item['variant_name'] . ')';
+            }
+            if (!empty($item['variant'])) {
+                $tenSP .= ' (' . $item['variant'] . ')';
+            }
+            $sl = $item['so_luong'] ?? $item['quantity'] ?? 1;
+            $gia = number_format($item['don_gia'] ?? $item['price'] ?? 0, 0, ',', '.') . 'đ';
+            
+            $hinhAnh = $item['image'] ?? $item['hinh_anh_chinh'] ?? $item['product_image'] ?? '';
+            $imgSrc = get_image_url($hinhAnh);
+            
+            $imgHtml = '<img src="' . $imgSrc . '" width="50" height="50" style="object-fit:cover;border-radius:8px;border:1px solid #eee;display:block;" alt="Product">';
+            
+            $tableRows[] = [$imgHtml, $tenSP, "x{$sl}", $gia];
+        }
+
+        // Tóm tắt thanh toán
+        $summary = [];
+        if (isset($order['tong_tien'])) {
+            $summary['Tạm tính'] = number_format($order['tong_tien'], 0, ',', '.') . 'đ';
+        }
+        if (isset($order['phi_ship']) && $order['phi_ship'] > 0) {
+            $summary['Phí vận chuyển'] = number_format($order['phi_ship'], 0, ',', '.') . 'đ';
+        }
+        if (isset($order['tien_giam_gia']) && $order['tien_giam_gia'] > 0) {
+            $summary['Giảm giá'] = '-' . number_format($order['tien_giam_gia'], 0, ',', '.') . 'đ';
+        }
+        $summary['Tổng thanh toán'] = number_format($order['thanh_tien'] ?? 0, 0, ',', '.') . 'đ';
+
         return self::send($email, $config['subject'] . ' - Chuỗi Ngọc', [
             'title' => $config['title'],
             'greeting' => "Chào {$ten},",
             'content' => $config['content'],
             'highlight' => $ma,
             'highlight_label' => 'Mã đơn hàng',
+            'table_data' => !empty($tableRows) ? [
+                'headers' => ['Ảnh', 'Sản phẩm', 'SL', 'Giá'],
+                'rows' => $tableRows
+            ] : null,
+            'summary_data' => !empty($tableRows) ? $summary : null,
             'status_badge' => $config['badge'],
             'cta_text' => $newStatus === 3 ? 'Đánh giá sản phẩm' : 'Xem chi tiết đơn hàng',
             'cta_url' => $base . "/chi-tiet-don-hang?id={$ma}",
+            'footer_note' => "Địa chỉ giao: " . ($order['dia_chi_giao_hang'] ?? '') . "<br>PT thanh toán: " . ($order['pt_thanh_toan'] ?? '')
         ]);
     }
 
     // =============================================
     // #5: HỦY ĐƠN HÀNG
     // =============================================
-    public static function sendOrderCancelled(array $order, string $reason = ''): bool
+    public static function sendOrderCancelled(array $order, string $reason = '', array $items = []): bool
     {
         $email = $order['email'] ?? '';
         if (empty($email)) return false;
@@ -149,24 +200,74 @@ class ThuDienTuService
         $base = defined('APP_URL') ? APP_URL : '';
         $tien = number_format($order['thanh_tien'] ?? 0, 0, ',', '.') . 'đ';
 
-        $contentParts = "Đơn hàng <strong>#{$ma}</strong> đã bị hủy.";
-        if (!empty($reason)) {
-            $contentParts .= "<br><br><strong>Lý do:</strong> " . htmlspecialchars($reason);
+        if ($reason === 'Giao hàng thất bại') {
+            $subject = "Đơn hàng #{$ma} giao hàng không thành công - Chuỗi Ngọc";
+            $title = "Giao hàng không thành công";
+            $contentParts = "Đơn hàng <strong>#{$ma}</strong> của bạn đã bị hủy do không giao được hoặc giao hàng bị hủy.";
+            $badgeText = '❌ Giao thất bại';
+        } else {
+            $subject = "Đơn hàng #{$ma} đã bị hủy - Chuỗi Ngọc";
+            $title = "Đơn hàng đã hủy";
+            $contentParts = "Đơn hàng <strong>#{$ma}</strong> đã bị hủy.";
+            if (!empty($reason)) {
+                $contentParts .= "<br><br><strong>Lý do:</strong> " . htmlspecialchars($reason);
+            }
+            $badgeText = '❌ Đã hủy';
         }
+
         if (isset($order['trang_thai_thanh_toan']) && $order['trang_thai_thanh_toan'] == 1) {
             $contentParts .= "<br><br>💰 Số tiền <strong>{$tien}</strong> sẽ được hoàn trả trong 3-5 ngày làm việc.";
         }
         $contentParts .= "<br><br>Nếu bạn cần hỗ trợ, đừng ngại liên hệ với chúng tôi.";
 
-        return self::send($email, "Đơn hàng #{$ma} đã bị hủy - Chuỗi Ngọc", [
-            'title' => 'Đơn hàng đã hủy',
+        // Bảng sản phẩm
+        $tableRows = [];
+        foreach ($items as $item) {
+            $tenSP = $item['ten_sp'] ?? $item['product_name'] ?? 'Sản phẩm';
+            if (!empty($item['variant_name'])) {
+                $tenSP .= ' (' . $item['variant_name'] . ')';
+            }
+            if (!empty($item['variant'])) {
+                $tenSP .= ' (' . $item['variant'] . ')';
+            }
+            $sl = $item['so_luong'] ?? $item['quantity'] ?? 1;
+            $gia = number_format($item['don_gia'] ?? $item['price'] ?? 0, 0, ',', '.') . 'đ';
+            $hinhAnh = $item['image'] ?? $item['hinh_anh_chinh'] ?? $item['product_image'] ?? '';
+            $imgSrc = get_image_url($hinhAnh);
+            
+            $imgHtml = '<img src="' . $imgSrc . '" width="50" height="50" style="object-fit:cover;border-radius:8px;border:1px solid #eee;display:block;" alt="Product">';
+            
+            $tableRows[] = [$imgHtml, $tenSP, "x{$sl}", $gia];
+        }
+
+        // Tóm tắt thanh toán
+        $summary = [];
+        if (isset($order['tong_tien'])) {
+            $summary['Tạm tính'] = number_format($order['tong_tien'], 0, ',', '.') . 'đ';
+        }
+        if (isset($order['phi_ship']) && $order['phi_ship'] > 0) {
+            $summary['Phí vận chuyển'] = number_format($order['phi_ship'], 0, ',', '.') . 'đ';
+        }
+        if (isset($order['tien_giam_gia']) && $order['tien_giam_gia'] > 0) {
+            $summary['Giảm giá'] = '-' . number_format($order['tien_giam_gia'], 0, ',', '.') . 'đ';
+        }
+        $summary['Tổng thanh toán'] = $tien;
+
+        return self::send($email, $subject, [
+            'title' => $title,
             'greeting' => "Chào {$ten},",
             'content' => $contentParts,
             'highlight' => $ma,
             'highlight_label' => 'Mã đơn hàng',
-            'status_badge' => ['text' => '❌ Đã hủy', 'color' => '#ef4444'],
+            'table_data' => !empty($tableRows) ? [
+                'headers' => ['Ảnh', 'Sản phẩm', 'SL', 'Giá'],
+                'rows' => $tableRows
+            ] : null,
+            'summary_data' => !empty($tableRows) ? $summary : null,
+            'status_badge' => ['text' => $badgeText, 'color' => '#ef4444'],
             'cta_text' => 'Tiếp tục mua sắm',
             'cta_url' => $base,
+            'footer_note' => "Địa chỉ giao: " . ($order['dia_chi_giao_hang'] ?? '') . "<br>PT thanh toán: " . ($order['pt_thanh_toan'] ?? '')
         ]);
     }
 

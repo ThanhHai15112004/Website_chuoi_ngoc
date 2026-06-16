@@ -66,3 +66,20 @@ $id = $id ?? 'toast-container';
         }, duration);
     }
 </script>
+
+<?php if (isset($_SESSION['flash_success'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showToast(<?= json_encode($_SESSION['flash_success']) ?>, 'success');
+    });
+</script>
+<?php unset($_SESSION['flash_success']); endif; ?>
+
+<?php if (isset($_SESSION['flash_error'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showToast(<?= json_encode($_SESSION['flash_error']) ?>, 'error');
+    });
+</script>
+<?php unset($_SESSION['flash_error']); endif; ?>
+

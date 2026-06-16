@@ -29,6 +29,12 @@ class DonHangController extends Controller
         ];
 
         $don_hang_list = $this->donHangModel->layDanhSach($filters, $limit, $offset);
+        foreach ($don_hang_list as &$dh) {
+            $dh['ly_do_huy'] = '';
+            if ($dh['trang_thai_don_hang'] == 4) {
+                $dh['ly_do_huy'] = $this->donHangModel->layLyDoHuy($dh['id']);
+            }
+        }
         $total = $this->donHangModel->demDanhSach($filters);
         $stats = $this->donHangModel->layThongKe();
 
@@ -55,6 +61,8 @@ class DonHangController extends Controller
             header('Location: ' . APP_URL . '/admin/don-hang');
             exit;
         }
+
+        $don_hang['ly_do_huy'] = ($don_hang['trang_thai_don_hang'] == 4) ? $this->donHangModel->layLyDoHuy($id) : '';
 
         $don_hang['san_pham'] = $this->donHangModel->laySanPhamDonHang($id);
         $don_hang['lich_su'] = $this->donHangModel->layLichSuDonHang($id);
@@ -90,10 +98,11 @@ class DonHangController extends Controller
                         $notif = new ThongBaoService();
                         $notif->orderStatusChanged($don_hang, (int)$trangThai, $lyDo);
 
+                        $items = $this->donHangModel->laySanPhamDonHang($id);
                         if ((int)$trangThai === 4) {
-                            ThuDienTuService::sendOrderCancelled($don_hang, $lyDo);
+                            ThuDienTuService::sendOrderCancelled($don_hang, $lyDo, $items);
                         } else {
-                            ThuDienTuService::sendOrderStatusUpdate($don_hang, (int)$trangThai);
+                            ThuDienTuService::sendOrderStatusUpdate($don_hang, (int)$trangThai, $lyDo, $items);
                         }
                     }
                 } catch (\Exception $ex) {
@@ -196,6 +205,21 @@ class DonHangController extends Controller
             }
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
+        }
+    }
+
+    public function apiXoa($id)
+    {
+        header('Content-Type: application/json');
+        try {
+            $success = $this->donHangModel->xoaDonHang($id);
+            if ($success) {
+                echo json_encode(['success' => true, 'message' => 'Xóa đơn hàng thành công!']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Không thể xóa đơn hàng. Đơn hàng phải ở trạng thái đã hủy.']);
+            }
+        } catch (\Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 }

@@ -29,7 +29,7 @@ class BaoCaoSanPhamModel
                     SUM(ctdh.so_luong * ctdh.don_gia) as doanh_thu_san_pham
                    FROM chi_tiet_don_hang ctdh
                    JOIN don_hang dh ON ctdh.id_don_hang = dh.id
-                   WHERE dh.trang_thai_don_hang = 3
+                   WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                      AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
         $banData = $this->query($sqlBan, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetch(PDO::FETCH_ASSOC);
 
@@ -45,7 +45,7 @@ class BaoCaoSanPhamModel
                    JOIN don_hang dh ON ctdh.id_don_hang = dh.id
                    JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
                    JOIN san_pham sp ON bt.id_san_pham = sp.id
-                   WHERE dh.trang_thai_don_hang = 3
+                   WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                      AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                    GROUP BY sp.id
                    ORDER BY da_ban DESC
@@ -66,7 +66,7 @@ class BaoCaoSanPhamModel
                         FROM chi_tiet_don_hang ctdh
                         JOIN don_hang dh ON ctdh.id_don_hang = dh.id
                         JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
-                        WHERE dh.trang_thai_don_hang = 3
+                        WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                           AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                     )";
         $spCham = $this->query($sqlCham, [$tuNgay . ' 00:00:00', $denNgay . ' 23:59:59'])->fetch(PDO::FETCH_ASSOC);
@@ -91,7 +91,7 @@ class BaoCaoSanPhamModel
                 JOIN don_hang dh ON ctdh.id_don_hang = dh.id
                 JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
                 JOIN san_pham sp ON bt.id_san_pham = sp.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY sp.id
                 ORDER BY doanh_thu DESC
@@ -126,7 +126,7 @@ class BaoCaoSanPhamModel
                 JOIN san_pham_bien_the bt ON ctdh.id_bien_the = bt.id
                 JOIN san_pham sp ON bt.id_san_pham = sp.id
                 JOIN danh_muc dm ON sp.id_danh_muc = dm.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY dm.id
                 ORDER BY doanh_thu DESC";
@@ -152,7 +152,7 @@ class BaoCaoSanPhamModel
                      JOIN don_hang dh2 ON ct2.id_don_hang = dh2.id
                      JOIN san_pham_bien_the bt2 ON ct2.id_bien_the = bt2.id
                      JOIN san_pham sp2 ON bt2.id_san_pham = sp2.id
-                     WHERE sp2.id_loai_da = ld.id AND dh2.trang_thai_don_hang = 3 
+                     WHERE sp2.id_loai_da = ld.id AND dh2.trang_thai_don_hang = 3 AND dh2.da_xoa = 0
                        AND dh2.ngay_tao >= ? AND dh2.ngay_tao <= ?
                      GROUP BY sp2.id ORDER BY SUM(ct2.so_luong) DESC LIMIT 1) as top_sp,
                     (SELECT sp_img.hinh_anh_chinh FROM san_pham sp_img WHERE sp_img.id_loai_da = ld.id AND sp_img.da_xoa = 0 ORDER BY sp_img.luot_xem DESC LIMIT 1) as hinh_anh
@@ -161,7 +161,7 @@ class BaoCaoSanPhamModel
                 JOIN san_pham_bien_the bt ON sp.id = bt.id_san_pham
                 JOIN chi_tiet_don_hang ctdh ON bt.id = ctdh.id_bien_the
                 JOIN don_hang dh ON ctdh.id_don_hang = dh.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY ld.id
                 ORDER BY doanh_thu DESC";
@@ -194,7 +194,7 @@ class BaoCaoSanPhamModel
                 JOIN san_pham_bien_the bt ON sp.id = bt.id_san_pham
                 JOIN chi_tiet_don_hang ctdh ON bt.id = ctdh.id_bien_the
                 JOIN don_hang dh ON ctdh.id_don_hang = dh.id
-                WHERE dh.trang_thai_don_hang = 3
+                WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                   AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                 GROUP BY mpt.id
                 ORDER BY doanh_thu DESC";
@@ -226,7 +226,7 @@ class BaoCaoSanPhamModel
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as da_ban_ky
                 FROM san_pham sp
@@ -281,14 +281,14 @@ class BaoCaoSanPhamModel
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as da_ban_ky,
                     IFNULL((SELECT SUM(ct.so_luong * ct.don_gia) 
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as doanh_thu
                 FROM san_pham sp
@@ -348,9 +348,9 @@ class BaoCaoSanPhamModel
                     (SELECT SUM(ct.so_luong) 
                      FROM chi_tiet_don_hang ct 
                      JOIN don_hang dh ON ct.id_don_hang = dh.id
-                     JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                     WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
-                       AND dh.ngay_tao < km.ngay_bat_dau
+                      JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
+                      WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
+                        AND dh.ngay_tao < km.ngay_bat_dau
                     ) as ban_truoc
                 FROM chuong_trinh_khuyen_mai km
                 JOIN chuong_trinh_khuyen_mai_san_pham km_sp ON km.id = km_sp.id_khuyen_mai
@@ -400,14 +400,14 @@ class BaoCaoSanPhamModel
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as da_ban,
                     IFNULL((SELECT SUM(ct.so_luong * ct.don_gia) 
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as doanh_thu
                 FROM san_pham sp
@@ -467,8 +467,8 @@ class BaoCaoSanPhamModel
 
         $totalSql = "SELECT IFNULL(SUM(ct.so_luong * ct.don_gia), 0)
                      FROM chi_tiet_don_hang ct
-                     JOIN don_hang dh ON ct.id_don_hang = dh.id
-                     WHERE dh.trang_thai_don_hang = 3 AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
+                      JOIN don_hang dh ON ct.id_don_hang = dh.id
+                      WHERE dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0 AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?";
         $totalDt = (float)$this->query($totalSql, [$tuNgay.' 00:00:00', $denNgay.' 23:59:59'])->fetchColumn();
 
         foreach ($rows as &$r) {
@@ -494,7 +494,7 @@ class BaoCaoSanPhamModel
                             FROM chi_tiet_don_hang ct 
                             JOIN don_hang dh ON ct.id_don_hang = dh.id
                             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
-                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3
+                            WHERE bt.id_san_pham = sp.id AND dh.trang_thai_don_hang = 3 AND dh.da_xoa = 0
                               AND dh.ngay_tao >= ? AND dh.ngay_tao <= ?
                            ), 0) as da_ban
                 FROM san_pham sp

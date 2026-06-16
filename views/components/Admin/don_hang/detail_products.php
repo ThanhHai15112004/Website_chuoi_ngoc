@@ -21,7 +21,7 @@
                                 <td class="p-4">
                                     <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base bg-gray-100 border border-white shadow-sm overflow-hidden">
                                         <?php if(!empty($sp['image'])): ?>
-                                            <img src="<?= APP_URL ?>/public/uploads/<?= $sp['image'] ?>" alt="" class="w-full h-full object-cover">
+                                            <img src="<?= get_image_url($sp['image']) ?>" alt="" class="w-full h-full object-cover">
                                         <?php else: ?>
                                             <span class="iconify text-gray-400" data-icon="mdi:image-outline"></span>
                                         <?php endif; ?>

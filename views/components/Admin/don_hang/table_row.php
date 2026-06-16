@@ -7,6 +7,9 @@
         4 => 'Đã hủy'
     ];
     $ttText = $statusMap[$dh['trang_thai_don_hang']] ?? 'Không xác định';
+    if ($dh['trang_thai_don_hang'] == 4 && ($dh['ly_do_huy'] ?? '') === 'Giao hàng thất bại') {
+        $ttText = 'Giao thất bại';
+    }
     
     $paymentStatus = $dh['trang_thai_thanh_toan'] == 1 ? 'Đã thanh toán' : 'Chưa thanh toán';
     $so_luong_khac = max(0, $dh['tong_so_luong_sp'] - 1);
@@ -74,7 +77,13 @@
                                     elseif($dh['trang_thai_don_hang'] == 1) $st_class = 'bg-blue-50 text-blue-700 border-blue-200';
                                     elseif($dh['trang_thai_don_hang'] == 2) $st_class = 'bg-teal-50 text-teal-700 border-teal-200';
                                     elseif($dh['trang_thai_don_hang'] == 3) $st_class = 'bg-emerald-50 text-emerald-700 border-emerald-200 font-bold';
-                                    elseif($dh['trang_thai_don_hang'] == 4) $st_class = 'bg-gray-100 text-gray-600 border-gray-200';
+                                    elseif($dh['trang_thai_don_hang'] == 4) {
+                                        if (($dh['ly_do_huy'] ?? '') === 'Giao hàng thất bại') {
+                                            $st_class = 'bg-amber-50 text-amber-700 border-amber-200 font-bold';
+                                        } else {
+                                            $st_class = 'bg-gray-100 text-gray-600 border-gray-200';
+                                        }
+                                    }
                                     else $st_class = 'bg-gray-50 text-gray-600 border-gray-200';
                                 ?>
                                 <span class="text-[11px] px-2.5 py-1 rounded-full border <?= $st_class ?> inline-block shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
@@ -105,10 +114,20 @@
                                         <a href="<?= APP_URL ?>/admin/don-hang/chi-tiet/<?= $dh['id'] ?>" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#6B0D18] transition-colors">
                                             <span class="iconify text-gray-400" data-icon="mdi:eye-outline"></span> Xem chi tiết
                                         </a>
-                                        <?php if(in_array($dh['trang_thai_don_hang'], [0, 1, 2])): ?>
+                                        <?php if($dh['trang_thai_don_hang'] == 0): ?>
                                             <div class="h-px bg-gray-100 my-1.5 w-full"></div>
                                             <button onclick="huyDonHang('<?= $dh['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium">
                                                 <span class="iconify" data-icon="mdi:cancel"></span> Hủy đơn hàng
+                                            </button>
+                                        <?php elseif($dh['trang_thai_don_hang'] == 2): ?>
+                                            <div class="h-px bg-gray-100 my-1.5 w-full"></div>
+                                            <button onclick="giaoHangThatBai('<?= $dh['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors font-medium">
+                                                <span class="iconify" data-icon="mdi:close-circle-outline"></span> Giao hàng thất bại
+                                            </button>
+                                        <?php elseif($dh['trang_thai_don_hang'] == 4): ?>
+                                            <div class="h-px bg-gray-100 my-1.5 w-full"></div>
+                                            <button onclick="xoaDonHang('<?= $dh['id'] ?>')" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium">
+                                                <span class="iconify" data-icon="mdi:delete-outline"></span> Xóa đơn hàng
                                             </button>
                                         <?php endif; ?>
                                     </div>

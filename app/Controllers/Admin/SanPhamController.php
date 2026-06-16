@@ -38,8 +38,8 @@ class SanPhamController extends Controller {
             'gia_ban' => (float)$product['gia_ban'],
             'gia_khuyen_mai' => $product['gia_khuyen_mai'] ? (float)$product['gia_khuyen_mai'] : null,
             'ton_kho' => (int)$product['tong_ton_kho'],
-            'da_ban' => 0,
-            'doanh_thu' => 0,
+            'da_ban' => (int)($product['da_ban'] ?? 0),
+            'doanh_thu' => (float)($product['doanh_thu'] ?? 0),
             'ngay_tao' => $product['ngay_tao'],
             'ngay_cap_nhat' => date('d/m/Y H:i', strtotime($product['ngay_tao'])),
             'anh_chinh' => strpos($product['hinh_anh_chinh'], 'http') === 0 ? $product['hinh_anh_chinh'] : APP_URL . '/public' . $product['hinh_anh_chinh'],
@@ -52,7 +52,7 @@ class SanPhamController extends Controller {
                 return [
                     'ten' => $bt['thuoc_tinh'],
                     'gia_ban' => (float)$product['gia_ban'] + (float)$bt['gia_cong_them'],
-                    'da_ban' => 0, // Tính năng mở rộng sau này
+                    'da_ban' => (int)($bt['da_ban'] ?? 0),
                     'ton_kho' => (int)$bt['so_luong_ton']
                 ];
             }, $product['bien_the_thuc_te'] ?? [])
@@ -152,7 +152,12 @@ class SanPhamController extends Controller {
     public function xoa($id) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new \App\Services\Admin\SanPhamService();
-            $service->deleteProduct($id);
+            $result = $service->deleteProduct($id);
+            if ($result['success']) {
+                $_SESSION['flash_success'] = $result['message'];
+            } else {
+                $_SESSION['flash_error'] = $result['message'];
+            }
             $referer = $_SERVER['HTTP_REFERER'] ?? (APP_URL . '/admin/san-pham');
             header("Location: $referer");
             exit;

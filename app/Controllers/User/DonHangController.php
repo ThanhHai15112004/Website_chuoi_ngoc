@@ -61,6 +61,26 @@ class DonHangController extends Controller {
             2 => 'Đã hoàn tiền' // Hoặc trạng thái khác
         ];
 
+        // Lấy lý do hủy / giao thất bại nếu có
+        $cancelReason = '';
+        if ($rawOrder['trang_thai_don_hang'] == 4) {
+            $stmtCancel = $db->prepare("SELECT gia_tri_moi FROM nhat_ky_hoat_dong WHERE module = 'Đơn hàng' AND doi_tuong_id = ? AND gia_tri_moi LIKE '%Lý do:%' ORDER BY ngay_tao DESC LIMIT 1");
+            $stmtCancel->execute([$realId]);
+            $cancelLog = $stmtCancel->fetchColumn();
+            
+            if (!$cancelLog) {
+                $stmtCancel = $db->prepare("SELECT mo_ta FROM nhan_vien_lich_su WHERE hanh_dong = ? AND mo_ta LIKE '%Lý do:%' ORDER BY ngay_thuc_hien DESC LIMIT 1");
+                $stmtCancel->execute(['Cập nhật đơn hàng ' . $realId]);
+                $cancelLog = $stmtCancel->fetchColumn();
+            }
+            
+            if ($cancelLog) {
+                if (preg_match('/\(Lý do:\s*(.*?)\)/u', $cancelLog, $matches)) {
+                    $cancelReason = trim($matches[1]);
+                }
+            }
+        }
+
         $order = [
             'id' => $rawOrder['id'],
             'order_code' => $rawOrder['ma_don_hang'],
@@ -79,7 +99,9 @@ class DonHangController extends Controller {
             'shipping_provider' => $rawOrder['don_vi_van_chuyen'] ?? 'Giao hàng tiêu chuẩn',
             'shipping_expected_dates' => $rawOrder['ngay_du_kien_giao'] ?? '2-4 ngày',
             'note' => $rawOrder['ghi_chu'],
-            'extra_services' => $rawOrder['dich_vu_them'] ?? '[]'
+            'extra_services' => $rawOrder['dich_vu_them'] ?? '[]',
+            'cancel_reason' => $cancelReason,
+            'is_delivery_failed' => ($cancelReason === 'Giao hàng thất bại')
         ];
 
         // Mapping Order Items
@@ -101,7 +123,7 @@ class DonHangController extends Controller {
         foreach ($rawHistory as $history) {
             $orderHistory[] = [
                 'created_at' => $history['ngay_tao'],
-                'description' => $history['ghi_chu'] ?: 'Cập nhật trạng thái thành ' . ($history['trang_thai_moi'] ?? '')
+                'description' => $history['gia_tri_moi'] ?: ($history['ghi_chu'] ?: 'Cập nhật trạng thái thành ' . ($history['trang_thai_moi'] ?? ''))
             ];
         }
 
@@ -152,7 +174,8 @@ class DonHangController extends Controller {
             try {
                 $notif = new ThongBaoService();
                 $notif->orderStatusChanged($rawOrder, 4, $reason);
-                ThuDienTuService::sendOrderCancelled($rawOrder, $reason);
+                $items = $donHangModel->laySanPhamDonHang($orderId);
+                ThuDienTuService::sendOrderCancelled($rawOrder, $reason, $items);
             } catch (\Exception $ex) {
                 error_log('[DonHang] Lỗi gửi mail hủy đơn: ' . $ex->getMessage());
             }

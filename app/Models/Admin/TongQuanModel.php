@@ -22,14 +22,14 @@ class TongQuanModel {
         $doanhThuHomNay = $this->db->query("
             SELECT SUM(thanh_tien) as total 
             FROM don_hang 
-            WHERE DATE(ngay_tao) = '$today' AND trang_thai_don_hang = 3
+            WHERE DATE(ngay_tao) = '$today' AND trang_thai_don_hang = 3 AND da_xoa = 0
         ")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         // Doanh thu hôm qua
         $doanhThuHomQua = $this->db->query("
             SELECT SUM(thanh_tien) as total 
             FROM don_hang 
-            WHERE DATE(ngay_tao) = '$yesterday' AND trang_thai_don_hang = 3
+            WHERE DATE(ngay_tao) = '$yesterday' AND trang_thai_don_hang = 3 AND da_xoa = 0
         ")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         $tangTruongDoanhThu = 0;
@@ -43,14 +43,14 @@ class TongQuanModel {
         $donHangMoi = $this->db->query("
             SELECT COUNT(id) as total 
             FROM don_hang 
-            WHERE DATE(ngay_tao) = '$today'
+            WHERE DATE(ngay_tao) = '$today' AND da_xoa = 0
         ")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         // Đơn chờ xác nhận
         $donChoXacNhan = $this->db->query("
             SELECT COUNT(id) as total 
             FROM don_hang 
-            WHERE trang_thai_don_hang = 0
+            WHERE trang_thai_don_hang = 0 AND da_xoa = 0
         ")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
         // Khách hàng mới hôm nay
@@ -120,6 +120,7 @@ class TongQuanModel {
                             ELSE 'Không xác định'
                        END as trang_thai 
                 FROM don_hang 
+                WHERE da_xoa = 0
                 ORDER BY ngay_tao DESC LIMIT " . (int)$limit;
         return $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -137,7 +138,7 @@ class TongQuanModel {
             JOIN don_hang dh ON ct.id_don_hang = dh.id
             JOIN san_pham_bien_the bt ON ct.id_bien_the = bt.id
             JOIN san_pham sp ON bt.id_san_pham = sp.id
-            WHERE dh.trang_thai_don_hang = 3 AND sp.da_xoa = 0
+            WHERE dh.trang_thai_don_hang = 3 AND sp.da_xoa = 0 AND dh.da_xoa = 0
             GROUP BY sp.id
             ORDER BY da_ban DESC
             LIMIT " . (int)$limit;
@@ -169,7 +170,7 @@ class TongQuanModel {
             FROM san_pham sp
             LEFT JOIN san_pham_bien_the bt ON bt.id_san_pham = sp.id
             LEFT JOIN chi_tiet_don_hang ct ON ct.id_bien_the = bt.id
-            LEFT JOIN don_hang dh ON ct.id_don_hang = dh.id AND dh.trang_thai_don_hang != 4
+            LEFT JOIN don_hang dh ON ct.id_don_hang = dh.id AND dh.trang_thai_don_hang != 4 AND dh.da_xoa = 0
             WHERE sp.da_xoa = 0 AND sp.tong_ton_kho > 20
             GROUP BY sp.id
             HAVING da_ban_30_ngay < 5
@@ -316,7 +317,7 @@ class TongQuanModel {
         $sql7Days = "
             SELECT DATE_FORMAT(ngay_tao, '%d/%m') as label, SUM(thanh_tien) as total
             FROM don_hang
-            WHERE trang_thai_don_hang = 3 AND ngay_tao >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+            WHERE trang_thai_don_hang = 3 AND ngay_tao >= DATE_SUB(CURDATE(), INTERVAL 6 DAY) AND da_xoa = 0
             GROUP BY DATE(ngay_tao)
             ORDER BY DATE(ngay_tao) ASC
         ";
@@ -343,7 +344,7 @@ class TongQuanModel {
         $sqlMonth = "
             SELECT DAY(ngay_tao) as label, SUM(thanh_tien) as total
             FROM don_hang
-            WHERE trang_thai_don_hang = 3 AND MONTH(ngay_tao) = MONTH(CURDATE()) AND YEAR(ngay_tao) = YEAR(CURDATE())
+            WHERE trang_thai_don_hang = 3 AND MONTH(ngay_tao) = MONTH(CURDATE()) AND YEAR(ngay_tao) = YEAR(CURDATE()) AND da_xoa = 0
             GROUP BY DAY(ngay_tao)
             ORDER BY DAY(ngay_tao) ASC
         ";
@@ -368,7 +369,7 @@ class TongQuanModel {
         $sqlYear = "
             SELECT MONTH(ngay_tao) as label, SUM(thanh_tien) as total
             FROM don_hang
-            WHERE trang_thai_don_hang = 3 AND YEAR(ngay_tao) = YEAR(CURDATE())
+            WHERE trang_thai_don_hang = 3 AND YEAR(ngay_tao) = YEAR(CURDATE()) AND da_xoa = 0
             GROUP BY MONTH(ngay_tao)
             ORDER BY MONTH(ngay_tao) ASC
         ";
