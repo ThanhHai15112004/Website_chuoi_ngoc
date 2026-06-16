@@ -66,49 +66,128 @@ class MailHelper
 
         try {
             // Kết nối socket
-            $socket = @fsockopen($host, $port, $errno, $errstr, 10);
+            $context = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ]
+            ]);
+            $socket = @stream_socket_client(
+                "tcp://{$host}:{$port}",
+                $errno, $errstr, 15,
+                STREAM_CLIENT_CONNECT,
+                $context
+            );
             if (!$socket) {
-                error_log("[MailHelper] Không thể kết nối SMTP: $errstr ($errno)");
+                error_log("[MailHelper] Không thể kết nối SMTP {$host}:{$port} - {$errstr} ({$errno})");
                 return false;
             }
 
             // Đọc greeting
-            self::readResponse($socket);
+            $greeting = self::readResponse($socket);
+            if (!self::isResponseOk($greeting, 220)) {
+                error_log("[MailHelper] SMTP greeting lỗi: $greeting");
+                fclose($socket);
+                return false;
+            }
 
             // EHLO
-            self::sendCmd($socket, "EHLO localhost");
+            $resp = self::sendCmd($socket, "EHLO localhost");
+            if (!self::isResponseOk($resp, 250)) {
+                error_log("[MailHelper] EHLO lỗi: $resp");
+                fclose($socket);
+                return false;
+            }
 
             // STARTTLS (port 587)
             if ($port === 587) {
-                self::sendCmd($socket, "STARTTLS");
-                // Bật TLS trên socket
-                $cryptoMethod = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
-                if (!stream_socket_enable_crypto($socket, true, $cryptoMethod)) {
-                    // Fallback TLS 1.0
-                    stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+                $resp = self::sendCmd($socket, "STARTTLS");
+                if (!self::isResponseOk($resp, 220)) {
+                    error_log("[MailHelper] STARTTLS lỗi: $resp");
+                    fclose($socket);
+                    return false;
                 }
+
+                // Bật TLS trên socket - thử nhiều phiên bản
+                $tlsSuccess = @stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT);
+                if (!$tlsSuccess) {
+                    $tlsSuccess = @stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT);
+                }
+                if (!$tlsSuccess) {
+                    $tlsSuccess = @stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+                }
+                if (!$tlsSuccess) {
+                    error_log('[MailHelper] Không thể bật TLS encryption. Kiểm tra OpenSSL extension.');
+                    fclose($socket);
+                    return false;
+                }
+
                 // EHLO lại sau STARTTLS
-                self::sendCmd($socket, "EHLO localhost");
+                $resp = self::sendCmd($socket, "EHLO localhost");
+                if (!self::isResponseOk($resp, 250)) {
+                    error_log("[MailHelper] EHLO sau STARTTLS lỗi: $resp");
+                    fclose($socket);
+                    return false;
+                }
             }
 
             // AUTH LOGIN
-            self::sendCmd($socket, "AUTH LOGIN");
-            self::sendCmd($socket, base64_encode($user));
-            self::sendCmd($socket, base64_encode($pass));
+            $resp = self::sendCmd($socket, "AUTH LOGIN");
+            if (!self::isResponseOk($resp, 334)) {
+                error_log("[MailHelper] AUTH LOGIN lỗi: $resp");
+                fclose($socket);
+                return false;
+            }
+
+            $resp = self::sendCmd($socket, base64_encode($user));
+            if (!self::isResponseOk($resp, 334)) {
+                error_log("[MailHelper] AUTH username lỗi: $resp");
+                fclose($socket);
+                return false;
+            }
+
+            $resp = self::sendCmd($socket, base64_encode($pass));
+            if (!self::isResponseOk($resp, 235)) {
+                error_log("[MailHelper] AUTH password lỗi (sai mật khẩu ứng dụng?): $resp");
+                fclose($socket);
+                return false;
+            }
 
             // MAIL FROM
-            self::sendCmd($socket, "MAIL FROM:<{$from}>");
+            $resp = self::sendCmd($socket, "MAIL FROM:<{$from}>");
+            if (!self::isResponseOk($resp, 250)) {
+                error_log("[MailHelper] MAIL FROM lỗi: $resp");
+                fclose($socket);
+                return false;
+            }
 
             // RCPT TO
-            self::sendCmd($socket, "RCPT TO:<{$to}>");
+            $resp = self::sendCmd($socket, "RCPT TO:<{$to}>");
+            if (!self::isResponseOk($resp, 250)) {
+                error_log("[MailHelper] RCPT TO lỗi (email người nhận không hợp lệ?): $resp");
+                fclose($socket);
+                return false;
+            }
 
             // DATA
-            self::sendCmd($socket, "DATA");
+            $resp = self::sendCmd($socket, "DATA");
+            if (!self::isResponseOk($resp, 354)) {
+                error_log("[MailHelper] DATA lỗi: $resp");
+                fclose($socket);
+                return false;
+            }
 
-            // Headers + Body
+            // Headers + Body (RFC 5322 compliant)
+            $messageId = '<' . bin2hex(random_bytes(16)) . '@' . gethostname() . '>';
+            $date = date('r'); // RFC 2822 format: Mon, 16 Jun 2025 09:30:00 +0700
+
             $message  = "From: =?UTF-8?B?" . base64_encode('Chuỗi Ngọc Phong Thủy') . "?= <{$from}>\r\n";
             $message .= "To: <{$to}>\r\n";
+            $message .= "Reply-To: <{$from}>\r\n";
             $message .= "Subject: =?UTF-8?B?" . base64_encode($subject) . "?=\r\n";
+            $message .= "Date: {$date}\r\n";
+            $message .= "Message-ID: {$messageId}\r\n";
             $message .= "MIME-Version: 1.0\r\n";
             $message .= "Content-Type: text/html; charset=UTF-8\r\n";
             $message .= "Content-Transfer-Encoding: base64\r\n";
@@ -116,16 +195,25 @@ class MailHelper
             $message .= chunk_split(base64_encode($htmlBody));
 
             // Kết thúc DATA bằng dấu chấm
-            self::sendCmd($socket, $message . "\r\n.");
+            $resp = self::sendCmd($socket, $message . "\r\n.");
+            if (!self::isResponseOk($resp, 250)) {
+                error_log("[MailHelper] Gửi email thất bại: $resp");
+                fclose($socket);
+                return false;
+            }
 
             // QUIT
             fwrite($socket, "QUIT\r\n");
             fclose($socket);
 
+            error_log("[MailHelper] Gửi email thành công tới: {$to}");
             return true;
 
         } catch (\Exception $e) {
-            error_log("[MailHelper] SMTP Error: " . $e->getMessage());
+            error_log("[MailHelper] SMTP Exception: " . $e->getMessage());
+            if (isset($socket) && is_resource($socket)) {
+                fclose($socket);
+            }
             return false;
         }
     }
@@ -145,6 +233,8 @@ class MailHelper
     private static function readResponse($socket): string
     {
         $response = '';
+        // Timeout 15 giây cho response
+        stream_set_timeout($socket, 15);
         while ($line = @fgets($socket, 512)) {
             $response .= $line;
             // Dòng cuối: "250 OK" (ký tự thứ 4 là dấu cách, không phải '-')
@@ -152,7 +242,20 @@ class MailHelper
                 break;
             }
         }
+        $info = stream_get_meta_data($socket);
+        if (!empty($info['timed_out'])) {
+            error_log('[MailHelper] SMTP response timeout');
+        }
         return $response;
+    }
+
+    /**
+     * Kiểm tra response code SMTP
+     */
+    private static function isResponseOk(string $response, int $expectedCode): bool
+    {
+        $code = (int)substr(trim($response), 0, 3);
+        return $code === $expectedCode;
     }
 
     /**

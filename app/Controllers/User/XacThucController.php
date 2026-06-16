@@ -114,10 +114,19 @@ class XacThucController extends Controller {
         $_SESSION['otp_purpose'] = 'register';
         $_SESSION['otp_expires'] = time() + 300; // 5 phút
 
-        MailHelper::guiOTP($email, $otp, 'register');
+        $mailSent = MailHelper::guiOTP($email, $otp, 'register');
 
         // Trả về JSON cho AJAX
         header('Content-Type: application/json');
+
+        if (!$mailSent) {
+            // Xóa session OTP vì mail không gửi được
+            unset($_SESSION['otp_code'], $_SESSION['otp_email'], $_SESSION['otp_purpose'], $_SESSION['otp_expires']);
+            error_log("[XacThuc] Gửi OTP thất bại tới: {$email}");
+            echo json_encode(['success' => false, 'message' => 'Không thể gửi email xác nhận. Vui lòng thử lại sau.']);
+            exit;
+        }
+
         echo json_encode(['success' => true, 'message' => 'OTP đã gửi tới email']);
         exit;
     }
@@ -215,7 +224,13 @@ class XacThucController extends Controller {
         $_SESSION['otp_purpose'] = 'forgot';
         $_SESSION['otp_expires'] = time() + 300;
 
-        MailHelper::guiOTP($email, $otp, 'forgot');
+        $mailSent = MailHelper::guiOTP($email, $otp, 'forgot');
+
+        if (!$mailSent) {
+            unset($_SESSION['otp_code'], $_SESSION['otp_email'], $_SESSION['otp_purpose'], $_SESSION['otp_expires']);
+            echo json_encode(['success' => false, 'message' => 'Không thể gửi email. Vui lòng thử lại sau.']);
+            exit;
+        }
 
         echo json_encode(['success' => true, 'message' => 'Mã OTP đã gửi tới email']);
         exit;
@@ -280,7 +295,12 @@ class XacThucController extends Controller {
         $_SESSION['otp_code']    = $otp;
         $_SESSION['otp_expires'] = time() + 300;
 
-        MailHelper::guiOTP($email, $otp, $purpose);
+        $mailSent = MailHelper::guiOTP($email, $otp, $purpose);
+
+        if (!$mailSent) {
+            echo json_encode(['success' => false, 'message' => 'Không thể gửi email. Vui lòng thử lại sau.']);
+            exit;
+        }
 
         echo json_encode(['success' => true, 'message' => 'Mã OTP mới đã gửi tới email']);
         exit;
